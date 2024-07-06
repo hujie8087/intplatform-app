@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "395758838818",
+    "project_id": "logistics-498c6",
+    "storage_bucket": "logistics-498c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395758838818:android:a52d9fbff4942524aed67b",
+        "android_client_info": {
+          "package_name": "com.example.logistics_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4oPOYaD_PNPMDCkW7oD1mOctjmVbnxLQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
