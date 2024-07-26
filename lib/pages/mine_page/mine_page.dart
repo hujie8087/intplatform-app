@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
 import 'package:logistics_app/pages/mine_page/feedback_page/feedback_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_view_model.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
+import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 
 class MinePage extends StatefulWidget {
@@ -26,6 +31,9 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
 
   Animation<double>? opacityAnimation;
   Animation<double>? offsetAnimation;
+  String userName = '';
+  String deptName = '';
+  String avatar = '';
 
   List<Widget> listViews = <Widget>[];
 
@@ -38,6 +46,20 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
 
     widget.animationController!.forward();
     super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    // 模拟异步数据获取
+    var res = await SpUtils.getString(Constants.SP_USER_NAME);
+    var dept = await SpUtils.getString(Constants.SP_USER_DEPT);
+    var userInfo = await SpUtils.getModel('userInfo');
+    // 更新状态
+    setState(() {
+      userName = res ?? '';
+      deptName = dept ?? '';
+      avatar = userInfo['user']['avatar'] ?? '';
+    });
   }
 
   Animation<double> createOffsetAnimation(double endValue) {
@@ -65,56 +87,66 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
         body: SafeArea(
             child: Padding(
           padding: EdgeInsets.only(left: 20, top: 10, right: 20),
-          child: Column(
-            children: [
-              _personCard(),
-              SizedBox(
-                height: 10,
-              ),
-              Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, top: 20),
-                  child: Column(
-                    children: [
-                      _commonItem('个人信息', Icons.account_circle, () {
-                        RouteUtils.push(context, PersonInfoPage());
-                      }, '', 0.2),
-                      _commonItem('修改密码', Icons.lock, () {
-                        RouteUtils.push(context, ChangePasswordPage());
-                      }, '', 0.3),
-                      _commonItem('消息通知', Icons.notifications, () {}, '', 0.4),
-                      _commonItem('意见反馈', Icons.feedback, () {
-                        RouteUtils.push(context, FeedbackPage());
-                      }, '', 0.5),
-                      // 语言设置
-                      _commonItem('语言设置', Icons.language, () {}, '中文', 0.6),
-                      _commonItem('清除缓存', Icons.delete_rounded, () {}, '', 0.7),
-                      _commonItem('检查更新', Icons.update, () {
-                        checkAppUpdate();
-                      }, model.needUpdate ? '有新版本' : 'V1.0.0', 0.8),
-                      _commonItem('联系我们', Icons.info, () {
-                        RouteUtils.push(context, ContactUsPage());
-                      }, '', 0.9),
-                      _logoutButton(() => DialogFactory.new().showConfirmDialog(
-                            context: context,
-                            title: '退出登录',
-                            content: '确定要退出登录吗？',
-                            confirmClick: () {
-                              // 退出登录
-                              model
-                                  .logout()
-                                  .then((value) => {
-                                        print(value),
-                                        showToast('退出登录成功'),
-                                        RouteUtils.push(context, LoginPage())
-                                      })
-                                  .catchError((e) {
-                                showToast('退出登录失败');
-                              });
-                            },
-                          )),
-                    ],
-                  )),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _personCard(),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10, top: 20),
+                    child: Column(
+                      children: [
+                        _commonItem('个人信息', Icons.account_circle, () {
+                          RouteUtils.push(context, PersonInfoPage());
+                        }, '', 0.2),
+                        _commonItem('修改密码', Icons.lock, () async {
+                          var res = await RouteUtils.push(
+                              context, ChangePasswordPage());
+                          ProgressHUD.showText(res['msg']);
+                        }, '', 0.3),
+                        _commonItem('消息通知', Icons.notifications, () {
+                          RouteUtils.push(context, NoticeListPage());
+                        }, '', 0.4),
+                        _commonItem('意见反馈', Icons.feedback, () {
+                          RouteUtils.push(context, FeedbackPage());
+                        }, '', 0.5),
+                        // 语言设置
+                        _commonItem('语言设置', Icons.language, () {}, '中文', 0.6),
+                        _commonItem(
+                            '清除缓存', Icons.delete_rounded, () {}, '', 0.7),
+                        _commonItem('检查更新', Icons.update, () {
+                          checkAppUpdate();
+                        }, model.needUpdate ? '有新版本' : 'V1.0.0', 0.8),
+                        _commonItem('联系我们', Icons.info, () {
+                          RouteUtils.push(context, ContactUsPage());
+                        }, '', 0.9),
+                        _logoutButton(() =>
+                            DialogFactory.new().showConfirmDialog(
+                              context: context,
+                              title: '退出登录',
+                              content: '确定要退出登录吗？',
+                              confirmClick: () {
+                                // 退出登录
+                                model
+                                    .logout()
+                                    .then((value) => {
+                                          ProgressHUD.showText('退出登录成功'),
+                                          RouteUtils.push(context, LoginPage())
+                                        })
+                                    .catchError((e) {
+                                  showToast('退出登录失败');
+                                });
+                              },
+                            )),
+                        SizedBox(
+                          height: 50,
+                        )
+                      ],
+                    )),
+              ],
+            ),
           ),
         )),
       ),
@@ -177,15 +209,8 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                               children: [
                                 Row(
                                   children: [
-                                    Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/images/userImage.png'),
-                                              fit: BoxFit.cover)),
+                                    AvatarWidget(
+                                      width: 60,
                                     ),
                                     SizedBox(
                                       width: 10,
@@ -195,25 +220,19 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '张三',
+                                          userName,
                                           style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white),
                                         ),
                                         Text(
-                                          '信息技术部',
+                                          deptName,
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: Colors.white),
                                         ),
                                         // 职位
-                                        Text(
-                                          '工程师',
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.white),
-                                        )
                                       ],
                                     )
                                   ],

@@ -1,7 +1,9 @@
 import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
 import 'package:logistics_app/common_ui/toast.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/pages/car_info_page/car_info_page.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
@@ -10,6 +12,8 @@ import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
+import 'package:logistics_app/pages/repair/my_repair_page.dart';
+import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/pages/route_query_page/route_query_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -70,20 +74,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         }
       }
     });
-    model.getNoticeModelList();
+    model.getNoticeModelList(1, 10);
     super.initState();
     _fetchData();
+    widget.animationController?.forward();
   }
 
   Future<void> _fetchData() async {
     // 模拟异步数据获取
     var res = await SpUtils.getString(Constants.SP_USER_NAME);
     var dept = await SpUtils.getString(Constants.SP_USER_DEPT);
-    print('res:${res}');
     // 更新状态
     setState(() {
-      userName = res;
-      deptName = dept;
+      userName = res ?? '';
+      deptName = dept ?? '';
     });
   }
 
@@ -142,7 +146,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                       (1 / count) * index, 1.0,
                                                       curve: Curves
                                                           .fastOutSlowIn)));
-                                      widget.animationController?.forward();
                                       return NoticeDataView(
                                         listData: model.list?[index],
                                         callBack: () => {
@@ -238,10 +241,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     physics: NeverScrollableScrollPhysics(),
                     children: [
                       // 线路查询
-                      _FunctionAreaItem('线路查询', true, Icons.directions_bus,
-                          () => RouteUtils.push(context, RouteQueryPage())),
-                      _FunctionAreaItem('车辆信息', false, Icons.directions_car,
-                          () => RouteUtils.push(context, CarInfoPage())),
+                      _FunctionAreaItem('在线报修', true, Icons.build,
+                          () => RouteUtils.push(context, RepairFormPage())),
+                      _FunctionAreaItem('我的报修', false, Icons.history,
+                          () => RouteUtils.push(context, MyRepairPage())),
                       _FunctionAreaItem('失物招领', true, Icons.search,
                           () => RouteUtils.push(context, LostFoundListPage())),
                       _FunctionAreaItem('通知公告', false, Icons.notifications,
@@ -259,7 +262,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               icon: Icon(Icons.error, color: Colors.red),
                               title: '功能开发中，敬请期待！')),
                       _FunctionAreaItem('更多功能', false, Icons.more_horiz,
-                          () => widget.onChanged!(1)),
+                          () => widget.onChanged!(4)),
                     ],
                   ),
                 )),
@@ -349,7 +352,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void _handleTap() {
     //给方法传值
-    widget.onChanged!(2);
+    widget.onChanged!(3);
   }
 
   //更新焦点的事件名
@@ -404,19 +407,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               child: Row(
                                 children: [
                                   // 圆形图片
-                                  Container(
-                                    width: 40,
-                                    height: 40,
-                                    margin: EdgeInsets.only(right: 10),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/fitness_app/snack.png'),
-                                          fit: BoxFit.fill,
-                                        ),
-                                        color: primaryColor),
-                                  ),
+                                  AvatarWidget(width: 40),
                                   Expanded(
                                       child: Column(
                                     crossAxisAlignment:

@@ -42,7 +42,7 @@ class _FilmPersonalPage extends State<FilmPersonalPage> {
 
     widget.animationController!.forward();
     super.initState();
-    model.getNoticeModelList();
+    model.getNoticeModelList(1, 10);
   }
 
   @override

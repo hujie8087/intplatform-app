@@ -29,8 +29,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   @override
   void initState() {
     // 判断是否登录
-    SpUtils.getString(Constants.SP_TOKEN).then((value) => {
-          if (value == null || value.isEmpty)
+    SpUtils.getString(Constants.SP_TOKEN).then((token) => {
+          if (token == null || token.isEmpty)
             {Navigator.pushNamed(context, '/login')}
         });
 
@@ -41,26 +41,19 @@ class _AppHomeScreenState extends State<AppHomeScreen>
 
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
-    tabBody = HomePage(
-        animationController: animationController, onChanged: _handleTabChanged);
+    // tabBody = HomePage(
+    //     animationController: animationController, onChanged: _handleTabChanged);
     super.initState();
-    // FirebaseMessaging.instance.getToken().then((token) {
-    //   print('FCM Token: $token');
-    // });
-    // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    //   print('Received message in foreground: ${message.notification?.title}');
-    // });
-
-    // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    //   print('Message clicked!');
-    // });
+    _handleTabChanged(0);
   }
 
   void _handleTabChanged(int newValue) {
     tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
-    tabIconsList[newValue].isSelected = true;
+    if (newValue != 4) {
+      tabIconsList[newValue].isSelected = true;
+    }
     if (newValue == 0) {
       animationController?.reverse().then<dynamic>((data) {
         if (!mounted) {
@@ -99,6 +92,15 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           tabBody = MinePage(animationController: animationController);
         });
       });
+    } else if (newValue == 4) {
+      animationController?.reverse().then<dynamic>((data) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {
+          tabBody = ToolBoxPage();
+        });
+      });
     }
   }
 
@@ -110,27 +112,32 @@ class _AppHomeScreenState extends State<AppHomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        body: FutureBuilder<bool>(
-          future: getData(),
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox();
-            } else {
-              return Stack(
-                children: <Widget>[
-                  tabBody,
-                  bottomBar(),
-                ],
-              );
-            }
-          },
-        ),
-      ),
-    );
+    return WillPopScope(
+        onWillPop: () async {
+          // 禁用返回行为
+          return false;
+        },
+        child: Container(
+          color: Colors.white,
+          child: Scaffold(
+            backgroundColor: backgroundColor,
+            body: FutureBuilder<bool>(
+              future: getData(),
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                if (!snapshot.hasData) {
+                  return const SizedBox();
+                } else {
+                  return Stack(
+                    children: <Widget>[
+                      tabBody,
+                      bottomBar(),
+                    ],
+                  );
+                }
+              },
+            ),
+          ),
+        ));
   }
 
   Future<bool> getData() async {
@@ -150,6 +157,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           addClick: () {
             setState(() {
               tabBody = ToolBoxPage();
+              _handleTabChanged(4);
             });
           },
           changeIndex: (int index) {

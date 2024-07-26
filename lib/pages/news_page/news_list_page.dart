@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/pages/news_page/news_view_model.dart';
-import 'package:logistics_app/repository/model/notice_list_model.dart';
+import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -28,7 +28,7 @@ class _NewsListPageState extends State<NewsListPage>
     _refreshController = RefreshController();
 
     super.initState();
-    model.getNewsModelList();
+    model.getNewsModelList(1, 10);
   }
 
   @override
@@ -60,7 +60,7 @@ class _NewsListPageState extends State<NewsListPage>
                     onRefresh: () {
                       //关闭刷新
                       print('刷新完成');
-                      model.getNewsModelList().then((value) {
+                      model.getNewsModelList(1, 10).then((value) {
                         _refreshController.refreshCompleted();
                       });
                     },

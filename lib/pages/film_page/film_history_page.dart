@@ -28,7 +28,7 @@ class _FilmHistoryPage extends State<FilmHistoryPage>
     _refreshController = RefreshController();
 
     super.initState();
-    model.getNoticeModelList();
+    model.getNoticeModelList(1, 10);
   }
 
   @override
@@ -60,7 +60,7 @@ class _FilmHistoryPage extends State<FilmHistoryPage>
             onRefresh: () {
               //关闭刷新
               print('刷新完成');
-              model.getNoticeModelList().then((value) {
+              model.getNoticeModelList(1, 10).then((value) {
                 _refreshController.refreshCompleted();
               });
             },

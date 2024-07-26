@@ -2,13 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:logistics_app/constants.dart';
-import 'package:logistics_app/repository/api/wan_api.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../repository/model/app_check_update_model.dart';
 
 class MineViewModel with ChangeNotifier {
   String? userName;
@@ -34,20 +32,22 @@ class MineViewModel with ChangeNotifier {
 
   ///退出登录
   Future logout() async {
-    var success = await WanApi.instance().logout();
-    print('success${success}');
-    if (success) {
-      userName = "未登录";
-      shouldLogin = true;
-      //清除缓存
-      SpUtils.remove(Constants.SP_USER_NAME);
-      SpUtils.remove(Constants.SP_USER_DEPT);
-      SpUtils.remove(Constants.SP_TOKEN);
-      notifyListeners();
-      // 跳转登录页
-    } else {
-      showToast("网络异常");
-    }
+    DataUtils.logout(
+      success: (data) {
+        // 跳转登录页
+        print('success${data}');
+        userName = "未登录";
+        shouldLogin = true;
+        //清除缓存
+        SpUtils.remove(Constants.SP_USER_NAME);
+        SpUtils.remove(Constants.SP_USER_DEPT);
+        SpUtils.remove(Constants.SP_TOKEN);
+        notifyListeners();
+      },
+      fail: (code, msg) {
+        showToast("网络异常");
+      },
+    );
   }
 
   Future shouldShowUpdateDot() async {

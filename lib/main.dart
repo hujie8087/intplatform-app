@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:logistics_app/api/firebase_api.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/firebase_options.dart';
-import 'package:logistics_app/http/dio_instance.dart';
+import 'package:logistics_app/http/http_utils.dart';
+import 'package:logistics_app/http/log_utils.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,9 @@ void main() async {
     DeviceOrientation.portraitDown
   ]).then((_) => {
         // DioInstance.instance().initDio(baseUrl: 'http://10.40.10.18:8080'),
-        DioInstance.instance().initDio(baseUrl: 'http://10.40.11.26:10200'),
+        // DioInstance.instance().initDio(baseUrl: 'http://10.40.11.26:10200'),
+        LogUtils.init(),
+        HttpUtils.initDio(),
         runApp(MyApp())
       });
 }

@@ -27,6 +27,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 // END: FlutterFire Configuration
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin: 'com.mob.sdk'
 
 android {
 
@@ -69,5 +70,50 @@ flutter {
 }
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    
+}
+MobSDK {
+    appKey "39fb58b44e87e"
+    appSecret "a4e6bfeac3b5be5bd970b187a1d92c63"
+
+    //配置MobPush
+    MobPush {
+        debugLevel 4
+        //配置厂商推送（可选配置，不需要厂商推送可不配置，需要哪些厂商推送只需配置哪些厂商配置即可）
+        // devInfo {
+        //     //配置小米厂商推送
+        //     XIAOMI {
+        //         appId "您的小米平台appId"
+        //         appKey "您的小米平台appKey"
+        //     }
+
+        //     //配置华为厂商推送
+        //     HUAWEI {
+        //         appId "您的华为平台appId"
+        //     }
+
+        //     //配置魅族厂商推送
+        //     MEIZU {
+        //         appId "您的魅族平台appId"
+        //         appKey "您的魅族平台appKey"
+        //     }
+
+        //     //配置FCM厂商推送
+        //     FCM {
+        //         //设置默认推送通知显示图标
+        //         iconRes "@mipmap/default_ic_launcher"
+        //     }
+
+        //     //配置OPPO厂商推送
+        //     OPPO {
+        //         appKey "您的OPPO平台appKey"
+        //         appSecret "您的OPPO平台appSecret"
+        //     }
+
+        //     //配置VIVO厂商推送
+        //     VIVO {
+        //         appId "您的VIVO平台appId"
+        //         appKey "您的VIVO平台appKey"
+        //     }
+        // }
+    }
 }

@@ -67,7 +67,6 @@ class _FilmScreenPage extends State<FilmScreenPage>
     return Scaffold(
       backgroundColor: Colors.grey[900],
       body: SafeArea(
-        top: false,
         child: Column(
           children: [
             getAppBarUI(),

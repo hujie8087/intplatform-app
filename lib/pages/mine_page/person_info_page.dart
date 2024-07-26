@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/common_ui/divider_widget.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/http/apis.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/dict_model.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/picker.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class PersonInfoPage extends StatefulWidget {
   @override
@@ -8,6 +20,58 @@ class PersonInfoPage extends StatefulWidget {
 }
 
 class _PersonInfoPageState extends State<PersonInfoPage> {
+  String avatar = 'assets/images/userImage.png';
+  UserInfoModel? userInfo;
+  List<AssetEntity> selectedAssets = [];
+  String? selectedValue;
+  final List<DictModel> sexOptions = [
+    DictModel(dictValue: '0', dictLabel: '男'),
+    DictModel(dictValue: '1', dictLabel: '女'),
+    DictModel(dictValue: '2', dictLabel: '保密'),
+  ];
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    DataUtils.getUserInfo(
+      success: (res) async {
+        UserInfoModel userInfoModel = UserInfoModel.fromJson(res['data']);
+        await SpUtils.saveModel('userInfo', userInfoModel);
+        await SpUtils.saveString(
+            Constants.SP_USER_NAME, userInfoModel.user?.nickName ?? '');
+        await SpUtils.saveString(
+            Constants.SP_USER_DEPT, userInfoModel.user?.dept?.deptName ?? '');
+        if (userInfoModel.user?.avatar != '') {
+          avatar = userInfoModel.user!.avatar!;
+        }
+        userInfo = userInfoModel;
+        setState(() {});
+      },
+      fail: (code, msg) {
+        ProgressHUD.showText(msg);
+      },
+    );
+  }
+
+  Future<void> _updateData() async {
+    DataUtils.editUserInfo(
+      userInfo!.user!.toJson(),
+      success: (res) async {
+        ProgressHUD.showText('修改成功');
+        _fetchData();
+        setState(() {});
+      },
+      fail: (code, msg) {
+        ProgressHUD.showText(msg);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +95,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                 // 自适应键盘弹起不遮挡
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 10, left: 20, right: 20),
+                    margin: EdgeInsets.only(top: 10, left: 10, right: 10),
                     padding: EdgeInsets.only(
                         left: 20, right: 20, top: 10, bottom: 20),
                     decoration: BoxDecoration(
@@ -40,7 +104,6 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                     ),
                     child: _PersonInfoForm(),
                   ),
-                  _PersonInfoFormButton(() => {})
                 ],
               ),
             ],
@@ -54,86 +117,189 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
     return Column(
       children: [
         // 头像
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              image: DecorationImage(
-                  image: AssetImage('assets/images/userImage.png'),
-                  fit: BoxFit.cover,
-                  alignment: Alignment.centerLeft)),
+        GestureDetector(
+          onTap: () async {
+            final List<AssetEntity>? result = await AssetPicker.pickAssets(
+                context,
+                pickerConfig: AssetPickerConfig(
+                    textDelegate: AssetPickerTextDelegate(), maxAssets: 1));
+            if (result == null) {
+              return;
+            }
+            final res = await uploadImages(result);
+            if (res.isNotEmpty) {
+              userInfo?.user?.avatar = res[0];
+              print(userInfo);
+              _updateData();
+            }
+          },
+          child: Column(
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  image: DecorationImage(
+                    image: avatar.startsWith('assets')
+                        ? AssetImage(avatar) as ImageProvider
+                        : NetworkImage(APIs.imagePrefix + avatar),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.centerLeft,
+                  ),
+                ),
+              ),
+              Text(
+                '点击更换头像',
+                style: TextStyle(color: secondaryColor, fontSize: 12),
+              )
+            ],
+          ),
         ),
-        _PersonInfoItem('姓名', '张三', Icons.person),
+        _PersonInfoItem('姓名', userInfo?.user?.nickName ?? '', Icons.person,
+            () async {
+          _controller.text = '';
+          final result = await _showEditDialog(_controller, title: '姓名');
+          if (result != null) {
+            userInfo!.user!.nickName = result;
+            _updateData();
+          }
+        }, isEdit: true),
         // 工号
-        _PersonInfoItem('工号', '123456', Icons.workspace_premium),
-        _PersonInfoItem('性别', '男', Icons.wc),
-        _PersonInfoItem('年龄', '25', Icons.cake),
-        _PersonInfoItem('电话', '12345678901', Icons.phone),
-        _PersonInfoItem('邮箱', '123456@qq.com', Icons.email),
-        // 公司
-        _PersonInfoItem('公司', 'XXX公司', Icons.business),
+        _PersonInfoItem('工号', userInfo?.user?.userName ?? '',
+            Icons.workspace_premium, () {}),
+        _PersonInfoItem('性别', userInfo?.user?.sex == '0' ? '男' : '女', Icons.wc,
+            () {
+          Picker.showModalSheet(context,
+              child: Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    for (final sex in sexOptions)
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context, sex.dictValue ?? '');
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              height: 50,
+                              child: Text(sex.dictLabel ?? ''),
+                            ),
+                          ),
+                          DividerWidget()
+                        ],
+                      ),
+                  ],
+                ),
+              )).then((value) {
+            if (value != null) {
+              userInfo!.user!.sex = value;
+              _updateData();
+            }
+          });
+        }, isEdit: true),
+        _PersonInfoItem('电话', userInfo?.user?.phonenumber ?? '', Icons.phone,
+            () async {
+          _controller.text = '';
+          final result = await _showEditDialog(_controller,
+              title: '电话', keyboardType: TextInputType.phone);
+          if (result != null) {
+            userInfo!.user!.phonenumber = result;
+            _updateData();
+          }
+        }, isEdit: true),
+        _PersonInfoItem('邮箱', userInfo?.user?.email ?? '', Icons.email,
+            () async {
+          _controller.text = '';
+          final result = await _showEditDialog(_controller,
+              title: '邮箱', keyboardType: TextInputType.emailAddress);
+          if (result != null) {
+            userInfo!.user!.email = result;
+            _updateData();
+          }
+        }, isEdit: true),
         // 部门
-        _PersonInfoItem('部门', '技术部', Icons.work),
-        // 职位
-        _PersonInfoItem('职位', '工程师', Icons.work_outline),
+        _PersonInfoItem(
+            '部门', userInfo?.user?.dept?.deptName ?? '', Icons.work, () {},
+            isEdit: false),
       ],
     );
   }
 
-  Widget _PersonInfoItem(
-    String title,
-    String value,
-    IconData icon,
-  ) {
-    return Container(
-      padding: EdgeInsets.only(top: 10, bottom: 10),
-      decoration: BoxDecoration(
-          border: Border(
-              bottom:
-                  BorderSide(width: 1, color: Colors.grey.withOpacity(0.2)))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              // 图标
-              Icon(
-                icon,
-                color: primaryColor,
-                size: 18,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                title,
-                style: TextStyle(fontSize: 14),
-              )
-            ],
-          ),
-          Text(
-            value,
-            style: TextStyle(fontSize: 14, color: Colors.grey),
-          )
-        ],
+  Widget _PersonInfoItem(String title, String value, IconData icon, onTap,
+      {bool isEdit = false}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.only(top: 10, bottom: 10),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom:
+                    BorderSide(width: 1, color: Colors.grey.withOpacity(0.2)))),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+                child: Row(
+              children: [
+                // 图标
+                Icon(
+                  icon,
+                  color: primaryColor,
+                  size: 18,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 14),
+                )
+              ],
+            )),
+            Text(
+              value,
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            if (isEdit) Icon(Icons.chevron_right, color: Colors.grey)
+          ],
+        ),
       ),
     );
   }
 
-  ///修改信息按钮
-  Widget _PersonInfoFormButton(GestureTapCallback? onTap) {
-    return GestureDetector(
-        onTap: onTap,
-        child: Container(
-            width: double.infinity,
-            height: 40,
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 70, right: 70, top: 50),
-            decoration: BoxDecoration(
-                color: Colors.teal,
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-            child: Text("修改信息",
-                style: TextStyle(color: Colors.white, fontSize: 16))));
+  Future<dynamic> _showEditDialog(controller,
+      {required String title,
+      TextInputType keyboardType = TextInputType.text}) async {
+    final result = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: TextField(
+            controller: controller,
+            keyboardType: keyboardType,
+            decoration: InputDecoration(hintText: "请输入${title}"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('取消'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, controller.text);
+              },
+              child: Text('确定'),
+            ),
+          ],
+        );
+      },
+    );
+    return result;
   }
 }

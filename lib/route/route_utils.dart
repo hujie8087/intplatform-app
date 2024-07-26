@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:logistics_app/pages/auth/login_page.dart';
 
-class RouteUtils{
+class RouteUtils {
   RouteUtils._();
   static final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -9,7 +9,7 @@ class RouteUtils{
   static BuildContext get context => navigatorKey.currentState!.context;
 
   static NavigatorState get navigator => navigatorKey.currentState!;
-  
+
   // 普通静态跳转
   static Future push(
     BuildContext context,
@@ -32,15 +32,16 @@ class RouteUtils{
       ),
     );
   }
+
   // 根据路由路径跳转
   static Future pushNamed(
     BuildContext context,
     String routeName, {
     Object? arguments,
   }) {
-    return Navigator.pushNamed(context,routeName, arguments: arguments);
+    return Navigator.pushNamed(context, routeName, arguments: arguments);
   }
-  
+
   // 自定义路由动态跳转
   static Future pushForPageRoute(
     BuildContext context,
@@ -77,23 +78,24 @@ class RouteUtils{
   static Future pushReplacement(
     BuildContext context,
     Route rote, {
-      Object? result,
+    Object? result,
   }) {
     return Navigator.pushReplacement(context, rote, result: result);
   }
+
   // 用新的路由替换当前路由
   static Future pushReplacementNamed(
     BuildContext context,
     String routeName, {
-      Object? result,
-      Object? arguments,
+    Object? result,
+    Object? arguments,
   }) {
-    return Navigator.pushReplacementNamed(context, routeName, arguments: arguments,result: result);
+    return Navigator.pushReplacementNamed(context, routeName,
+        arguments: arguments, result: result);
   }
 
   // 关闭当前页
-  static void pop(
-    BuildContext context) {
+  static void pop(BuildContext context) {
     Navigator.pop(context);
   }
 
@@ -103,5 +105,10 @@ class RouteUtils{
     T? result,
   }) {
     Navigator.of(context).pop(result);
+  }
+
+  // 导航到登录页
+  static void navigateToLogin() {
+    push(context, LoginPage());
   }
 }

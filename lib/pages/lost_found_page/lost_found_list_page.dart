@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_view_model.dart';
-import 'package:logistics_app/repository/model/notice_list_model.dart';
+import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -49,7 +49,7 @@ class _LostFoundListPageState extends State<LostFoundListPage>
             curve: Interval(0, 0.3, curve: Curves.fastOutSlowIn)));
 
     super.initState();
-    model.getLostFoundModelList();
+    model.getLostFoundModelList(1, 10);
   }
 
   @override
@@ -93,7 +93,7 @@ class _LostFoundListPageState extends State<LostFoundListPage>
                       onRefresh: () {
                         //关闭刷新
                         print('刷新完成');
-                        model.getLostFoundModelList().then((value) {
+                        model.getLostFoundModelList(1, 10).then((value) {
                           _refreshController.refreshCompleted();
                         });
                       },
@@ -419,7 +419,7 @@ class HtmlLineLimit extends StatelessWidget {
           child: SingleChildScrollView(
             child: Text(
               _removeHtmlTags(htmlContent),
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: 14),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

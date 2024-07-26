@@ -1,4 +1,4 @@
-  import 'package:logistics_app/repository/model/user_info_model.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
 
 class UserModel<T> {
   List<String>? permissions;

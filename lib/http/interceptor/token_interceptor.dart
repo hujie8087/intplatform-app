@@ -1,14 +1,14 @@
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:dio/dio.dart';
+
 ///获取登录接口返回的token，并添加到请求头中去
 class CookieInterceptor extends Interceptor {
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    SpUtils.getString(Constants.SP_TOKEN).then((token)=>{
-      options.headers['Authorization'] = 'Bearer $token',
-    });
-    
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    var token = await SpUtils.getString(Constants.SP_TOKEN);
+    options.headers['Authorization'] = 'Bearer $token';
     handler.next(options);
   }
 

@@ -7,10 +7,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/common_ui/searchbar.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/utils.dart';
 
-const String _labelKey = 'label';
-const String _valueKey = 'value';
+const String _labelKey = 'title';
+const String _valueKey = 'id';
 const String _childrenKey = 'children';
 const String _titleText = '请选择';
 const String _tabText = '请选择';
@@ -28,7 +30,7 @@ const double _searchResultTextFontSize = 14.0;
 /// 选择回调，返回选中末级节点对象和所有节点数组
 typedef _ClickCallBack = void Function(dynamic selectItem, dynamic selectArr);
 
-class JhCascadeTreePicker {
+class CascadeTreePicker {
   static bool _isShowPicker = false;
 
   static void show(
@@ -69,7 +71,7 @@ class JhCascadeTreePicker {
       clipBehavior: Clip.antiAlias,
       builder: (BuildContext context) {
         return SafeArea(
-          child: JhCascadePickerView(
+          child: CascadePickerView(
             data: data,
             labelKey: labelKey,
             valueKey: valueKey,
@@ -89,8 +91,8 @@ class JhCascadeTreePicker {
   }
 }
 
-class JhCascadePickerView extends StatefulWidget {
-  const JhCascadePickerView({
+class CascadePickerView extends StatefulWidget {
+  const CascadePickerView({
     Key? key,
     required this.data,
     this.labelKey = _labelKey,
@@ -121,10 +123,10 @@ class JhCascadePickerView extends StatefulWidget {
   final _ClickCallBack? clickCallBack;
 
   @override
-  State<JhCascadePickerView> createState() => _JhCascadePickerViewState();
+  State<CascadePickerView> createState() => _CascadePickerViewState();
 }
 
-class _JhCascadePickerViewState extends State<JhCascadePickerView>
+class _CascadePickerViewState extends State<CascadePickerView>
     with TickerProviderStateMixin {
   TabController? _tabController;
   final ScrollController _scrollController = ScrollController();
@@ -181,7 +183,7 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
       for (int i = 0; i < tempArr.length; i++) {
         var value = tempArr[i];
         var index = _getTreeIndexByName(dataArr, value);
-        _myTabs[_currentColumn] = Tab(text: _mList[index][widget.labelKey]);
+        _myTabs[_currentColumn] = Tab(text: _mList[index]['title']);
         _positions[_currentColumn] = index;
         _columnIncrement();
         if (_isNotEmptyChildren(_mList[index])) {
@@ -199,11 +201,12 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
   _getTreeIndexByName(treeArr, value) {
     for (int i = 0; i < treeArr.length; i++) {
       var item = treeArr[i];
-      if (treeArr[i][widget.valuesKey] == value) {
+      var newValue = Map<String, dynamic>.from(value);
+      if (treeArr[i]['id'] == newValue['id']) {
         return i;
       } else {
         if (_isNotEmptyChildren(item)) {
-          var res = _getTreeIndexByName(item[widget.childrenKey], value);
+          var res = _getTreeIndexByName(item['children'], value);
           if (res != null) {
             return res;
           }
@@ -214,9 +217,7 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
 
   /// 判断Children是否为空
   bool _isNotEmptyChildren(listData) {
-    if (listData.containsKey(widget.childrenKey) &&
-        listData[widget.childrenKey] != null &&
-        listData[widget.childrenKey].length > 0) {
+    if (listData['children'] != null && listData['children'].length > 0) {
       return true;
     }
     return false;
@@ -241,7 +242,7 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
         var tabText = _myTabs[currentColumn - 1].text;
         if (tabText != widget.tabText) {
           var tempData = _getTreeDataByName(dataArr, tabText);
-          _mList = tempData[widget.childrenKey];
+          _mList = tempData['children'];
         }
       }
     }
@@ -251,11 +252,11 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
   _getTreeDataByName(treeArr, name) {
     for (int i = 0; i < treeArr.length; i++) {
       var item = treeArr[i];
-      if (treeArr[i][widget.labelKey] == name) {
+      if (treeArr[i]['title'] == name) {
         return item;
       } else {
         if (_isNotEmptyChildren(item)) {
-          var res = _getTreeDataByName(item[widget.childrenKey], name);
+          var res = _getTreeDataByName(item['children'], name);
           if (res != null) {
             return res;
           }
@@ -279,10 +280,10 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
       }
       // 更新前的tabText
       var beforeTabText = _myTabs[_currentColumn - 1].text;
-      _myTabs[_currentColumn - 1] = Tab(text: _mList[index][widget.labelKey]);
+      _myTabs[_currentColumn - 1] = Tab(text: _mList[index]['title']);
       _positions[_currentColumn - 1] = index;
       // 更新后的tabText
-      var tabText = _mList[index][widget.labelKey];
+      var tabText = _mList[index]['title'];
       // 选中改变后删掉多余的Tabs
       if (_myTabs.length > _currentColumn + 1 && beforeTabText != tabText) {
         _myTabs.removeRange(_currentColumn + 1, _myTabs.length);
@@ -294,7 +295,7 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
             length: _myTabs.length);
       }
       // 设置下一级数据
-      _mList = _mList[index][widget.childrenKey];
+      _mList = _mList[index]['children'];
     }
   }
 
@@ -302,9 +303,9 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
   Widget build(BuildContext context) {
     // 默认颜色
     var bgColor = AppTheme.background;
-    var headerColor = AppTheme.dark_grey;
+    var headerColor = AppTheme.white;
     var titleColor = primaryColor;
-    var lineColor = secondaryColor;
+    var lineColor = primaryColor;
     var textColor = AppTheme.darkText;
 
     return Container(
@@ -331,7 +332,7 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
               top: 0,
               right: 0,
               child: InkWell(
-                // onTap: () => JhNavUtils.goBack(context),
+                onTap: () => Navigator.pop(context),
                 child: Container(
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -362,8 +363,8 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
   Widget _mainWidget(Color bgColor, Color textColor, Color lineColor) {
     // TODO: 通过ThemeProvider进行主题管理
     var indicatorColor = primaryColor;
-    var labelColor = secondaryColor;
-    var unselectedLabelColor = secondaryColor;
+    var labelColor = primaryColor;
+    var unselectedLabelColor = primaryColor;
 
     return Container(
       margin: EdgeInsets.only(
@@ -383,7 +384,7 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
               controller: _tabController,
               isScrollable: true,
               indicatorSize: TabBarIndicatorSize.label,
-              labelColor: labelColor,
+              labelColor: Colors.grey,
               unselectedLabelColor: unselectedLabelColor,
               indicatorColor: indicatorColor,
               tabAlignment: TabAlignment.start,
@@ -427,7 +428,7 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
     var tempData = _mList[index];
     bool flag = false;
     if (_currentColumn >= 0) {
-      flag = tempData[widget.labelKey] == _myTabs[_currentColumn].text;
+      flag = tempData['title'] == _myTabs[_currentColumn].text;
     }
 
     return InkWell(
@@ -438,7 +439,7 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
         child: Row(
           children: <Widget>[
             Text(
-              tempData[widget.labelKey],
+              tempData['title'],
               style: TextStyle(
                   fontSize: _textFontSize,
                   color: flag ? themeColor : textColor),
@@ -472,8 +473,8 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
             // var tempIndexArr = List.from(_positions);
 
             // 根据末级节点查出包含父节点的数据
-            List res = _findParentNodeDataByValue(
-                widget.data!, _mList[index][widget.valueKey]);
+            List res =
+                _findParentNodeDataByValue(widget.data!, _mList[index]['id']);
             // 选择回调
             widget.clickCallBack?.call(res.last, res);
             // JhNavUtils.goBack(context);
@@ -497,11 +498,11 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
   _getTreeDataByKeyword(keyWord, List treeArr) {
     var newArr = [];
     for (var item in treeArr) {
-      if (item[widget.labelKey].contains(keyWord)) {
+      if (item['title'].contains(keyWord)) {
         newArr.add(item);
       } else {
         if (_isNotEmptyChildren(item)) {
-          var res = _getTreeDataByKeyword(keyWord, item[widget.childrenKey]);
+          var res = _getTreeDataByKeyword(keyWord, item['children']);
           if (res != null && res.length > 0) {
             var obj = {...item, widget.childrenKey: res};
             newArr.add(obj);
@@ -518,14 +519,14 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
     for (int i = 0; i < treeArr.length; i++) {
       var item = treeArr[i];
       if (_isNotEmptyChildren(item)) {
-        _convertTreeToListData(item[widget.childrenKey], treeArr2, resultArr);
+        _convertTreeToListData(item['children'], treeArr2, resultArr);
       } else {
         // 找到末级节点，根据末级节点找到所有父节点进行拼接
-        var res = _findParentNodeDataByValue(treeArr2, item[widget.valueKey]);
+        var res = _findParentNodeDataByValue(treeArr2, item['id']);
         if (res != null && res.length > 0) {
           List tempArr = [];
           for (var j = 0; j < res.length; j++) {
-            tempArr.add(res[j][widget.labelKey]);
+            tempArr.add(res[j]['title']);
           }
           var dict = {
             'selectArr': res,
@@ -540,31 +541,28 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
 
   /// 根据末级节点的value查找所有父节点的数据
   /// onlyName = false ,返回name数组 , 否则返回name和value对象数组
-  _findParentNodeDataByValue(List treeArr, value,
-      {List result = const [], onlyName = false}) {
-    var newArr = List.from(result);
-    for (int i = 0; i < treeArr.length; i++) {
-      var item = treeArr[i];
-      var tempDict = Map.from(item);
+  List<dynamic> _findParentNodeDataByValue(List<dynamic> tree, dynamic value,
+      {List<dynamic> result = const [], bool onlyName = false}) {
+    var resultList = List<dynamic>.from(result);
+    for (var node in tree) {
       if (onlyName) {
-        newArr.add(tempDict[widget.labelKey]);
+        resultList.add(node['title']);
       } else {
-        tempDict.remove(widget.childrenKey);
-        newArr.add(tempDict);
+        resultList.add({'id': node['id'], 'title': node['title']});
       }
-      if (item[widget.valueKey] == value) {
-        return newArr;
+      if (node['id'] == value) {
+        return resultList;
       }
-      if (_isNotEmptyChildren(item)) {
-        var res = _findParentNodeDataByValue(item[widget.childrenKey], value,
-            result: newArr, onlyName: onlyName);
-        // 如果不是空则表示找到了，直接return，结束递归
-        if (res != null && res.length > 0) {
+      if (node['children'] != null && node['children']!.isNotEmpty) {
+        var res = _findParentNodeDataByValue(node['children']!, value,
+            result: resultList, onlyName: onlyName);
+        // 如果找到结果，则返回结果，结束递归
+        if (res.isNotEmpty) {
           return res;
         }
       }
-      // 到这里，意味着本次并不是需要的节点，则在result中移除
-      newArr.removeLast();
+      // 到这里，意味着本次并不是需要的节点，则在resultList中移除
+      resultList.removeLast();
     }
     return [];
   }
@@ -574,22 +572,22 @@ class _JhCascadePickerViewState extends State<JhCascadePickerView>
         ? Container()
         : Container(
             margin: const EdgeInsets.only(top: _headerHeight),
-            child: SearchBar(),
-            // child: JhSearchBar(
-            //   hintText: widget.searchHintText,
-            //   text: _searchKeyword,
-            //   inputCallBack: JhCommonUtils.debounceInput((value) {
-            //     setState(() {
-            //       _searchKeyword = value;
-            //       if (value.isNotEmpty) {
-            //         _searchData = _getSearchData(value);
-            //         _isShowSearchResult = _searchData.isNotEmpty;
-            //       } else {
-            //         _isShowSearchResult = false;
-            //       }
-            //     });
-            //   }, 500),
-            // ),
+            // child: SearchBar(),
+            child: JhSearchBar(
+              hintText: widget.searchHintText,
+              text: _searchKeyword,
+              inputCallBack: Utils.debounceInput((value) {
+                setState(() {
+                  _searchKeyword = value;
+                  if (value.isNotEmpty) {
+                    _searchData = _getSearchData(value);
+                    _isShowSearchResult = _searchData.isNotEmpty;
+                  } else {
+                    _isShowSearchResult = false;
+                  }
+                });
+              }, 500),
+            ),
           );
   }
 

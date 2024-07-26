@@ -1,6 +1,6 @@
+import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
-import 'package:logistics_app/pages/home_page/home_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +18,8 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _focuseNode = FocusNode();
   var model = AuthViewModel();
-  TextEditingController _usernameController =
-      TextEditingController(text: 'admin');
-  TextEditingController _passwordController =
-      TextEditingController(text: 'admin123');
+  TextEditingController _usernameController = TextEditingController(text: '');
+  TextEditingController _passwordController = TextEditingController(text: '');
   bool _isLoading = false;
 
   void initState() {
@@ -49,6 +47,7 @@ class _LoginFormState extends State<LoginForm> {
                 // autofocus: true,
                 cursorColor: primaryColor,
                 controller: _usernameController,
+                keyboardType: TextInputType.number,
                 style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -114,12 +113,22 @@ class _LoginFormState extends State<LoginForm> {
                         setState(() {
                           _isLoading = true;
                         });
-                        model.login().then((value) {
+                        model.login().then((value) async {
                           if (value) {
+                            var token =
+                                await SpUtils.getString('fCMToken') ?? '';
+                            if (token != '') {
+                              DataUtils.setUserToken(token,
+                                  success: (val) => print('123456'));
+                            }
                             RouteUtils.push(context, AppHomeScreen());
+                            showToast("登录成功");
+                            setState(() {
+                              _isLoading = false;
+                            });
                           }
                         }).catchError((e) {
-                          // showToast("网络连接错误${e}");
+                          showToast("网络连接错误${e}");
                         }).whenComplete(() {
                           setState(() {
                             _isLoading = false;
@@ -135,6 +144,8 @@ class _LoginFormState extends State<LoginForm> {
                             MaterialStateProperty.all(primaryColor),
                         textStyle: MaterialStateProperty.all(
                             TextStyle(fontSize: 16, color: Colors.white)),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20))),
                       ),
                     ),
               decoration: BoxDecoration(

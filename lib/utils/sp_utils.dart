@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///本地持久化存储工具类
@@ -66,6 +68,19 @@ class SpUtils {
   static Future getList(String key) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     return sharedPreferences.getStringList(key);
+  }
+
+  /// 存 Model
+  static Future<bool>? saveModel(String key, Object model) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    final jsonString = json.encode(model);
+    return sharedPreferences.setString(key, jsonString);
+  }
+
+  /// 取 Model
+  static getModel(String key) async {
+    var jsonStr = await getString(key);
+    return (jsonStr == null || jsonStr.isEmpty) ? null : json.decode(jsonStr);
   }
 
   static Future<bool> remove(String key) async {

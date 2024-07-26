@@ -14,7 +14,10 @@ import 'package:logistics_app/pages/news_page/news_detail_page.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
+import 'package:logistics_app/pages/public_convenience_page/public_convenience_list_page.dart';
+import 'package:logistics_app/pages/repair/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
+import 'package:logistics_app/pages/repair/repair_rating_page.dart';
 import 'package:logistics_app/pages/route_query_page/route_query_page.dart';
 import 'package:logistics_app/pages/web_view_page.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +44,10 @@ class Routes {
       RoutePath.FilmDownloadPage: (context) => FilmDownloadPage(),
       RoutePath.FilmViewPage: (context) => FilmViewPage(),
       RoutePath.RepairFormPage: (context) => RepairFormPage(),
+      RoutePath.RepairRatingPage: (context) => RepairRatingPage(),
+      RoutePath.MyRepairPage: (context) => MyRepairPage(),
+      RoutePath.PublicConvenienceListPage: (context) =>
+          PublicConvenienceListPage(),
     };
 
     final builder = routeBuilders[settings.name];
@@ -99,4 +106,11 @@ class RoutePath {
   static const String FilmViewPage = 'film_view_page';
   // 报修页面
   static const String RepairFormPage = 'repair_form_page';
+  // 我的报修
+  static const String MyRepairPage = 'my_repair_page';
+  // 报修评价
+  static const String RepairRatingPage = 'repair_rating_page';
+  // 公共便利列表页
+  static const String PublicConvenienceListPage =
+      'public_convenience_list_page';
 }

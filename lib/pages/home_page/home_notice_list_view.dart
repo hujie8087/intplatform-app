@@ -1,4 +1,4 @@
-import 'package:logistics_app/repository/model/notice_list_model.dart';
+import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -25,7 +25,8 @@ class HomeNoticeListView extends StatelessWidget {
         return FadeTransition(
           opacity: animation!,
           child: Transform(
-            transform: Matrix4.translationValues(0.0, 50 * (1.0 - animation!.value), 0.0),
+            transform: Matrix4.translationValues(
+                0.0, 50 * (1.0 - animation!.value), 0.0),
             child: Container(
               child: InkWell(
                 splashColor: Colors.transparent,
@@ -88,16 +89,16 @@ class HomeNoticeListView extends StatelessWidget {
                               ],
                             ),
                             Container(
-                                margin: EdgeInsets.only(top: 10),
-                                alignment: Alignment.centerLeft,
-                                constraints: BoxConstraints(
-                                  maxHeight: 70.0, // 限制最大高度为100.0
-                                ),
-                                child: SingleChildScrollView(
-                                  child:Html(
-                                    data: noticeData?.noticeContent ?? '',
-                                  )
-                                ),)
+                              margin: EdgeInsets.only(top: 10),
+                              alignment: Alignment.centerLeft,
+                              constraints: BoxConstraints(
+                                maxHeight: 70.0, // 限制最大高度为100.0
+                              ),
+                              child: SingleChildScrollView(
+                                  child: Html(
+                                data: noticeData?.noticeContent ?? '',
+                              )),
+                            )
                           ],
                         ),
                       ),

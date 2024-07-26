@@ -1,0 +1,82 @@
+import 'package:flutter/material.dart';
+import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/common_ui/KeepAliveWrapper.dart';
+import 'package:logistics_app/pages/film_page/film_download_model.dart';
+import 'package:logistics_app/pages/repair/content_page.dart';
+import 'package:logistics_app/utils/color.dart';
+
+class TabBarModel {
+  final String? title; // 标题
+  final int? repairState; // 对应的widget
+  const TabBarModel({this.title, this.repairState});
+}
+
+class MyRepairPage extends StatefulWidget {
+  const MyRepairPage({Key? key}) : super(key: key);
+  @override
+  _MyRepairPage createState() => _MyRepairPage();
+}
+
+class _MyRepairPage extends State<MyRepairPage> with TickerProviderStateMixin {
+  List<FilmDownloadModel> filmsDataList = FilmDownloadModel.filmDownList;
+  late TabController _tabController;
+  final List<TabBarModel> tabs = [
+    TabBarModel(title: '全部', repairState: null),
+    TabBarModel(title: '待维修', repairState: 0),
+    TabBarModel(title: '已维修', repairState: 1),
+    TabBarModel(title: '已完结', repairState: 3),
+  ];
+
+  @override
+  void initState() {
+    _tabController = TabController(length: tabs.length, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // 释放资源
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "我的报修",
+          style: TextStyle(fontSize: 18),
+        ),
+        bottom: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: Container(
+              color: AppTheme.background,
+              child: TabBar(
+                  padding: EdgeInsets.zero,
+                  controller: _tabController,
+                  tabs: tabs.map((e) => Tab(text: e.title)).toList(),
+                  labelColor: primaryColor,
+                  indicatorColor: primaryColor,
+                  unselectedLabelColor: Colors.black,
+                  indicatorSize: TabBarIndicatorSize.label),
+            )),
+      ),
+      backgroundColor: AppTheme.background,
+      body: TabBarView(
+        //构建
+        controller: _tabController,
+        children: tabs.map((e) {
+          return KeepAliveWrapper(
+            child: Container(
+              alignment: Alignment.center,
+              child: ContentPage(
+                repairState: e.repairState,
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}

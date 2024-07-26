@@ -1,0 +1,46 @@
+class RepairFormModel {
+  int? repairAreaId;
+  String? repairArea;
+  int? repairRoomId;
+  String? repairMessage;
+  String? roomNo;
+  String? tel;
+  String? repairPhoto;
+  String? repairPerson;
+
+  RepairFormModel(
+      {this.repairAreaId,
+      this.repairArea,
+      this.repairRoomId,
+      this.repairMessage,
+      this.roomNo,
+      this.tel,
+      this.repairPhoto,
+      this.repairPerson});
+
+  factory RepairFormModel.fromJson(Map<String, dynamic> json) {
+    return RepairFormModel(
+      repairAreaId: json['repairAreaId'],
+      repairArea: json['repairArea'],
+      repairRoomId: json['repairRoomId'],
+      repairMessage: json['repairMessage'],
+      roomNo: json['roomNo'],
+      tel: json['tel'],
+      repairPhoto: json['repairPhoto'],
+      repairPerson: json['repairPerson'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'repairAreaId': repairAreaId,
+      'repairArea': repairArea,
+      'repairRoomId': repairRoomId,
+      'repairMessage': repairMessage,
+      'roomNo': roomNo,
+      'tel': tel,
+      'repairPhoto': repairPhoto,
+      'repairPerson': repairPerson,
+    };
+  }
+}

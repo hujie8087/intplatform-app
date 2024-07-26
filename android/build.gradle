@@ -1,6 +1,12 @@
 buildscript {
     ext.kotlin_version = '1.8.22'
     repositories {
+        maven {
+           url "https://mvn.mob.com/android"
+        }
+      // 配置HMS Core SDK的Maven仓地址。(集成华为厂商需要添加)
+        maven {
+           url 'https://developer.huawei.com/repo/'}
         google()
         jcenter()
     }
@@ -10,6 +16,7 @@ buildscript {
         // END: FlutterFire Configuration
         classpath 'com.android.tools.build:gradle:7.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+         classpath "com.mob.sdk:MobSDK2:+"
     }
 }
 

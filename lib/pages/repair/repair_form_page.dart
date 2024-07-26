@@ -1,7 +1,61 @@
+import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_pickers/pickers.dart';
 import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/common_ui/GalleryWidget.dart';
+import 'package:logistics_app/common_ui/cascade_tree_picker.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/repair_form_model.dart';
+import 'package:logistics_app/http/model/upload_image_model.dart';
+import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/hj_bottom_sheet.dart';
+import 'package:logistics_app/utils/picker.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:wechat_camera_picker/wechat_camera_picker.dart';
+
+Future<List<String>> uploadImages(List<AssetEntity> selectedAssets) async {
+  List<String> fileUrl = [];
+  List<File> files = [];
+  final formData = dio.FormData();
+  for (var asset in selectedAssets) {
+    final file = await asset.file;
+    if (file != null) {
+      files.add(file);
+    }
+  }
+  for (var file in files) {
+    formData.files.add(MapEntry(
+      'files',
+      await dio.MultipartFile.fromFile(file.path,
+          filename: file.path.split('/').last),
+    ));
+  }
+  // 使用 Completer 处理异步回调
+  final completer = Completer<Map<String, dynamic>>();
+
+  DataUtils.uploadFile(formData, success: (data) {
+    completer.complete(data);
+  }, fail: (code, msg) {
+    completer.completeError('Upload failed with code: $code, message: $msg');
+  });
+  try {
+    final data = await completer.future;
+    final response = UploadImageModel.fromJson(data);
+    if (response.data != null && response.data!.isNotEmpty) {
+      for (var item in response.data!) {
+        fileUrl.add(item.url!);
+      }
+    }
+  } catch (e) {
+    print(e);
+  }
+  return fileUrl;
+}
 
 class RepairFormPage extends StatefulWidget {
   const RepairFormPage({Key? key}) : super(key: key);
@@ -10,44 +64,38 @@ class RepairFormPage extends StatefulWidget {
   _RepairFormPage createState() => _RepairFormPage();
 }
 
+class Item {
+  String? title;
+  String? id;
+  String? pid;
+  String? remark;
+  List<Item>? children;
+}
+
 class _RepairFormPage extends State<RepairFormPage>
     with TickerProviderStateMixin {
-  String? _lineValue;
-  String? _selectedValue;
-  String? _typeValue;
-  String? _titleValue;
-  String? _contentValue;
   Animation<double>? opacityAnimation;
   AnimationController? animationController;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _telController = TextEditingController();
+  final TextEditingController _repairPersonController = TextEditingController();
+  final TextEditingController _repairMessageController =
+      TextEditingController();
+  List<String> _uploadedImageUrls = [];
+  var model = RepairDataModel();
+  String roomValue = '请选择';
+  List<dynamic> values = [];
+  // 选择的图片
+  List<AssetEntity> selectedAssets = [];
+  List<dio.MultipartFile> files = [];
 
-  // 下拉框选项列表
-  final List<String> _dropdownItems = [
-    '选项 1',
-    '选项 2',
-    '选项 3',
-    '选项 4',
-  ];
-  // 下拉框选项列表
-  final List<String> _lineItems = [
-    '1号线',
-    '2号线',
-    '3号线',
-    '4号线',
-  ];
+  // 是否开始拖拽
+  bool isDragNow = false;
 
-  // 下拉框选项列表
-  final List<String> _typeItems = [
-    '车辆管理方面',
-    '人员管理方面',
-  ];
-  // 下拉框选项列表
-  final List<String> _titleItems = [
-    '车辆环境',
-    '线路优化',
-    '站点设置',
-    '运行时间',
-  ];
+  // 是否将要删除
+  bool isWillRemove = false;
 
+  late List<Item> items;
   @override
   void initState() {
     super.initState();
@@ -59,324 +107,417 @@ class _RepairFormPage extends State<RepairFormPage>
             parent: animationController!,
             curve: Interval(0.0, 1.0, curve: Curves.fastOutSlowIn)));
     animationController!.forward();
-  }
-
-  void _showPicker() {
-    var multiData = {
-      'a': {
-        'aa': [1, 'ww'],
-        'aaa': 10086
-      },
-      'b': ['bbb', 'bbbbb'],
-      'c': {
-        'cc': {
-          'ccc333': [111, 1111],
-          'cccc33': {
-            'ccccc4': '帮忙star',
-            'ccc4-2': [4442, 44442, 442]
-          },
-        },
-        'cc2': ['ccc', 123],
-        'cc3': 'star 鼓励'
-      }
-    };
-
-    Pickers.showMultiLinkPicker(
-      context,
-      data: multiData,
-      // 注意数据类型要对应 比如 44442 写成字符串类型'44442'，则找不到
-      // selectData: ['c', 'cc', 'cccc33', 'ccc4-2', 44442],
-      selectData: ['c', 'cc3'],
-      columeNum: 5,
-      suffix: ['', '', '', '', ''],
-      onConfirm: (List p, List<int> position) {
-        print('longer >>> 返回数据：${p.join('、')}');
-        print('longer >>> 返回数据下标：${position.join('、')}');
-        print('longer >>> 返回数据类型：${p.map((x) => x.runtimeType).toList()}');
-      },
-    );
+    model.getBuildingTreeModel();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-        animation: animationController!,
-        builder: (BuildContext context, Widget? child) {
-          return FadeTransition(
-              opacity: opacityAnimation!,
-              child: Transform(
-                  transform: Matrix4.translationValues(
-                      0.0, 50 * (1.0 - opacityAnimation!.value), 0.0),
-                  child: Scaffold(
-                    backgroundColor: AppTheme.background,
-                    appBar: AppBar(
-                      title: Text(
-                        '在线报修',
-                        style: TextStyle(fontSize: 18),
+    return ChangeNotifierProvider(
+      create: (context) {
+        return model;
+      },
+      child: AnimatedBuilder(
+          animation: animationController!,
+          builder: (BuildContext context, Widget? child) {
+            return FadeTransition(
+                opacity: opacityAnimation!,
+                child: Transform(
+                    transform: Matrix4.translationValues(
+                        0.0, 50 * (1.0 - opacityAnimation!.value), 0.0),
+                    child: Scaffold(
+                      backgroundColor: AppTheme.background,
+                      appBar: AppBar(
+                        title: Text(
+                          '在线报修',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        centerTitle: true,
                       ),
-                      centerTitle: true,
-                    ),
-                    body: SafeArea(
-                      child: Container(
-                        padding: EdgeInsets.all(20),
-                        child: Form(
-                            child: Column(
-                          children: [
-                            ElevatedButton(
-                                onPressed: _showPicker, child: Text('Demo')),
-                            Column(
-                              children: [
-                                Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '选择线路号',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.left,
-                                    )),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white60,
-                                      borderRadius:
-                                          BorderRadius.circular((10.0))),
-                                  child: DropdownButtonFormField<String>(
-                                    value: _lineValue,
-                                    hint: Text('请选择线路号'),
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 12),
-                                    borderRadius: BorderRadius.circular(10),
-                                    isExpanded: true,
-                                    padding: EdgeInsets.only(left: 10),
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
+                      body: SafeArea(
+                        top: true,
+                        child: SingleChildScrollView(
+                          padding:
+                              EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                          child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 2.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '报修地址',
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              height: 3),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                        Container(
+                                            height: 40,
+                                            width: double.infinity,
+                                            padding: EdgeInsets.only(
+                                                left: 10, right: 10),
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                if (model.list!.isNotEmpty) {
+                                                  CascadeTreePicker.show(
+                                                      context,
+                                                      data: model.list!,
+                                                      values: values,
+                                                      labelKey: 'title',
+                                                      valuesKey: 'id',
+                                                      title: '请选择报修位置',
+                                                      clickCallBack:
+                                                          (selectItem,
+                                                              selectArr) {
+                                                    setState(() {
+                                                      print(selectItem);
+                                                      print(selectArr);
+                                                      values = selectArr;
+                                                      List<Map<String, dynamic>>
+                                                          mappedSelectArr =
+                                                          List<
+                                                                  Map<String,
+                                                                      dynamic>>.from(
+                                                              selectArr);
+                                                      roomValue =
+                                                          mappedSelectArr
+                                                              .map((item) =>
+                                                                  item['title'])
+                                                              .join('/');
+                                                    });
+                                                    Navigator.pop(context);
+                                                  });
+                                                }
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      roomValue,
+                                                      style: TextStyle(
+                                                        color: values.isEmpty
+                                                            ? Colors.grey
+                                                            : Colors.black,
+                                                        fontSize: 14,
+                                                      ),
+                                                      maxLines: 1,
+                                                      textAlign: TextAlign.left,
+                                                    ),
+                                                  ),
+                                                  Icon(
+                                                    Icons.keyboard_arrow_right,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ],
+                                              ),
+                                            ))
+                                      ],
                                     ),
-                                    items: _lineItems.map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        _lineValue = newValue;
-                                      });
-                                    },
                                   ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Column(
-                              children: [
-                                Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '选择车辆编号',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.left,
-                                    )),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white60,
-                                      borderRadius:
-                                          BorderRadius.circular((10.0))),
-                                  child: DropdownButtonFormField<String>(
-                                    value: _selectedValue,
-                                    hint: Text('请选择车辆编号'),
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 12),
-                                    borderRadius: BorderRadius.circular(10),
-                                    isExpanded: true,
-                                    padding: EdgeInsets.only(left: 10),
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                    ),
-                                    items: _dropdownItems.map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        _selectedValue = newValue;
-                                      });
+                                  _buildFormColumn(
+                                      '报修人', _repairPersonController,
+                                      validator: (val) {
+                                    if (val == null || val.isEmpty) {
+                                      return '报修人不能为空';
+                                    }
+                                    return null;
+                                  }),
+                                  _buildFormColumn('联系电话', _telController,
+                                      keyboardType: TextInputType.phone,
+                                      validator: (val) {
+                                    if (val == null || val.isEmpty) {
+                                      return '联系电话不能为空';
+                                    }
+                                    return null;
+                                  }),
+                                  _buildFormColumn(
+                                      '报修内容', _repairMessageController,
+                                      maxLines: 8, validator: (val) {
+                                    if (val == null || val.isEmpty) {
+                                      return '报修内容不能为空';
+                                    }
+                                    return null;
+                                  }),
+                                  SizedBox(height: 16.0),
+                                  Text('上传报修图片'),
+                                  SizedBox(height: 8.0),
+                                  _buildPhotoList(),
+                                  RaisedButton(
+                                    onPressed: () async {
+                                      if (values.isEmpty) {
+                                        showToast('请选择报修地址');
+                                        return;
+                                      }
+                                      // 校验表单
+                                      if (_formKey.currentState!.validate()) {
+                                        ProgressHUD.showLoadingText('图片上传中...');
+                                        // 上传图片
+                                        if (selectedAssets.isNotEmpty) {
+                                          final res = await uploadImages(
+                                              selectedAssets);
+                                          setState(() {
+                                            _uploadedImageUrls = res;
+                                          });
+                                        }
+                                        // 提交表单
+                                        _formKey.currentState!.save();
+                                        model.repairFormModel = RepairFormModel(
+                                          repairPerson:
+                                              _repairPersonController.text,
+                                          tel: _telController.text,
+                                          repairArea: values[0]['title'],
+                                          repairAreaId: values[0]['id'],
+                                          repairMessage:
+                                              _repairMessageController.text,
+                                          repairPhoto:
+                                              _uploadedImageUrls.join(','),
+                                          repairRoomId:
+                                              values[values.length - 1]['id'],
+                                          roomNo: values[values.length - 1]
+                                              ['title'],
+                                        );
+                                        model.addRepairModel().then((res) {
+                                          ProgressHUD.hide();
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  content: Text('保修单提交成功！'),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text(
+                                                          '确定',
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              color:
+                                                                  primaryColor),
+                                                        )),
+                                                  ],
+                                                );
+                                              });
+                                        }).catchError((error) {
+                                          showToast(error);
+                                        });
+                                      }
                                     },
+                                    child: Text('提交报修'),
+                                    color: primaryColor,
+                                    textColor: Colors.white,
                                   ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Column(
-                              children: [
-                                Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '选择反馈类型',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.left,
-                                    )),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white60,
-                                      borderRadius:
-                                          BorderRadius.circular((10.0))),
-                                  child: DropdownButtonFormField<String>(
-                                    value: _typeValue,
-                                    hint: Text('请选择反馈类型'),
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 12),
-                                    borderRadius: BorderRadius.circular(10),
-                                    isExpanded: true,
-                                    padding: EdgeInsets.only(left: 10),
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                    ),
-                                    items: _typeItems.map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        _typeValue = newValue;
-                                      });
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            // 反馈标题
-                            Column(
-                              children: [
-                                Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '选择反馈标题',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.left,
-                                    )),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white60,
-                                      borderRadius:
-                                          BorderRadius.circular((10.0))),
-                                  child: DropdownButtonFormField<String>(
-                                    value: _titleValue,
-                                    hint: Text('请选择反馈标题'),
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 12),
-                                    borderRadius: BorderRadius.circular(10),
-                                    isExpanded: true,
-                                    padding: EdgeInsets.only(left: 10),
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                    ),
-                                    items: _titleItems.map((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        _titleValue = newValue;
-                                      });
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Column(
-                              children: [
-                                Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '反馈内容',
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.left,
-                                    )),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white60,
-                                      border: Border.all(
-                                          color: Colors.white60, width: 0.5),
-                                      borderRadius:
-                                          BorderRadius.circular((10.0))),
-                                  child: TextFormField(
-                                    // 设置输入框背景色
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 12),
-                                    maxLines: 8,
-                                    decoration: InputDecoration(
-                                      hintText: '请输入内容',
-                                      border: InputBorder.none,
-                                      contentPadding: EdgeInsets.only(left: 10),
-                                      // fillColor: Colors.white,
-                                      // filled: true,
-                                    ),
-                                    onChanged: (value) {
-                                      _contentValue = value;
-                                      print(value);
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
-                            RaisedButton(
-                              onPressed: () {
-                                print('提交反馈');
-                                print(_contentValue);
-                              },
-                              child: Text('提交反馈'),
-                              color: primaryColor,
-                              textColor: Colors.white,
-                            ),
-                          ],
-                        )),
+                                ],
+                              )),
+                        ),
                       ),
-                    ),
-                  )));
+                      bottomSheet: isDragNow ? _buildRemoveBar() : null,
+                    )));
+          }),
+    );
+  }
+
+  // 删除bar
+  Widget _buildRemoveBar() {
+    return DragTarget<AssetEntity>(
+      builder: (context, candidateData, rejectedData) {
+        return Container(
+          height: 60,
+          width: double.infinity,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: isWillRemove ? Colors.red : Colors.red[300],
+              borderRadius: BorderRadius.zero),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.delete_forever_sharp,
+                color: Colors.white,
+              ),
+              Text(
+                '拖拽到这里删除',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
+        );
+      },
+      onWillAccept: (data) {
+        setState(() {
+          isWillRemove = true;
         });
+        return true;
+      },
+      onAccept: (data) {
+        setState(() {
+          selectedAssets.remove(data);
+          isWillRemove = false;
+        });
+      },
+      onLeave: (data) {
+        setState(() {
+          isWillRemove = false;
+        });
+      },
+    );
+  }
+
+  // 列表图片
+  Widget _buildPhotoList() {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constants) {
+      final double width = (constants.maxWidth - 10 * 2) / 3;
+      return Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: [
+          for (final asset in selectedAssets)
+            Draggable(
+              // 拖拽的数据
+              data: asset,
+              // 开始拖拽
+              onDragStarted: () {
+                setState(() {
+                  isDragNow = true;
+                });
+              },
+              // 拖拽结束
+              onDragEnd: (details) {
+                setState(() {
+                  isDragNow = false;
+                });
+              },
+              onDragCompleted: () {},
+              onDraggableCanceled: (velocity, offset) {
+                setState(() {
+                  isDragNow = false;
+                });
+              },
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return GalleryWidget(
+                        initialIndex: selectedAssets.indexOf(asset),
+                        items: selectedAssets);
+                  }));
+                },
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(5)),
+                  child: AssetEntityImage(asset,
+                      isOriginal: true,
+                      width: width,
+                      height: width,
+                      fit: BoxFit.cover),
+                ),
+              ),
+              feedback: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(5)),
+                child: AssetEntityImage(asset,
+                    isOriginal: true,
+                    width: width,
+                    height: width,
+                    fit: BoxFit.cover),
+              ),
+              childWhenDragging: Container(
+                clipBehavior: Clip.antiAlias,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(5)),
+                child: AssetEntityImage(
+                  asset,
+                  isOriginal: true,
+                  width: width,
+                  height: width,
+                  fit: BoxFit.cover,
+                  opacity: const AlwaysStoppedAnimation(0.3),
+                ),
+              ),
+            ),
+          if (selectedAssets.length < 6)
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
+              child: GestureDetector(
+                onTap: () async {
+                  final result =
+                      await HJBottomSheet.wxPicker(context, selectedAssets);
+                  if (result != null) {
+                    selectedAssets = result;
+                    setState(() {});
+                  }
+                },
+                child: Container(
+                  width: width,
+                  height: width,
+                  color: Colors.white,
+                  child: Icon(
+                    Icons.add,
+                    size: 24,
+                  ),
+                ),
+              ),
+            )
+        ],
+      );
+    });
+  }
+
+  Widget _buildFormColumn(String label, TextEditingController controller,
+      {TextInputType keyboardType = TextInputType.text,
+      int maxLines = 1,
+      validator}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontSize: 14, color: Colors.black, height: 3),
+            textAlign: TextAlign.left,
+          ),
+          TextFormField(
+            controller: controller,
+            keyboardType: keyboardType,
+            maxLines: maxLines,
+            decoration: InputDecoration(
+              hintText: '请输入 $label',
+              hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
+              filled: true,
+              fillColor: Colors.white,
+              isCollapsed: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            ),
+            validator: validator,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget RaisedButton(
@@ -402,4 +543,8 @@ class _RepairFormPage extends State<RepairFormPage>
       ),
     );
   }
+}
+
+void showText(str) {
+  ProgressHUD.showText(str.toString());
 }

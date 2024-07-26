@@ -5,21 +5,22 @@ import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
 import 'package:provider/provider.dart';
 
 class FeedbackListView extends StatefulWidget {
-  const FeedbackListView({Key? key, this.animationController}) : super(key: key);
-  
+  const FeedbackListView({Key? key, this.animationController})
+      : super(key: key);
+
   final AnimationController? animationController;
   @override
   _FeedbackListViewState createState() => _FeedbackListViewState();
 }
 
-class _FeedbackListViewState extends State<FeedbackListView> with TickerProviderStateMixin {
+class _FeedbackListViewState extends State<FeedbackListView>
+    with TickerProviderStateMixin {
   var model = NoticeViewModel();
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
   List<Widget> listViews = <Widget>[];
 
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
-
 
   void initState() {
     scrollController.addListener(() {
@@ -44,51 +45,47 @@ class _FeedbackListViewState extends State<FeedbackListView> with TickerProvider
         }
       }
     });
-    model.getNoticeModelList();
+    model.getNoticeModelList(1, 10);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => model,
-        child: Container(
-          margin: EdgeInsets.only(top:10),
-            child: SingleChildScrollView(
-              controller: scrollController,
-              child: Column(
-                children: [
-                  Consumer<NoticeViewModel>(
-                      builder: (context, model, child) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: model.list?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final int count =
-                            model.list?.length ?? 0;
-                        final Animation<double> animation =
-                            Tween<double>(begin: 0.0, end: 1.0).animate(
-                                CurvedAnimation(
-                                    parent: widget.animationController!,
-                                    curve: Interval(
-                                        (1 / count) * index, 1.0,
-                                        curve: Curves.fastOutSlowIn)));
-                        widget.animationController?.forward();
-                        return HomeNoticeListView(
-                          noticeData: model.list?[index],
-                          callback: () => {},
-                          animation: animation,
-                          animationController: widget.animationController,
-                        );
-                      },
+      create: (context) => model,
+      child: Container(
+        margin: EdgeInsets.only(top: 10),
+        child: SingleChildScrollView(
+          controller: scrollController,
+          child: Column(
+            children: [
+              Consumer<NoticeViewModel>(builder: (context, model, child) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: model.list?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    final int count = model.list?.length ?? 0;
+                    final Animation<double> animation =
+                        Tween<double>(begin: 0.0, end: 1.0).animate(
+                            CurvedAnimation(
+                                parent: widget.animationController!,
+                                curve: Interval((1 / count) * index, 1.0,
+                                    curve: Curves.fastOutSlowIn)));
+                    widget.animationController?.forward();
+                    return HomeNoticeListView(
+                      noticeData: model.list?[index],
+                      callback: () => {},
+                      animation: animation,
+                      animationController: widget.animationController,
                     );
-                  })
-                ],
-              ),
-            ),
+                  },
+                );
+              })
+            ],
           ),
-        );
+        ),
+      ),
+    );
   }
-
 }
