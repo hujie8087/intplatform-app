@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/KeepAliveWrapper.dart';
-import 'package:logistics_app/pages/film_page/film_download_model.dart';
 import 'package:logistics_app/pages/repair/content_page.dart';
 import 'package:logistics_app/utils/color.dart';
 
@@ -18,7 +17,6 @@ class MyRepairPage extends StatefulWidget {
 }
 
 class _MyRepairPage extends State<MyRepairPage> with TickerProviderStateMixin {
-  List<FilmDownloadModel> filmsDataList = FilmDownloadModel.filmDownList;
   late TabController _tabController;
   final List<TabBarModel> tabs = [
     TabBarModel(title: '全部', repairState: null),

@@ -138,7 +138,6 @@ class HttpUtils {
         data = params;
       }
     }
-    print('loadingText${loadingText}');
     if (loadingText != null && loadingText.isNotEmpty) {
       ProgressHUD.showLoadingText(loadingText);
     }

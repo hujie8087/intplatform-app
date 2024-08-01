@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/api/firebase_api.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/firebase_options.dart';

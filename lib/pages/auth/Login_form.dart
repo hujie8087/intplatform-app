@@ -148,10 +148,6 @@ class _LoginFormState extends State<LoginForm> {
                             borderRadius: BorderRadius.circular(20))),
                       ),
                     ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.white,
-              ),
             )
           ],
         ));

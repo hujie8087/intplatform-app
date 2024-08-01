@@ -42,5 +42,8 @@ class APIs {
   static const String updateUserPwd = '/system/user/profile/updatePwd';
 
   // 获取数据字典
-  static const String getDictDataList = '/system/dict/data/list';
+  static const String getDictDataList = '/system/dict/data/type/';
+
+  // 获取公共便利字典
+  static const String getOtherDataList = '/other/show/list';
 }

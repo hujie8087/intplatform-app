@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/navigation/navigation_bar_item.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/film_page/film_screen_page.dart';
 import 'package:logistics_app/pages/home_page/home_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_page.dart';
@@ -32,6 +34,30 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     SpUtils.getString(Constants.SP_TOKEN).then((token) => {
           if (token == null || token.isEmpty)
             {Navigator.pushNamed(context, '/login')}
+          else
+            {
+              DataUtils.getUserInfo(
+                success: (res) async {
+                  UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
+                  await SpUtils.saveModel('userInfo', userInfo);
+                  SpUtils.saveString(
+                      Constants.SP_USER_NAME, userInfo.user?.nickName ?? '');
+                  SpUtils.saveString(Constants.SP_USER_DEPT,
+                      userInfo.user?.dept?.deptName ?? '');
+                },
+                fail: (code, msg) {
+                  DataUtils.logout(
+                    success: (data) {
+                      //清除缓存
+                      SpUtils.remove(Constants.SP_USER_NAME);
+                      SpUtils.remove(Constants.SP_USER_DEPT);
+                      SpUtils.remove(Constants.SP_TOKEN);
+                      Navigator.pushNamed(context, '/login');
+                    },
+                  );
+                },
+              )
+            }
         });
 
     tabIconsList.forEach((TabIconData tab) {

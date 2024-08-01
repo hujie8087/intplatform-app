@@ -104,7 +104,17 @@ class DataUtils {
     Success? success,
     Fail? fail,
   }) {
-    HttpUtils.get(APIs.getDictDataList, parameters,
+    HttpUtils.get(APIs.getDictDataList + parameters, null,
+        success: success, fail: fail);
+  }
+
+  // 获取公共便利数据
+  static void getOtherDataList(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(APIs.getOtherDataList, parameters,
         success: success, fail: fail);
   }
 }

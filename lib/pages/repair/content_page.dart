@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
