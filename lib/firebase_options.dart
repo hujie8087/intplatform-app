@@ -63,7 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '395758838818',
     projectId: 'logistics-498c6',
     storageBucket: 'logistics-498c6.appspot.com',
-    iosBundleId: 'com.example.bestFlutterUiTemplates',
+    iosBundleId: 'com.example.logistics',
   );
-
 }
