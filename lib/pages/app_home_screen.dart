@@ -97,7 +97,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           return;
         }
         setState(() {
-          tabBody = ShoppingScreenPage();
+          // tabBody = ShoppingScreenPage();
+          tabBody = MinePage(animationController: animationController);
         });
       });
     } else if (newValue == 2) {

@@ -7,6 +7,7 @@ class APIs {
   /// url 前缀
   // static const String apiPrefix = 'http://10.40.11.26:10200'; // 阿泽
   static const String apiPrefix = 'http://192.168.91.50:10200'; // 测试服务器
+  // static const String apiPrefix = 'http://36.92.27.251:35080'; // 正式环境
   // static const String apiPrefix = 'http://10.40.10.18:10200'; // 韩栋
 
   static const String imagePrefix = 'http://192.168.91.50:9000/intplatform';
