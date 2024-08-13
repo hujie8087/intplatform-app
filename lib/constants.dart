@@ -18,4 +18,7 @@ class Constants {
 
   // 用户部门
   static const String SP_USER_DEPT = "SP_USER_DEPT";
+
+  // 图片链接地址
+  static const String SP_IMAGE_PREFIX = '';
 }

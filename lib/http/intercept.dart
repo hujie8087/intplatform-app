@@ -31,12 +31,13 @@ void setRefreshToken(refreshToken) {
 /// 统一添加身份验证请求头（根据项目自行处理）
 class AuthInterceptor extends Interceptor {
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     if (options.path != APIs.login) {
-      getToken().then((val) => {
-            if (val.isNotEmpty)
-              {options.headers['Authorization'] = 'Bearer $val'}
-          });
+      String token = await getToken();
+      if (token.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $token';
+      }
     }
     super.onRequest(options, handler);
   }

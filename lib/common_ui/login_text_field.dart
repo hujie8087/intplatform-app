@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:logistics_app/utils/color_utils.dart';
 
 const double _lineHeight = 0.8; // 底部线高
 const double _textFontSize = 15.0;

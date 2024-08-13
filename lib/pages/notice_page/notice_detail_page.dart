@@ -1,10 +1,12 @@
+import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class NoticeDetailPage extends StatefulWidget {
-  const NoticeDetailPage({Key? key}) : super(key: key);
-
+  const NoticeDetailPage({Key? key, required this.noticeId}) : super(key: key);
+  final int noticeId;
   @override
   _NoticeDetailPageState createState() => _NoticeDetailPageState();
 }
@@ -12,20 +14,24 @@ class NoticeDetailPage extends StatefulWidget {
 class _NoticeDetailPageState extends State<NoticeDetailPage> {
   String? title;
   String? content;
+  NoticeModel? noticeDetail;
+
+  Future<void> _fetchData() async {
+    // 模拟异步数据获取
+    if (widget.noticeId.toString() != '') {
+      DataUtils.getDetailById('/system/notice/' + widget.noticeId.toString(),
+          success: (data) {
+        noticeDetail = NoticeModel.fromJson(data['data']);
+        // 更新状态
+        setState(() {});
+      });
+    }
+  }
 
   @override
   void initState() {
+    _fetchData();
     super.initState();
-    // 获取路由参数
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      var map = ModalRoute.of(context)?.settings.arguments;
-      print(map);
-      if (map is Map) {
-        title = map['noticeTitle'];
-        content = map['noticeContent'];
-        setState(() {});
-      }
-    });
   }
 
   @override
@@ -33,7 +39,7 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          title ?? '',
+          noticeDetail?.noticeTitle ?? '',
           style: TextStyle(fontSize: 18),
           textAlign: TextAlign.left,
         ),
@@ -44,7 +50,7 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title ?? '',
+              noticeDetail?.noticeTitle ?? '',
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(
@@ -53,14 +59,14 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
             Row(
               children: [
                 Text(
-                  'ACC 后勤部',
+                  noticeDetail?.createDept ?? '',
                   style: TextStyle(color: primaryColor, fontSize: 14),
                 ),
                 SizedBox(
                   width: 10,
                 ),
                 Text(
-                  '2021-09-01 10:00:00',
+                  noticeDetail?.createTime ?? '',
                   style: TextStyle(color: Colors.grey, fontSize: 14),
                 ),
               ],
@@ -68,15 +74,7 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
             SizedBox(
               height: 10,
             ),
-            Image.asset(
-              'assets/images/bg_video.gif',
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(child: Html(data: content ?? ''))
+            Container(child: Html(data: noticeDetail?.noticeContent ?? ''))
           ],
         ),
       ),

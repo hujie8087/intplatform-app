@@ -4,7 +4,6 @@ import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
-import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
@@ -24,6 +23,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
   UserInfoModel? userInfo;
   List<AssetEntity> selectedAssets = [];
   String? selectedValue;
+  String imagePrefix = '';
   final List<DictModel> sexOptions = [
     DictModel(dictValue: '0', dictLabel: '男'),
     DictModel(dictValue: '1', dictLabel: '女'),
@@ -50,6 +50,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
           avatar = userInfoModel.user!.avatar!;
         }
         userInfo = userInfoModel;
+        imagePrefix = await SpUtils.getString(Constants.SP_IMAGE_PREFIX);
         setState(() {});
       },
       fail: (code, msg) {
@@ -143,7 +144,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                   image: DecorationImage(
                     image: avatar.startsWith('assets')
                         ? AssetImage(avatar) as ImageProvider
-                        : NetworkImage(APIs.imagePrefix + avatar),
+                        : NetworkImage(imagePrefix + avatar),
                     fit: BoxFit.cover,
                     alignment: Alignment.centerLeft,
                   ),

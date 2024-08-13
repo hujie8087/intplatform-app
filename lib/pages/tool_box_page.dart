@@ -7,11 +7,8 @@ import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/public_convenience_page/public_convenience_list_page.dart';
 import 'package:logistics_app/pages/repair/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
-import 'package:logistics_app/pages/route_query_page/route_query_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 // String title, bool isEven, IconData icon,
 // bool showBadge, GestureTapCallback? onTap
@@ -170,44 +167,44 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.directions,
-                                  color: primaryColor,
-                                  size: 20,
-                                ),
-                                Text(
-                                  '交通服务',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            OptionGridView(
-                              itemCount: transportMenu.length,
-                              rowCount: 5,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              itemBuilder: (context, index) {
-                                return _FunctionAreaItem(transportMenu[index]);
-                              },
-                            ),
-                          ],
-                        )),
+                    // Container(
+                    //     padding: EdgeInsets.all(10),
+                    //     margin: EdgeInsets.only(bottom: 10),
+                    //     decoration: BoxDecoration(
+                    //         color: Colors.white,
+                    //         borderRadius: BorderRadius.circular(10)),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Row(
+                    //           children: [
+                    //             Icon(
+                    //               Icons.directions,
+                    //               color: primaryColor,
+                    //               size: 20,
+                    //             ),
+                    //             Text(
+                    //               '交通服务',
+                    //               style: TextStyle(
+                    //                   fontSize: 14,
+                    //                   fontWeight: FontWeight.bold),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         SizedBox(
+                    //           height: 10,
+                    //         ),
+                    //         OptionGridView(
+                    //           itemCount: transportMenu.length,
+                    //           rowCount: 5,
+                    //           mainAxisSpacing: 10,
+                    //           crossAxisSpacing: 10,
+                    //           itemBuilder: (context, index) {
+                    //             return _FunctionAreaItem(transportMenu[index]);
+                    //           },
+                    //         ),
+                    //       ],
+                    //     )),
                     Container(
                         padding: EdgeInsets.all(10),
                         margin: EdgeInsets.only(bottom: 10),
@@ -343,47 +340,47 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                           ],
                         )),
                     // 餐饮服务
-                    Container(
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.fastfood,
-                                  color: primaryColor,
-                                  size: 20,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  '餐饮服务',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            OptionGridView(
-                              itemCount: foodMenu.length,
-                              rowCount: 5,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              itemBuilder: (context, index) {
-                                return _FunctionAreaItem(foodMenu[index]);
-                              },
-                            ),
-                          ],
-                        )),
+                    // Container(
+                    //     padding: EdgeInsets.all(10),
+                    //     margin: EdgeInsets.only(bottom: 10),
+                    //     decoration: BoxDecoration(
+                    //         color: Colors.white,
+                    //         borderRadius: BorderRadius.circular(10)),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Row(
+                    //           children: [
+                    //             Icon(
+                    //               Icons.fastfood,
+                    //               color: primaryColor,
+                    //               size: 20,
+                    //             ),
+                    //             SizedBox(
+                    //               width: 5,
+                    //             ),
+                    //             Text(
+                    //               '餐饮服务',
+                    //               style: TextStyle(
+                    //                   fontSize: 14,
+                    //                   fontWeight: FontWeight.bold),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         SizedBox(
+                    //           height: 10,
+                    //         ),
+                    //         OptionGridView(
+                    //           itemCount: foodMenu.length,
+                    //           rowCount: 5,
+                    //           mainAxisSpacing: 10,
+                    //           crossAxisSpacing: 10,
+                    //           itemBuilder: (context, index) {
+                    //             return _FunctionAreaItem(foodMenu[index]);
+                    //           },
+                    //         ),
+                    //       ],
+                    //     )),
                     // 公共服务
                     Container(
                         padding: EdgeInsets.all(10),

@@ -3,7 +3,6 @@
 ///  Created by iotjin on 2020/07/07.
 ///  description: 网络请求工具类（dio二次封装）
 
-// ignore_for_file: avoid_print
 import 'package:dio/dio.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/route/route_utils.dart';
@@ -141,6 +140,7 @@ class HttpUtils {
     if (loadingText != null && loadingText.isNotEmpty) {
       ProgressHUD.showLoadingText(loadingText);
     }
+
     DioUtils.instance.request(method, url,
         data: data, queryParameters: queryParameters, onSuccess: (result) {
       if (!LogUtils.inProduction && isOpenLog) {
@@ -153,7 +153,7 @@ class HttpUtils {
       if (result['code'] == ExceptionHandle.success) {
         success?.call(result);
       } else if ((result['code'] == ExceptionHandle.unauthorized)) {
-        ProgressHUD.showText(result['msg']);
+        ProgressHUD.showText('请登录您的帐号');
         RouteUtils.navigateToLogin();
       } else {
         // 其他状态，弹出错误提示信息

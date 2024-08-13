@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:oktoast/oktoast.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key? key, this.animationController})

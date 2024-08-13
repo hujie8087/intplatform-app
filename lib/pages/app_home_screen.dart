@@ -8,7 +8,6 @@ import 'package:logistics_app/pages/film_page/film_screen_page.dart';
 import 'package:logistics_app/pages/home_page/home_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_page.dart';
 import 'package:logistics_app/pages/models/tabIcon_data.dart';
-import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -28,37 +27,71 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     color: Colors.white,
   );
 
+  Future<bool> isLogin() async {
+    // 判断是否登录
+    final token = await SpUtils.getString(Constants.SP_TOKEN);
+    if (token == null || token.isEmpty) {
+      Navigator.pushNamed(context, '/login');
+      return false;
+    } else {
+      DataUtils.getUserInfo(
+        success: (res) async {
+          UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
+          await SpUtils.saveModel('userInfo', userInfo);
+          SpUtils.saveString(
+              Constants.SP_USER_NAME, userInfo.user?.nickName ?? '');
+          SpUtils.saveString(
+              Constants.SP_USER_DEPT, userInfo.user?.dept?.deptName ?? '');
+          return true;
+        },
+        fail: (code, msg) {
+          DataUtils.logout(
+            success: (data) {
+              //清除缓存
+              SpUtils.remove(Constants.SP_USER_NAME);
+              SpUtils.remove(Constants.SP_USER_DEPT);
+              SpUtils.remove(Constants.SP_TOKEN);
+              Navigator.pushNamed(context, '/login');
+            },
+          );
+          return false;
+        },
+      );
+      return true;
+    }
+  }
+
   @override
   void initState() {
     // 判断是否登录
-    SpUtils.getString(Constants.SP_TOKEN).then((token) => {
-          if (token == null || token.isEmpty)
-            {Navigator.pushNamed(context, '/login')}
-          else
-            {
-              DataUtils.getUserInfo(
-                success: (res) async {
-                  UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
-                  await SpUtils.saveModel('userInfo', userInfo);
-                  SpUtils.saveString(
-                      Constants.SP_USER_NAME, userInfo.user?.nickName ?? '');
-                  SpUtils.saveString(Constants.SP_USER_DEPT,
-                      userInfo.user?.dept?.deptName ?? '');
-                },
-                fail: (code, msg) {
-                  DataUtils.logout(
-                    success: (data) {
-                      //清除缓存
-                      SpUtils.remove(Constants.SP_USER_NAME);
-                      SpUtils.remove(Constants.SP_USER_DEPT);
-                      SpUtils.remove(Constants.SP_TOKEN);
-                      Navigator.pushNamed(context, '/login');
-                    },
-                  );
-                },
-              )
-            }
-        });
+    // SpUtils.getString(Constants.SP_TOKEN).then((token) => {
+    //       if (token == null || token.isEmpty)
+    //         {Navigator.pushNamed(context, '/login')}
+    //       else
+    //         {
+    //           DataUtils.getUserInfo(
+    //             success: (res) async {
+    //               UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
+    //               await SpUtils.saveModel('userInfo', userInfo);
+    //               SpUtils.saveString(
+    //                   Constants.SP_USER_NAME, userInfo.user?.nickName ?? '');
+    //               SpUtils.saveString(Constants.SP_USER_DEPT,
+    //                   userInfo.user?.dept?.deptName ?? '');
+    //             },
+    //             fail: (code, msg) {
+    //               DataUtils.logout(
+    //                 success: (data) {
+    //                   //清除缓存
+    //                   SpUtils.remove(Constants.SP_USER_NAME);
+    //                   SpUtils.remove(Constants.SP_USER_DEPT);
+    //                   SpUtils.remove(Constants.SP_TOKEN);
+    //                   Navigator.pushNamed(context, '/login');
+    //                 },
+    //               );
+    //             },
+    //           )
+    //         }
+    //     });
 
     tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
@@ -92,6 +125,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
         });
       });
     } else if (newValue == 1) {
+      isLogin();
       animationController?.reverse().then<dynamic>((data) {
         if (!mounted) {
           return;

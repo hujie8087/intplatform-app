@@ -12,6 +12,15 @@ typedef Success<T> = Function(T data);
 typedef Fail = Function(int code, String msg);
 
 class DataUtils {
+  /// 注册
+  static void register<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.post(APIs.register, parameters, success: success, fail: fail);
+  }
+
   /// 登录
   static void login<T>(
     parameters, {
@@ -42,7 +51,7 @@ class DataUtils {
     Success? success,
     Fail? fail,
   }) {
-    HttpUtils.put(APIs.editUser, parameters, success: success, fail: fail);
+    HttpUtils.post(APIs.editUser, parameters, success: success, fail: fail);
   }
 
   // 用户修改密码
@@ -85,7 +94,7 @@ class DataUtils {
 
   // 获取生活区楼栋房间
   static void getBuildingTree<T>({Success? success, Fail? fail, s}) {
-    HttpUtils.get('/commonality/food/building/app/tree', null,
+    HttpUtils.get('/maintenance/food/building/app/tree', null,
         loadingText: '生活区数据加载中...', success: success, fail: fail);
   }
 
@@ -116,5 +125,22 @@ class DataUtils {
   }) {
     HttpUtils.get(APIs.getOtherDataList, parameters,
         success: success, fail: fail);
+  }
+
+  // 根据id获取数据详情
+  static void getDetailById(
+    url, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(url, null, success: success, fail: fail);
+  }
+
+  // 获取最新的APP版本号
+  static void getAppLastVersion({
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(APIs.getAppLastVersion, null, success: success, fail: fail);
   }
 }

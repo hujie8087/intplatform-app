@@ -10,7 +10,7 @@ class RepairUtils {
     Success? success,
     Fail? fail,
   }) {
-    HttpUtils.post('/commonality/repair', parameters,
+    HttpUtils.post('/maintenance/repair', parameters,
         success: success, fail: fail);
   }
 
@@ -19,7 +19,7 @@ class RepairUtils {
     Success? success,
     Fail? fail,
   }) {
-    HttpUtils.get('/commonality/food/building/app/tree', null,
+    HttpUtils.get('/maintenance/food/building/app/tree', null,
         success: success, fail: fail);
   }
 
@@ -29,7 +29,7 @@ class RepairUtils {
     Success? success,
     Fail? fail,
   }) {
-    HttpUtils.get('/commonality/repair/byName', parameters,
+    HttpUtils.get('/maintenance/repair/byName', parameters,
         success: success, fail: fail);
   }
 
@@ -39,7 +39,7 @@ class RepairUtils {
     Success? success,
     Fail? fail,
   }) {
-    HttpUtils.get('/commonality/repair/${id}', null,
+    HttpUtils.get('/maintenance/repair/${id}', null,
         success: success, fail: fail);
   }
 
@@ -49,7 +49,7 @@ class RepairUtils {
     Success? success,
     Fail? fail,
   }) {
-    HttpUtils.put('/commonality/repair', parameters,
+    HttpUtils.put('/maintenance/repair', parameters,
         success: success, fail: fail);
   }
 }

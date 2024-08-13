@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/other_view_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -30,9 +32,11 @@ class _OtherContentPageState extends State<OtherContentPage>
   int _totalItems = 0;
 
   late RefreshController _refreshController;
+  String imagePrefix = '';
 
   @override
   void initState() {
+    _fetch();
     super.initState();
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
@@ -44,6 +48,10 @@ class _OtherContentPageState extends State<OtherContentPage>
   void dispose() {
     _refreshController.dispose();
     super.dispose();
+  }
+
+  void _fetch() async {
+    imagePrefix = await SpUtils.getString(Constants.SP_IMAGE_PREFIX);
   }
 
   void _requestData({isLoadMore = false}) {
@@ -136,26 +144,26 @@ class _OtherContentPageState extends State<OtherContentPage>
                         curve: Curves.fastOutSlowIn)));
             animationController?.forward();
             return _otherItem(
-              listData: _dataArr[index],
-              callBack: () async {
-                // 跳转到详情页
-                final result = await RouteUtils.pushNamed(
-                    context, RoutePath.RepairRatingPage,
-                    arguments: {
-                      'otherId': _dataArr[index].id,
-                      'title': '报修单详情',
-                      'isShowButton': _dataArr[index].souceType == 1
-                    });
-                setState(() {
-                  if (result != null && result == 'submit') {
-                    _requestData();
-                  }
-                });
-              },
-              deleteCallBack: () => {_requestData()},
-              animation: animation,
-              animationController: animationController,
-            );
+                listData: _dataArr[index],
+                callBack: () async {
+                  // 跳转到详情页
+                  final result = await RouteUtils.pushNamed(
+                      context, RoutePath.RepairRatingPage,
+                      arguments: {
+                        'otherId': _dataArr[index].id,
+                        'title': '报修单详情',
+                        'isShowButton': _dataArr[index].souceType == 1
+                      });
+                  setState(() {
+                    if (result != null && result == 'submit') {
+                      _requestData();
+                    }
+                  });
+                },
+                deleteCallBack: () => {_requestData()},
+                animation: animation,
+                animationController: animationController,
+                imagePrefix: imagePrefix);
           },
         );
       },
@@ -170,6 +178,7 @@ class _otherItem extends StatelessWidget {
       this.callBack,
       this.deleteCallBack,
       this.animationController,
+      required this.imagePrefix,
       this.animation})
       : super(key: key);
 
@@ -178,6 +187,7 @@ class _otherItem extends StatelessWidget {
   final VoidCallback? deleteCallBack;
   final AnimationController? animationController;
   final Animation<double>? animation;
+  final String imagePrefix;
 
   @override
   Widget build(BuildContext context) {
@@ -213,8 +223,8 @@ class _otherItem extends StatelessWidget {
                                           topLeft: Radius.circular(10),
                                           bottomLeft: Radius.circular(10)),
                                       image: DecorationImage(
-                                        image: NetworkImage(APIs.imagePrefix +
-                                            listData!.image!),
+                                        image: NetworkImage(
+                                            imagePrefix + listData!.image!),
                                         fit: BoxFit.cover,
                                         alignment: Alignment.centerLeft,
                                       ),

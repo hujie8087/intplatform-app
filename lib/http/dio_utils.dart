@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:logistics_app/http/intercept.dart';
 import 'package:logistics_app/utils/device_utils.dart';
 import 'apis.dart';
 import 'error_handle.dart';
@@ -99,6 +100,7 @@ class DioUtils {
     }
 
     _interceptors.forEach(addInterceptor);
+    _dio.interceptors.add(AuthInterceptor());
   }
 
   static final DioUtils _singleton = DioUtils._();

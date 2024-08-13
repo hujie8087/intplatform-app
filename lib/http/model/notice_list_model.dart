@@ -1,4 +1,3 @@
-
 class NoticeListModel {
   List<NoticeModel?> data = [];
 
@@ -14,36 +13,51 @@ class NoticeListModel {
 }
 
 class NoticeModel {
-  NoticeModel({this.createBy, this.createTime, this.updateBy, this.updateTime, this.remark, this.noticeId, this.noticeTitle, this.noticeType, this.noticeContent, this.noticeGrade, this.status});
+  NoticeModel(
+      {this.createBy,
+      this.createTime,
+      this.updateBy,
+      this.updateTime,
+      this.remark,
+      this.noticeId,
+      this.noticeTitle,
+      this.noticeType,
+      this.noticeContent,
+      this.noticeGrade,
+      this.createDept,
+      this.status});
 
   NoticeModel.fromJson(dynamic json) {
-    if(json["createBy"] is String) {
+    if (json["createBy"] is String) {
       createBy = json["createBy"];
     }
-    if(json["createTime"] is String) {
+    if (json["createTime"] is String) {
       createTime = json["createTime"];
     }
-    if(json["updateBy"] is String) {
+    if (json["updateBy"] is String) {
       updateBy = json["updateBy"];
     }
     updateTime = json["updateTime"];
-    if(json["remark"] is String) {
+    if (json["remark"] is String) {
       remark = json["remark"];
     }
-    if(json["noticeId"] is int) {
+    if (json["noticeId"] is int) {
       noticeId = json["noticeId"];
     }
-    if(json["noticeTitle"] is String) {
+    if (json["noticeTitle"] is String) {
       noticeTitle = json["noticeTitle"];
     }
-    if(json["noticeType"] is String) {
+    if (json["noticeType"] is String) {
       noticeType = json["noticeType"];
     }
-    if(json["noticeContent"] is String) {
+    if (json["noticeContent"] is String) {
       noticeContent = json["noticeContent"];
     }
+    if (json["createDept"] is String) {
+      createDept = json["createDept"];
+    }
     noticeGrade = json["noticeGrade"];
-    if(json["status"] is String) {
+    if (json["status"] is String) {
       status = json["status"];
     }
   }
@@ -58,6 +72,7 @@ class NoticeModel {
   String? noticeType;
   String? noticeContent;
   dynamic noticeGrade;
+  String? createDept;
   String? status;
 
   Map<String, dynamic> toJson() {
@@ -72,8 +87,8 @@ class NoticeModel {
     _data["noticeType"] = noticeType;
     _data["noticeContent"] = noticeContent;
     _data["noticeGrade"] = noticeGrade;
+    _data["createDept"] = createDept;
     _data["status"] = status;
     return _data;
   }
 }
-

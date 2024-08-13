@@ -1,4 +1,6 @@
 import 'package:logistics_app/http/model/notice_list_model.dart';
+import 'package:logistics_app/route/route_utils.dart';
+import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -42,7 +44,12 @@ class HomeNoticeListView extends StatelessWidget {
                       ),
                       child: InkWell(
                         onTap: () {
-                          // RouteUtils.pushNamed(context, RoutePath.WebViewPage,arguments:{'noticeTitle':noticeData.noticeTitle,'noticeId':noticeData.noticeId,'noticeContent':noticeData.noticeContent} );
+                          RouteUtils.pushNamed(context, RoutePath.WebViewPage,
+                              arguments: {
+                                'noticeTitle': noticeData?.noticeTitle,
+                                'noticeId': noticeData?.noticeId,
+                                'noticeContent': noticeData?.noticeContent
+                              });
                         },
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

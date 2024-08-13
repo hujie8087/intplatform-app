@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/model/repair_view_model.dart';
@@ -9,6 +10,7 @@ import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badges;
@@ -27,6 +29,7 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
     with TickerProviderStateMixin {
   bool get wantKeepAlive => true;
   AnimationController? animationController;
+  String imagePrefix = '';
 
   List<RepairViewModel> _dataArr = [];
   int _pageNum = 1;
@@ -41,6 +44,8 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
     _refreshController = RefreshController();
+    SpUtils.getString(Constants.SP_IMAGE_PREFIX)
+        .then((res) => {imagePrefix = res});
     _requestData();
   }
 
@@ -160,6 +165,7 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
               deleteCallBack: () => {_requestData()},
               animation: animation,
               animationController: animationController,
+              imagePrefix: imagePrefix,
             );
           },
         );
@@ -198,6 +204,7 @@ class _repairItem extends StatelessWidget {
       this.callBack,
       this.deleteCallBack,
       this.animationController,
+      required this.imagePrefix,
       this.animation})
       : super(key: key);
 
@@ -206,6 +213,7 @@ class _repairItem extends StatelessWidget {
   final VoidCallback? deleteCallBack;
   final AnimationController? animationController;
   final Animation<double>? animation;
+  final String imagePrefix;
 
   @override
   Widget build(BuildContext context) {
@@ -319,7 +327,7 @@ class _repairItem extends StatelessWidget {
                                                 borderRadius:
                                                     BorderRadius.circular(5)),
                                             child: Image.network(
-                                              APIs.imagePrefix + images[index],
+                                              imagePrefix + images[index],
                                               fit: BoxFit.cover,
                                             ),
                                           );

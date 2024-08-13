@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/loading.dart';
-import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/model/base_model.dart';
 import 'package:logistics_app/http/data/data_utils.dart';

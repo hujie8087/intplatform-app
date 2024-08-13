@@ -1,21 +1,22 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/app_check_update_model.dart';
+import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MineViewModel with ChangeNotifier {
   String? userName;
   bool? shouldLogin;
   bool needUpdate = false;
+  UpdateInfoData? updateModel;
 
   Future initData() async {
     String? name = await SpUtils.getString(Constants.SP_USER_NAME);
-    log("MineViewModel $name");
     if (name == null || name.isEmpty == true) {
       userName = "未登录";
       shouldLogin = true;
@@ -23,9 +24,6 @@ class MineViewModel with ChangeNotifier {
       userName = name;
       shouldLogin = false;
     }
-
-    //是否显示更新红点
-    shouldShowUpdateDot();
 
     notifyListeners();
   }
@@ -50,46 +48,45 @@ class MineViewModel with ChangeNotifier {
     );
   }
 
-  Future shouldShowUpdateDot() async {
-    var packInfo = await PackageInfo.fromPlatform();
-    //获取当前app的版本code
-    String versionCode = packInfo.buildNumber;
-    //获取保存的新版本code
-    // String newVerCode = await SpUtils.getString(Constants.SP_NEW_APP_VERSION);
-    String newVerCode = "1";
-    if ((int.tryParse(versionCode) ?? 0) >= (int.tryParse(newVerCode) ?? 0)) {
-      //当前已是最新版本
-      needUpdate = false;
-    } else {
-      //有新版本，显示红点
-      needUpdate = true;
-    }
+  UpdateEntity customParseJson(downloadUrlPre) {
+    return UpdateEntity(
+        isForce: true,
+        hasUpdate: true,
+        isIgnorable: false,
+        versionCode: int.parse(updateModel!.versionCode),
+        versionName: updateModel?.versionName,
+        updateContent: updateModel?.updateLog,
+        downloadUrl: downloadUrlPre + updateModel!.apkUrl,
+        apkSize: updateModel!.apkSize);
   }
 
   ///检查更新
-  Future<String?> checkUpdate() async {
-    var packInfo = await PackageInfo.fromPlatform();
+  Future checkUpdate() async {
     //获取当前app的版本code
-    String versionCode = packInfo.buildNumber;
-    print(versionCode);
-    return null;
-    // AppCheckUpdateModel? model = await WanApi.instance().checkUpdate();
-    // //线上版本的code
-    // String onlineAppVerCode = model?.data?.buildVersionNo ?? "0";
-    // try {
-    //   //如果当前版本小于线上版本，需要更新
-    //   if ((int.tryParse(versionCode) ?? 0) < ((int.tryParse(onlineAppVerCode) ?? 0))) {
-    //     SpUtils.saveString(Constants.SP_NEW_APP_VERSION, onlineAppVerCode);
-    //     return model?.data?.downloadURL;
-    //   } else {
-    //     SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
-    //     return null;
-    //   }
-    // } catch (e) {
-    //   log("checkUpdate error=$e");
-    //   SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
-    //   return null;
-    // }
+    String versionCode = await DeviceUtils.version();
+    String versionName = await DeviceUtils.version();
+    DataUtils.getAppLastVersion(
+      success: (data) {
+        updateModel = UpdateInfoData.fromJson(data['data']);
+        //线上版本的code
+        Version oldVersion = Version.parse(versionName);
+        Version newVersion = Version.parse(updateModel!.versionName);
+        try {
+          //如果当前版本小于线上版本，需要更新
+          if (oldVersion == newVersion) {
+            SpUtils.saveString(
+                Constants.SP_NEW_APP_VERSION, updateModel?.versionName ?? '');
+          } else {
+            SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
+          }
+          needUpdate = oldVersion < newVersion;
+          notifyListeners();
+        } catch (e) {
+          SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
+          notifyListeners();
+        }
+      },
+    );
   }
 
   ///跳转到外部浏览器打开

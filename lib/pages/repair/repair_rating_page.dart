@@ -1,4 +1,5 @@
 import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
@@ -6,6 +7,7 @@ import 'package:logistics_app/pages/repair/content_page.dart';
 import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -27,9 +29,12 @@ class _RepairRatingPageState extends State<RepairRatingPage>
   final TextEditingController ratingMessageController = TextEditingController();
   bool _switchSelected = true; //维护单选开关状态
   RepairDataModel model = new RepairDataModel();
+  String imagePrefix = '';
 
   @override
   void initState() {
+    SpUtils.getString(Constants.SP_IMAGE_PREFIX)
+        .then((res) => {imagePrefix = res});
     super.initState();
     // 获取路由参数
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -213,7 +218,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                                         PhotoViewGalleryPageOptions(
                                                       imageProvider:
                                                           NetworkImage(
-                                                              APIs.imagePrefix +
+                                                              imagePrefix +
                                                                   item),
                                                       initialScale:
                                                           PhotoViewComputedScale
@@ -244,7 +249,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Image.network(
-                                  APIs.imagePrefix + images[index],
+                                  imagePrefix + images[index],
                                   fit: BoxFit.cover,
                                 ),
                               ),

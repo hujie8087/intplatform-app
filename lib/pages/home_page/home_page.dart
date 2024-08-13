@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
@@ -8,6 +10,7 @@ import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
 import 'package:logistics_app/pages/mine_page/feedback_page/feedback_page.dart';
 import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
+import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
 import 'package:logistics_app/pages/repair/my_repair_page.dart';
@@ -32,13 +35,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   var model = NoticeViewModel();
   final ScrollController scrollController = ScrollController();
-  String userName = '未登录';
+  String userName = '';
   String deptName = '';
   double topBarOpacity = 0.0;
   Animation<double>? topBarAnimation;
-  List<Widget> listViews = <Widget>[];
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
-  int current = 1;
+  int current = 0;
+  Timer? _timer;
+  PageController _pageController = PageController();
+
   final List<SwitchType> buttonLabels = [
     SwitchType('通知公告', 0),
     SwitchType('公司新闻', 1),
@@ -48,7 +53,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         CurvedAnimation(
             parent: widget.animationController!,
             curve: Interval(0, 0.3, curve: Curves.fastOutSlowIn)));
-
     scrollController.addListener(() {
       if (scrollController.offset >= 50) {
         if (topBarOpacity != 1.0) {
@@ -72,6 +76,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       }
     });
     model.getNoticeModelList(1, 10);
+    model.getNewsModelList(1, 10);
     super.initState();
     _fetchData();
     widget.animationController?.forward();
@@ -85,7 +90,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() {
       userName = res ?? '';
       deptName = dept ?? '';
+      _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
+        if (_pageController.hasClients) {
+          int nextPage = _pageController.page!.toInt() + 1;
+          if (nextPage == model.list?.length) {
+            nextPage = 0;
+          }
+          _pageController.animateToPage(
+            nextPage,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeIn,
+          );
+        }
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -110,7 +135,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         SwitchTypeView(
                           listData: buttonLabels,
                           callBack: (int value) {
-                            print(value);
                             updateCurrent(value);
                           },
                           animationController: widget.animationController,
@@ -147,7 +171,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         listData: model.list?[index],
                                         callBack: () => {
                                           // 跳转到详情页
-                                          print('跳转到详情页')
+                                          RouteUtils.push(
+                                              context,
+                                              NoticeDetailPage(
+                                                  noticeId: model
+                                                      .list![index]!.noticeId!))
                                         },
                                         animation: animation,
                                         animationController:
@@ -158,7 +186,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 })
                               : Consumer<NoticeViewModel>(
                                   builder: (context, model, child) {
-                                  if (model.list?.isEmpty == true) {
+                                  if (model.newsList?.isEmpty == true) {
                                     return Center(
                                       child: Text("暂无数据"),
                                     );
@@ -166,7 +194,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   return ListView.builder(
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
-                                    itemCount: model.list?.length ?? 0,
+                                    itemCount: model.newsList?.length ?? 0,
                                     padding:
                                         EdgeInsets.only(left: 10, right: 10),
                                     itemBuilder: (context, index) {
@@ -182,10 +210,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                           .fastOutSlowIn)));
                                       widget.animationController?.forward();
                                       return NewsDataView(
-                                        listData: model.list?[index],
+                                        listData: model.newsList?[index],
                                         callBack: () => {
                                           // 跳转到详情页
-                                          print('跳转到详情页')
+                                          RouteUtils.push(
+                                              context,
+                                              NoticeDetailPage(
+                                                  noticeId: model
+                                                      .newsList![index]!
+                                                      .noticeId!))
                                         },
                                         animation: animation,
                                         animationController:
@@ -202,7 +235,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                getAppBarUI(),
+                if (userName != '') getAppBarUI(),
               ],
             ),
           ),
@@ -301,17 +334,42 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         color: Colors.grey.withOpacity(0.3))))),
                         SizedBox(width: 10),
                         Expanded(
-                            child: Text('关于2021年国庆节放假通知',
-                                style: TextStyle(fontSize: 14))),
-                        Container(
-                            child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                            color: Colors.grey,
-                          ),
-                        )),
+                          child: Consumer<NoticeViewModel>(
+                              builder: (context, model, child) {
+                            return SizedBox(
+                                height: 30, // 限制高度以只显示一个公告
+                                child: model.list?.isEmpty == true
+                                    ? Text(
+                                        "暂无数据",
+                                        style: TextStyle(height: 2),
+                                      )
+                                    : PageView.builder(
+                                        controller: _pageController,
+                                        itemCount: model.list?.length,
+                                        scrollDirection: Axis.vertical,
+                                        itemBuilder: (context, index) {
+                                          return Row(children: [
+                                            Expanded(
+                                                child: Text(
+                                                    model.list?[index]
+                                                            ?.noticeTitle ??
+                                                        '',
+                                                    style: TextStyle(
+                                                        fontSize: 14))),
+                                            Container(
+                                                child: Container(
+                                              alignment: Alignment.centerRight,
+                                              child: Icon(
+                                                Icons.arrow_forward_ios,
+                                                size: 16,
+                                                color: Colors.grey,
+                                              ),
+                                            )),
+                                          ]);
+                                        },
+                                      ));
+                          }),
+                        ),
                       ],
                     ))),
           );
@@ -349,14 +407,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void _handleTap() {
     //给方法传值
-    widget.onChanged!(3);
+    widget.onChanged!(1);
   }
 
   //更新焦点的事件名
   void updateCurrent(int text) {
+    if (text == 1) {
+      model.getNoticeModelList(1, 10);
+    } else {
+      model.getNewsModelList(1, 10);
+    }
     setState(() {
       current = text;
-      print(current);
     });
   }
 

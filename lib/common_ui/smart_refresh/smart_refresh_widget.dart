@@ -48,8 +48,18 @@ class SmartRefreshWidget extends StatelessWidget {
       controller: controller,
       enablePullDown: enablePullDown ?? true,
       enablePullUp: enablePullUp ?? true,
-      header: header ?? const ClassicHeader(),
-      footer: footer ?? const ClassicFooter(),
+      header: WaterDropHeader(
+        refresh: Text('刷新中...'), // 指定语言文本
+        complete: Text('刷新完成'),
+        failed: Text('刷新失败'),
+      ),
+      footer: ClassicFooter(
+        loadingText: '加载中...', // 指定语言文本
+        noDataText: '没有更多数据',
+        idleText: '上拉加载更多',
+        failedText: '加载失败',
+        canLoadingText: '松开加载更多',
+      ),
       onRefresh: onRefresh,
       onLoading: onLoading,
       child: child,

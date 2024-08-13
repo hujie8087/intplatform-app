@@ -35,7 +35,6 @@ class Routes {
       RoutePath.ContactUsPage: (context) => ContactUsPage(),
       RoutePath.RouteQueryPage: (context) => RouteQueryPage(),
       RoutePath.NoticeListPage: (context) => NoticeListPage(),
-      RoutePath.NoticeDetailPage: (context) => NoticeDetailPage(),
       RoutePath.NewsListPage: (context) => NewsListPage(),
       RoutePath.NewsDetailPage: (context) => NewsDetailPage(),
       RoutePath.LostFoundListPage: (context) => LostFoundListPage(),
