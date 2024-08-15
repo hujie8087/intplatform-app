@@ -49,7 +49,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
             curve: Interval(0.0, 1.0, curve: Curves.fastOutSlowIn)));
 
     widget.animationController!.forward();
-    model.checkUpdate();
+    // model.checkUpdate();
     super.initState();
     _fetchData();
   }

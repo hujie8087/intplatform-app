@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/pages/news_page/news_view_model.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
+import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -97,12 +98,8 @@ class _NewsListPageState extends State<NewsListPage>
               index: index,
               callBack: () => {
                 // 跳转到详情页
-                RouteUtils.pushNamed(context, RoutePath.NoticeDetailPage,
-                    arguments: {
-                      'noticeTitle': model.list?[index]?.noticeTitle,
-                      'noticeId': model.list?[index]?.noticeId,
-                      'noticeContent': model.list?[index]?.noticeContent
-                    })
+                RouteUtils.push(context,
+                    NoticeDetailPage(noticeId: model.list![index]!.noticeId!))
               },
               animation: animation,
               animationController: animationController,
