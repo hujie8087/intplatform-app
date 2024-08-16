@@ -792,22 +792,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  mobcommonlib:
-    dependency: "direct main"
-    description:
-      name: mobcommonlib
-      sha256: "8166d0f79b5a4e8e42c5ece66d3c1e8cbafc76dce53e32d2cc534f29f88a2f04"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.5"
-  mobpush_plugin:
-    dependency: "direct main"
-    description:
-      name: mobpush_plugin
-      sha256: "35bab98c9a3190e18bde871b44edea0f6d2a6a8cce7f6a19e486241a13a84070"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.6"
   nested:
     dependency: transitive
     description:

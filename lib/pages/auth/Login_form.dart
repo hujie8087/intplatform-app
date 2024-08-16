@@ -1,10 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
-import 'package:logistics_app/pages/auth/Register_page.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:flutter/material.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -118,8 +117,7 @@ class _LoginFormState extends State<LoginForm> {
                             var token =
                                 await SpUtils.getString('fCMToken') ?? '';
                             if (token != '') {
-                              DataUtils.setUserToken(token,
-                                  success: (val) => print('123456'));
+                              DataUtils.setUserToken(token);
                             }
                             RouteUtils.push(context, AppHomeScreen());
                             showToast("登录成功");
