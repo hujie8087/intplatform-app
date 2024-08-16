@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "395758838818",
-    "project_id": "logistics-498c6",
-    "storage_bucket": "logistics-498c6.appspot.com"
+    "project_number": "575416101353",
+    "project_id": "iwiplogistics",
+    "storage_bucket": "iwiplogistics.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:395758838818:android:a52d9fbff4942524aed67b",
+        "mobilesdk_app_id": "1:575416101353:android:13050e9c0772bd97b70378",
         "android_client_info": {
-          "package_name": "com.example.logistics_app"
+          "package_name": "com.iwip.logistics"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB4oPOYaD_PNPMDCkW7oD1mOctjmVbnxLQ"
+          "current_key": "AIzaSyAVa_8LRTtxCyGafbbB8UuPywqZd7JBzi0"
         }
       ],
       "services": {
