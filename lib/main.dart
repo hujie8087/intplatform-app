@@ -1,6 +1,10 @@
 import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/api/firebase_api.dart';
@@ -14,9 +18,6 @@ import 'package:logistics_app/http/log_utils.dart';
 import 'package:logistics_app/http/model/app_check_update_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
@@ -105,7 +106,7 @@ void initXUpdate() {
       print(error);
     });
   } else {
-    showToast('ios暂不支持XUpdate更新');
+    //showToast('ios暂不支持XUpdate更新');
   }
 }
 

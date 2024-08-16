@@ -10,10 +10,10 @@ Future<void> handleBackgroundMessage(RemoteMessage message) async {
 class FirebaseApi {
   final _FireBaseMeesaging = FirebaseMessaging.instance;
   Future<void> initNotifications() async {
-    // await _FireBaseMeesaging.requestPermission();
-    // final fCMToken = await _FireBaseMeesaging.getToken();
-    // // 储存token
-    // SpUtils.saveString('fCMToken', fCMToken!);
-    // FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+    await _FireBaseMeesaging.requestPermission();
+    final fCMToken = await _FireBaseMeesaging.getToken();
+    // 储存token
+    SpUtils.saveString('fCMToken', fCMToken!);
+    FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
   }
 }
