@@ -1,7 +1,6 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/option_grid_view.dart';
-import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/public_convenience_page/public_convenience_list_page.dart';
@@ -382,47 +381,47 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                     //       ],
                     //     )),
                     // 公共服务
-                    Container(
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.public,
-                                  color: primaryColor,
-                                  size: 20,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  '公共服务',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            OptionGridView(
-                              itemCount: commonMenu.length,
-                              rowCount: 5,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              itemBuilder: (context, index) {
-                                return _FunctionAreaItem(commonMenu[index]);
-                              },
-                            ),
-                          ],
-                        )),
+                    // Container(
+                    //     padding: EdgeInsets.all(10),
+                    //     margin: EdgeInsets.only(bottom: 10),
+                    //     decoration: BoxDecoration(
+                    //         color: Colors.white,
+                    //         borderRadius: BorderRadius.circular(10)),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Row(
+                    //           children: [
+                    //             Icon(
+                    //               Icons.public,
+                    //               color: primaryColor,
+                    //               size: 20,
+                    //             ),
+                    //             SizedBox(
+                    //               width: 5,
+                    //             ),
+                    //             Text(
+                    //               '公共服务',
+                    //               style: TextStyle(
+                    //                   fontSize: 14,
+                    //                   fontWeight: FontWeight.bold),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         SizedBox(
+                    //           height: 10,
+                    //         ),
+                    // OptionGridView(
+                    //   itemCount: commonMenu.length,
+                    //   rowCount: 5,
+                    //   mainAxisSpacing: 10,
+                    //   crossAxisSpacing: 10,
+                    //   itemBuilder: (context, index) {
+                    //     return _FunctionAreaItem(commonMenu[index]);
+                    //   },
+                    // ),
+                    // ],
+                    // )),
                     SizedBox(
                       height: 50,
                     ),

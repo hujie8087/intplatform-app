@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
+import 'package:logistics_app/pages/auth/Register_page.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -147,23 +148,23 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                     ),
             ),
-            // Container(
-            //     margin: EdgeInsets.only(top: 20, bottom: 150),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         Text('没有帐号？'),
-            //         GestureDetector(
-            //           onTap: () {
-            //             RouteUtils.push(context, RegisterPage());
-            //           },
-            //           child: Text(
-            //             '立即注册',
-            //             style: TextStyle(color: primaryColor),
-            //           ),
-            //         )
-            //       ],
-            //     ))
+            Container(
+                margin: EdgeInsets.only(top: 20, bottom: 150),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('没有帐号？'),
+                    GestureDetector(
+                      onTap: () {
+                        RouteUtils.push(context, RegisterPage());
+                      },
+                      child: Text(
+                        '立即注册',
+                        style: TextStyle(color: primaryColor),
+                      ),
+                    )
+                  ],
+                ))
           ],
         ));
   }

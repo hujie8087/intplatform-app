@@ -26,7 +26,6 @@ import 'package:pub_semver/pub_semver.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    name: 'iwip logistics',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseApi().initNotifications();
@@ -34,13 +33,12 @@ void main() async {
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
-  ]).then((_) => {
-        initXUpdate(),
-        LogUtils.init(),
-        HttpUtils.initDio(),
-        checkUpdate(),
-        runApp(MyApp())
-      });
+  ]);
+  initXUpdate();
+  LogUtils.init();
+  HttpUtils.initDio();
+  checkUpdate();
+  runApp(MyApp());
 }
 
 Future<void> _checkConnectivity() async {
@@ -59,8 +57,8 @@ void _updateNetworkType(ConnectivityResult result) {
       SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefix);
       break;
     case ConnectivityResult.wifi:
-      HttpUtils.setBaseUrl(APIs.apiPrefixWifi);
-      SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefixWifi);
+      HttpUtils.setBaseUrl(APIs.apiPrefix);
+      SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefix);
       break;
     case ConnectivityResult.none:
       break;
@@ -113,44 +111,46 @@ void initXUpdate() {
 
 ///检查更新
 Future checkUpdate() async {
-  //获取当前app的版本code
-  String versionCode = await DeviceUtils.version();
-  String versionName = await DeviceUtils.version();
-  String downloadUrlPre = await SpUtils.getString(Constants.SP_IMAGE_PREFIX);
-  DataUtils.getAppLastVersion(
-    success: (data) {
-      UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
-      //线上版本的code
-      Version oldVersion = Version.parse(versionName);
-      Version newVersion = Version.parse(updateModel.versionName);
-      try {
-        //如果当前版本小于线上版本，需要更新
-        if (oldVersion == newVersion) {
-          SpUtils.saveString(
-              Constants.SP_NEW_APP_VERSION, updateModel.versionName);
-        } else {
+  if (Platform.isAndroid) {
+    //获取当前app的版本code
+    String versionCode = await DeviceUtils.version();
+    String versionName = await DeviceUtils.version();
+    String downloadUrlPre = await SpUtils.getString(Constants.SP_IMAGE_PREFIX);
+    DataUtils.getAppLastVersion(
+      success: (data) {
+        UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
+        //线上版本的code
+        Version oldVersion = Version.parse(versionName);
+        Version newVersion = Version.parse(updateModel.versionName);
+        try {
+          //如果当前版本小于线上版本，需要更新
+          if (oldVersion == newVersion) {
+            SpUtils.saveString(
+                Constants.SP_NEW_APP_VERSION, updateModel.versionName);
+          } else {
+            SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
+          }
+          if (oldVersion < newVersion) {
+            UpdateEntity customParseJson() {
+              return UpdateEntity(
+                  isForce: true,
+                  hasUpdate: true,
+                  isIgnorable: false,
+                  versionCode: int.parse(updateModel.versionCode),
+                  versionName: updateModel.versionName,
+                  updateContent: updateModel.updateLog,
+                  downloadUrl: downloadUrlPre + updateModel.apkUrl,
+                  apkSize: updateModel.apkSize);
+            }
+
+            FlutterXUpdate.updateByInfo(updateEntity: customParseJson());
+          }
+        } catch (e) {
           SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
         }
-        if (oldVersion < newVersion) {
-          UpdateEntity customParseJson() {
-            return UpdateEntity(
-                isForce: true,
-                hasUpdate: true,
-                isIgnorable: false,
-                versionCode: int.parse(updateModel.versionCode),
-                versionName: updateModel.versionName,
-                updateContent: updateModel.updateLog,
-                downloadUrl: downloadUrlPre + updateModel.apkUrl,
-                apkSize: updateModel.apkSize);
-          }
-
-          FlutterXUpdate.updateByInfo(updateEntity: customParseJson());
-        }
-      } catch (e) {
-        SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
-      }
-    },
-  );
+      },
+    );
+  }
 }
 
 /// 设计尺寸

@@ -9,6 +9,7 @@ Future<void> handleBackgroundMessage(RemoteMessage message) async {
 
 class FirebaseApi {
   final _FireBaseMeesaging = FirebaseMessaging.instance;
+
   Future<void> initNotifications() async {
     await _FireBaseMeesaging.requestPermission();
     final fCMToken = await _FireBaseMeesaging.getToken();

@@ -17,8 +17,8 @@ class _AvatarWidgetState extends State<AvatarWidget> {
   String imagePrefix = '';
   @override
   void initState() {
-    super.initState();
     _fetchData();
+    super.initState();
   }
 
   Future<void> _fetchData() async {
@@ -32,19 +32,19 @@ class _AvatarWidgetState extends State<AvatarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: widget.width,
-      height: widget.width,
-      margin: EdgeInsets.only(right: 10),
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-            image: avatar.startsWith('assets')
-                ? AssetImage(avatar) as ImageProvider
-                : NetworkImage(imagePrefix + avatar),
-            fit: BoxFit.fill,
-          ),
-          color: primaryColor),
-    );
+    return avatar.isNotEmpty
+        ? Container(
+            width: widget.width,
+            height: widget.width,
+            margin: EdgeInsets.only(right: 10),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  image: NetworkImage(imagePrefix + avatar),
+                  fit: BoxFit.fill,
+                ),
+                color: primaryColor),
+          )
+        : Container();
   }
 }

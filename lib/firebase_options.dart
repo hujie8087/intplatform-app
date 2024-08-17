@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB4oPOYaD_PNPMDCkW7oD1mOctjmVbnxLQ',
-    appId: '1:395758838818:android:a52d9fbff4942524aed67b',
-    messagingSenderId: '395758838818',
-    projectId: 'logistics-498c6',
-    storageBucket: 'logistics-498c6.appspot.com',
+    apiKey: 'AIzaSyAVa_8LRTtxCyGafbbB8UuPywqZd7JBzi0',
+    appId: '1:575416101353:android:13050e9c0772bd97b70378',
+    messagingSenderId: '575416101353',
+    projectId: 'iwiplogistics',
+    storageBucket: 'iwiplogistics.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAWSfpRFp3V98DgeR9VzQjQfEsAzBf_-24',
-    appId: '1:395758838818:ios:163119130c8a7196aed67b',
-    messagingSenderId: '395758838818',
-    projectId: 'logistics-498c6',
-    storageBucket: 'logistics-498c6.appspot.com',
-    iosBundleId: 'com.example.logistics',
+    apiKey: 'AIzaSyBITomrxeBiBWXQF8-46Gt8oUBxsF7WC8w',
+    appId: '1:575416101353:ios:b874218703990eafb70378',
+    messagingSenderId: '575416101353',
+    projectId: 'iwiplogistics',
+    storageBucket: 'iwiplogistics.appspot.com',
+    iosBundleId: 'com.iwip.logistics',
   );
+
 }

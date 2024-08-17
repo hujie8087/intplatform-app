@@ -1,14 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
-import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
-import 'package:logistics_app/pages/mine_page/feedback_page/feedback_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_view_model.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
@@ -16,7 +15,6 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:oktoast/oktoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -127,23 +125,23 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                             _commonItem('消息通知', Icons.notifications, () {
                               RouteUtils.push(context, NoticeListPage());
                             }, '', 0.4),
-                            _commonItem('意见反馈', Icons.feedback, () {
-                              RouteUtils.push(context, FeedbackPage());
-                            }, '', 0.5),
+                            // _commonItem('意见反馈', Icons.feedback, () {
+                            //   RouteUtils.push(context, FeedbackPage());
+                            // }, '', 0.5),
                             // 语言设置
-                            _commonItem(
-                                '语言设置', Icons.language, () {}, '中文', 0.6),
-                            _commonItem(
-                                '清除缓存', Icons.delete_rounded, () {}, '', 0.7),
-                            Consumer<MineViewModel>(
-                                builder: (context, model, child) {
-                              return badges.Badge(
-                                showBadge: model.needUpdate,
-                                child: _commonItem('检查更新', Icons.update, () {
-                                  checkAppUpdate(context);
-                                }, model.needUpdate ? '有新版本' : version, 0.8),
-                              );
-                            }),
+                            // _commonItem(
+                            //     '语言设置', Icons.language, () {}, '中文', 0.6),
+                            // _commonItem(
+                            //     '清除缓存', Icons.delete_rounded, () {}, '', 0.7),
+                            // Consumer<MineViewModel>(
+                            //     builder: (context, model, child) {
+                            //   return badges.Badge(
+                            //     showBadge: model.needUpdate,
+                            //     child: _commonItem('检查更新', Icons.update, () {
+                            //       checkAppUpdate(context);
+                            //     }, model.needUpdate ? '有新版本' : version, 0.8),
+                            //   );
+                            // }),
                             _commonItem('联系我们', Icons.info, () {
                               RouteUtils.push(context, ContactUsPage());
                             }, '', 0.9),
