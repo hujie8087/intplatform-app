@@ -24,10 +24,8 @@ class APIs {
   //     'http://192.168.91.50:9000/intplatform'; // 图片内网地址
 
   // 韩栋本地环境
-  // static const String apiPrefix =
-  //     'http://10.40.10.18:10200'; // 外网
-  // static const String apiPrefixWifi =
-  //     'http://10.40.10.18:10200'; // 内网
+  // static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
+  // static const String apiPrefixWifi = 'http://10.40.10.18:10200'; // 内网
 
   // 阿泽本地环境
   // static const String apiPrefix = 'http://10.40.11.26:10200'; // 外网

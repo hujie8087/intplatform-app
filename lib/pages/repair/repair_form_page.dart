@@ -9,10 +9,12 @@ import 'package:dio/dio.dart' as dio;
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/repair_form_model.dart';
 import 'package:logistics_app/http/model/upload_image_model.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
 import 'package:logistics_app/utils/picker.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -85,6 +87,9 @@ class _RepairFormPage extends State<RepairFormPage>
   var model = RepairDataModel();
   String roomValue = '请选择';
   List<dynamic> values = [];
+  String repairKey = '';
+
+  bool _isLoading = false;
   // 选择的图片
   List<AssetEntity> selectedAssets = [];
   List<dio.MultipartFile> files = [];
@@ -96,9 +101,21 @@ class _RepairFormPage extends State<RepairFormPage>
   bool isWillRemove = false;
 
   late List<Item> items;
+
+  Future<void> _fetchData() async {
+    var userInfo = await SpUtils.getModel('userInfo');
+    UserInfoModel userInfoModel = UserInfoModel.fromJson(userInfo);
+    // 更新状态
+    setState(() {
+      repairKey = DateTime.now().millisecondsSinceEpoch.toString() +
+          userInfoModel.user!.userId.toString();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    _fetchData();
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
 
@@ -250,76 +267,122 @@ class _RepairFormPage extends State<RepairFormPage>
                                     return null;
                                   }),
                                   SizedBox(height: 16.0),
-                                  Text('上传报修图片'),
+                                  Row(
+                                    children: [
+                                      Text('上传报修图片'),
+                                      Text(
+                                        '(拖动图片可删除)',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 12),
+                                      )
+                                    ],
+                                  ),
                                   SizedBox(height: 8.0),
                                   _buildPhotoList(),
-                                  RaisedButton(
-                                    onPressed: () async {
-                                      if (values.isEmpty) {
-                                        showToast('请选择报修地址');
-                                        return;
-                                      }
-                                      // 校验表单
-                                      if (_formKey.currentState!.validate()) {
-                                        ProgressHUD.showLoadingText('图片上传中...');
-                                        // 上传图片
-                                        if (selectedAssets.isNotEmpty) {
-                                          final res = await uploadImages(
-                                              selectedAssets);
-                                          setState(() {
-                                            _uploadedImageUrls = res;
-                                          });
-                                        }
-                                        // 提交表单
-                                        _formKey.currentState!.save();
-                                        model.repairFormModel = RepairFormModel(
-                                          repairPerson:
-                                              _repairPersonController.text,
-                                          tel: _telController.text,
-                                          repairArea: values[0]['title'],
-                                          repairAreaId: values[0]['id'],
-                                          repairMessage:
-                                              _repairMessageController.text,
-                                          repairPhoto:
-                                              _uploadedImageUrls.join(','),
-                                          repairRoomId:
-                                              values[values.length - 1]['id'],
-                                          roomNo: values[values.length - 1]
-                                              ['title'],
-                                        );
-                                        model.addRepairModel().then((res) {
-                                          ProgressHUD.hide();
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  content: Text('保修单提交成功！'),
-                                                  actions: [
-                                                    TextButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                              context);
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: Text(
-                                                          '确定',
-                                                          style: TextStyle(
-                                                              fontSize: 16,
-                                                              color:
-                                                                  primaryColor),
-                                                        )),
-                                                  ],
-                                                );
+                                  Container(
+                                    child: _isLoading
+                                        ? Center(
+                                            child: CircularProgressIndicator(
+                                            valueColor: AlwaysStoppedAnimation(
+                                                primaryColor),
+                                          ))
+                                        : RaisedButton(
+                                            onPressed: () async {
+                                              if (values.isEmpty) {
+                                                showToast('请选择报修地址');
+                                                return;
+                                              }
+                                              setState(() {
+                                                _isLoading = true;
                                               });
-                                        }).catchError((error) {
-                                          showToast(error);
-                                        });
-                                      }
-                                    },
-                                    child: Text('提交报修'),
-                                    color: primaryColor,
-                                    textColor: Colors.white,
+                                              // 校验表单
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                // 上传图片
+                                                if (selectedAssets.isNotEmpty) {
+                                                  ProgressHUD.showLoadingText(
+                                                      '图片上传中...');
+                                                  final res =
+                                                      await uploadImages(
+                                                          selectedAssets);
+                                                  setState(() {
+                                                    _uploadedImageUrls = res;
+                                                  });
+                                                }
+                                                // 提交表单
+                                                _formKey.currentState!.save();
+                                                model.repairFormModel =
+                                                    RepairFormModel(
+                                                  repairPerson:
+                                                      _repairPersonController
+                                                          .text,
+                                                  tel: _telController.text,
+                                                  repairArea: values[0]
+                                                      ['title'],
+                                                  repairAreaId: values[0]['id'],
+                                                  repairMessage:
+                                                      _repairMessageController
+                                                          .text,
+                                                  repairPhoto:
+                                                      _uploadedImageUrls
+                                                          .join(','),
+                                                  repairRoomId:
+                                                      values[values.length - 1]
+                                                          ['id'],
+                                                  roomNo:
+                                                      values[values.length - 1]
+                                                          ['title'],
+                                                  repairKey: repairKey,
+                                                );
+                                                model
+                                                    .addRepairModel()
+                                                    .then((res) {
+                                                  ProgressHUD.hide();
+                                                  if (res.success) {
+                                                    showDialog(
+                                                        barrierDismissible:
+                                                            false,
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            content: Text(
+                                                                '保修单提交成功！'),
+                                                            actions: [
+                                                              TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    '确定',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            16,
+                                                                        color:
+                                                                            primaryColor),
+                                                                  )),
+                                                            ],
+                                                          );
+                                                        });
+                                                  } else {
+                                                    showToast(
+                                                        res.errorMessage ??
+                                                            '提交失败');
+                                                  }
+                                                  setState(() {
+                                                    _isLoading = false;
+                                                  });
+                                                });
+                                              }
+                                            },
+                                            child: Text('提交报修'),
+                                            color: primaryColor,
+                                            textColor: Colors.white,
+                                          ),
                                   ),
                                 ],
                               )),

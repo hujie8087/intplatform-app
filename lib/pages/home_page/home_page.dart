@@ -351,24 +351,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         itemCount: model.list?.length,
                                         scrollDirection: Axis.vertical,
                                         itemBuilder: (context, index) {
-                                          return Row(children: [
-                                            Expanded(
-                                                child: Text(
-                                                    model.list?[index]
-                                                            ?.noticeTitle ??
-                                                        '',
-                                                    style: TextStyle(
-                                                        fontSize: 14))),
-                                            Container(
-                                                child: Container(
-                                              alignment: Alignment.centerRight,
-                                              child: Icon(
-                                                Icons.arrow_forward_ios,
-                                                size: 16,
-                                                color: Colors.grey,
-                                              ),
-                                            )),
-                                          ]);
+                                          return GestureDetector(
+                                            onTap: () {
+                                              RouteUtils.push(
+                                                  context,
+                                                  NoticeDetailPage(
+                                                      noticeId: model
+                                                          .list![index]!
+                                                          .noticeId!));
+                                            },
+                                            child: Row(children: [
+                                              Expanded(
+                                                  child: Text(
+                                                      model.list?[index]
+                                                              ?.noticeTitle ??
+                                                          '',
+                                                      style: TextStyle(
+                                                          fontSize: 14))),
+                                              Container(
+                                                  child: Container(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  size: 16,
+                                                  color: Colors.grey,
+                                                ),
+                                              )),
+                                            ]),
+                                          );
                                         },
                                       ));
                           }),

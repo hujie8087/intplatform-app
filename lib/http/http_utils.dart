@@ -133,7 +133,7 @@ class HttpUtils {
       if (url == '/system/user/addToken') {
         queryParameters = params;
       } else {
-        queryParameters = params;
+        // queryParameters = params;
         data = params;
       }
     }

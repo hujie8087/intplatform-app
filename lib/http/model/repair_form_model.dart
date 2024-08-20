@@ -7,6 +7,7 @@ class RepairFormModel {
   String? tel;
   String? repairPhoto;
   String? repairPerson;
+  String? repairKey;
 
   RepairFormModel(
       {this.repairAreaId,
@@ -16,7 +17,8 @@ class RepairFormModel {
       this.roomNo,
       this.tel,
       this.repairPhoto,
-      this.repairPerson});
+      this.repairPerson,
+      this.repairKey});
 
   factory RepairFormModel.fromJson(Map<String, dynamic> json) {
     return RepairFormModel(
@@ -28,6 +30,7 @@ class RepairFormModel {
       tel: json['tel'],
       repairPhoto: json['repairPhoto'],
       repairPerson: json['repairPerson'],
+      repairKey: json['repairKey'],
     );
   }
 
@@ -41,6 +44,7 @@ class RepairFormModel {
       'tel': tel,
       'repairPhoto': repairPhoto,
       'repairPerson': repairPerson,
+      'repairKey': repairKey,
     };
   }
 }

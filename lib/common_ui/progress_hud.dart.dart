@@ -52,7 +52,6 @@ class ProgressHUD {
 
   /// 隐藏所有Toast
   static hide() {
-    print('hide:hidehidehide');
     dismissAllToast();
   }
 }

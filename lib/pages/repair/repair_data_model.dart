@@ -8,11 +8,17 @@ import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/repair_form_model.dart';
 import 'package:logistics_app/http/model/repair_view_model.dart';
 
+class RepairResult {
+  final bool success;
+  final String? errorMessage;
+
+  RepairResult({required this.success, this.errorMessage});
+}
+
 class RepairDataModel with ChangeNotifier {
   List list = [];
   RepairFormModel? repairFormModel;
   RepairViewModel? repairViewData;
-  final Completer<bool> completer = Completer<bool>();
 
   Future getBuildingTreeModel() async {
     DataUtils.getBuildingTree(success: (data) {
@@ -24,15 +30,17 @@ class RepairDataModel with ChangeNotifier {
     });
   }
 
-  Future addRepairModel() async {
+  Future<RepairResult> addRepairModel() async {
     Loading.showLoading();
+    final Completer<RepairResult> completer = Completer<RepairResult>();
     RepairUtils.repairPost(repairFormModel, success: (data) {
       Loading.dismissAll();
-      completer.complete(true);
+      completer.complete(RepairResult(success: true));
     }, fail: (code, msg) {
       Loading.dismissAll();
-      completer.complete(false);
+      completer.complete(RepairResult(success: false, errorMessage: msg));
     });
+    return completer.future;
   }
 
   Future getRepairDetail(id) async {
