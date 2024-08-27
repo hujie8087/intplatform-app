@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/Login_form.dart';
-import 'package:flutter/material.dart';
 import 'package:logistics_app/route/route_utils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginPage> {
                             padding: EdgeInsets.only(left: 30, right: 30),
                             width: SizedBox.expand().width,
                             child: Text(
-                              '欢迎来到IWIP后勤服务APP',
+                              '欢迎来到IWIP后勤综合服务APP',
                               style:
                                   TextStyle(fontSize: 18, color: Colors.grey),
                               textAlign: TextAlign.left,

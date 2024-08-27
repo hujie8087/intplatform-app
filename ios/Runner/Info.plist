@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>IWIP后勤服务</string>
+	<string>IWIP后勤综合服务</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,21 +15,17 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>IWIP后勤服务</string>
+	<string>IWIP后勤综合服务</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>1.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>“IWIP后勤服务”需要访问您的相机以拍摄照片和视频，用于用户头像和发布内容。</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>“IWIP后勤服务”需要访问您的照片库以选择和上传图片或视频，用于发布内容或设置个人资料</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>App需要您的同意,才能访问媒体资料库</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
@@ -39,7 +35,7 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>是否允许此APP使用日历？</string>
 	<key>NSCameraUsageDescription</key>
-	<string>是否允许需要使用您的相机来进行拍照？</string>
+	<string>“IWIP后勤综合服务”需要访问您的相机以拍摄照片和视频，用于用户头像和发布内容。</string>
 	<key>NSContactsUsageDescription</key>
 	<string>是否允许此APP访问您的通讯录？</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -53,7 +49,7 @@
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>App需要您的同意,才能访问相册？</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>是否允许使用您的媒体资料来选取多媒体文件？</string>
+	<string>“IWIP后勤综合服务”需要访问您的照片库以选择和上传图片或视频，用于发布内容或设置个人资料</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>是否允许此App使用语音识别？</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

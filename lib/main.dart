@@ -187,7 +187,7 @@ class MyApp extends StatelessWidget {
       designSize: designSize,
       builder: (context, child) {
         return MaterialApp(
-          title: 'IWIP后勤服务',
+          title: 'IWIP后勤综合服务',
           debugShowCheckedModeBanner: false,
           locale: const Locale('zh', 'CN'),
           theme: ThemeData(
