@@ -13,7 +13,6 @@ import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
-import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
@@ -102,20 +101,20 @@ class _RepairFormPage extends State<RepairFormPage>
 
   late List<Item> items;
 
-  Future<void> _fetchData() async {
-    var userInfo = await SpUtils.getModel('userInfo');
-    UserInfoModel userInfoModel = UserInfoModel.fromJson(userInfo);
-    // 更新状态
-    setState(() {
-      repairKey = DateTime.now().millisecondsSinceEpoch.toString() +
-          userInfoModel.user!.userId.toString();
-    });
-  }
+  // Future<void> _fetchData() async {
+  //   var userInfo = await SpUtils.getModel('userInfo');
+  //   UserInfoModel userInfoModel = UserInfoModel.fromJson(userInfo);
+  //   // 更新状态
+  //   setState(() {
+  //     repairKey = DateTime.now().millisecondsSinceEpoch.toString() +
+  //         userInfoModel.user!.userId.toString();
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    // _fetchData();
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
 

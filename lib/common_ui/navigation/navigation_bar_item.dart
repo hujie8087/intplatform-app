@@ -64,8 +64,16 @@ class NavigationBarItemState extends State<NavigationBarItem>
                               curve: Curves.fastOutSlowIn))
                           .value *
                       38.0;
-                  double horizontalOffset =
-                      Tween<double>(begin: prev == 1.0 ? 0.0 : -1.0, end: 1.0)
+                  double horizontalOffset = prev == 1.0
+                      ? Tween<double>(begin: 0.0, end: 1.0)
+                              .animate(CurvedAnimation(
+                                  parent: physicalShapeAnimationController,
+                                  curve: Curves.fastOutSlowIn))
+                              .value *
+                          screenWidth /
+                          widget.tabIconsList!.length *
+                          (current - 1)
+                      : Tween<double>(begin: -1.0, end: 1.0)
                               .animate(CurvedAnimation(
                                   parent: physicalShapeAnimationController,
                                   curve: Curves.fastOutSlowIn))
@@ -155,7 +163,6 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // print('${widget.tabIconData!.labelName}:${widget.tabIconData!.index}');
     return AspectRatio(
       aspectRatio: 1,
       child: Center(

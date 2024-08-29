@@ -408,10 +408,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   width: double.infinity,
                   height: 200,
                   child: Swiper(
-                    itemCount: 3,
+                    itemCount: 2,
                     itemBuilder: (BuildContext context, int index) {
                       return Image.asset(
-                        'assets/hotel/hotel_1.png',
+                        'assets/images/banner.jpg',
                         fit: BoxFit.fill,
                       );
                     },

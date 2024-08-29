@@ -1,3 +1,4 @@
+import 'package:flutter_html_video/flutter_html_video.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -36,48 +37,56 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          noticeDetail?.noticeTitle ?? '',
-          style: TextStyle(fontSize: 18),
-          textAlign: TextAlign.left,
+        appBar: AppBar(
+          title: Text(
+            noticeDetail?.noticeTitle ?? '',
+            style: TextStyle(fontSize: 18),
+            textAlign: TextAlign.left,
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              noticeDetail?.noticeTitle ?? '',
-              style: TextStyle(fontSize: 20),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  noticeDetail?.createDept ?? '',
-                  style: TextStyle(color: primaryColor, fontSize: 14),
+                  noticeDetail?.noticeTitle ?? '',
+                  style: TextStyle(fontSize: 20),
                 ),
                 SizedBox(
-                  width: 10,
+                  height: 10,
                 ),
-                Text(
-                  noticeDetail?.createTime ?? '',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                Row(
+                  children: [
+                    Text(
+                      noticeDetail?.createDept ?? '',
+                      style: TextStyle(color: primaryColor, fontSize: 14),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      noticeDetail?.createTime ?? '',
+                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                    ),
+                  ],
                 ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                    child: Html(
+                  data: noticeDetail?.noticeContent ?? '',
+                  extensions: [
+                    const VideoHtmlExtension(),
+                  ],
+                ))
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
-            Container(child: Html(data: noticeDetail?.noticeContent ?? ''))
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }

@@ -486,6 +486,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0-beta.2"
+  flutter_html_video:
+    dependency: "direct main"
+    description:
+      name: flutter_html_video
+      sha256: ecc8bcc614dd8a8286d32ace462481817660f5a7e854c663c1fcb3424fc3be89
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0-beta.2"
   flutter_launcher_icons:
     dependency: "direct main"
     description:

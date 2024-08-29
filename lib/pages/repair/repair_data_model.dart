@@ -2,11 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/loading.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/model/base_model.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/repair_form_model.dart';
 import 'package:logistics_app/http/model/repair_view_model.dart';
+import 'package:logistics_app/route/route_utils.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 
 class RepairResult {
   final bool success;
@@ -21,13 +24,19 @@ class RepairDataModel with ChangeNotifier {
   RepairViewModel? repairViewData;
 
   Future getBuildingTreeModel() async {
-    DataUtils.getBuildingTree(success: (data) {
-      BaseModel rowsModel = BaseModel.fromJson(data);
-      if (rowsModel.data != null) {
-        list = rowsModel.data;
-      }
-      notifyListeners();
-    });
+    var userInfo = await SpUtils.getModel('userInfo');
+    if (userInfo != null) {
+      DataUtils.getBuildingTree(success: (data) {
+        BaseModel rowsModel = BaseModel.fromJson(data);
+        if (rowsModel.data != null) {
+          list = rowsModel.data;
+        }
+        notifyListeners();
+      });
+    } else {
+      ProgressHUD.showText('请登录您的帐号');
+      RouteUtils.navigateToLogin();
+    }
   }
 
   Future<RepairResult> addRepairModel() async {

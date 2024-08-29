@@ -80,8 +80,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 }
 MobSDK {
-    appKey "3a267ac2553b9"
-    appSecret "d8a52ed1052435e3c32dee29f638e098"
+    appKey "3a2cebc425f10"
+    appSecret "c91dab150797b3c47374c379c4bb9426"
 
     //配置MobPush
     MobPush {
@@ -89,15 +89,15 @@ MobSDK {
         //配置厂商推送（可选配置，不需要厂商推送可不配置，需要哪些厂商推送只需配置哪些厂商配置即可）
         // devInfo {
             //配置小米厂商推送
-            XIAOMI {
-                appId "2882303761520341608"
-                appKey "5942034186608"
-            }
+            // XIAOMI {
+            //     appId "2882303761520341608"
+            //     appKey "5942034186608"
+            // }
 
-            //配置华为厂商推送
-            HUAWEI {
-                appId "111770963"
-            }
+            // //配置华为厂商推送
+            // HUAWEI {
+            //     appId "111770963"
+            // }
 
         //     //配置魅族厂商推送
         //     MEIZU {
@@ -109,7 +109,7 @@ MobSDK {
             FCM{
                     iconRes "@mipmap/ic_launcher" //设置默认推送通知显示图标，可自行更改
                     version "23.1.0" // FCM版本，可自行指定
-                    onlyCore true //可选，添加此配置可有效减少FCM厂商包体大小
+                    // onlyCore true //可选，添加此配置可有效减少FCM厂商包体大小
 
             }
 

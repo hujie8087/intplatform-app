@@ -25,6 +25,7 @@ import 'package:mobpush_plugin/mobpush_notify_message.dart';
 import 'package:mobpush_plugin/mobpush_plugin.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pub_semver/pub_semver.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +38,7 @@ void main() async {
     print('------>#### isPushStopped: ${res}');
   });
   MobpushPlugin.addPushReceiver(_onEvent, _onError);
-  await _checkConnectivity();
+  // await _checkConnectivity();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
@@ -115,7 +116,7 @@ void _updateNetworkType(ConnectivityResult result) {
 }
 
 ///初始化
-void initXUpdate() {
+void initXUpdate() async {
   if (Platform.isAndroid) {
     FlutterXUpdate.init(
 
@@ -155,6 +156,12 @@ void initXUpdate() {
     });
   } else {
     //showToast('ios暂不支持XUpdate更新');
+    String Version = "https://itunes.apple.com/cn/lookup?id=6667111068";
+    if (await canLaunch(Version)) {
+      await launch(Version);
+    } else {
+      throw 'Could not launch $Version';
+    }
   }
 }
 

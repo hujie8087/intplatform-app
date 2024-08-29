@@ -130,12 +130,7 @@ class HttpUtils {
       data = params;
     }
     if (method == Method.put) {
-      if (url == '/system/user/addToken') {
-        queryParameters = params;
-      } else {
-        // queryParameters = params;
-        data = params;
-      }
+      queryParameters = params;
     }
     if (loadingText != null && loadingText.isNotEmpty) {
       ProgressHUD.showLoadingText(loadingText);

@@ -47,7 +47,6 @@ class _LoginFormState extends State<LoginForm> {
                 // autofocus: true,
                 cursorColor: primaryColor,
                 controller: _usernameController,
-                keyboardType: TextInputType.number,
                 style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
