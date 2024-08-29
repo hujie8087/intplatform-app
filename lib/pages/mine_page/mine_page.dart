@@ -47,35 +47,21 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
             curve: Interval(0.0, 1.0, curve: Curves.fastOutSlowIn)));
 
     widget.animationController!.forward();
-    // model.checkUpdate();
     super.initState();
     _fetchData();
   }
 
   Future<void> _fetchData() async {
-    // await model.checkUpdate();
-    // initXUpdate();
     // 模拟异步数据获取
-    userName = await SpUtils.getString(Constants.SP_USER_NAME);
-    deptName = await SpUtils.getString(Constants.SP_USER_DEPT);
+    userName = await SpUtils.getString(Constants.SP_USER_NAME) ?? '';
+    deptName = await SpUtils.getString(Constants.SP_USER_DEPT) ?? '';
     var userInfo = await SpUtils.getModel('userInfo');
     version = await DeviceUtils.version();
-    avatar = userInfo['user']['avatar'] ?? '';
+    avatar = userInfo != null ? userInfo['user']['avatar'] : '';
     // 更新状态
     setState(() {});
   }
 
-  ///将自定义的json内容解析为UpdateEntity实体类
-  // UpdateEntity customParseJson(String json) {
-  //   return UpdateEntity(
-  //       hasUpdate: true,
-  //       isIgnorable: true,
-  //       versionCode: model.updateModel?.name ?? '',
-  //       versionName: appInfo.versionName,
-  //       updateContent: appInfo.updateLog,
-  //       downloadUrl: appInfo.apkUrl,
-  //       apkSize: appInfo.apkSize);
-  // }
   Animation<double> createOffsetAnimation(double endValue) {
     return Tween<double>(
       begin: 1.0,

@@ -26,6 +26,10 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>“IWIP后勤综合服务”需要访问您的相机以拍摄照片和视频，用于用户头像和发布内容。</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>“IWIP后勤综合服务”需要访问您的照片库以选择和上传图片或视频，用于发布内容或设置个人资料</string>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>App需要您的同意,才能访问媒体资料库</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>

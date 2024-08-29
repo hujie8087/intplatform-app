@@ -17,6 +17,7 @@ import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:logistics_app/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     SwitchType('公司新闻', 1),
   ];
   void initState() {
+    print(widget.animationController);
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
             parent: widget.animationController!,
@@ -353,6 +355,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
                                             onTap: () {
+                                              // Utils.sendMobpushMessage(
+                                              //     1, '消息通知', 1, '');
                                               RouteUtils.push(
                                                   context,
                                                   NoticeDetailPage(

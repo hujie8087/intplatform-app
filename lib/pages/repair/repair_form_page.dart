@@ -380,7 +380,8 @@ class _RepairFormPage extends State<RepairFormPage>
                                               }
                                             },
                                             child: Text('提交报修'),
-                                            color: primaryColor,
+                                            color: primaryColor[700] ??
+                                                primaryColor,
                                             textColor: Colors.white,
                                           ),
                                   ),

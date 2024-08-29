@@ -21,6 +21,9 @@ class NavigationBarItem extends StatefulWidget {
 class NavigationBarItemState extends State<NavigationBarItem>
     with TickerProviderStateMixin {
   AnimationController? animationController;
+  late AnimationController physicalShapeAnimationController;
+  double current = 0.0;
+  double prev = 0.0;
 
   @override
   void initState() {
@@ -30,153 +33,80 @@ class NavigationBarItemState extends State<NavigationBarItem>
     );
     animationController?.forward();
     super.initState();
+    physicalShapeAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 600), // 动画持续时间
+    );
+    physicalShapeAnimationController.forward();
+  }
+
+  @override
+  void dispose() {
+    physicalShapeAnimationController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
       children: <Widget>[
         AnimatedBuilder(
           animation: animationController!,
           builder: (BuildContext context, Widget? child) {
-            return Transform(
-              transform: Matrix4.translationValues(0.0, 0.0, 0.0),
-              child: PhysicalShape(
-                color: AppTheme.white,
-                elevation: 16.0,
-                clipper: TabClipper(
-                    radius: Tween<double>(begin: 0.0, end: 1.0)
-                            .animate(CurvedAnimation(
-                                parent: animationController!,
-                                curve: Curves.fastOutSlowIn))
-                            .value *
-                        38.0),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 50,
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.only(left: 8, right: 8, top: 4),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: TabIcons(
-                                  tabIconData: widget.tabIconsList?[0],
-                                  removeAllSelect: () {
-                                    setRemoveAllSelection(
-                                        widget.tabIconsList?[0]);
-                                    widget.changeIndex!(0);
-                                  }),
+            return AnimatedBuilder(
+                animation: physicalShapeAnimationController,
+                builder: (context, child) {
+                  double radius = Tween<double>(begin: 0.0, end: 1.0)
+                          .animate(CurvedAnimation(
+                              parent: animationController!,
+                              curve: Curves.fastOutSlowIn))
+                          .value *
+                      38.0;
+                  double horizontalOffset =
+                      Tween<double>(begin: prev == 1.0 ? 0.0 : -1.0, end: 1.0)
+                              .animate(CurvedAnimation(
+                                  parent: physicalShapeAnimationController,
+                                  curve: Curves.fastOutSlowIn))
+                              .value *
+                          screenWidth /
+                          widget.tabIconsList!.length *
+                          (current - 1);
+                  return Transform(
+                    transform: Matrix4.translationValues(0.0, 0.0, 0.0),
+                    child: PhysicalShape(
+                      color: AppTheme.white,
+                      elevation: 16.0,
+                      clipper: TabClipper(
+                          radius: radius, horizontalOffset: horizontalOffset),
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 50,
+                            child: Container(
+                              child: Row(
+                                children: widget.tabIconsList!.map((item) {
+                                  return Expanded(
+                                      child: TabIcons(
+                                          tabIconData: item,
+                                          removeAllSelect: () {
+                                            setRemoveAllSelection(item);
+                                            widget.changeIndex!(item.index);
+                                          }));
+                                }).toList(),
+                              ),
                             ),
-                            // Expanded(
-                            //   child: TabIcons(
-                            //       tabIconData: widget.tabIconsList?[1],
-                            //       removeAllSelect: () {
-                            //         setRemoveAllSelection(
-                            //             widget.tabIconsList?[1]);
-                            //         widget.changeIndex!(1);
-                            //       }),
-                            // ),
-                            SizedBox(
-                              width: Tween<double>(begin: 0.0, end: 1.0)
-                                      .animate(CurvedAnimation(
-                                          parent: animationController!,
-                                          curve: Curves.fastOutSlowIn))
-                                      .value *
-                                  64.0,
-                            ),
-                            // Expanded(
-                            //   child: TabIcons(
-                            //       tabIconData: widget.tabIconsList?[2],
-                            //       removeAllSelect: () {
-                            //         setRemoveAllSelection(
-                            //             widget.tabIconsList?[2]);
-                            //         widget.changeIndex!(2);
-                            //       }),
-                            // ),
-                            Expanded(
-                              child: TabIcons(
-                                  tabIconData: widget.tabIconsList?[1],
-                                  removeAllSelect: () {
-                                    setRemoveAllSelection(
-                                        widget.tabIconsList?[1]);
-                                    widget.changeIndex!(1);
-                                  }),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).padding.bottom,
-                    )
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-        Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-          child: SizedBox(
-            width: 24 * 2.0,
-            height: 24 + 50.0,
-            child: Container(
-              alignment: Alignment.topCenter,
-              color: Colors.transparent,
-              child: SizedBox(
-                width: 28 * 2.0,
-                height: 28 * 2.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: ScaleTransition(
-                    alignment: Alignment.center,
-                    scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: animationController!,
-                            curve: Curves.fastOutSlowIn)),
-                    child: Container(
-                      // alignment: Alignment.center,s
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        gradient: LinearGradient(
-                            colors: [
-                              primaryColor,
-                              HexColor('#6A88E5'),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight),
-                        shape: BoxShape.circle,
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              color: primaryColor.withOpacity(0.4),
-                              offset: const Offset(8.0, 16.0),
-                              blurRadius: 16.0),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).padding.bottom,
+                          )
                         ],
                       ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          splashColor: Colors.white.withOpacity(0.1),
-                          highlightColor: Colors.transparent,
-                          focusColor: Colors.transparent,
-                          onTap: widget.addClick,
-                          child: Icon(
-                            Icons.menu,
-                            color: AppTheme.white,
-                            size: 24,
-                          ),
-                        ),
-                      ),
                     ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+                  );
+                });
+          },
         ),
       ],
     );
@@ -185,11 +115,9 @@ class NavigationBarItemState extends State<NavigationBarItem>
   void setRemoveAllSelection(TabIconData? tabIconData) {
     if (!mounted) return;
     setState(() {
-      widget.tabIconsList?.forEach((TabIconData tab) {
-        tab.isSelected = false;
-        if (tabIconData!.index == tab.index) {
-          tab.isSelected = true;
-        }
+      current = tabIconData!.index.toDouble();
+      physicalShapeAnimationController.forward(from: 0.0).then((res) {
+        prev = current;
       });
     });
   }
@@ -227,6 +155,7 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // print('${widget.tabIconData!.labelName}:${widget.tabIconData!.index}');
     return AspectRatio(
       aspectRatio: 1,
       child: Center(
@@ -244,36 +173,68 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
             child: Stack(
               alignment: AlignmentDirectional.center,
               children: <Widget>[
-                ScaleTransition(
-                  alignment: Alignment.topCenter,
-                  scale: Tween<double>(begin: 0.7, end: 1.0).animate(
-                      CurvedAnimation(
-                          parent: widget.tabIconData!.animationController!,
-                          curve:
-                              Interval(0.1, 1.0, curve: Curves.fastOutSlowIn))),
-                  child: Image.asset(widget.tabIconData!.isSelected
-                      ? widget.tabIconData!.selectedImagePath
-                      : widget.tabIconData!.imagePath),
-                ),
-                Positioned(
-                  bottom: 0,
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 600), // 动画持续时间
+                  curve: Curves.easeInOut, // 动画曲线
+                  transform: Matrix4.translationValues(
+                      0.0, widget.tabIconData!.isSelected ? -20.0 : 0, 0.0),
+                  decoration: BoxDecoration(
+                    color: widget.tabIconData!.isSelected
+                        ? primaryColor
+                        : Colors.white, // 动画颜色
+                    gradient: widget.tabIconData!.isSelected
+                        ? LinearGradient(
+                            colors: [
+                                primaryColor,
+                                HexColor('#6A88E5'),
+                              ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight)
+                        : null,
+                    shape: BoxShape.circle,
+                    boxShadow: widget.tabIconData!.isSelected
+                        ? <BoxShadow>[
+                            BoxShadow(
+                                color: primaryColor.withOpacity(0.4),
+                                offset: const Offset(8.0, 16.0),
+                                blurRadius: 16.0),
+                          ]
+                        : null,
+                  ),
                   child: ScaleTransition(
-                    alignment: Alignment.bottomCenter,
-                    scale: Tween<double>(begin: 0.8, end: 1.0).animate(
+                    alignment: widget.tabIconData!.isSelected
+                        ? Alignment.center
+                        : Alignment.topCenter,
+                    scale: Tween<double>(begin: 0.7, end: 1.0).animate(
                         CurvedAnimation(
                             parent: widget.tabIconData!.animationController!,
                             curve: Interval(0.1, 1.0,
                                 curve: Curves.fastOutSlowIn))),
-                    child: Text(
-                      widget.tabIconData!.labelName,
-                      style: TextStyle(
-                          color: widget.tabIconData!.isSelected
-                              ? primaryColor
-                              : Colors.grey,
-                          fontSize: 14),
-                    ),
+                    child: Image.asset(widget.tabIconData!.isSelected
+                        ? widget.tabIconData!.selectedImagePath
+                        : widget.tabIconData!.imagePath),
                   ),
                 ),
+                if (!widget.tabIconData!.isSelected)
+                  Positioned(
+                    bottom: 0,
+                    child: ScaleTransition(
+                      alignment: Alignment.bottomCenter,
+                      scale: Tween<double>(begin: 0.8, end: 1.0).animate(
+                          CurvedAnimation(
+                              parent: widget.tabIconData!.animationController!,
+                              curve: Interval(0.1, 1.0,
+                                  curve: Curves.fastOutSlowIn))),
+                      child: Text(
+                        widget.tabIconData!.labelName,
+                        style: TextStyle(
+                            color: widget.tabIconData!.isSelected
+                                ? primaryColor
+                                : Colors.grey,
+                            fontSize: 14),
+                      ),
+                    ),
+                  ),
                 Positioned(
                   top: 4,
                   left: 6,
@@ -347,34 +308,54 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
 }
 
 class TabClipper extends CustomClipper<Path> {
-  TabClipper({this.radius = 38.0});
+  TabClipper({this.radius = 38.0, this.horizontalOffset = 0.0});
 
   final double radius;
+  final double horizontalOffset; // 只影响凹型图案的水平偏移量
 
   @override
   Path getClip(Size size) {
     final Path path = Path();
 
     final double v = radius * 2;
+
+    // 绘制从左侧开始的路径，不影响到凹槽部分
     path.lineTo(0, 0);
     path.arcTo(Rect.fromLTWH(0, 0, radius, radius), degreeToRadians(180),
         degreeToRadians(90), false);
+
+    // 绘制凹槽前的直线路径
     path.arcTo(
         Rect.fromLTWH(
-            ((size.width / 2) - v / 2) - radius + v * 0.04, 0, radius, radius),
+            ((size.width / 2 + horizontalOffset) - v / 2) - radius + v * 0.04,
+            0,
+            radius,
+            radius),
         degreeToRadians(270),
         degreeToRadians(70),
         false);
 
-    path.arcTo(Rect.fromLTWH((size.width / 2) - v / 2, -v / 2, v, v),
-        degreeToRadians(160), degreeToRadians(-140), false);
-
+    // 应用水平偏移量到凹槽部分
     path.arcTo(
-        Rect.fromLTWH((size.width - ((size.width / 2) - v / 2)) - v * 0.04, 0,
-            radius, radius),
+        Rect.fromLTWH(
+            (size.width / 2) - v / 2 + horizontalOffset, -v / 2, v, v),
+        degreeToRadians(160),
+        degreeToRadians(-140),
+        false);
+
+    // 绘制凹槽后的直线路径
+    path.arcTo(
+        Rect.fromLTWH(
+            (size.width + horizontalOffset - ((size.width / 2) - v / 2)) -
+                v * 0.04,
+            0,
+            radius,
+            radius),
         degreeToRadians(200),
         degreeToRadians(70),
         false);
+
+    // 完成剩下的路径
     path.arcTo(Rect.fromLTWH(size.width - radius, 0, radius, radius),
         degreeToRadians(270), degreeToRadians(90), false);
     path.lineTo(size.width, 0);
@@ -389,7 +370,7 @@ class TabClipper extends CustomClipper<Path> {
   bool shouldReclip(TabClipper oldClipper) => true;
 
   double degreeToRadians(double degree) {
-    final double redian = (math.pi / 180) * degree;
-    return redian;
+    final double radian = (math.pi / 180) * degree;
+    return radian;
   }
 }

@@ -1,16 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
-import 'package:logistics_app/api/firebase_api.dart';
 import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
-import 'package:logistics_app/firebase_options.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/http_utils.dart';
@@ -20,15 +19,24 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:mobcommonlib/mobcommonlib.dart';
+import 'package:mobpush_plugin/mobpush_custom_message.dart';
+import 'package:mobpush_plugin/mobpush_notify_message.dart';
+import 'package:mobpush_plugin/mobpush_plugin.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pub_semver/pub_semver.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await FirebaseApi().initNotifications();
+  Mobcommonlib.submitPolicyGrantResult(true, null);
+  MobpushPlugin.getRegistrationId().then((Map<String, dynamic> ridMap) {
+    String regId = ridMap['res'].toString();
+    print('------>#### registrationId: ' + regId);
+  });
+  MobpushPlugin.isPushStopped().then((bool res) {
+    print('------>#### isPushStopped: ${res}');
+  });
+  MobpushPlugin.addPushReceiver(_onEvent, _onError);
   await _checkConnectivity();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
@@ -39,6 +47,47 @@ void main() async {
   HttpUtils.initDio();
   checkUpdate();
   runApp(MyApp());
+}
+
+void _onEvent(dynamic event) {
+  print('>>>>>>>>>>>>>>>>>>>>>>>>>>>onEvent:' + event.toString());
+  Map<String, dynamic> eventMap = json.decode(event as String);
+  Map<String, dynamic> result = eventMap['result'];
+  int action = eventMap['action'];
+
+  switch (action) {
+    case 0:
+      MobPushCustomMessage message = new MobPushCustomMessage.fromJson(result);
+      ProgressHUD.showInfo(message.content);
+      // showDialog(
+      //     context: context,
+      //     builder: (context) {
+      //       return AlertDialog(
+      //         content: Text(message.content),
+      //         actions: <Widget>[
+      //           TextButton(
+      //             onPressed: () {
+      //               Navigator.pop(context);
+      //             },
+      //             child: Text("确定")
+      //           )
+      //         ],
+      //       );
+      // });
+      break;
+    case 1:
+      MobPushNotifyMessage message = new MobPushNotifyMessage.fromJson(result);
+      print(message);
+      break;
+    case 2:
+      MobPushNotifyMessage message = new MobPushNotifyMessage.fromJson(result);
+      print(message);
+      break;
+  }
+}
+
+void _onError(dynamic event) {
+  print('>>>>>>>>>>>>>>>>>>>>>>>>>>>onError:' + event.toString());
 }
 
 Future<void> _checkConnectivity() async {
