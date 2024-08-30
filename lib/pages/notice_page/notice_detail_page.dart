@@ -37,7 +37,6 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    double w = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: AppBar(
           title: Text(

@@ -19,24 +19,30 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:mobcommonlib/mobcommonlib.dart';
 import 'package:mobpush_plugin/mobpush_custom_message.dart';
 import 'package:mobpush_plugin/mobpush_notify_message.dart';
 import 'package:mobpush_plugin/mobpush_plugin.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Mobcommonlib.submitPolicyGrantResult(true, null);
-  MobpushPlugin.getRegistrationId().then((Map<String, dynamic> ridMap) {
-    String regId = ridMap['res'].toString();
-    print('------>#### registrationId: ' + regId);
+  //上传隐私协议许可
+  MobpushPlugin.updatePrivacyPermissionStatus(true).then((value) {
+    print(
+        ">>>>>>>>>>>>>>>>>>>updatePrivacyPermissionStatus:" + value.toString());
   });
-  MobpushPlugin.isPushStopped().then((bool res) {
-    print('------>#### isPushStopped: ${res}');
-  });
+  if (Platform.isIOS) {
+    //设置地区：regionId 默认0（国内），1:海外
+    MobpushPlugin.setRegionId(0);
+    MobpushPlugin.registerApp(
+        "3a2cebc425f10", "c91dab150797b3c47374c379c4bb9426");
+  }
+  initPlatformState();
+  if (Platform.isIOS) {
+    MobpushPlugin.setCustomNotification();
+    MobpushPlugin.setAPNsForProduction(true);
+  }
   MobpushPlugin.addPushReceiver(_onEvent, _onError);
   // await _checkConnectivity();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
@@ -89,6 +95,28 @@ void _onEvent(dynamic event) {
 
 void _onError(dynamic event) {
   print('>>>>>>>>>>>>>>>>>>>>>>>>>>>onError:' + event.toString());
+}
+
+Future<void> initPlatformState() async {
+  String sdkVersion;
+  String _registrationId;
+  try {
+    sdkVersion = await MobpushPlugin.getSDKVersion();
+  } on PlatformException {
+    sdkVersion = 'Failed to get platform version.';
+  }
+  try {
+    Future.delayed(Duration(milliseconds: 500), () {
+      MobpushPlugin.getRegistrationId().then((Map<String, dynamic> ridMap) {
+        print(ridMap);
+        _registrationId = ridMap['res'].toString();
+        print('------>#### registrationId: ' + _registrationId);
+      });
+    });
+  } on PlatformException {
+    _registrationId = 'Failed to get registrationId.';
+  }
+  print('sdkVersion$sdkVersion');
 }
 
 Future<void> _checkConnectivity() async {
@@ -156,12 +184,12 @@ void initXUpdate() async {
     });
   } else {
     //showToast('ios暂不支持XUpdate更新');
-    String Version = "https://itunes.apple.com/cn/lookup?id=6667111068";
-    if (await canLaunch(Version)) {
-      await launch(Version);
-    } else {
-      throw 'Could not launch $Version';
-    }
+    // String Version = "https://itunes.apple.com/cn/lookup?id=6667111068";
+    // if (await canLaunch(Version)) {
+    //   await launch(Version);
+    // } else {
+    //   throw 'Could not launch $Version';
+    // }
   }
 }
 
@@ -171,7 +199,8 @@ Future checkUpdate() async {
     //获取当前app的版本code
     String versionCode = await DeviceUtils.version();
     String versionName = await DeviceUtils.version();
-    String downloadUrlPre = await SpUtils.getString(Constants.SP_IMAGE_PREFIX);
+    String downloadUrlPre =
+        await SpUtils.getString(Constants.SP_IMAGE_PREFIX) ?? APIs.apiPrefix;
     DataUtils.getAppLastVersion(
       success: (data) {
         UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);

@@ -125,7 +125,7 @@ class DioUtils {
       // 没有网络
       var connectivityResult = await (Connectivity().checkConnectivity());
       if (connectivityResult == ConnectivityResult.none) {
-        _onError(ExceptionHandle.net_error, '网络异常，请检查你的网络！', onError);
+        _onError(ExceptionHandle.net_error, '网络异常，请检查你的网络！', onError, url);
         return;
       }
       final Response response = await _dio.request<T>(
@@ -139,7 +139,7 @@ class DioUtils {
     } on DioException catch (e) {
       _cancelLogPrint(e, url);
       final NetError error = ExceptionHandle.handleException(e);
-      _onError(error.code, error.msg, onError);
+      _onError(error.code, error.msg, onError, url);
     }
   }
 }
@@ -156,12 +156,12 @@ void _cancelLogPrint(dynamic e, String url) {
   }
 }
 
-void _onError(int? code, String msg, NetErrorCallback? onError) {
+void _onError(int? code, String msg, NetErrorCallback? onError, String url) {
   if (code == null) {
     code = ExceptionHandle.unknown_error;
     msg = '未知异常';
   }
-  LogUtils.e('接口请求异常： code: $code, mag: $msg');
+  LogUtils.e('接口请求异常： code: $code, msg: $msg, url:$url');
   onError?.call(code, msg);
 }
 
