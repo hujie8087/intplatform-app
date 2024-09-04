@@ -6,14 +6,13 @@ import 'package:logistics_app/common_ui/GalleryWidget.dart';
 import 'package:logistics_app/common_ui/cascade_tree_picker.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/repair_form_model.dart';
 import 'package:logistics_app/http/model/upload_image_model.dart';
-import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
-import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -84,7 +83,7 @@ class _RepairFormPage extends State<RepairFormPage>
       TextEditingController();
   List<String> _uploadedImageUrls = [];
   var model = RepairDataModel();
-  String roomValue = '请选择';
+  String roomValue = S.current.pleaseSelect;
   List<dynamic> values = [];
   String repairKey = '';
 
@@ -144,7 +143,7 @@ class _RepairFormPage extends State<RepairFormPage>
                       backgroundColor: AppTheme.background,
                       appBar: AppBar(
                         title: Text(
-                          '在线报修',
+                          S.of(context).repairOnline,
                           style: TextStyle(fontSize: 18),
                         ),
                         centerTitle: true,
@@ -167,7 +166,7 @@ class _RepairFormPage extends State<RepairFormPage>
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          '报修地址',
+                                          S.of(context).repairAddress,
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: Colors.black,
@@ -185,20 +184,20 @@ class _RepairFormPage extends State<RepairFormPage>
                                                     Radius.circular(10))),
                                             child: GestureDetector(
                                               onTap: () {
-                                                if (model.list!.isNotEmpty) {
+                                                if (model.list.isNotEmpty) {
                                                   CascadeTreePicker.show(
                                                       context,
-                                                      data: model.list!,
+                                                      data: model.list,
                                                       values: values,
                                                       labelKey: 'title',
                                                       valuesKey: 'id',
-                                                      title: '请选择报修位置',
+                                                      title: S
+                                                          .of(context)
+                                                          .repairAddress,
                                                       clickCallBack:
                                                           (selectItem,
                                                               selectArr) {
                                                     setState(() {
-                                                      print(selectItem);
-                                                      print(selectArr);
                                                       values = selectArr;
                                                       List<Map<String, dynamic>>
                                                           mappedSelectArr =
@@ -241,36 +240,41 @@ class _RepairFormPage extends State<RepairFormPage>
                                       ],
                                     ),
                                   ),
-                                  _buildFormColumn(
-                                      '报修人', _repairPersonController,
+                                  _buildFormColumn(S.of(context).repairPerson,
+                                      _repairPersonController,
                                       validator: (val) {
                                     if (val == null || val.isEmpty) {
-                                      return '报修人不能为空';
+                                      return S.of(context).repairPersonNotEmpty;
                                     }
                                     return null;
                                   }),
-                                  _buildFormColumn('联系电话', _telController,
+                                  _buildFormColumn(S.of(context).contactPhone,
+                                      _telController,
                                       keyboardType: TextInputType.phone,
                                       validator: (val) {
                                     if (val == null || val.isEmpty) {
-                                      return '联系电话不能为空';
+                                      return S.of(context).contactPhoneNotEmpty;
                                     }
                                     return null;
                                   }),
-                                  _buildFormColumn(
-                                      '报修内容', _repairMessageController,
-                                      maxLines: 8, validator: (val) {
+                                  _buildFormColumn(S.of(context).repairContent,
+                                      _repairMessageController, maxLines: 8,
+                                      validator: (val) {
                                     if (val == null || val.isEmpty) {
-                                      return '报修内容不能为空';
+                                      return S
+                                          .of(context)
+                                          .repairContentNotEmpty;
                                     }
                                     return null;
                                   }),
                                   SizedBox(height: 16.0),
                                   Row(
                                     children: [
-                                      Text('上传报修图片'),
+                                      Text(S.of(context).uploadImages),
                                       Text(
-                                        '(拖动图片可删除)',
+                                        '(' +
+                                            S.of(context).dragRemoveImage +
+                                            ')',
                                         style: TextStyle(
                                             color: Colors.grey, fontSize: 12),
                                       )
@@ -288,7 +292,9 @@ class _RepairFormPage extends State<RepairFormPage>
                                         : RaisedButton(
                                             onPressed: () async {
                                               if (values.isEmpty) {
-                                                showToast('请选择报修地址');
+                                                showToast(S
+                                                    .of(context)
+                                                    .repairAddressNotEmpty);
                                                 return;
                                               }
                                               setState(() {
@@ -299,8 +305,9 @@ class _RepairFormPage extends State<RepairFormPage>
                                                   .validate()) {
                                                 // 上传图片
                                                 if (selectedAssets.isNotEmpty) {
-                                                  ProgressHUD.showLoadingText(
-                                                      '图片上传中...');
+                                                  ProgressHUD.showLoadingText(S
+                                                      .of(context)
+                                                      .imageUploading);
                                                   final res =
                                                       await uploadImages(
                                                           selectedAssets);
@@ -344,8 +351,9 @@ class _RepairFormPage extends State<RepairFormPage>
                                                         context: context,
                                                         builder: (context) {
                                                           return AlertDialog(
-                                                            content: Text(
-                                                                '保修单提交成功！'),
+                                                            content: Text(S
+                                                                .of(context)
+                                                                .repairSubmitSuccess),
                                                             actions: [
                                                               TextButton(
                                                                   onPressed:
@@ -357,7 +365,9 @@ class _RepairFormPage extends State<RepairFormPage>
                                                                         .pop();
                                                                   },
                                                                   child: Text(
-                                                                    '确定',
+                                                                    S
+                                                                        .of(context)
+                                                                        .confirm,
                                                                     style: TextStyle(
                                                                         fontSize:
                                                                             16,
@@ -368,9 +378,11 @@ class _RepairFormPage extends State<RepairFormPage>
                                                           );
                                                         });
                                                   } else {
-                                                    showToast(
-                                                        res.errorMessage ??
-                                                            '提交失败');
+                                                    showToast(res
+                                                            .errorMessage ??
+                                                        S
+                                                            .of(context)
+                                                            .repairSubmitFailed);
                                                   }
                                                   setState(() {
                                                     _isLoading = false;
@@ -378,7 +390,7 @@ class _RepairFormPage extends State<RepairFormPage>
                                                 });
                                               }
                                             },
-                                            child: Text('提交报修'),
+                                            child: Text(S.of(context).submit),
                                             color: primaryColor[700] ??
                                                 primaryColor,
                                             textColor: Colors.white,
@@ -413,7 +425,7 @@ class _RepairFormPage extends State<RepairFormPage>
                 color: Colors.white,
               ),
               Text(
-                '拖拽到这里删除',
+                S.of(context).dragHereToRemove,
                 style: TextStyle(
                   color: Colors.white,
                 ),
@@ -564,7 +576,7 @@ class _RepairFormPage extends State<RepairFormPage>
             keyboardType: keyboardType,
             maxLines: maxLines,
             decoration: InputDecoration(
-              hintText: '请输入 $label',
+              hintText: S.of(context).inputMessage(label),
               hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
               filled: true,
               fillColor: Colors.white,

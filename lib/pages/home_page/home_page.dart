@@ -6,6 +6,7 @@ import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
 import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
@@ -17,7 +18,6 @@ import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:logistics_app/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,17 +38,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   String avatar = '';
   double topBarOpacity = 0.0;
   Animation<double>? topBarAnimation;
-  List<TabIconData> tabIconsList = TabIconData.tabIconsList;
   int current = 0;
   Timer? _timer;
   PageController _pageController = PageController();
 
   final List<SwitchType> buttonLabels = [
-    SwitchType('通知公告', 0),
-    SwitchType('公司新闻', 1),
+    SwitchType(S.current.notifications, 0),
+    SwitchType(S.current.news, 1),
   ];
   void initState() {
-    print(widget.animationController);
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
             parent: widget.animationController!,
@@ -272,21 +270,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       mainAxisSpacing: 0,
                     ),
                     shrinkWrap: true,
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      // 线路查询
-                      _FunctionAreaItem('在线报修', true, Icons.build,
+                      // 在线报修
+                      _FunctionAreaItem(
+                          S.of(context).repairOnline,
+                          true,
+                          Icons.build,
                           () => RouteUtils.push(context, RepairFormPage())),
-                      _FunctionAreaItem('我的报修', false, Icons.history,
+                      // 我的报修
+                      _FunctionAreaItem(
+                          S.of(context).myRepair,
+                          false,
+                          Icons.history,
                           () => RouteUtils.push(context, MyRepairPage())),
                       // _FunctionAreaItem('失物招领', true, Icons.search,
                       //     () => RouteUtils.push(context, LostFoundListPage())),
-                      _FunctionAreaItem('通知公告', false, Icons.notifications,
+                      // 通知公告
+                      _FunctionAreaItem(
+                          S.of(context).notifications,
+                          false,
+                          Icons.notifications,
                           () => RouteUtils.push(context, NoticeListPage())),
                       // _FunctionAreaItem('意见反馈', true, Icons.feedback,
                       //     () => RouteUtils.push(context, FeedbackPage())),
-                      _FunctionAreaItem('联系我们', false, Icons.phone,
+                      // 联系我们
+                      _FunctionAreaItem(
+                          S.of(context).contactUs,
+                          false,
+                          Icons.phone,
                           () => RouteUtils.push(context, ContactUsPage())),
                       // _FunctionAreaItem(
                       //     '我的收藏',
@@ -326,7 +339,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     child: Row(
                       children: [
                         Container(
-                            child: Text('公告',
+                            child: Text(S.current.notice,
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -345,7 +358,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 height: 30, // 限制高度以只显示一个公告
                                 child: model.list?.isEmpty == true
                                     ? Text(
-                                        "暂无数据",
+                                        S.of(context).noData,
                                         style: TextStyle(height: 2),
                                       )
                                     : PageView.builder(

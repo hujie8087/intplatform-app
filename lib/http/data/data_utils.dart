@@ -4,6 +4,7 @@
 ///  description:  项目数据请求 管理类
 
 import 'package:dio/dio.dart';
+import 'package:logistics_app/generated/l10n.dart';
 
 import '/http/apis.dart';
 import '/http/http_utils.dart';
@@ -95,7 +96,9 @@ class DataUtils {
   // 获取生活区楼栋房间
   static void getBuildingTree<T>({Success? success, Fail? fail, s}) {
     HttpUtils.get('/maintenance/food/building/app/tree', null,
-        loadingText: '生活区数据加载中...', success: success, fail: fail);
+        loadingText: S.current.livingAreaDataLoading,
+        success: success,
+        fail: fail);
   }
 
   // 上传文件

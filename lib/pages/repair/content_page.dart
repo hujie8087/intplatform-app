@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/constants.dart';
-import 'package:logistics_app/http/apis.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/model/repair_view_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
@@ -109,12 +109,9 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
             enablePullDown: true,
             enablePullUp: true,
             onRefresh: () {
-              //关闭刷新
-              print('刷新完成');
               _requestData(isLoadMore: false);
             },
             onLoading: () {
-              print('加载完成');
               _requestData(isLoadMore: true);
             },
             controller: _refreshController,
@@ -129,7 +126,7 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
       builder: (context, model, child) {
         if (_dataArr.isEmpty == true) {
           return Center(
-            child: Text("暂无数据"),
+            child: Text(S.of(context).noData),
           );
         }
         return ListView.builder(
@@ -153,7 +150,7 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
                     context, RoutePath.RepairRatingPage,
                     arguments: {
                       'repairId': _dataArr[index].id,
-                      'title': '报修单详情',
+                      'title': S.of(context).repairDetail,
                       'isShowButton': _dataArr[index].repairState == 1
                     });
                 setState(() {
@@ -177,15 +174,15 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
 String getRepairStateText(int? repairState) {
   switch (repairState) {
     case 0:
-      return '待维修';
+      return S.current.pending;
     case 1:
-      return '已维修';
+      return S.current.repaired;
     case 2:
-      return '待返修';
+      return S.current.returnPending;
     case 3:
-      return '已完结';
+      return S.current.completed;
     default:
-      return '未知状态';
+      return S.current.unknownStatus;
   }
 }
 
@@ -364,7 +361,7 @@ class _repairItem extends StatelessWidget {
                                                 vertical: 0), // 设置内边距
                                           ),
                                           child: Text(
-                                            '删除报修单',
+                                            S.of(context).deleteRepair,
                                             style: TextStyle(
                                                 fontSize: 12,
                                                 color: secondaryColor),
@@ -384,7 +381,8 @@ class _repairItem extends StatelessWidget {
                                                   RoutePath.RepairRatingPage,
                                                   arguments: {
                                                     'repairId': listData?.id,
-                                                    'title': '报修评价',
+                                                    'title':
+                                                        S.of(context).evaluate,
                                                     'isShowButton': true,
                                                   });
                                             },
@@ -406,7 +404,7 @@ class _repairItem extends StatelessWidget {
                                                   vertical: 0), // 设置内边距
                                             ),
                                             child: Text(
-                                              '评价',
+                                              S.of(context).evaluate,
                                               style: TextStyle(
                                                   fontSize: 12,
                                                   color: primaryColor),
@@ -426,12 +424,12 @@ class _repairItem extends StatelessWidget {
     final RepairViewModel data = listData;
     data.appDelFlag = '1';
     return AlertDialog(
-      title: Text('提示'),
-      content: Text('确认删除该报修单吗?'),
+      title: Text(S.of(context).tip),
+      content: Text(S.of(context).deleteRepairTips),
       actions: <Widget>[
         TextButton(
           child: Text(
-            '取消',
+            S.of(context).cancel,
             style: TextStyle(color: secondaryColor),
           ),
           onPressed: () {
@@ -440,7 +438,7 @@ class _repairItem extends StatelessWidget {
         ),
         TextButton(
           child: Text(
-            '确定',
+            S.of(context).confirm,
             style: TextStyle(color: primaryColor),
           ),
           onPressed: () {
@@ -449,7 +447,7 @@ class _repairItem extends StatelessWidget {
               success: (data) {
                 callback();
                 Navigator.of(context).pop();
-                showToast('删除订单成功');
+                showToast(S.of(context).deleteRepairSuccess);
               },
               fail: (code, msg) {
                 showToast(msg);

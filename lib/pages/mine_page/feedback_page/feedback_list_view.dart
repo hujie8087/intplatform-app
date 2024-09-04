@@ -1,5 +1,4 @@
 import 'package:logistics_app/pages/home_page/home_notice_list_view.dart';
-import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
 import 'package:provider/provider.dart';
@@ -19,9 +18,6 @@ class _FeedbackListViewState extends State<FeedbackListView>
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
   List<Widget> listViews = <Widget>[];
-
-  List<TabIconData> tabIconsList = TabIconData.tabIconsList;
-
   void initState() {
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/Login_form.dart';
 import 'package:logistics_app/route/route_utils.dart';
@@ -55,7 +56,7 @@ class _LoginScreenState extends State<LoginPage> {
                             padding: EdgeInsets.only(left: 30, right: 30),
                             width: SizedBox.expand().width,
                             child: Text(
-                              '您好，',
+                              S.of(context).hello,
                               style: TextStyle(
                                   fontSize: 32,
                                   color: Colors.black,
@@ -67,7 +68,7 @@ class _LoginScreenState extends State<LoginPage> {
                             padding: EdgeInsets.only(left: 30, right: 30),
                             width: SizedBox.expand().width,
                             child: Text(
-                              '欢迎来到IWIP后勤综合服务APP',
+                              S.of(context).welcome,
                               style:
                                   TextStyle(fontSize: 18, color: Colors.grey),
                               textAlign: TextAlign.left,

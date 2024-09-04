@@ -1,10 +1,13 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
+import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
@@ -14,15 +17,20 @@ import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/device_utils.dart';
+import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:restart_app/restart_app.dart';
 
 class MinePage extends StatefulWidget {
-  const MinePage({Key? key, this.animationController}) : super(key: key);
+  const MinePage(
+      {Key? key, this.animationController, required this.updateTabIconsList})
+      : super(key: key);
 
   final AnimationController? animationController;
+  final Function updateTabIconsList;
   @override
   _MinePageState createState() => _MinePageState();
 }
@@ -36,6 +44,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
   String deptName = '';
   String avatar = '';
   String version = '';
+  String localeName = '中文';
 
   List<Widget> listViews = <Widget>[];
 
@@ -58,8 +67,79 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
     var userInfo = await SpUtils.getModel('userInfo');
     version = await DeviceUtils.version();
     avatar = userInfo != null ? userInfo['user']['avatar'] : '';
+    var languageCode = await SpUtils.getString('locale');
+    print(languageCode);
+    if (languageCode == 'en') {
+      localeName = 'English';
+    } else if (languageCode == 'id') {
+      localeName = 'Indonesia';
+    } else {
+      localeName = '中文';
+    }
     // 更新状态
     setState(() {});
+  }
+
+  Future _changeLocale(value, context) async {
+    setState(() {
+      localeName = value;
+      SpUtils.saveString('locale', value);
+      if (value == 'en') {
+        localeName = 'English';
+        S.load(Locale('en', 'US'));
+      } else if (value == 'id') {
+        localeName = 'Indonesia';
+        S.load(Locale('id', 'ID'));
+      } else {
+        localeName = '中文';
+        S.load(Locale('zh', 'CN'));
+      }
+      widget.updateTabIconsList();
+      Navigator.pop(context);
+      Restart.restartApp();
+    });
+  }
+
+  Future wxPicker(
+    BuildContext context,
+  ) {
+    return Picker.showModalSheet(context,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildButton(
+              Text('中文'),
+              onTap: () {
+                _changeLocale('zh', context);
+              },
+            ),
+            DividerWidget(),
+            _buildButton(
+              Text('English'),
+              onTap: () {
+                _changeLocale('en', context);
+              },
+            ),
+            DividerWidget(),
+            _buildButton(
+              Text('Indonesia'),
+              onTap: () {
+                _changeLocale('id', context);
+              },
+            )
+          ],
+        ));
+  }
+
+  static InkWell _buildButton(Widget child, {Function()? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        height: 40,
+        child: child,
+      ),
+    );
   }
 
   Animation<double> createOffsetAnimation(double endValue) {
@@ -100,53 +180,58 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                         padding: EdgeInsets.only(left: 10, right: 10, top: 20),
                         child: Column(
                           children: [
-                            _commonItem('个人信息', Icons.account_circle, () {
+                            _commonItem(
+                                S.of(context).userInfo, Icons.account_circle,
+                                () {
                               RouteUtils.push(context, PersonInfoPage());
                             }, '', 0.2),
-                            _commonItem('修改密码', Icons.lock, () async {
+                            _commonItem(
+                                S.of(context).changePassword, Icons.lock,
+                                () async {
                               var res = await RouteUtils.push(
                                   context, ChangePasswordPage());
-                              ProgressHUD.showText(res['msg']);
+                              if (res != null) {
+                                ProgressHUD.showText(res['msg']);
+                              }
                             }, '', 0.3),
-                            _commonItem('消息通知', Icons.notifications, () {
+                            _commonItem(S.of(context).notifications,
+                                Icons.notifications, () {
                               RouteUtils.push(context, NoticeListPage());
                             }, '', 0.4),
                             // _commonItem('意见反馈', Icons.feedback, () {
                             //   RouteUtils.push(context, FeedbackPage());
                             // }, '', 0.5),
                             // 语言设置
-                            // _commonItem(
-                            //     '语言设置', Icons.language, () {}, '中文', 0.6),
+                            _commonItem(
+                                S.of(context).changeLanguage, Icons.language,
+                                () {
+                              wxPicker(context);
+                            }, localeName, 0.6),
                             // _commonItem(
                             //     '清除缓存', Icons.delete_rounded, () {}, '', 0.7),
-                            // Consumer<MineViewModel>(
-                            //     builder: (context, model, child) {
-                            //   return badges.Badge(
-                            //     showBadge: model.needUpdate,
-                            //     child: _commonItem('检查更新', Icons.update, () {
-                            //       checkAppUpdate(context);
-                            //     }, model.needUpdate ? '有新版本' : version, 0.8),
-                            //   );
-                            // }),
-                            _commonItem('联系我们', Icons.info, () {
+                            _commonItem(S.of(context).contactUs, Icons.info,
+                                () {
                               RouteUtils.push(context, ContactUsPage());
-                            }, '', 0.9),
+                            }, '', 0.8),
+                            _commonItem(S.of(context).appVersion, Icons.update,
+                                null, version, 0.9),
                             _logoutButton(() =>
                                 DialogFactory.new().showConfirmDialog(
                                   context: context,
-                                  title: '退出登录',
-                                  content: '确定要退出登录吗？',
+                                  title: S.of(context).logout,
+                                  content: S.of(context).logoutTip,
                                   confirmClick: () {
                                     // 退出登录
                                     model
                                         .logout()
                                         .then((value) => {
-                                              ProgressHUD.showText('退出登录成功'),
+                                              ProgressHUD.showText(
+                                                  S.of(context).logoutSuccess),
                                               RouteUtils.push(
                                                   context, LoginPage())
                                             })
                                         .catchError((e) {
-                                      showToast('退出登录失败');
+                                      showToast(S.of(context).logoutFailed);
                                     });
                                   },
                                 )),
@@ -179,7 +264,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '我的',
+                            S.of(context).mine,
                             style: TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
@@ -340,7 +425,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                               color: Colors.teal,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20))),
-                          child: Text("退出登录",
+                          child: Text(S.of(context).logout,
                               style: TextStyle(
                                   color: Colors.white, fontSize: 16)))),
                 ),

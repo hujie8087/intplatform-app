@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/auth/Register_form.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -69,7 +70,7 @@ class _LoginScreenState extends State<RegisterPage> {
                         padding: EdgeInsets.only(left: 30, right: 30),
                         width: SizedBox.expand().width,
                         child: Text(
-                          '您好，',
+                          S.of(context).hello,
                           style: TextStyle(
                               fontSize: 32,
                               color: Colors.black,
@@ -81,7 +82,7 @@ class _LoginScreenState extends State<RegisterPage> {
                         padding: EdgeInsets.only(left: 30, right: 30),
                         width: SizedBox.expand().width,
                         child: Text(
-                          '欢迎注册IWIP后勤综合服务APP',
+                          S.of(context).welcome,
                           style: TextStyle(fontSize: 18, color: Colors.grey),
                           textAlign: TextAlign.left,
                         ),

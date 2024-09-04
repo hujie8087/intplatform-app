@@ -130,6 +130,7 @@ class HttpUtils {
       data = params;
     }
     if (method == Method.put) {
+      data = params;
       queryParameters = params;
     }
     if (loadingText != null && loadingText.isNotEmpty) {

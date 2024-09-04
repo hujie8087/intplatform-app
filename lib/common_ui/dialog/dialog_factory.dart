@@ -104,4 +104,30 @@ class DialogFactory {
         ),
         touchOutsideDismiss: false);
   }
+
+  // 带输入框的弹窗
+  Future showFieldDialog(
+      {required BuildContext context,
+      String? title,
+      Widget? customContentWidget,
+      GestureTapCallback? dismissClick,
+      GestureTapCallback? confirmClick}) async {
+    showParentDialog(
+        context: context,
+        child: TipsCommonDialog(
+          title: title,
+          customContentWidget: customContentWidget,
+          dialogContentType: DialogContentType.Normal,
+          dialogButtonType: DialogButtonType.DoubleButton,
+          leftOnTap: () {
+            Navigator.pop(context);
+            dismissClick?.call();
+          },
+          rightOnTap: () {
+            Navigator.pop(context);
+            confirmClick?.call();
+          },
+        ),
+        touchOutsideDismiss: false);
+  }
 }

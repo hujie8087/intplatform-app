@@ -1,10 +1,10 @@
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:logistics_app/utils/utils.dart';
 
 class HomeNoticeListView extends StatelessWidget {
   const HomeNoticeListView(
@@ -45,7 +45,7 @@ class HomeNoticeListView extends StatelessWidget {
                       ),
                       child: InkWell(
                         onTap: () {
-                          Utils.sendMobpushMessage(1, '消息通知', 1, '');
+                          // Utils.sendMobpushMessage(1, '消息通知', 1, '');
                           RouteUtils.pushNamed(context, RoutePath.WebViewPage,
                               arguments: {
                                 'noticeTitle': noticeData?.noticeTitle,
@@ -90,7 +90,7 @@ class HomeNoticeListView extends StatelessWidget {
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 5, vertical: 2),
                                   child: Text(
-                                    '已查看',
+                                    S.of(context).read,
                                     style: TextStyle(
                                         color: Colors.grey, fontSize: 12),
                                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
@@ -52,7 +53,7 @@ class _LoginFormState extends State<LoginForm> {
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
-                  hintText: '请输入您的工号',
+                  hintText: S.of(context).usernamePlaceholder,
                   prefixIcon: Icon(
                     Icons.person_2_outlined,
                     color: primaryColor,
@@ -75,7 +76,7 @@ class _LoginFormState extends State<LoginForm> {
                 obscureText: true,
                 controller: _passwordController,
                 decoration: InputDecoration(
-                  hintText: '请输入密码',
+                  hintText: S.of(context).passwordPlaceholder,
                   prefixIcon: Icon(
                     Icons.lock,
                     color: primaryColor,
@@ -85,18 +86,6 @@ class _LoginFormState extends State<LoginForm> {
                 onChanged: (value) {
                   model.inputPassword = value;
                 },
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    '忘记密码',
-                    style: TextStyle(color: primaryColor),
-                  ),
-                ],
               ),
             ),
             Container(
@@ -119,13 +108,15 @@ class _LoginFormState extends State<LoginForm> {
                               DataUtils.setUserToken(token);
                             }
                             RouteUtils.push(context, AppHomeScreen());
-                            showToast("登录成功");
+                            showToast(
+                              S.of(context).loginSuccess,
+                            );
                             setState(() {
                               _isLoading = false;
                             });
                           }
                         }).catchError((e) {
-                          showToast("网络连接错误${e}");
+                          showToast(S.of(context).networkError + ":${e}");
                         }).whenComplete(() {
                           setState(() {
                             _isLoading = false;
@@ -133,7 +124,7 @@ class _LoginFormState extends State<LoginForm> {
                         });
                       },
                       child: Text(
-                        '登录',
+                        S.of(context).loginBtn,
                         style: TextStyle(color: Colors.white),
                       ),
                       style: ButtonStyle(
@@ -146,23 +137,6 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                     ),
             ),
-            // Container(
-            //     margin: EdgeInsets.only(top: 20, bottom: 150),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         Text('没有帐号？'),
-            //         GestureDetector(
-            //           onTap: () {
-            //             RouteUtils.push(context, RegisterPage());
-            //           },
-            //           child: Text(
-            //             '立即注册',
-            //             style: TextStyle(color: primaryColor),
-            //           ),
-            //         )
-            //       ],
-            //     ))
           ],
         ));
   }

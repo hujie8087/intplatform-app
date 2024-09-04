@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/app_theme.dart';
@@ -24,6 +25,7 @@ import 'package:mobpush_plugin/mobpush_notify_message.dart';
 import 'package:mobpush_plugin/mobpush_plugin.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pub_semver/pub_semver.dart';
+import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +46,7 @@ void main() async {
     MobpushPlugin.setAPNsForProduction(true);
   }
   MobpushPlugin.addPushReceiver(_onEvent, _onError);
-  // await _checkConnectivity();
+  await _checkConnectivity();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
@@ -52,8 +54,11 @@ void main() async {
   initXUpdate();
   LogUtils.init();
   HttpUtils.initDio();
+  String languageCode = await SpUtils.getString('locale') ?? 'zh';
   checkUpdate();
-  runApp(MyApp());
+  runApp(MyApp(
+    languageCode: languageCode,
+  ));
 }
 
 void _onEvent(dynamic event) {
@@ -143,7 +148,7 @@ void _updateNetworkType(ConnectivityResult result) {
   }
 }
 
-///初始化
+///初始化在线升级
 void initXUpdate() async {
   if (Platform.isAndroid) {
     FlutterXUpdate.init(
@@ -255,6 +260,8 @@ Size get designSize {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key, required this.languageCode}) : super(key: key);
+  final String languageCode;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -272,9 +279,42 @@ class MyApp extends StatelessWidget {
       designSize: designSize,
       builder: (context, child) {
         return MaterialApp(
-          title: 'IWIP后勤综合服务',
+          onGenerateTitle: (context) {
+            return S.of(context).appTitle;
+          },
           debugShowCheckedModeBanner: false,
-          locale: const Locale('zh', 'CN'),
+          supportedLocales: [
+            const Locale('en', 'US'),
+            const Locale('zh', 'CN'),
+            const Locale('id', 'ID'),
+          ],
+          locale: languageCode == 'en'
+              ? Locale('en', 'US')
+              : languageCode == 'id'
+                  ? Locale('id', 'ID')
+                  : Locale('zh', 'CN'),
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate
+          ],
+          localeResolutionCallback: (locale, supportedLocales) {
+            SpUtils.getString('locale').then((languageCode) {
+              // 如果语言是英语
+              if (languageCode == 'en') {
+                //注意大小写，返回美国英语
+                S.load(Locale('en', 'US'));
+                return const Locale('en', 'US');
+              } else if (languageCode == 'id') {
+                S.load(Locale('id', 'ID'));
+                return const Locale('id', 'ID');
+              } else {
+                S.load(Locale('zh', 'CN'));
+                return const Locale('zh', 'CN');
+              }
+            });
+          },
           theme: ThemeData(
             primarySwatch: Colors.blue,
             platform: TargetPlatform.iOS,

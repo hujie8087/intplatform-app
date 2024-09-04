@@ -44,6 +44,9 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   flutter_html_video: ^3.0.0-beta.2
   flutter_launcher_icons: ^0.13.1
+  flutter_localization: ^0.2.1
+  flutter_localizations:
+    sdk: flutter
   flutter_pickers: 2.1.9
   flutter_rating_bar: ^4.0.1
   flutter_screenutil: ^5.9.0-beta
@@ -55,17 +58,17 @@ dependencies:
   font_awesome_flutter: ^10.1.0
   get: ^4.6.5
   image_picker: ^0.8.4+4
-  intl: ^0.17.0
+  intl: ^0.19.0
   mobcommonlib: ^1.1.5
   mobpush_plugin: ^1.2.6
   oktoast: ^3.3.1
-  package_info_plus: 6.0.0
   path: ^1.9.0
   permission_handler: ^10.2.0
   photo_view: ^0.15.0
   provider: ^6.1.1
   pub_semver: ^2.1.4
   pull_to_refresh: ^2.0.0
+  restart_app: ^1.2.1
   saver_gallery: ^3.0.1
   share_plus: ^7.1.0
   shared_preferences: ^2.0.15
@@ -126,3 +129,5 @@ flutter_icons:
   android: true
   ios: true
   image_path: 'assets/icon/icon.png'
+flutter_intl:
+  enabled: true

@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/option_grid_view.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/public_convenience_page/public_convenience_list_page.dart';
@@ -63,13 +64,13 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
     ];
     final List<MenuItemModel> newsMenu = [
       MenuItemModel(
-          title: '通知公告',
+          title: S.of(context).notifications,
           icon: Icons.notifications,
           isEven: false,
           showBadge: false,
           onTap: () => RouteUtils.push(context, NoticeListPage())),
       MenuItemModel(
-          title: '公司动态',
+          title: S.of(context).news,
           icon: Icons.newspaper_rounded,
           isEven: true,
           showBadge: false,
@@ -77,13 +78,13 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
     ];
     final List<MenuItemModel> repairMenu = [
       MenuItemModel(
-          title: '在线报修',
+          title: S.of(context).repairOnline,
           icon: Icons.build,
           isEven: true,
           showBadge: false,
           onTap: () => RouteUtils.push(context, RepairFormPage())),
       MenuItemModel(
-          title: '我的报修',
+          title: S.of(context).myRepair,
           icon: Icons.history,
           isEven: false,
           showBadge: false,
@@ -142,7 +143,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
       appBar: AppBar(
         centerTitle: false,
         title: Text(
-          '工具箱',
+          S.of(context).toolPage,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           textAlign: TextAlign.left,
         ),
@@ -224,7 +225,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                                   width: 5,
                                 ),
                                 Text(
-                                  '资讯类',
+                                  S.of(context).information,
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold),
@@ -317,7 +318,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                                   width: 5,
                                 ),
                                 Text(
-                                  '报修服务',
+                                  S.of(context).repairService,
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold),

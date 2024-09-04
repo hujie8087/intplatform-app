@@ -29,7 +29,6 @@ class Routes {
       RoutePath.home: (context) => AppHomeScreen(),
       RoutePath.ForgetPasswordPage: (context) => ForgetPasswordPage(),
       RoutePath.WebViewPage: (context) => WebViewPage(),
-      RoutePath.MinePage: (context) => MinePage(),
       RoutePath.ChangePasswordPage: (context) => ChangePasswordPage(),
       RoutePath.PersonInfoPage: (context) => PersonInfoPage(),
       RoutePath.ContactUsPage: (context) => ContactUsPage(),

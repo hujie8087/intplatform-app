@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
+import 'package:logistics_app/common_ui/dialog/parent_dialog.dart';
 import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
@@ -23,11 +27,11 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
   UserInfoModel? userInfo;
   List<AssetEntity> selectedAssets = [];
   String? selectedValue;
-  String imagePrefix = '';
+  String imagePrefix = APIs.imagePrefixWifi;
   final List<DictModel> sexOptions = [
-    DictModel(dictValue: '0', dictLabel: '男'),
-    DictModel(dictValue: '1', dictLabel: '女'),
-    DictModel(dictValue: '2', dictLabel: '保密'),
+    DictModel(dictValue: '0', dictLabel: S.current.man),
+    DictModel(dictValue: '1', dictLabel: S.current.woman),
+    DictModel(dictValue: '2', dictLabel: S.current.secret),
   ];
   final TextEditingController _controller = TextEditingController();
 
@@ -63,7 +67,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
     DataUtils.editUserInfo(
       userInfo!.user!.toJson(),
       success: (res) async {
-        ProgressHUD.showText('修改成功');
+        ProgressHUD.showText(S.of(context).changeSuccess);
         _fetchData();
         setState(() {});
       },
@@ -81,7 +85,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           title: Text(
-            '个人信息',
+            S.of(context).userInfo,
             style: TextStyle(fontSize: 18),
           ),
           centerTitle: true,
@@ -151,26 +155,45 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                 ),
               ),
               Text(
-                '点击更换头像',
+                S.of(context).changeAvatar,
                 style: TextStyle(color: secondaryColor, fontSize: 12),
               )
             ],
           ),
         ),
-        _PersonInfoItem('姓名', userInfo?.user?.nickName ?? '', Icons.person,
+        _PersonInfoItem(
+            S.of(context).name, userInfo?.user?.nickName ?? '', Icons.person,
             () async {
           _controller.text = '';
-          final result = await _showEditDialog(_controller, title: '姓名');
-          if (result != null) {
-            userInfo!.user!.nickName = result;
-            _updateData();
-          }
+          DialogFactory.instance.showFieldDialog(
+            context: context,
+            title: S.of(context).inputMessage(S.of(context).name),
+            customContentWidget: Container(
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: S.of(context).inputMessage(S.of(context).name),
+                ),
+              ),
+            ),
+            confirmClick: () async {
+              final result = _controller.text;
+              userInfo!.user!.nickName = result;
+              await _updateData();
+            },
+          );
         }, isEdit: true),
         // 工号
-        _PersonInfoItem('工号', userInfo?.user?.userName ?? '',
+        _PersonInfoItem(S.of(context).workNo, userInfo?.user?.userName ?? '',
             Icons.workspace_premium, () {}),
-        _PersonInfoItem('性别', userInfo?.user?.sex == '0' ? '男' : '女', Icons.wc,
-            () {
+        _PersonInfoItem(
+            S.of(context).gender,
+            userInfo?.user?.sex == '0'
+                ? S.of(context).man
+                : userInfo?.user?.sex == '0'
+                    ? S.of(context).woman
+                    : S.of(context).secret,
+            Icons.wc, () {
           Picker.showModalSheet(context,
               child: Container(
                 child: Column(
@@ -201,29 +224,55 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
             }
           });
         }, isEdit: true),
-        _PersonInfoItem('电话', userInfo?.user?.phonenumber ?? '', Icons.phone,
+        _PersonInfoItem(
+            S.of(context).phone, userInfo?.user?.phonenumber ?? '', Icons.phone,
             () async {
-          _controller.text = '';
-          final result = await _showEditDialog(_controller,
-              title: '电话', keyboardType: TextInputType.phone);
-          if (result != null) {
-            userInfo!.user!.phonenumber = result;
-            _updateData();
-          }
+          _controller.text = userInfo?.user?.phonenumber ?? '';
+          DialogFactory.instance.showFieldDialog(
+            context: context,
+            title: S.of(context).inputMessage(S.of(context).phone),
+            customContentWidget: Container(
+              child: TextField(
+                keyboardType: TextInputType.number,
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: S.of(context).inputMessage(S.of(context).phone),
+                ),
+              ),
+            ),
+            confirmClick: () async {
+              final result = _controller.text;
+              userInfo!.user!.phonenumber = result;
+              await _updateData();
+            },
+          );
         }, isEdit: true),
-        _PersonInfoItem('邮箱', userInfo?.user?.email ?? '', Icons.email,
+        _PersonInfoItem(
+            S.of(context).email, userInfo?.user?.email ?? '', Icons.email,
             () async {
-          _controller.text = '';
-          final result = await _showEditDialog(_controller,
-              title: '邮箱', keyboardType: TextInputType.emailAddress);
-          if (result != null) {
-            userInfo!.user!.email = result;
-            _updateData();
-          }
+          _controller.text = userInfo?.user?.email ?? '';
+          DialogFactory.instance.showFieldDialog(
+            context: context,
+            title: S.of(context).inputMessage(S.of(context).email),
+            customContentWidget: Container(
+              child: TextField(
+                keyboardType: TextInputType.emailAddress,
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: S.of(context).inputMessage(S.of(context).email),
+                ),
+              ),
+            ),
+            confirmClick: () async {
+              final result = _controller.text;
+              userInfo!.user!.email = result;
+              await _updateData();
+            },
+          );
         }, isEdit: true),
         // 部门
-        _PersonInfoItem(
-            '部门', userInfo?.user?.dept?.deptName ?? '', Icons.work, () {},
+        _PersonInfoItem(S.of(context).dept,
+            userInfo?.user?.dept?.deptName ?? '', Icons.work, () {},
             isEdit: false),
       ],
     );
@@ -282,20 +331,21 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
           content: TextField(
             controller: controller,
             keyboardType: keyboardType,
-            decoration: InputDecoration(hintText: "请输入${title}"),
+            decoration:
+                InputDecoration(hintText: S.of(context).inputMessage(title)),
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('取消'),
+              child: Text(S.of(context).cancel),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context, controller.text);
               },
-              child: Text('确定'),
+              child: Text(S.of(context).confirm),
             ),
           ],
         );

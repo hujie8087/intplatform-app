@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 
@@ -54,7 +55,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       margin: EdgeInsets.only(bottom: 40),
                       width: SizedBox.expand().width,
                       child: Text(
-                        '修改密码',
+                        S.of(context).changePassword,
                         style: TextStyle(
                             fontSize: 36,
                             color: Colors.black,
@@ -95,11 +96,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           TextFormField(
             controller: _oldPasswordController,
             validator: (v) {
-              return v!.trim().isNotEmpty ? null : "旧密码不能为空";
+              return v!.trim().isNotEmpty
+                  ? null
+                  : S.of(context).oldPasswordNotEmpty;
             },
             obscureText: !oldInputState,
             decoration: InputDecoration(
-                hintText: '请输入旧密码',
+                hintText: S.of(context).inputMessage(S.of(context).oldPassword),
                 hintStyle: TextStyle(
                     color: Colors.grey,
                     fontSize: 16,
@@ -123,7 +126,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             controller: _newPasswordController,
             obscureText: !newPasswordInputState,
             decoration: InputDecoration(
-                hintText: '请输入新密码',
+                hintText: S.of(context).inputMessage(S.of(context).newPassword),
                 hintStyle: TextStyle(
                     color: Colors.grey,
                     fontSize: 16,
@@ -142,7 +145,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   },
                 )),
             validator: (v) {
-              return v!.trim().isNotEmpty ? null : "新密码不能为空";
+              return v!.trim().isNotEmpty
+                  ? null
+                  : S.of(context).newPasswordNotEmpty;
             },
           ),
           SizedBox(
@@ -152,7 +157,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             controller: _confirmPasswordController,
             obscureText: !confirmInputState,
             decoration: InputDecoration(
-                hintText: '请再次输入新密码',
+                hintText: S.of(context).enterNewPasswordAgin,
                 hintStyle: TextStyle(
                     color: Colors.grey,
                     fontSize: 16,
@@ -173,11 +178,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             validator: (v) {
               if (v!.trim().isNotEmpty) {
                 if (v != _newPasswordController.text) {
-                  return '新密码和确认密码输入不一致';
+                  return S.of(context).passwordNotSame;
                 }
                 return null;
               } else {
-                return "确认密码不能为空";
+                return S.of(context).enterNewPasswordAgin;
               }
             },
           ),
@@ -195,7 +200,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   size: 14,
                 ),
                 Text(
-                  '密码长度为6-16位，必须包含数字、字母、特殊字符',
+                  S.of(context).passwordLength,
                   style: TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
@@ -216,7 +221,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         'newPassword': _newPasswordController.text
                       },
                       success: (data) {
-                        Navigator.of(context).pop({'code': 1, 'msg': '密码修改成功'});
+                        Navigator.of(context).pop({
+                          'code': 1,
+                          'msg': S.of(context).passwordChangeSuccess
+                        });
                       },
                     );
                   }
@@ -228,7 +236,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25)))),
                 child: Text(
-                  '确认修改',
+                  S.of(context).submit,
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

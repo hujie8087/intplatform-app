@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/app_check_update_model.dart';
 import 'package:logistics_app/utils/device_utils.dart';
@@ -18,7 +19,6 @@ class MineViewModel with ChangeNotifier {
   Future initData() async {
     String? name = await SpUtils.getString(Constants.SP_USER_NAME);
     if (name == null || name.isEmpty == true) {
-      userName = "未登录";
       shouldLogin = true;
     } else {
       userName = name;
@@ -34,7 +34,6 @@ class MineViewModel with ChangeNotifier {
       success: (data) {
         // 跳转登录页
         print('success${data}');
-        userName = "未登录";
         shouldLogin = true;
         //清除缓存
         SpUtils.remove(Constants.SP_USER_NAME);
@@ -43,7 +42,7 @@ class MineViewModel with ChangeNotifier {
         notifyListeners();
       },
       fail: (code, msg) {
-        showToast("网络异常");
+        showToast(S.current.networkError);
       },
     );
   }

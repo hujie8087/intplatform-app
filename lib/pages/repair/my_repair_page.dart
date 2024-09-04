@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/KeepAliveWrapper.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/repair/content_page.dart';
 import 'package:logistics_app/utils/color.dart';
 
@@ -19,10 +20,10 @@ class MyRepairPage extends StatefulWidget {
 class _MyRepairPage extends State<MyRepairPage> with TickerProviderStateMixin {
   late TabController _tabController;
   final List<TabBarModel> tabs = [
-    TabBarModel(title: '全部', repairState: null),
-    TabBarModel(title: '待维修', repairState: 0),
-    TabBarModel(title: '已维修', repairState: 1),
-    TabBarModel(title: '已完结', repairState: 3),
+    TabBarModel(title: S.current.all, repairState: null),
+    TabBarModel(title: S.current.pending, repairState: 0),
+    TabBarModel(title: S.current.repaired, repairState: 1),
+    TabBarModel(title: S.current.completed, repairState: 3),
   ];
 
   @override
@@ -42,8 +43,8 @@ class _MyRepairPage extends State<MyRepairPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "我的报修",
+        title: Text(
+          S.of(context).myRepair,
           style: TextStyle(fontSize: 18),
         ),
         bottom: PreferredSize(

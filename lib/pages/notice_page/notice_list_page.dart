@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
-import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -49,7 +49,7 @@ class _NoticeListPageState extends State<NoticeListPage>
             backgroundColor: backgroundColor,
             appBar: AppBar(
               title: Text(
-                '通知公告',
+                S.of(context).notifications,
                 style: TextStyle(fontSize: 18),
               ),
               centerTitle: true,
@@ -60,8 +60,6 @@ class _NoticeListPageState extends State<NoticeListPage>
                     enablePullDown: true,
                     enablePullUp: true,
                     onRefresh: () {
-                      //关闭刷新
-                      print('刷新完成');
                       model.getNoticeModelList(1, 10).then((value) {
                         _refreshController.refreshCompleted();
                       });
@@ -78,7 +76,7 @@ class _NoticeListPageState extends State<NoticeListPage>
       builder: (context, model, child) {
         if (model.list?.isEmpty == true) {
           return Center(
-            child: Text("暂无数据"),
+            child: Text(S.of(context).noData),
           );
         }
         return ListView.builder(

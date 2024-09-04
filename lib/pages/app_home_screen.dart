@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/navigation/navigation_bar_item.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/home_page/home_page.dart';
@@ -22,7 +23,49 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     with TickerProviderStateMixin {
   AnimationController? animationController;
   final GlobalKey<NavigationBarItemState> navigationKey = GlobalKey();
-  List<TabIconData> tabIconsList = TabIconData.tabIconsList;
+  List<TabIconData> _tabIconsList = [];
+
+  void updateTabIconsList() {
+    _loadTabIcons();
+    setState(() {});
+  }
+
+  void _loadTabIcons() {
+    setState(() {
+      if (_tabIconsList.isEmpty) {
+        _tabIconsList = <TabIconData>[
+          TabIconData(
+            imagePath: 'assets/images/tab_1.png',
+            selectedImagePath: 'assets/images/tab_1s1.png',
+            index: 0,
+            isSelected: true,
+            animationController: animationController,
+            labelName: S.current.homePage,
+          ),
+          TabIconData(
+            imagePath: 'assets/images/tab_tool1.png',
+            selectedImagePath: 'assets/images/tab_tool21.png',
+            index: 1,
+            isSelected: false,
+            animationController: animationController,
+            labelName: S.current.toolPage,
+          ),
+          TabIconData(
+            imagePath: 'assets/images/tab_4.png',
+            selectedImagePath: 'assets/images/tab_4s1.png',
+            index: 2,
+            isSelected: false,
+            animationController: animationController,
+            labelName: S.current.minePage,
+          ),
+        ];
+      } else {
+        _tabIconsList[0].labelName = S.current.homePage;
+        _tabIconsList[1].labelName = S.current.toolPage;
+        _tabIconsList[2].labelName = S.current.minePage;
+      }
+    });
+  }
 
   Widget tabBody = Container(
     color: Colors.white,
@@ -65,10 +108,11 @@ class _AppHomeScreenState extends State<AppHomeScreen>
 
   @override
   void initState() {
-    tabIconsList.forEach((TabIconData tab) {
+    _loadTabIcons();
+    _tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
-    tabIconsList[0].isSelected = true;
+    _tabIconsList[0].isSelected = true;
 
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
@@ -79,10 +123,10 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   }
 
   void _handleTabChanged(int newValue) async {
-    tabIconsList.forEach((TabIconData tab) {
+    _tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
-    tabIconsList[newValue].isSelected = true;
+    _tabIconsList[newValue].isSelected = true;
     if (newValue == 0) {
       animationController?.reverse().then<dynamic>((data) {
         if (!mounted) {
@@ -111,7 +155,10 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           return;
         }
         setState(() {
-          tabBody = MinePage(animationController: animationController);
+          tabBody = MinePage(
+            animationController: animationController,
+            updateTabIconsList: updateTabIconsList,
+          );
         });
       });
     }
@@ -166,7 +213,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
         ),
         NavigationBarItem(
           key: navigationKey,
-          tabIconsList: tabIconsList,
+          tabIconsList: _tabIconsList,
           addClick: () {
             setState(() {
               tabBody = ToolBoxPage();

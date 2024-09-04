@@ -46,45 +46,50 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
           ),
         ),
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  noticeDetail?.noticeTitle ?? '',
-                  style: TextStyle(fontSize: 20),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      noticeDetail?.createDept ?? '',
-                      style: TextStyle(color: primaryColor, fontSize: 14),
+                      noticeDetail?.noticeTitle ?? '',
+                      style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(
-                      width: 10,
+                      height: 10,
                     ),
-                    Text(
-                      noticeDetail?.createTime ?? '',
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
+                    Row(
+                      children: [
+                        Text(
+                          noticeDetail?.createDept ?? '',
+                          style: TextStyle(color: primaryColor, fontSize: 14),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          noticeDetail?.createTime ?? '',
+                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                    child: Html(
-                  data: noticeDetail?.noticeContent ?? '',
-                  extensions: [
-                    const VideoHtmlExtension(),
-                  ],
-                ))
-              ],
-            ),
+              ),
+              Container(
+                  child: Html(
+                data: noticeDetail?.noticeContent ?? '',
+                extensions: [
+                  const VideoHtmlExtension(),
+                ],
+              ))
+            ],
           ),
         ));
   }
