@@ -25,6 +25,7 @@ import 'package:mobpush_plugin/mobpush_notify_message.dart';
 import 'package:mobpush_plugin/mobpush_plugin.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pub_semver/pub_semver.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'generated/l10n.dart';
 
 void main() async {
@@ -187,40 +188,32 @@ void initXUpdate() async {
     }).catchError((error) {
       print(error);
     });
-  } else {
-    //showToast('ios暂不支持XUpdate更新');
-    // String Version = "https://itunes.apple.com/cn/lookup?id=6667111068";
-    // if (await canLaunch(Version)) {
-    //   await launch(Version);
-    // } else {
-    //   throw 'Could not launch $Version';
-    // }
   }
 }
 
 ///检查更新
 Future checkUpdate() async {
-  if (Platform.isAndroid) {
-    //获取当前app的版本code
-    String versionCode = await DeviceUtils.version();
-    String versionName = await DeviceUtils.version();
-    String downloadUrlPre =
-        await SpUtils.getString(Constants.SP_IMAGE_PREFIX) ?? APIs.apiPrefix;
-    DataUtils.getAppLastVersion(
-      success: (data) {
-        UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
-        //线上版本的code
-        Version oldVersion = Version.parse(versionName);
-        Version newVersion = Version.parse(updateModel.versionName);
-        try {
-          //如果当前版本小于线上版本，需要更新
-          if (oldVersion == newVersion) {
-            SpUtils.saveString(
-                Constants.SP_NEW_APP_VERSION, updateModel.versionName);
-          } else {
-            SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
-          }
-          if (oldVersion < newVersion) {
+  //获取当前app的版本code
+  String versionCode = await DeviceUtils.version();
+  String versionName = await DeviceUtils.version();
+  String downloadUrlPre =
+      await SpUtils.getString(Constants.SP_IMAGE_PREFIX) ?? APIs.apiPrefix;
+  DataUtils.getAppLastVersion(
+    success: (data) {
+      UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
+      //线上版本的code
+      Version oldVersion = Version.parse(versionName);
+      Version newVersion = Version.parse(updateModel.versionName);
+      try {
+        //如果当前版本小于线上版本，需要更新
+        if (oldVersion == newVersion) {
+          SpUtils.saveString(
+              Constants.SP_NEW_APP_VERSION, updateModel.versionName);
+        } else {
+          SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
+        }
+        if (oldVersion < newVersion) {
+          if (Platform.isAndroid) {
             UpdateEntity customParseJson() {
               return UpdateEntity(
                   isForce: true,
@@ -233,14 +226,30 @@ Future checkUpdate() async {
                   apkSize: updateModel.apkSize);
             }
 
-            FlutterXUpdate.updateByInfo(updateEntity: customParseJson());
+            FlutterXUpdate.updateByInfo(
+                updateEntity: customParseJson(),
+                themeColor: '#ff6532',
+                buttonTextColor: '#ffffff',
+                topImageRes: 'bg_update_top');
+          } else {
+            void openAppStore() async {
+              const url =
+                  'https://apps.apple.com/app/id6667111068'; // 替换为你的应用在 App Store 的链接
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw 'Could not launch $url';
+              }
+            }
+
+            print(11232132132);
           }
-        } catch (e) {
-          SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
         }
-      },
-    );
-  }
+      } catch (e) {
+        SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
+      }
+    },
+  );
 }
 
 /// 设计尺寸
@@ -273,6 +282,9 @@ class MyApp extends StatelessWidget {
       systemNavigationBarDividerColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
+    // if (Platform.isIOS) {
+    //   checkUpdate(context);
+    // }
     return OKToast(
         //屏幕适配父组件组件
         child: ScreenUtilInit(

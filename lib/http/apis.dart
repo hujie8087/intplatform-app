@@ -6,26 +6,26 @@
 class APIs {
   /// url 前缀
   // 正式环境
-  // static const String apiPrefix =
-  //     'http://36.92.27.251:38080/api/intplatform/app'; // 外网
-  // static const String apiPrefixWifi =
-  //     'http://192.168.90.40/api/intplatform/app'; // 内网
-  // static const String imagePrefix =
-  //     'http://36.92.27.251:28080/static/intplatform'; // 图片外网地址
-  // static const String imagePrefixWifi =
-  //     'http://192.168.90.30/static/intplatform'; // 图片内网地址
+  static const String apiPrefix =
+      'http://36.92.27.251:38080/api/intplatform/app'; // 外网
+  static const String apiPrefixWifi =
+      'http://192.168.90.40/api/intplatform/app'; // 内网
+  static const String imagePrefix =
+      'http://36.92.27.251:28080/static/intplatform'; // 图片外网地址
+  static const String imagePrefixWifi =
+      'http://192.168.90.30/static/intplatform'; // 图片内网地址
 
   // 测试环境
   // static const String apiPrefix = 'http://192.168.91.50:10200'; // 外网
   // static const String apiPrefixWifi = 'http://192.168.91.50:10200'; // 内网
-  static const String imagePrefix =
-      'http://192.168.91.50:9000/intplatform'; // 图片外网地址
-  static const String imagePrefixWifi =
-      'http://192.168.91.50:9000/intplatform'; // 图片内网地址
+  // static const String imagePrefix =
+  //     'http://192.168.91.50:9000/intplatform'; // 图片外网地址
+  // static const String imagePrefixWifi =
+  //     'http://192.168.91.50:9000/intplatform'; // 图片内网地址
 
   // 韩栋本地环境
-  static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
-  static const String apiPrefixWifi = 'http://10.40.10.18:10200'; // 内网
+  // static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
+  // static const String apiPrefixWifi = 'http://10.40.10.18:10200'; // 内网
 
   // 阿泽本地环境
   // static const String apiPrefix = 'http://10.40.11.26:10200'; // 外网
