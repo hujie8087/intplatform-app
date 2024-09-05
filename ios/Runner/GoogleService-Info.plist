@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyBITomrxeBiBWXQF8-46Gt8oUBxsF7WC8w</string>
+	<string>AIzaSyAYinDu-rJtXXcCBHf-JWRiLU0sS-BUK5w</string>
 	<key>GCM_SENDER_ID</key>
-	<string>575416101353</string>
+	<string>876588716398</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.iwip.intplatform</string>
 	<key>PROJECT_ID</key>
-	<string>iwiplogistics</string>
+	<string>iwip-intplatform</string>
 	<key>STORAGE_BUCKET</key>
-	<string>iwiplogistics.appspot.com</string>
+	<string>iwip-intplatform.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:575416101353:ios:b874218703990eafb70378</string>
+	<string>1:876588716398:ios:b1efb48059d34d1248b17f</string>
 </dict>
 </plist>

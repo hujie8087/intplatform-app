@@ -26,27 +26,28 @@ import 'package:mobpush_plugin/mobpush_plugin.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //上传隐私协议许可
-  MobpushPlugin.updatePrivacyPermissionStatus(true).then((value) {
-    print(
-        ">>>>>>>>>>>>>>>>>>>updatePrivacyPermissionStatus:" + value.toString());
-  });
-  if (Platform.isIOS) {
-    //设置地区：regionId 默认0（国内），1:海外
-    MobpushPlugin.setRegionId(0);
-    MobpushPlugin.registerApp(
-        "3a2cebc425f10", "c91dab150797b3c47374c379c4bb9426");
-  }
-  initPlatformState();
-  if (Platform.isIOS) {
-    MobpushPlugin.setCustomNotification();
-    MobpushPlugin.setAPNsForProduction(true);
-  }
-  MobpushPlugin.addPushReceiver(_onEvent, _onError);
+  // //上传隐私协议许可
+  // MobpushPlugin.updatePrivacyPermissionStatus(true).then((value) {
+  //   print(
+  //       ">>>>>>>>>>>>>>>>>>>updatePrivacyPermissionStatus:" + value.toString());
+  // });
+  // if (Platform.isIOS) {
+  //   //设置地区：regionId 默认0（国内），1:海外
+  //   MobpushPlugin.setRegionId(0);
+  //   MobpushPlugin.registerApp(
+  //       "3a2cebc425f10", "c91dab150797b3c47374c379c4bb9426");
+  // }
+  // initPlatformState();
+  // if (Platform.isIOS) {
+  //   MobpushPlugin.setCustomNotification();
+  //   MobpushPlugin.setAPNsForProduction(true);
+  // }
+  // MobpushPlugin.addPushReceiver(_onEvent, _onError);
   await _checkConnectivity();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
@@ -91,6 +92,7 @@ void _onEvent(dynamic event) {
     case 1:
       MobPushNotifyMessage message = new MobPushNotifyMessage.fromJson(result);
       print(message);
+      ProgressHUD.showInfo(message.content);
       break;
     case 2:
       MobPushNotifyMessage message = new MobPushNotifyMessage.fromJson(result);
@@ -241,8 +243,6 @@ Future checkUpdate() async {
                 throw 'Could not launch $url';
               }
             }
-
-            print(11232132132);
           }
         }
       } catch (e) {

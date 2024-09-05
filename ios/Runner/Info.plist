@@ -4,6 +4,10 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>MOBAppKey</key>
+	<string>3a2cebc425f10</string>
+	<key>MOBAppSecret</key>
+	<string>c91dab150797b3c47374c379c4bb9426</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
