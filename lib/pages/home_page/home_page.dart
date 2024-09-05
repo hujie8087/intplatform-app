@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
+import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
+import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
-import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
@@ -17,6 +19,7 @@ import 'package:logistics_app/pages/repair/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +43,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Animation<double>? topBarAnimation;
   int current = 0;
   Timer? _timer;
+  String networkType = '内网';
   PageController _pageController = PageController();
 
   final List<SwitchType> buttonLabels = [
@@ -84,7 +88,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     // 模拟异步数据获取
     var res = await SpUtils.getString(Constants.SP_USER_NAME);
     var dept = await SpUtils.getString(Constants.SP_USER_DEPT);
-
+    var imagePath = await SpUtils.getString(Constants.SP_IMAGE_PREFIX);
     // 模拟异步数据获取
     var userInfo = await SpUtils.getModel('userInfo');
     // 更新状态
@@ -93,6 +97,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() {
       userName = res ?? '';
       deptName = dept ?? '';
+      networkType = imagePath == APIs.imagePrefixWifi ? "内网" : "外网";
+      print('imagePathimagePath${imagePath}');
       _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
         if (_pageController.hasClients) {
           int nextPage = _pageController.page!.toInt() + 1;
@@ -487,7 +493,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         padding: EdgeInsets.only(
                             left: 12,
                             right: 12,
-                            top: 12 - 12.0 * topBarOpacity,
+                            top: 12.0 * topBarOpacity,
                             bottom: 12),
                         child: Row(
                           children: <Widget>[
@@ -534,7 +540,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               padding: const EdgeInsets.all(5),
                               // 圆形背景
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white.withOpacity(0.5),
                                 borderRadius: const BorderRadius.all(
                                   Radius.circular(20),
                                 ),
@@ -544,12 +550,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 highlightColor: Colors.transparent,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(32.0)),
-                                onTap: () {},
-                                child: Center(
-                                  child: Icon(
-                                    Icons.notifications,
-                                    color: primaryColor,
-                                  ),
+                                onTap: () {
+                                  wxPicker(context);
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      networkType,
+                                      style:
+                                          TextStyle(color: primaryColor[800]),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_drop_down,
+                                      color: primaryColor[800],
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
@@ -564,6 +579,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           },
         )
       ],
+    );
+  }
+
+  Future wxPicker(
+    BuildContext context,
+  ) {
+    return Picker.showModalSheet(context,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildButton(
+              Text('内网'),
+              onTap: () {
+                HttpUtils.setBaseUrl(APIs.apiPrefixWifi);
+                SpUtils.saveString(
+                    Constants.SP_IMAGE_PREFIX, APIs.imagePrefixWifi);
+                setState(() {
+                  networkType = '内网';
+                });
+                Navigator.pop(context);
+              },
+            ),
+            DividerWidget(),
+            _buildButton(
+              Text('外网'),
+              onTap: () {
+                HttpUtils.setBaseUrl(APIs.apiPrefix);
+                SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefix);
+                setState(() {
+                  networkType = '外网';
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ));
+  }
+
+  static InkWell _buildButton(Widget child, {Function()? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        height: 40,
+        child: child,
+      ),
     );
   }
 

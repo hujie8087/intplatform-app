@@ -137,8 +137,8 @@ void _updateNetworkType(ConnectivityResult result) {
       SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefix);
       break;
     case ConnectivityResult.wifi:
-      HttpUtils.setBaseUrl(APIs.apiPrefix);
-      SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefix);
+      HttpUtils.setBaseUrl(APIs.apiPrefixWifi);
+      SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefixWifi);
       break;
     case ConnectivityResult.none:
       break;
