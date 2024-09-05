@@ -78,6 +78,7 @@ dependencies:
   video_player: ^2.8.6
   wechat_assets_picker: ^9.1.0
   wechat_camera_picker: ^4.3.1
+  flutter_update_dialog: 2.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

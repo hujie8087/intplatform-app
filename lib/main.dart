@@ -12,20 +12,15 @@ import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/http/apis.dart';
-import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/http/log_utils.dart';
-import 'package:logistics_app/http/model/app_check_update_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
-import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:mobpush_plugin/mobpush_custom_message.dart';
 import 'package:mobpush_plugin/mobpush_notify_message.dart';
 import 'package:mobpush_plugin/mobpush_plugin.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:pub_semver/pub_semver.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'generated/l10n.dart';
 
@@ -57,7 +52,6 @@ void main() async {
   LogUtils.init();
   HttpUtils.initDio();
   String languageCode = await SpUtils.getString('locale') ?? 'zh';
-  checkUpdate();
   runApp(MyApp(
     languageCode: languageCode,
   ));
@@ -193,65 +187,6 @@ void initXUpdate() async {
   }
 }
 
-///检查更新
-Future checkUpdate() async {
-  //获取当前app的版本code
-  String versionCode = await DeviceUtils.version();
-  String versionName = await DeviceUtils.version();
-  String downloadUrlPre =
-      await SpUtils.getString(Constants.SP_IMAGE_PREFIX) ?? APIs.apiPrefix;
-  DataUtils.getAppLastVersion(
-    success: (data) {
-      UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
-      //线上版本的code
-      Version oldVersion = Version.parse(versionName);
-      Version newVersion = Version.parse(updateModel.versionName);
-      try {
-        //如果当前版本小于线上版本，需要更新
-        if (oldVersion == newVersion) {
-          SpUtils.saveString(
-              Constants.SP_NEW_APP_VERSION, updateModel.versionName);
-        } else {
-          SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
-        }
-        if (oldVersion < newVersion) {
-          if (Platform.isAndroid) {
-            UpdateEntity customParseJson() {
-              return UpdateEntity(
-                  isForce: true,
-                  hasUpdate: true,
-                  isIgnorable: false,
-                  versionCode: int.parse(updateModel.versionCode),
-                  versionName: updateModel.versionName,
-                  updateContent: updateModel.updateLog,
-                  downloadUrl: downloadUrlPre + updateModel.apkUrl,
-                  apkSize: updateModel.apkSize);
-            }
-
-            FlutterXUpdate.updateByInfo(
-                updateEntity: customParseJson(),
-                themeColor: '#ff6532',
-                buttonTextColor: '#ffffff',
-                topImageRes: 'bg_update_top');
-          } else {
-            void openAppStore() async {
-              const url =
-                  'https://apps.apple.com/app/id6667111068'; // 替换为你的应用在 App Store 的链接
-              if (await canLaunch(url)) {
-                await launch(url);
-              } else {
-                throw 'Could not launch $url';
-              }
-            }
-          }
-        }
-      } catch (e) {
-        SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
-      }
-    },
-  );
-}
-
 /// 设计尺寸
 Size get designSize {
   final firstView = WidgetsBinding.instance.platformDispatcher.views.first;
@@ -282,9 +217,6 @@ class MyApp extends StatelessWidget {
       systemNavigationBarDividerColor: Colors.transparent,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
-    // if (Platform.isIOS) {
-    //   checkUpdate(context);
-    // }
     return OKToast(
         //屏幕适配父组件组件
         child: ScreenUtilInit(

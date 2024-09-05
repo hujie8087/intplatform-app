@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:logistics_app/common_ui/dialog/parent_dialog.dart';
 
 ///通用弹窗工具类
@@ -64,15 +62,10 @@ class DialogFactory {
     showParentDialog(
         context: context,
         child: TipsCommonDialog(
-          title: "检测到新版本，是否下载更新？",
+          title: "检测到新版本，请前往APPStore更新",
           dialogContentType: DialogContentType.Normal,
           dialogButtonType: DialogButtonType.DoubleButton,
-          leftOnTap: () {
-            Navigator.pop(context);
-            dismissClick?.call();
-          },
           rightOnTap: () {
-            Navigator.pop(context);
             confirmClick?.call();
           },
         ),

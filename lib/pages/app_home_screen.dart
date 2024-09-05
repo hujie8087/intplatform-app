@@ -1,10 +1,16 @@
 // import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_update_dialog/update_dialog.dart';
+import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/common_ui/navigation/navigation_bar_item.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/app_check_update_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/home_page/home_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_page.dart';
@@ -12,7 +18,10 @@ import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:pub_semver/pub_semver.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppHomeScreen extends StatefulWidget {
   @override
@@ -106,6 +115,72 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     }
   }
 
+  ///检查更新
+  Future checkUpdate(BuildContext context) async {
+    //获取当前app的版本code
+    String versionCode = await DeviceUtils.version();
+    String versionName = await DeviceUtils.version();
+    String downloadUrlPre =
+        await SpUtils.getString(Constants.SP_IMAGE_PREFIX) ?? APIs.apiPrefix;
+    DataUtils.getAppLastVersion(
+      success: (data) async {
+        UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
+        //线上版本的code
+        Version oldVersion = Version.parse(versionName);
+        Version newVersion = Version.parse(updateModel.versionName);
+        try {
+          //如果当前版本小于线上版本，需要更新
+          if (oldVersion == newVersion) {
+            SpUtils.saveString(
+                Constants.SP_NEW_APP_VERSION, updateModel.versionName);
+          } else {
+            SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
+          }
+          if (oldVersion < newVersion) {
+            if (Platform.isAndroid) {
+              UpdateEntity customParseJson() {
+                return UpdateEntity(
+                    isForce: true,
+                    hasUpdate: true,
+                    isIgnorable: false,
+                    versionCode: int.parse(updateModel.versionCode),
+                    versionName: updateModel.versionName,
+                    updateContent: updateModel.updateLog,
+                    downloadUrl: downloadUrlPre + updateModel.apkUrl,
+                    apkSize: updateModel.apkSize);
+              }
+
+              FlutterXUpdate.updateByInfo(
+                  updateEntity: customParseJson(),
+                  themeColor: '#ff6532',
+                  buttonTextColor: '#ffffff',
+                  topImageRes: 'bg_update_top');
+            } else {
+              UpdateDialog.showUpdate(context,
+                  title: '检测有新版本，请前往APPStore下载最新版',
+                  updateContent: updateModel.updateLog ?? '',
+                  themeColor: Color.fromRGBO(255, 101, 50, 1),
+                  updateButtonText: '立即更新',
+                  topImage: Image.asset('assets/images/bg_update_top.png'),
+                  isForce: true, onUpdate: () async {
+                final url =
+                    Uri.parse('https://apps.apple.com/app/id6667111068');
+                // 替换为你的应用在 App Store 的链接
+                if (await canLaunchUrl(url)) {
+                  await launchUrl(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              });
+            }
+          }
+        } catch (e) {
+          SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
+        }
+      },
+    );
+  }
+
   @override
   void initState() {
     _loadTabIcons();
@@ -120,6 +195,22 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     _handleTabChanged(0);
     // tabBody = HomePage(
     //     animationController: animationController, onChanged: _handleTabChanged);
+
+    checkUpdate(context);
+  }
+
+  Future<void> checkForIosUpdate(context) async {
+    // DialogFactory().showNeedUpdateDialog(
+    //     context: context,
+    //     confirmClick: () async {
+    //       final url = Uri.parse('https://apps.apple.com/app/id6667111068');
+    //       // 替换为你的应用在 App Store 的链接
+    //       if (await canLaunchUrl(url)) {
+    //         await launchUrl(url);
+    //       } else {
+    //         throw 'Could not launch $url';
+    //       }
+    //     });
   }
 
   void _handleTabChanged(int newValue) async {
