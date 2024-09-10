@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
@@ -102,8 +103,9 @@ class _LoginFormState extends State<LoginForm> {
                         });
                         model.login().then((value) async {
                           if (value) {
-                            var token =
-                                await SpUtils.getString('fCMToken') ?? '';
+                            var token = await SpUtils.getString(
+                                    Constants.SP_DEVICE_TOKEN) ??
+                                '';
                             if (token != '') {
                               DataUtils.setUserToken(token);
                             }

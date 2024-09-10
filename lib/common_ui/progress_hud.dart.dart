@@ -3,7 +3,7 @@ import 'package:oktoast/oktoast.dart';
 
 const Color _bgColor = Colors.black87;
 const double _radius = 3.0;
-const int _closeTime = 1500;
+const int _closeTime = 15000;
 // 表示是否该分组内是否在同一时间里只存在一个Toast,区分是哪一个组是按照[groupKey]来区分的,默认false
 const bool _onlyOne = true;
 // 是否在点击屏幕触发事件时自动关闭该Toast,默认false

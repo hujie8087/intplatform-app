@@ -21,4 +21,7 @@ class Constants {
 
   // 图片链接地址
   static const String SP_IMAGE_PREFIX = '';
+
+  // 用户设备TOKEN
+  static const String SP_DEVICE_TOKEN = '';
 }

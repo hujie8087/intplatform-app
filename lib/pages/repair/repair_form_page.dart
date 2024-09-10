@@ -37,7 +37,7 @@ Future<List<String>> uploadImages(List<AssetEntity> selectedAssets) async {
   }
   // 使用 Completer 处理异步回调
   final completer = Completer<Map<String, dynamic>>();
-
+// 上传图片
   DataUtils.uploadFile(formData, success: (data) {
     completer.complete(data);
   }, fail: (code, msg) {
@@ -122,6 +122,7 @@ class _RepairFormPage extends State<RepairFormPage>
             parent: animationController!,
             curve: Interval(0.0, 1.0, curve: Curves.fastOutSlowIn)));
     animationController!.forward();
+    // 获取楼栋信息
     model.getBuildingTreeModel();
   }
 

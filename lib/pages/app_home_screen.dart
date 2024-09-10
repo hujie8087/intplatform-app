@@ -199,20 +199,6 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     checkUpdate(context);
   }
 
-  Future<void> checkForIosUpdate(context) async {
-    // DialogFactory().showNeedUpdateDialog(
-    //     context: context,
-    //     confirmClick: () async {
-    //       final url = Uri.parse('https://apps.apple.com/app/id6667111068');
-    //       // 替换为你的应用在 App Store 的链接
-    //       if (await canLaunchUrl(url)) {
-    //         await launchUrl(url);
-    //       } else {
-    //         throw 'Could not launch $url';
-    //       }
-    //     });
-  }
-
   void _handleTabChanged(int newValue) async {
     _tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;

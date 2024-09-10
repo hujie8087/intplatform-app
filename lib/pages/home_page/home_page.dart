@@ -98,7 +98,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       userName = res ?? '';
       deptName = dept ?? '';
       networkType = imagePath == APIs.imagePrefixWifi ? "内网" : "外网";
-      print('imagePathimagePath${imagePath}');
       _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
         if (_pageController.hasClients) {
           int nextPage = _pageController.page!.toInt() + 1;
@@ -244,7 +243,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                if (userName != '') getAppBarUI(),
+                getAppBarUI(),
               ],
             ),
           ),
@@ -496,46 +495,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             top: 12.0 * topBarOpacity,
                             bottom: 12),
                         child: Row(
+                          mainAxisAlignment: userName != ''
+                              ? MainAxisAlignment.spaceAround
+                              : MainAxisAlignment.end,
                           children: <Widget>[
-                            Expanded(
-                                child: InkWell(
-                              onTap: _handleTap,
-                              child: Row(
-                                children: [
-                                  // 圆形图片
-                                  AvatarWidget(width: 40),
-                                  Expanded(
-                                      child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        userName,
-                                        style: TextStyle(
-                                          fontFamily: AppTheme.fontName,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 14 + 2 - 2 * topBarOpacity,
-                                          letterSpacing: 1.2,
-                                          color: topBarOpacity == 1.0
-                                              ? AppTheme.darkerText
-                                              : Colors.white,
+                            if (userName != '')
+                              Expanded(
+                                  child: InkWell(
+                                onTap: _handleTap,
+                                child: Row(
+                                  children: [
+                                    // 圆形图片
+                                    AvatarWidget(width: 40),
+                                    Expanded(
+                                        child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          userName,
+                                          style: TextStyle(
+                                            fontFamily: AppTheme.fontName,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize:
+                                                14 + 2 - 2 * topBarOpacity,
+                                            letterSpacing: 1.2,
+                                            color: topBarOpacity == 1.0
+                                                ? AppTheme.darkerText
+                                                : Colors.white,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        deptName,
-                                        style: TextStyle(
-                                          fontFamily: AppTheme.fontName,
-                                          fontSize: 12 + 2 - 2 * topBarOpacity,
-                                          color: topBarOpacity == 1.0
-                                              ? AppTheme.darkerText
-                                              : Colors.white,
-                                        ),
-                                      )
-                                    ],
-                                  ))
-                                ],
-                              ),
-                            )),
+                                        Text(
+                                          deptName,
+                                          style: TextStyle(
+                                            fontFamily: AppTheme.fontName,
+                                            fontSize:
+                                                12 + 2 - 2 * topBarOpacity,
+                                            color: topBarOpacity == 1.0
+                                                ? AppTheme.darkerText
+                                                : Colors.white,
+                                          ),
+                                        )
+                                      ],
+                                    ))
+                                  ],
+                                ),
+                              )),
                             Container(
                               padding: const EdgeInsets.all(5),
                               // 圆形背景

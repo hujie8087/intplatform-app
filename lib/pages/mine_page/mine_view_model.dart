@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -45,18 +44,6 @@ class MineViewModel with ChangeNotifier {
         showToast(S.current.networkError);
       },
     );
-  }
-
-  UpdateEntity customParseJson(downloadUrlPre) {
-    return UpdateEntity(
-        isForce: true,
-        hasUpdate: true,
-        isIgnorable: false,
-        versionCode: int.parse(updateModel!.versionCode),
-        versionName: updateModel?.versionName,
-        updateContent: updateModel?.updateLog,
-        downloadUrl: downloadUrlPre + updateModel!.apkUrl,
-        apkSize: updateModel!.apkSize);
   }
 
   ///检查更新

@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,40 +9,27 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/app_theme.dart';
-import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/firebase_service.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/http/log_utils.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:mobpush_plugin/mobpush_custom_message.dart';
-import 'package:mobpush_plugin/mobpush_notify_message.dart';
-import 'package:mobpush_plugin/mobpush_plugin.dart';
 import 'package:oktoast/oktoast.dart';
+import 'firebase_options.dart';
 
 import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // //上传隐私协议许可
-  // MobpushPlugin.updatePrivacyPermissionStatus(true).then((value) {
-  //   print(
-  //       ">>>>>>>>>>>>>>>>>>>updatePrivacyPermissionStatus:" + value.toString());
-  // });
-  // if (Platform.isIOS) {
-  //   //设置地区：regionId 默认0（国内），1:海外
-  //   MobpushPlugin.setRegionId(0);
-  //   MobpushPlugin.registerApp(
-  //       "3a2cebc425f10", "c91dab150797b3c47374c379c4bb9426");
-  // }
-  // initPlatformState();
-  // if (Platform.isIOS) {
-  //   MobpushPlugin.setCustomNotification();
-  //   MobpushPlugin.setAPNsForProduction(true);
-  // }
-  // MobpushPlugin.addPushReceiver(_onEvent, _onError);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await FirebaseService().initNotifications();
+  await FirebaseService().notifyInit();
   await _checkConnectivity();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
@@ -51,74 +38,11 @@ void main() async {
   initXUpdate();
   LogUtils.init();
   HttpUtils.initDio();
+  // notifyInit();
   String languageCode = await SpUtils.getString('locale') ?? 'zh';
   runApp(MyApp(
     languageCode: languageCode,
   ));
-}
-
-void _onEvent(dynamic event) {
-  print('>>>>>>>>>>>>>>>>>>>>>>>>>>>onEvent:' + event.toString());
-  Map<String, dynamic> eventMap = json.decode(event as String);
-  Map<String, dynamic> result = eventMap['result'];
-  int action = eventMap['action'];
-
-  switch (action) {
-    case 0:
-      MobPushCustomMessage message = new MobPushCustomMessage.fromJson(result);
-      ProgressHUD.showInfo(message.content);
-      // showDialog(
-      //     context: context,
-      //     builder: (context) {
-      //       return AlertDialog(
-      //         content: Text(message.content),
-      //         actions: <Widget>[
-      //           TextButton(
-      //             onPressed: () {
-      //               Navigator.pop(context);
-      //             },
-      //             child: Text("确定")
-      //           )
-      //         ],
-      //       );
-      // });
-      break;
-    case 1:
-      MobPushNotifyMessage message = new MobPushNotifyMessage.fromJson(result);
-      print(message);
-      ProgressHUD.showInfo(message.content);
-      break;
-    case 2:
-      MobPushNotifyMessage message = new MobPushNotifyMessage.fromJson(result);
-      print(message);
-      break;
-  }
-}
-
-void _onError(dynamic event) {
-  print('>>>>>>>>>>>>>>>>>>>>>>>>>>>onError:' + event.toString());
-}
-
-Future<void> initPlatformState() async {
-  String sdkVersion;
-  String _registrationId;
-  try {
-    sdkVersion = await MobpushPlugin.getSDKVersion();
-  } on PlatformException {
-    sdkVersion = 'Failed to get platform version.';
-  }
-  try {
-    Future.delayed(Duration(milliseconds: 500), () {
-      MobpushPlugin.getRegistrationId().then((Map<String, dynamic> ridMap) {
-        print(ridMap);
-        _registrationId = ridMap['res'].toString();
-        print('------>#### registrationId: ' + _registrationId);
-      });
-    });
-  } on PlatformException {
-    _registrationId = 'Failed to get registrationId.';
-  }
-  print('sdkVersion$sdkVersion');
 }
 
 Future<void> _checkConnectivity() async {

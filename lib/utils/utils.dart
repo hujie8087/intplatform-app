@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
-import 'package:mobpush_plugin/mobpush_plugin.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Utils {
@@ -335,22 +334,5 @@ class Utils {
         isExecuting = false;
       });
     };
-  }
-
-  /**
-    * 测试模拟推送，用于测试
-    * type：模拟消息类型，1、通知测试；2、内推测试；3、定时
-    * content：模拟发送内容，500字节以内，UTF-8
-    * space：仅对定时消息有效，单位分钟，默认1分钟
-    * extras: 附加数据，json字符串
-    */
-  static sendMobpushMessage(
-      int type, String content, int space, String extras) {
-    MobpushPlugin.send(type, content, space, extras)
-        .then((Map<String, dynamic> sendMap) {
-      String res = sendMap['res'];
-      String error = sendMap['error'];
-      print(">>>>>>>>>>>>>>>>>>>>>>>>>>> send -> res: $res error: $error");
-    });
   }
 }

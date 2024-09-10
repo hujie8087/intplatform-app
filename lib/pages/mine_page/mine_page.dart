@@ -1,6 +1,5 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
-import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
@@ -431,19 +430,6 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                 ),
               ));
         });
-  }
-
-  ///检查更新
-  Future<void> checkAppUpdate(BuildContext context) async {
-    if (model.needUpdate) {
-      await Permission.storage.request();
-      String downloadUrlPre =
-          await SpUtils.getString(Constants.SP_IMAGE_PREFIX);
-      FlutterXUpdate.updateByInfo(
-          updateEntity: model.customParseJson(downloadUrlPre));
-    } else {
-      showToast("已是最新版本", backgroundColor: primaryColor);
-    }
   }
 
 // {createBy: ,

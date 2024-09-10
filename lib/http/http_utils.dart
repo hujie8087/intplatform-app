@@ -142,10 +142,8 @@ class HttpUtils {
       if (!LogUtils.inProduction && isOpenLog) {
         print('---------- HttpUtils response ----------');
         print(result);
+        ProgressHUD.hide();
       }
-      // if (loadingText != null && loadingText.isNotEmpty) {
-      //   ProgressHUD.hide();
-      // }
       if (result['code'] == ExceptionHandle.success) {
         success?.call(result);
       } else if ((result['code'] == ExceptionHandle.unauthorized)) {

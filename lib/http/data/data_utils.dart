@@ -95,7 +95,7 @@ class DataUtils {
 
   // 获取生活区楼栋房间
   static void getBuildingTree<T>({Success? success, Fail? fail, s}) {
-    HttpUtils.get('/maintenance/food/building/app/tree', null,
+    HttpUtils.get('/maintenance/building/app/tree', null,
         loadingText: S.current.livingAreaDataLoading,
         success: success,
         fail: fail);
