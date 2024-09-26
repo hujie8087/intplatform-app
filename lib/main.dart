@@ -15,8 +15,8 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
-import 'firebase_options.dart';
 
+import 'firebase_options.dart';
 import 'generated/l10n.dart';
 
 void main() async {

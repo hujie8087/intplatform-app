@@ -1,6 +1,0 @@
-framework module MobPushServiceExtension {
-    umbrella header "MobPushServiceExtension.h"
-    
-    export *
-    module * { export * }
-}

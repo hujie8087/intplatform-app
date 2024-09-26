@@ -169,19 +169,25 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
           icon: Icons.bookmark_outline,
           isEven: false,
           showBadge: false,
-          onTap: null),
+          onTap: () {
+            ProgressHUD.showInfo('功能暂未开放，敬请期待！');
+          }),
       MenuItemModel(
           title: '我想吃',
           icon: Icons.restaurant,
           isEven: true,
           showBadge: false,
-          onTap: null),
+          onTap: () {
+            ProgressHUD.showInfo('功能暂未开放，敬请期待！');
+          }),
       MenuItemModel(
           title: '我想说',
           icon: Icons.feedback,
           isEven: false,
           showBadge: false,
-          onTap: null),
+          onTap: () {
+            ProgressHUD.showInfo('功能暂未开放，敬请期待！');
+          }),
     ];
 
     return Scaffold(

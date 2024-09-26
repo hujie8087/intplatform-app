@@ -1,7 +1,6 @@
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_update_dialog/update_dialog.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
@@ -121,8 +120,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     //获取当前app的版本code
     String versionCode = await DeviceUtils.version();
     String versionName = await DeviceUtils.version();
-    String downloadUrlPre =
-        await SpUtils.getString(Constants.SP_IMAGE_PREFIX) ?? APIs.apiPrefix;
+    String downloadUrlPre = APIs.imagePrefix;
     DataUtils.getAppLastVersion(
       success: (data) async {
         UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);

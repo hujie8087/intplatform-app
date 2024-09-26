@@ -4,13 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
-import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
-import 'package:logistics_app/http/apis.dart';
-import 'package:logistics_app/http/http_utils.dart';
-import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
@@ -20,10 +16,8 @@ import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, this.animationController, required this.onChanged})
@@ -301,11 +295,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       // _FunctionAreaItem('意见反馈', true, Icons.feedback,
                       //     () => RouteUtils.push(context, FeedbackPage())),
                       // 联系我们
-                      _FunctionAreaItem(
-                          S.of(context).contactUs,
-                          false,
-                          Icons.phone,
-                          () => RouteUtils.push(context, ContactUsPage())),
+                      // _FunctionAreaItem(
+                      //     S.of(context).contactUs,
+                      //     false,
+                      //     Icons.phone,
+                      //     () => RouteUtils.push(context, ContactUsPage())),
                       _FunctionAreaItem('在线订餐', false, Icons.fastfood,
                           () => RouteUtils.push(context, ShoppingScreenPage())),
                       // _FunctionAreaItem(
