@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -9,9 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/app_theme.dart';
-import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/firebase_service.dart';
-import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/http/log_utils.dart';
 import 'package:logistics_app/route/route_utils.dart';
@@ -30,7 +27,6 @@ void main() async {
   );
   await FirebaseService().initNotifications();
   await FirebaseService().notifyInit();
-  await _checkConnectivity();
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
@@ -43,30 +39,6 @@ void main() async {
   runApp(MyApp(
     languageCode: languageCode,
   ));
-}
-
-Future<void> _checkConnectivity() async {
-  var connectivityResult = await (Connectivity().checkConnectivity());
-  _updateNetworkType(connectivityResult);
-
-  Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-    _updateNetworkType(result);
-  });
-}
-
-void _updateNetworkType(ConnectivityResult result) {
-  switch (result) {
-    case ConnectivityResult.mobile:
-      HttpUtils.setBaseUrl(APIs.apiPrefix);
-      SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefix);
-      break;
-    case ConnectivityResult.wifi:
-      HttpUtils.setBaseUrl(APIs.apiPrefixWifi);
-      SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefixWifi);
-      break;
-    case ConnectivityResult.none:
-      break;
-  }
 }
 
 ///初始化在线升级

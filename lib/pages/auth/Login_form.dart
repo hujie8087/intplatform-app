@@ -106,6 +106,7 @@ class _LoginFormState extends State<LoginForm> {
                             var token = await SpUtils.getString(
                                     Constants.SP_DEVICE_TOKEN) ??
                                 '';
+                            print('token:::::$token');
                             if (token != '') {
                               DataUtils.setUserToken(token);
                             }

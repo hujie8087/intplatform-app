@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 
@@ -11,13 +10,13 @@ import 'package:logistics_app/utils/sp_utils.dart';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
   print("后台通知");
   print("Handling a background message: ${message.messageId}");
   print("title: ${message.notification?.title}");
   print("body: ${message.notification?.body}");
   print("payload: ${message.data}");
   print('Handling a background message: ${message.messageId}');
+  await Firebase.initializeApp();
 }
 
 @pragma('vm:entry-point')
@@ -32,8 +31,6 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
         'notification action tapped with input: ${notificationResponse.input}');
   }
 }
-
-const String navigationActionId = 'id_3';
 
 class FirebaseService {
   final _firebaseMessaging = FirebaseMessaging.instance;
@@ -50,29 +47,12 @@ class FirebaseService {
         iOS: DarwinInitializationSettings());
     flutterLocalNotificationsPlugin.initialize(
       initSetting,
-      onDidReceiveNotificationResponse:
-          (NotificationResponse notificationResponse) {
-        print(
-            'notificationResponse:${notificationResponse.notificationResponseType}');
-        switch (notificationResponse.notificationResponseType) {
-          case NotificationResponseType.selectedNotification:
-            selectNotificationStream.add(notificationResponse.payload);
-            print(notificationResponse.payload);
-            break;
-          case NotificationResponseType.selectedNotificationAction:
-            if (notificationResponse.actionId == navigationActionId) {
-              selectNotificationStream.add(notificationResponse.payload);
-            }
-            break;
-        }
-      },
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
   }
 
   Future<void> initNotifications() async {
     await _firebaseMessaging.requestPermission();
-    // await initPushNotifications();
+    await _firebaseMessaging.subscribeToTopic("notification");
     // 获取Firebase Cloud 消息传递令牌
     final fCMToken = await _firebaseMessaging.getToken();
     // 后台运行通知回调
@@ -100,7 +80,6 @@ class FirebaseService {
     print("title: ${message.notification?.title}");
     print("body: ${message.notification?.body}");
     print("payload: ${message.data}");
-    ProgressHUD.showText('打开通知');
   }
 
   void handleMessage(RemoteMessage? message) {

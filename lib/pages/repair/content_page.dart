@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
@@ -126,7 +127,7 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
       builder: (context, model, child) {
         if (_dataArr.isEmpty == true) {
           return Center(
-            child: Text(S.of(context).noData),
+            child: EmptyView(),
           );
         }
         return ListView.builder(

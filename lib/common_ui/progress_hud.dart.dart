@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
 
-const Color _bgColor = Colors.black87;
-const double _radius = 3.0;
-const int _closeTime = 15000;
+const Color _bgColor = Color.fromARGB(150, 0, 0, 0);
+const double _radius = 10.0;
+const int _closeTime = 2000;
 // 表示是否该分组内是否在同一时间里只存在一个Toast,区分是哪一个组是按照[groupKey]来区分的,默认false
 const bool _onlyOne = true;
 // 是否在点击屏幕触发事件时自动关闭该Toast,默认false
-const bool _clickClose = false;
+const bool _clickClose = true;
 // 是否跨页面显示,如果为true,则该Toast会跨越多个Route显示,如果为false则在当前Route发生变化时,会自动关闭该Toast,默认true
 // 注意，设置为false时，如果需要在全屏弹框回调中展示toast，可以添加100延时
 const bool _crossPage = true;
@@ -46,7 +46,6 @@ class ProgressHUD {
   }
 
   static showLoadingText([loadingText = '加载中...']) {
-    print('loadingText:${loadingText}');
     return _showLoading(loadingText);
   }
 
@@ -57,6 +56,7 @@ class ProgressHUD {
 }
 
 void _showToast(String loadingText, _ToastType toastType) {
+  dismissAllToast();
   showToastWidget(
     _showCustomToast(loadingText, toastType),
     duration: Duration(milliseconds: _closeTime),
@@ -65,6 +65,7 @@ void _showToast(String loadingText, _ToastType toastType) {
 }
 
 void _showLoading(String loadingText) {
+  dismissAllToast();
   showToastWidget(
     _showCustomToast(loadingText, _ToastType.loading),
     duration: Duration(milliseconds: _closeTime),

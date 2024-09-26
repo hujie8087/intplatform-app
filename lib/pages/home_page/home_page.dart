@@ -17,11 +17,13 @@ import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
 import 'package:logistics_app/pages/repair/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
+import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, this.animationController, required this.onChanged})
@@ -43,7 +45,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Animation<double>? topBarAnimation;
   int current = 0;
   Timer? _timer;
-  String networkType = '内网';
   PageController _pageController = PageController();
 
   final List<SwitchType> buttonLabels = [
@@ -88,7 +89,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     // 模拟异步数据获取
     var res = await SpUtils.getString(Constants.SP_USER_NAME);
     var dept = await SpUtils.getString(Constants.SP_USER_DEPT);
-    var imagePath = await SpUtils.getString(Constants.SP_IMAGE_PREFIX);
     // 模拟异步数据获取
     var userInfo = await SpUtils.getModel('userInfo');
     // 更新状态
@@ -97,7 +97,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() {
       userName = res ?? '';
       deptName = dept ?? '';
-      networkType = imagePath == APIs.imagePrefixWifi ? "内网" : "外网";
       _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
         if (_pageController.hasClients) {
           int nextPage = _pageController.page!.toInt() + 1;
@@ -263,6 +262,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Container(
                   margin:
                       EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 0),
+                  padding: EdgeInsets.only(top: 10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -270,12 +270,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   child: GridView(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 4,
-                      childAspectRatio: 1.0,
+                      childAspectRatio: 1.3,
                       crossAxisSpacing: 0,
                       mainAxisSpacing: 0,
                     ),
                     shrinkWrap: true,
-                    padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+                    padding: EdgeInsets.all(0),
                     physics: NeverScrollableScrollPhysics(),
                     children: [
                       // 在线报修
@@ -306,6 +306,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           false,
                           Icons.phone,
                           () => RouteUtils.push(context, ContactUsPage())),
+                      _FunctionAreaItem('在线订餐', false, Icons.fastfood,
+                          () => RouteUtils.push(context, ShoppingScreenPage())),
                       // _FunctionAreaItem(
                       //     '我的收藏',
                       //     true,
@@ -372,9 +374,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         scrollDirection: Axis.vertical,
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
-                                            onTap: () {
-                                              // Utils.sendMobpushMessage(
-                                              //     1, '消息通知', 1, '');
+                                            onTap: () async {
                                               RouteUtils.push(
                                                   context,
                                                   NoticeDetailPage(
@@ -555,21 +555,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 highlightColor: Colors.transparent,
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(32.0)),
-                                onTap: () {
-                                  wxPicker(context);
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      networkType,
-                                      style:
-                                          TextStyle(color: primaryColor[800]),
-                                    ),
-                                    Icon(
-                                      Icons.arrow_drop_down,
-                                      color: primaryColor[800],
-                                    )
-                                  ],
+                                onTap: () {},
+                                child: Icon(
+                                  Icons.notifications,
+                                  color: primaryColor[500],
                                 ),
                               ),
                             ),
@@ -587,41 +576,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Future wxPicker(
-    BuildContext context,
-  ) {
-    return Picker.showModalSheet(context,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildButton(
-              Text('内网'),
-              onTap: () {
-                HttpUtils.setBaseUrl(APIs.apiPrefixWifi);
-                SpUtils.saveString(
-                    Constants.SP_IMAGE_PREFIX, APIs.imagePrefixWifi);
-                setState(() {
-                  networkType = '内网';
-                });
-                Navigator.pop(context);
-              },
-            ),
-            DividerWidget(),
-            _buildButton(
-              Text('外网'),
-              onTap: () {
-                HttpUtils.setBaseUrl(APIs.apiPrefix);
-                SpUtils.saveString(Constants.SP_IMAGE_PREFIX, APIs.imagePrefix);
-                setState(() {
-                  networkType = '外网';
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ));
-  }
-
   static InkWell _buildButton(Widget child, {Function()? onTap}) {
     return InkWell(
       onTap: onTap,
@@ -637,10 +591,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       String title, bool isEven, IconData icon, GestureTapCallback? onTap) {
     return GestureDetector(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 50,
-            height: 50,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isEven
@@ -649,13 +605,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Icon(
               icon,
               color: isEven ? primaryColor : secondaryColor,
-              size: 30,
+              size: 24,
             ),
           ),
           SizedBox(
             height: 5,
           ),
-          Text(title, style: TextStyle(fontSize: 12))
+          Text(
+            title,
+            style: TextStyle(fontSize: 12),
+          ),
         ],
       ),
       onTap: onTap,

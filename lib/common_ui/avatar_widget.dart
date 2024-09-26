@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -15,7 +14,6 @@ class AvatarWidget extends StatefulWidget {
 
 class _AvatarWidgetState extends State<AvatarWidget> {
   String avatar = '';
-  String imagePrefix = '';
   @override
   void initState() {
     _fetchData();
@@ -25,8 +23,6 @@ class _AvatarWidgetState extends State<AvatarWidget> {
   Future<void> _fetchData() async {
     // 模拟异步数据获取
     var userInfo = await SpUtils.getModel('userInfo');
-    imagePrefix =
-        await SpUtils.getString(Constants.SP_IMAGE_PREFIX) ?? APIs.imagePrefix;
     avatar = userInfo != null ? userInfo['user']['avatar'] : '';
     setState(() {});
   }
@@ -41,7 +37,7 @@ class _AvatarWidgetState extends State<AvatarWidget> {
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: NetworkImage(imagePrefix + avatar),
+                  image: NetworkImage(APIs.imagePrefix + avatar),
                   fit: BoxFit.fill,
                 ),
                 color: primaryColor),

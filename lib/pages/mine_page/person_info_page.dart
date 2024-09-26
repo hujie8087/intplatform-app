@@ -27,7 +27,6 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
   UserInfoModel? userInfo;
   List<AssetEntity> selectedAssets = [];
   String? selectedValue;
-  String imagePrefix = APIs.imagePrefixWifi;
   final List<DictModel> sexOptions = [
     DictModel(dictValue: '0', dictLabel: S.current.man),
     DictModel(dictValue: '1', dictLabel: S.current.woman),
@@ -54,7 +53,6 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
           avatar = userInfoModel.user!.avatar!;
         }
         userInfo = userInfoModel;
-        imagePrefix = await SpUtils.getString(Constants.SP_IMAGE_PREFIX);
         setState(() {});
       },
       fail: (code, msg) {
@@ -148,7 +146,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                   image: DecorationImage(
                     image: avatar.startsWith('assets')
                         ? AssetImage(avatar) as ImageProvider
-                        : NetworkImage(imagePrefix + avatar),
+                        : NetworkImage(APIs.imagePrefix + avatar),
                     fit: BoxFit.cover,
                     alignment: Alignment.centerLeft,
                   ),

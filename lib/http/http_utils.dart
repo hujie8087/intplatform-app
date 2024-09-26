@@ -131,7 +131,7 @@ class HttpUtils {
     }
     if (method == Method.put) {
       data = params;
-      queryParameters = params;
+      // queryParameters = params;
     }
     if (loadingText != null && loadingText.isNotEmpty) {
       ProgressHUD.showLoadingText(loadingText);
@@ -149,6 +149,8 @@ class HttpUtils {
       } else if ((result['code'] == ExceptionHandle.unauthorized)) {
         ProgressHUD.showText('请登录您的帐号');
         RouteUtils.navigateToLogin();
+      } else if ((result['status'] == ExceptionHandle.not_found)) {
+        ProgressHUD.showText('无法连接服务器');
       } else {
         // 其他状态，弹出错误提示信息
         ProgressHUD.showText(result['msg']);

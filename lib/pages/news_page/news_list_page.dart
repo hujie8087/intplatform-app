@@ -4,7 +4,6 @@ import 'package:logistics_app/pages/news_page/news_view_model.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
-import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

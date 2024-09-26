@@ -1,12 +1,20 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/icon_api_widget.dart';
 import 'package:logistics_app/common_ui/option_grid_view.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/data/tool_utils.dart';
+import 'package:logistics_app/http/model/guide_type_view_model.dart';
+import 'package:logistics_app/http/model/guide_view_model.dart';
+import 'package:logistics_app/http/model/rows_model.dart';
+import 'package:logistics_app/pages/guide/guide_list_page.dart';
+import 'package:logistics_app/pages/guide/guide_type_page.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
-import 'package:logistics_app/pages/public_convenience_page/public_convenience_list_page.dart';
 import 'package:logistics_app/pages/repair/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
+import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 
@@ -28,6 +36,64 @@ class ToolBoxPage extends StatefulWidget {
 }
 
 class _ToolBoxPageState extends State<ToolBoxPage> {
+  List<GuideTypeViewModel> guideTypeList = [];
+  List<GuideViewModel> guideList = [];
+  List<MenuItemModel> commonMenu = [];
+
+  Future<void> _fetchGuideListData(GuideTypeViewModel guideType) async {
+    ToolUtils.getGuideList<GuideViewModel>(
+      {'pageNum': 1, 'pageSize': 1000, 'typeId': guideType.id},
+      success: (res) {
+        RowsModel<GuideViewModel> rowsModel =
+            RowsModel.fromJson(res, (json) => GuideViewModel.fromJson(json));
+        guideList = rowsModel.rows ?? [];
+        if (guideList.isNotEmpty) {
+          RouteUtils.push(context,
+              GuideListPage(guideType: guideType, guideList: guideList));
+        } else {
+          RouteUtils.push(context, GuideTypePage(id: guideType.id!));
+        }
+        setState(() {});
+      },
+    );
+  }
+
+  Future<void> _fetchData() async {
+    ToolUtils.getGuideTypeList<GuideTypeViewModel>(
+      {'pageNum': 1, 'pageSize': 1000},
+      success: (res) {
+        RowsModel<GuideTypeViewModel> rowsModel = RowsModel.fromJson(
+            res, (json) => GuideTypeViewModel.fromJson(json));
+        guideTypeList = rowsModel.rows ?? [];
+        setState(() {
+          if (guideTypeList.isNotEmpty) {
+            commonMenu = guideTypeList.map((item) {
+              return MenuItemModel(
+                  title: item.title,
+                  icon: iconMap[item.img],
+                  isEven: item.id! % 2 == 0,
+                  showBadge: false,
+                  onTap: () async {
+                    await _fetchGuideListData(item);
+                    // RouteUtils.push(context, GuideTypePage(id: item.id!));
+                  });
+            }).toList();
+          }
+        });
+      },
+      fail: (code, msg) {
+        ProgressHUD.showError(msg);
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<MenuItemModel> transportMenu = [
@@ -90,37 +156,17 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
           showBadge: false,
           onTap: () => RouteUtils.push(context, MyRepairPage())),
     ];
-    final List<MenuItemModel> commonMenu = [
-      MenuItemModel(
-          title: '服务指南',
-          icon: Icons.info,
-          isEven: true,
-          showBadge: false,
-          onTap: null),
-      MenuItemModel(
-          title: '公共便利',
-          icon: Icons.public,
-          isEven: false,
-          showBadge: false,
-          onTap: () => RouteUtils.push(context, PublicConvenienceListPage())),
-      // MenuItemModel(
-      //     title: '失物招领',
-      //     icon: Icons.inventory_2_outlined,
-      //     isEven: true,
-      //     showBadge: false,
-      //     onTap: () => RouteUtils.push(context, LostFoundListPage())),
-    ];
 
     final List<MenuItemModel> foodMenu = [
       MenuItemModel(
-          title: '在线预订',
+          title: '在线订餐',
           icon: Icons.book_online,
           isEven: true,
           showBadge: false,
-          onTap: null),
+          onTap: () => {RouteUtils.push(context, ShoppingScreenPage())}),
       MenuItemModel(
-          title: '餐饮介绍',
-          icon: Icons.fastfood,
+          title: '我的订单',
+          icon: Icons.bookmark_outline,
           isEven: false,
           showBadge: false,
           onTap: null),
@@ -167,44 +213,6 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Container(
-                    //     padding: EdgeInsets.all(10),
-                    //     margin: EdgeInsets.only(bottom: 10),
-                    //     decoration: BoxDecoration(
-                    //         color: Colors.white,
-                    //         borderRadius: BorderRadius.circular(10)),
-                    //     child: Column(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         Row(
-                    //           children: [
-                    //             Icon(
-                    //               Icons.directions,
-                    //               color: primaryColor,
-                    //               size: 20,
-                    //             ),
-                    //             Text(
-                    //               '交通服务',
-                    //               style: TextStyle(
-                    //                   fontSize: 14,
-                    //                   fontWeight: FontWeight.bold),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         SizedBox(
-                    //           height: 10,
-                    //         ),
-                    //         OptionGridView(
-                    //           itemCount: transportMenu.length,
-                    //           rowCount: 5,
-                    //           mainAxisSpacing: 10,
-                    //           crossAxisSpacing: 10,
-                    //           itemBuilder: (context, index) {
-                    //             return _FunctionAreaItem(transportMenu[index]);
-                    //           },
-                    //         ),
-                    //       ],
-                    //     )),
                     Container(
                         padding: EdgeInsets.all(10),
                         margin: EdgeInsets.only(bottom: 10),
@@ -340,89 +348,90 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                           ],
                         )),
                     // 餐饮服务
-                    // Container(
-                    //     padding: EdgeInsets.all(10),
-                    //     margin: EdgeInsets.only(bottom: 10),
-                    //     decoration: BoxDecoration(
-                    //         color: Colors.white,
-                    //         borderRadius: BorderRadius.circular(10)),
-                    //     child: Column(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         Row(
-                    //           children: [
-                    //             Icon(
-                    //               Icons.fastfood,
-                    //               color: primaryColor,
-                    //               size: 20,
-                    //             ),
-                    //             SizedBox(
-                    //               width: 5,
-                    //             ),
-                    //             Text(
-                    //               '餐饮服务',
-                    //               style: TextStyle(
-                    //                   fontSize: 14,
-                    //                   fontWeight: FontWeight.bold),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         SizedBox(
-                    //           height: 10,
-                    //         ),
-                    //         OptionGridView(
-                    //           itemCount: foodMenu.length,
-                    //           rowCount: 5,
-                    //           mainAxisSpacing: 10,
-                    //           crossAxisSpacing: 10,
-                    //           itemBuilder: (context, index) {
-                    //             return _FunctionAreaItem(foodMenu[index]);
-                    //           },
-                    //         ),
-                    //       ],
-                    //     )),
-                    // 公共服务
-                    // Container(
-                    //     padding: EdgeInsets.all(10),
-                    //     margin: EdgeInsets.only(bottom: 10),
-                    //     decoration: BoxDecoration(
-                    //         color: Colors.white,
-                    //         borderRadius: BorderRadius.circular(10)),
-                    //     child: Column(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         Row(
-                    //           children: [
-                    //             Icon(
-                    //               Icons.public,
-                    //               color: primaryColor,
-                    //               size: 20,
-                    //             ),
-                    //             SizedBox(
-                    //               width: 5,
-                    //             ),
-                    //             Text(
-                    //               '公共服务',
-                    //               style: TextStyle(
-                    //                   fontSize: 14,
-                    //                   fontWeight: FontWeight.bold),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         SizedBox(
-                    //           height: 10,
-                    //         ),
-                    // OptionGridView(
-                    //   itemCount: commonMenu.length,
-                    //   rowCount: 5,
-                    //   mainAxisSpacing: 10,
-                    //   crossAxisSpacing: 10,
-                    //   itemBuilder: (context, index) {
-                    //     return _FunctionAreaItem(commonMenu[index]);
-                    //   },
-                    // ),
-                    // ],
-                    // )),
+                    Container(
+                        padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.fastfood,
+                                  color: primaryColor,
+                                  size: 20,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  '餐饮服务',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            OptionGridView(
+                              itemCount: foodMenu.length,
+                              rowCount: 5,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              itemBuilder: (context, index) {
+                                return _FunctionAreaItem(foodMenu[index]);
+                              },
+                            ),
+                          ],
+                        )),
+                    // 服务指南
+                    if (commonMenu.isNotEmpty)
+                      Container(
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.public,
+                                    color: primaryColor,
+                                    size: 20,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    '服务指南',
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              OptionGridView(
+                                itemCount: commonMenu.length,
+                                rowCount: 5,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                itemBuilder: (context, index) {
+                                  return _FunctionAreaItem(commonMenu[index]);
+                                },
+                              ),
+                            ],
+                          )),
                     SizedBox(
                       height: 50,
                     ),

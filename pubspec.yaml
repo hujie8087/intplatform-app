@@ -23,7 +23,7 @@ environment:
 dependencies:
   animations: ^2.0.3
   badges: ^3.1.2
-  cached_network_image: ^3.2.2
+  cached_network_image: ^3.4.1
   cascade_picker: ^0.0.8
   chewie: ^1.5.0
   connectivity_plus: ^5.0.2
@@ -52,6 +52,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   flutter_screenutil: ^5.9.0-beta
   flutter_smart_dialog: ^4.9.4
+  flutter_sticky_header: ^0.6.5
   flutter_svg: ^2.0.10+1
   flutter_swiper_view: ^1.1.8
   flutter_update_dialog: 2.0.0
@@ -95,6 +96,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/empty/
     - assets/design_course/
     - assets/fitness_app/
     - assets/hotel/

@@ -146,4 +146,43 @@ class DataUtils {
   }) {
     HttpUtils.get(APIs.getAppLastVersion, null, success: success, fail: fail);
   }
+
+  /// 新增我的地址
+  static void addMyAddress<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.post(APIs.addMyAddress, parameters, success: success, fail: fail);
+  }
+
+  // 删除我的地址
+  static void deleteAddress<T>(
+    ids, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.delete(APIs.addMyAddress + '/' + ids, null,
+        success: success, fail: fail);
+  }
+
+  /// 获取我的地址详情
+  static void getMyAddressDetail<T>(
+    id, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(APIs.getMyAddressDetail + '/' + id, null,
+        success: success, fail: fail);
+  }
+
+  /// 编辑我的地址
+  static void editMyAddress<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put(APIs.getMyAddressDetail, parameters,
+        success: success, fail: fail);
+  }
 }

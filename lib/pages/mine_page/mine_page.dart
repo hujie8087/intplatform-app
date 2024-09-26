@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
@@ -11,6 +10,7 @@ import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_view_model.dart';
+import 'package:logistics_app/pages/mine_page/my_address_page/my_address_page.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
@@ -19,7 +19,6 @@ import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:restart_app/restart_app.dart';
 
@@ -67,7 +66,6 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
     version = await DeviceUtils.version();
     avatar = userInfo != null ? userInfo['user']['avatar'] : '';
     var languageCode = await SpUtils.getString('locale');
-    print(languageCode);
     if (languageCode == 'en') {
       localeName = 'English';
     } else if (languageCode == 'id') {
@@ -197,9 +195,9 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                                 Icons.notifications, () {
                               RouteUtils.push(context, NoticeListPage());
                             }, '', 0.4),
-                            // _commonItem('意见反馈', Icons.feedback, () {
-                            //   RouteUtils.push(context, FeedbackPage());
-                            // }, '', 0.5),
+                            _commonItem('收货地址', Icons.location_on, () {
+                              RouteUtils.push(context, MyAddressPage());
+                            }, '', 0.5),
                             // 语言设置
                             _commonItem(
                                 S.of(context).changeLanguage, Icons.language,

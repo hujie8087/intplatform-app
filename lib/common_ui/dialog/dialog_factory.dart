@@ -77,6 +77,7 @@ class DialogFactory {
       {required BuildContext context,
       String? title,
       String? content,
+      DialogContentType dialogContentType = DialogContentType.Normal,
       GestureTapCallback? dismissClick,
       GestureTapCallback? confirmClick}) async {
     showParentDialog(
@@ -84,7 +85,7 @@ class DialogFactory {
         child: TipsCommonDialog(
           title: title,
           content: content,
-          dialogContentType: DialogContentType.Normal,
+          dialogContentType: dialogContentType,
           dialogButtonType: DialogButtonType.DoubleButton,
           leftOnTap: () {
             Navigator.pop(context);

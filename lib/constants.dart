@@ -20,8 +20,8 @@ class Constants {
   static const String SP_USER_DEPT = "SP_USER_DEPT";
 
   // 图片链接地址
-  static const String SP_IMAGE_PREFIX = '';
+  static const String SP_IMAGE_PREFIX = 'SP_IMAGE_PREFIX';
 
   // 用户设备TOKEN
-  static const String SP_DEVICE_TOKEN = '';
+  static const String SP_DEVICE_TOKEN = 'SP_DEVICE_TOKEN';
 }
