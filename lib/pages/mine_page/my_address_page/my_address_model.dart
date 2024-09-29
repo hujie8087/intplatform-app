@@ -31,7 +31,7 @@ class MyAddressModel with ChangeNotifier {
       'pageNum': pageNum,
       'pageSize': pageSize,
     };
-    DataUtils.getPageList('/system/address/list', params, success: (data) {
+    DataUtils.getPageList('/other/address/list', params, success: (data) {
       RowsModel rowsModel =
           RowsModel.fromJson(data, (json) => MyAddressViewModel.fromJson(json));
       if (rowsModel.rows != null) {

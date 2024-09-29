@@ -84,13 +84,13 @@ class APIs {
   static const String getAppLastVersion = '/other/app/getNewApp';
 
   // 新增我的地址
-  static const String addMyAddress = '/system/address';
+  static const String addMyAddress = '/other/address';
 
   // 获取我的地址列表
-  static const String getMyAddressList = '/system/address/list';
+  static const String getMyAddressList = '/other/address/list';
 
   // 获取我的地址详情
-  static const String getMyAddressDetail = '/system/address';
+  static const String getMyAddressDetail = '/other/address';
 
   // 服务指南类型列表
   static const String guideTypeList = '/other/guideType/list';
