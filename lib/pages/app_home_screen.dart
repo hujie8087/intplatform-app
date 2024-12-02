@@ -128,8 +128,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     //获取当前app的版本code
     String versionCode = await DeviceUtils.version();
     String versionName = await DeviceUtils.version();
-    String downloadUrlPre =
-        await SpUtils.getString(Constants.SP_IMAGE_PREFIX) ?? APIs.apiPrefix;
+    String downloadUrlPre = APIs.imagePrefix;
     DataUtils.getAppLastVersion(
       success: (data) async {
         UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);

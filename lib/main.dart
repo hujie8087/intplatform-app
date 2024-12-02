@@ -18,8 +18,8 @@ import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:oktoast/oktoast.dart';
-import 'firebase_options.dart';
 
+import 'firebase_options.dart';
 import 'generated/l10n.dart';
 
 void main() async {

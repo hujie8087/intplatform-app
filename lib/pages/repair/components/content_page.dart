@@ -1,5 +1,5 @@
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
@@ -14,7 +14,6 @@ import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ContentPage extends StatefulWidget {
@@ -161,7 +160,7 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
               deleteCallBack: () => {_requestData(true)},
               animation: animation,
               animationController: animationController,
-              imagePrefix: imagePrefix,
+              imagePrefix: APIs.imagePrefix,
             );
           },
         );
@@ -321,7 +320,8 @@ class _repairItem extends StatelessWidget {
                                             clipBehavior: Clip.antiAlias,
                                             decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(5.px)),
+                                                    BorderRadius.circular(
+                                                        5.px)),
                                             child: Image.network(
                                               imagePrefix + images[index],
                                               fit: BoxFit.cover,
