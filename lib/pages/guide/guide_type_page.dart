@@ -3,6 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/guide_type_view_model.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class GuideTypePage extends StatefulWidget {
   const GuideTypePage({Key? key, required this.id}) : super(key: key);
@@ -37,7 +38,7 @@ class _GuideTypePageState extends State<GuideTypePage> {
           backgroundColor: Colors.transparent,
           title: Text(
             guideTypeDetail?.title ?? '',
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16.px),
           ),
         ),
         body: SafeArea(
@@ -51,21 +52,21 @@ class _GuideTypePageState extends State<GuideTypePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.px),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       guideTypeDetail?.title ?? '',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 18.px, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 10.px,
                     ),
                     Text(guideTypeDetail?.createTime ?? '',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12.px,
                           color: Colors.grey,
                         )),
                   ],
@@ -73,7 +74,7 @@ class _GuideTypePageState extends State<GuideTypePage> {
               ),
               Expanded(
                   child: Container(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.px),
                 child: Html(data: guideTypeDetail?.content ?? ''),
               ))
             ],

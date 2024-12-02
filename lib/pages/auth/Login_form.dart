@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -9,6 +10,7 @@ import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -43,14 +45,14 @@ class _LoginFormState extends State<LoginForm> {
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.only(bottom: 10),
+              margin: EdgeInsets.only(bottom: 10.px),
               child: TextField(
                 focusNode: _focuseNode,
                 // autofocus: true,
                 cursorColor: primaryColor,
                 controller: _usernameController,
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 16.px,
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
@@ -67,11 +69,11 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(bottom: 10),
+              margin: EdgeInsets.only(bottom: 10.px),
               child: TextField(
                 cursorColor: primaryColor,
                 style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14.px,
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
                 obscureText: true,
@@ -106,20 +108,19 @@ class _LoginFormState extends State<LoginForm> {
                             var token = await SpUtils.getString(
                                     Constants.SP_DEVICE_TOKEN) ??
                                 '';
-                            print('token:::::$token');
                             if (token != '') {
-                              DataUtils.setUserToken(token);
+                              DataUtils.setUserToken({'mobilePhoneId': token});
                             }
+
                             RouteUtils.push(context, AppHomeScreen());
-                            showToast(
-                              S.of(context).loginSuccess,
-                            );
+                            ProgressHUD.showText(S.of(context).loginSuccess);
                             setState(() {
                               _isLoading = false;
                             });
                           }
                         }).catchError((e) {
-                          showToast(S.of(context).networkError + ":${e}");
+                          ProgressHUD.showError(
+                              S.of(context).networkError + ":${e}");
                         }).whenComplete(() {
                           setState(() {
                             _isLoading = false;
@@ -132,11 +133,11 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                       style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all(primaryColor),
+                            MaterialStateProperty.all(primaryColor[500]),
                         textStyle: MaterialStateProperty.all(
-                            TextStyle(fontSize: 16, color: Colors.white)),
+                            TextStyle(fontSize: 14.px, color: Colors.white)),
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20))),
+                            borderRadius: BorderRadius.circular(20.px))),
                       ),
                     ),
             ),

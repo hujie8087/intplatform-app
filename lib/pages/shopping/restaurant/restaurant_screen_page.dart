@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/pages/shopping/restaurant/components/restaurant_body.dart';
-import 'package:logistics_app/utils/color.dart';
 import 'package:provider/provider.dart';
+import 'package:logistics_app/pages/shopping/food_view_model.dart';
 
 class RestaurantScreenPage extends StatefulWidget {
   const RestaurantScreenPage({Key? key, required this.id}) : super(key: key);
@@ -11,28 +11,30 @@ class RestaurantScreenPage extends StatefulWidget {
 }
 
 class _RestaurantScreenPageState extends State<RestaurantScreenPage> {
+  final foodViewModel = FoodViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    // 初始化购物车数据
+    foodViewModel.initCartData(widget.id);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) {},
+    return ChangeNotifierProvider.value(
+      value: foodViewModel,
       child: Scaffold(
-        backgroundColor: backgroundColor,
-        body: Stack(
-          children: [
-            Positioned.fill(
-                child: RestaurantBody(
-              id: widget.id,
-            )),
-            Positioned(
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                foregroundColor: Colors.white,
-              ),
-              top: 0,
-              left: 0,
-              right: 0,
-            )
-          ],
+        backgroundColor: Colors.transparent,
+        body: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/restaurant-bg.jpg'),
+                  fit: BoxFit.fitWidth,
+                  alignment: Alignment.topCenter)),
+          child: RestaurantBody(
+            id: widget.id,
+          ),
         ),
       ),
     );

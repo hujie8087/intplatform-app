@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,7 +14,9 @@ import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/http/log_utils.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:google_api_availability/google_api_availability.dart';
 import 'package:oktoast/oktoast.dart';
 import 'firebase_options.dart';
 
@@ -21,12 +24,8 @@ import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await FirebaseService().initNotifications();
-  await FirebaseService().notifyInit();
+  await initializeFirebase();
+  // 设置竖屏
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
@@ -39,6 +38,33 @@ void main() async {
   runApp(MyApp(
     languageCode: languageCode,
   ));
+}
+
+Future<void> initializeFirebase() async {
+  final availability = await GoogleApiAvailability.instance
+      .checkGooglePlayServicesAvailability();
+
+  if (availability != GooglePlayServicesAvailability.success) {
+    print("Google Play 服务不可用: $availability");
+    return; // 跳过 Firebase 初始化
+  }
+
+  try {
+    // 初始化Firebase
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    // 判断firebase是否初始化成功
+    final connectivityStatus = await FirebaseMessaging.instance.getToken();
+    if (connectivityStatus != null) {
+      // 初始化Firebase推送
+      await FirebaseService().initNotifications();
+      await FirebaseService().notifyInit();
+    }
+  } catch (e) {
+    print("初始化Firebase失败: $e");
+  }
 }
 
 ///初始化在线升级
@@ -70,7 +96,6 @@ void initXUpdate() async {
             ///在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
             enableRetry: false)
         .then((value) {
-      print('初始化成功: $value');
       FlutterXUpdate.setErrorHandler(
         onUpdateError: (Map<String, dynamic>? message) async {
           print("下载错误: $message");
@@ -119,25 +144,26 @@ class MyApp extends StatelessWidget {
       designSize: designSize,
       builder: (context, child) {
         return MaterialApp(
+          builder: (context, child) {
+            // 初始化屏幕适配
+            ScreenAdapterHelper.init(context);
+            return child!;
+          },
           onGenerateTitle: (context) {
             return S.of(context).appTitle;
           },
           debugShowCheckedModeBanner: false,
-          supportedLocales: [
-            const Locale('en', 'US'),
-            const Locale('zh', 'CN'),
-            const Locale('id', 'ID'),
+          supportedLocales: const [
+            Locale('zh', 'CN'),
+            Locale('en', ''),
+            Locale('id', ''),
           ],
-          locale: languageCode == 'en'
-              ? Locale('en', 'US')
-              : languageCode == 'id'
-                  ? Locale('id', 'ID')
-                  : Locale('zh', 'CN'),
-          localizationsDelegates: [
+          locale: const Locale('zh', 'CN'),
+          localizationsDelegates: const [
             S.delegate,
             GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate
           ],
           localeResolutionCallback: (locale, supportedLocales) {
             SpUtils.getString('locale').then((languageCode) {

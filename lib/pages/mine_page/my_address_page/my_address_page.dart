@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/my_address_view_model.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/add_address_page.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/edit_address_page.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/my_address_model.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -23,21 +25,40 @@ class _MyAddressPageState extends State<MyAddressPage>
   var model = MyAddressModel();
   late RefreshController _refreshController;
   bool isEdit = false;
+  bool hasMoreData = true; // 是否有更多数据
 
   @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
-    _refreshController = RefreshController();
+    _refreshController = RefreshController(initialRefresh: false);
 
     super.initState();
-    model.getMyAddressModelList(1, 10);
+    _onRefresh();
   }
 
   @override
   void dispose() {
     animationController?.dispose();
     super.dispose();
+  }
+
+  void _onRefresh() async {
+    final success = await model.getMyAddressModelList(isRefresh: true);
+    if (success && mounted) {
+      _refreshController.refreshCompleted();
+      setState(() {
+        if (model.total <= model.list!.length) {
+          hasMoreData = false;
+          _refreshController.loadNoData();
+        } else {
+          hasMoreData = true;
+          _refreshController.resetNoData();
+        }
+      });
+    } else {
+      _refreshController.refreshFailed();
+    }
   }
 
   // 第一个页面
@@ -49,9 +70,7 @@ class _MyAddressPageState extends State<MyAddressPage>
 
     // 处理返回值
     if (result == true) {
-      model.getMyAddressModelList(1, 10).then((value) {
-        _refreshController.refreshCompleted();
-      });
+      _onRefresh();
     }
   }
 
@@ -64,9 +83,7 @@ class _MyAddressPageState extends State<MyAddressPage>
 
     // 处理返回值
     if (result == true) {
-      model.getMyAddressModelList(1, 10).then((value) {
-        _refreshController.refreshCompleted();
-      });
+      _onRefresh();
     }
   }
 
@@ -75,9 +92,7 @@ class _MyAddressPageState extends State<MyAddressPage>
     if (ids != null) {
       final result = await model.deleteAddress(ids);
       if (result.success == true) {
-        model.getMyAddressModelList(1, 10).then((value) {
-          _refreshController.refreshCompleted();
-        });
+        _onRefresh();
       }
     }
   }
@@ -88,10 +103,29 @@ class _MyAddressPageState extends State<MyAddressPage>
       item.isDefault = item.isDefault == '0' ? '1' : '0';
       final result = await model.editAddress(item);
       if (result.success == true) {
-        model.getMyAddressModelList(1, 10).then((value) {
-          _refreshController.refreshCompleted();
-        });
+        _onRefresh();
       }
+    }
+  }
+
+  Future _onLoading() async {
+    if (!hasMoreData) {
+      _refreshController.loadNoData();
+      return;
+    }
+
+    final success = await model.getMyAddressModelList();
+    if (success && mounted) {
+      setState(() {
+        if (model.total <= model.list!.length) {
+          hasMoreData = false;
+          _refreshController.loadNoData();
+        } else {
+          _refreshController.loadComplete();
+        }
+      });
+    } else {
+      _refreshController.loadFailed();
     }
   }
 
@@ -105,9 +139,9 @@ class _MyAddressPageState extends State<MyAddressPage>
             backgroundColor: backgroundColor,
             appBar: AppBar(
               title: Text(
-                '收货地址',
+                S.of(context).myAddress,
                 textAlign: TextAlign.left,
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 16.px),
               ),
               centerTitle: false,
               backgroundColor: Colors.white,
@@ -119,15 +153,16 @@ class _MyAddressPageState extends State<MyAddressPage>
                       icon: Icon(
                         Icons.edit,
                         color: secondaryColor,
-                        size: 14,
+                        size: 14.px,
                       ),
                       onPressed: () {
                         setState(() {
                           isEdit = true;
                         });
                       },
-                      label:
-                          Text('管理', style: TextStyle(color: secondaryColor)),
+                      label: Text(S.of(context).manage,
+                          style: TextStyle(
+                              color: secondaryColor, fontSize: 12.px)),
                     ),
                   ),
                 if (isEdit == true)
@@ -137,30 +172,32 @@ class _MyAddressPageState extends State<MyAddressPage>
                       icon: Icon(
                         Icons.output_rounded,
                         color: secondaryColor,
-                        size: 14,
+                        size: 14.px,
                       ),
                       onPressed: () {
                         setState(() {
                           isEdit = false;
                         });
                       },
-                      label:
-                          Text('退出管理', style: TextStyle(color: secondaryColor)),
+                      label: Text(S.of(context).exitManage,
+                          style: TextStyle(
+                              color: secondaryColor, fontSize: 12.px)),
                     ),
                   ),
                 if (isEdit == false)
                   Container(
-                    margin: EdgeInsets.only(right: 20),
+                    margin: EdgeInsets.only(right: 20.px),
                     alignment: Alignment.center,
                     child: TextButton.icon(
                       icon: Icon(
                         Icons.add,
                         color: primaryColor,
-                        size: 14,
+                        size: 14.px,
                       ),
                       onPressed: _navigateToSecondPage,
-                      label:
-                          Text('新增地址', style: TextStyle(color: primaryColor)),
+                      label: Text(S.of(context).addAddress,
+                          style:
+                              TextStyle(color: primaryColor, fontSize: 12.px)),
                     ),
                   )
               ],
@@ -169,14 +206,11 @@ class _MyAddressPageState extends State<MyAddressPage>
                 child: SmartRefreshWidget(
                     enablePullDown: true,
                     enablePullUp: true,
-                    onRefresh: () {
-                      model.getMyAddressModelList(1, 10).then((value) {
-                        _refreshController.refreshCompleted();
-                      });
-                    },
+                    onRefresh: () => _onRefresh(),
+                    onLoading: hasMoreData ? _onLoading : null,
                     controller: _refreshController,
                     child: Padding(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10.px),
                       child: myAddressListView(),
                     )))));
   }
@@ -249,17 +283,17 @@ class MyAddressDataView extends StatelessWidget {
               opacity: animation!,
               child: Transform(
                   transform: Matrix4.translationValues(
-                      0.0, 50 * (1.0 - animation!.value), 0.0),
+                      0.0, 40.px * (1.0 - animation!.value), 0.0),
                   child: Container(
-                    margin: EdgeInsets.only(bottom: 10),
+                    margin: EdgeInsets.only(bottom: 10.px),
                     child: Material(
                         color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20.px),
                         child: Container(
-                          padding: EdgeInsets.all(12),
+                          padding: EdgeInsets.all(8.px),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.px),
                           ),
                           child: Column(
                             children: [
@@ -273,19 +307,19 @@ class MyAddressDataView extends StatelessWidget {
                                     children: [
                                       Text(listData?.detailedAddress ?? '',
                                           style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 12.px,
                                               color: Colors.grey)),
                                       SizedBox(
-                                        height: 8,
+                                        height: 8.px,
                                       ),
                                       Text(listData?.name ?? '',
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 12.px,
                                               fontWeight: FontWeight.bold)),
                                       SizedBox(
-                                        height: 8,
+                                        height: 8.px,
                                       ),
                                       Row(
                                         children: [
@@ -293,14 +327,14 @@ class MyAddressDataView extends StatelessWidget {
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
-                                                  fontSize: 14,
+                                                  fontSize: 12.px,
                                                   color: Colors.grey)),
                                           SizedBox(
-                                            width: 10,
+                                            width: 10.px,
                                           ),
                                           Text(listData?.tel ?? '',
                                               style: TextStyle(
-                                                  fontSize: 14,
+                                                  fontSize: 12.px,
                                                   color: Colors.grey)),
                                           SizedBox(
                                             width: 10,
@@ -308,16 +342,17 @@ class MyAddressDataView extends StatelessWidget {
                                           if (listData?.isDefault == '0')
                                             Container(
                                               padding: EdgeInsets.only(
-                                                  left: 5, right: 5),
+                                                  left: 5.px, right: 5.px),
                                               decoration: BoxDecoration(
                                                   color: secondaryColor,
                                                   borderRadius:
-                                                      BorderRadius.circular(5)),
+                                                      BorderRadius.circular(
+                                                          5.px)),
                                               child: Text(
-                                                '默认',
+                                                S.of(context).defaultValue,
                                                 style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 12),
+                                                    fontSize: 10.px),
                                               ),
                                             )
                                         ],
@@ -347,27 +382,34 @@ class MyAddressDataView extends StatelessWidget {
                                         Checkbox(
                                           value: listData?.isDefault == '0',
                                           onChanged: (value) {
+                                            final title = listData?.isDefault ==
+                                                    '1'
+                                                ? S.of(context).setDefault
+                                                : S.of(context).cancelDefault;
                                             // 确认弹窗
                                             DialogFactory.instance
                                                 .showConfirmDialog(
                                                     context: context,
-                                                    title: '确定把该地址设置为默认吗？',
+                                                    title: title,
                                                     confirmClick: () {
                                                       editCallBack!();
                                                     });
                                           },
-                                          activeColor: primaryColor[700],
+                                          activeColor: primaryColor[500],
                                           shape: CircleBorder(
                                             side: BorderSide(
                                                 color: Colors.grey, width: 1),
                                           ),
+
                                           materialTapTargetSize:
                                               MaterialTapTargetSize
                                                   .shrinkWrap, // 去掉额外的边距
                                         ),
                                         Text(
-                                          '默认',
-                                          style: TextStyle(color: Colors.grey),
+                                          S.of(context).defaultValue,
+                                          style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 12.px),
                                         ),
                                       ],
                                     ),
@@ -379,29 +421,33 @@ class MyAddressDataView extends StatelessWidget {
                                               vertical: 0.0), // 控制按钮内边距
                                         ),
                                         minimumSize: MaterialStatePropertyAll(
-                                            Size(40, 24)), // 控制按钮的最小尺寸
+                                            Size(50.px, 30.px)), // 控制按钮的最小尺寸
                                         side: MaterialStatePropertyAll(
                                           BorderSide(
-                                              color: Colors.grey, width: 1),
+                                              color: secondaryColor, width: 1),
                                         ),
                                         backgroundColor:
                                             MaterialStatePropertyAll(
                                                 Colors.white),
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
                                       ),
                                       onPressed: () {
                                         // 确认弹窗
                                         DialogFactory.instance
                                             .showConfirmDialog(
                                                 context: context,
-                                                title: '确定删除地址吗？',
+                                                title:
+                                                    S.of(context).deleteAddress,
                                                 confirmClick: () {
                                                   deleteCallBack!();
                                                 });
                                       },
                                       child: Text(
-                                        '删除',
+                                        S.of(context).delete,
                                         style: TextStyle(
-                                            color: Colors.grey, fontSize: 12),
+                                            color: secondaryColor,
+                                            fontSize: 12.px),
                                       ),
                                     )
                                   ],

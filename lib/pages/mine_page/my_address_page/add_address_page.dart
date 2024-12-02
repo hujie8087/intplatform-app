@@ -5,6 +5,8 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/address_form_model.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/my_address_model.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
 
 class AddAddressPage extends StatefulWidget {
@@ -16,19 +18,27 @@ class _AddAddressPageState extends State<AddAddressPage>
     with TickerProviderStateMixin {
   var model = MyAddressModel();
   List<dynamic> values = [];
-  String roomValue = S.current.pleaseSelect;
+  String roomValue = S.current.pleaseSelect('');
   int? selectRoomId;
   String selectRoom = '';
+  int? selectAreaId;
+  String selectArea = '';
   final _formKey = GlobalKey<FormState>();
   bool isDefault = false;
   final nameController = TextEditingController();
   final telController = TextEditingController();
+  List<dynamic>? buildingData;
+
+  void _fetchData() async {
+    buildingData = await SpUtils.getModel('building');
+  }
 
   @override
   void initState() {
     super.initState();
     // 获取楼栋信息
-    model.getBuildingTreeModel();
+    // model.getBuildingTreeModel();
+    _fetchData();
   }
 
   @override
@@ -41,8 +51,8 @@ class _AddAddressPageState extends State<AddAddressPage>
           backgroundColor: backgroundColor,
           appBar: AppBar(
             title: Text(
-              '新增收货地址',
-              style: TextStyle(fontSize: 18),
+              S.of(context).addAddress,
+              style: TextStyle(fontSize: 16.px),
             ),
             centerTitle: true,
             backgroundColor: Colors.white,
@@ -50,18 +60,18 @@ class _AddAddressPageState extends State<AddAddressPage>
           body: SafeArea(
             bottom: false,
             child: Padding(
-              padding: EdgeInsets.only(top: 20, right: 15, left: 15),
+              padding: EdgeInsets.only(top: 20.px, right: 15.px, left: 15.px),
               child: Container(
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                padding: EdgeInsets.only(top: 20, right: 15, left: 15),
+                    borderRadius: BorderRadius.all(Radius.circular(20.px))),
+                padding: EdgeInsets.only(top: 20.px, right: 15.px, left: 15.px),
                 width: double.infinity,
                 child: Column(
                   children: [
                     if (selectRoom.isEmpty)
                       Container(
-                        margin: EdgeInsets.only(bottom: 10),
+                        margin: EdgeInsets.only(bottom: 10.px),
                         width: double.infinity,
                         child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
@@ -71,20 +81,24 @@ class _AddAddressPageState extends State<AddAddressPage>
                               ),
                               shape: RoundedRectangleBorder(
                                 borderRadius:
-                                    BorderRadius.circular(10), // 设置圆角半径
+                                    BorderRadius.circular(10.px), // 设置圆角半径
                               ),
                             ),
                             onPressed: () {
-                              if (model.buildingList.isNotEmpty) {
+                              if (buildingData != null) {
                                 CascadeTreePicker.show(context,
-                                    data: model.buildingList,
+                                    data: buildingData ?? [],
                                     values: values,
                                     labelKey: 'title',
                                     valuesKey: 'id',
-                                    title: S.of(context).repairAddress,
+                                    title: S.of(context).selectAddress,
                                     clickCallBack: (selectItem, selectArr) {
+                                  print(selectItem);
+                                  print(selectArr);
                                   selectRoom = selectItem['title'];
                                   selectRoomId = selectItem['id'];
+                                  selectArea = selectArr[0]['title'];
+                                  selectAreaId = selectArr[0]['id'];
                                   setState(() {
                                     values = selectArr;
                                     List<Map<String, dynamic>> mappedSelectArr =
@@ -102,8 +116,9 @@ class _AddAddressPageState extends State<AddAddressPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '选择收货地址',
-                                  style: TextStyle(color: primaryColor),
+                                  S.of(context).selectAddress,
+                                  style: TextStyle(
+                                      color: primaryColor, fontSize: 12.px),
                                 ),
                                 Icon(
                                   Icons.keyboard_arrow_right,
@@ -115,7 +130,7 @@ class _AddAddressPageState extends State<AddAddressPage>
                     if (selectRoom.isNotEmpty)
                       Container(
                         width: double.infinity,
-                        margin: EdgeInsets.only(bottom: 10),
+                        margin: EdgeInsets.only(bottom: 10.px),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,11 +144,11 @@ class _AddAddressPageState extends State<AddAddressPage>
                                     selectRoom,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 16),
+                                        fontSize: 12.px),
                                   ),
                                   Text(
                                     roomValue,
-                                    style: TextStyle(fontSize: 14),
+                                    style: TextStyle(fontSize: 12.px),
                                   )
                                 ],
                               ),
@@ -141,14 +156,16 @@ class _AddAddressPageState extends State<AddAddressPage>
                             OutlinedButton(
                                 onPressed: () {
                                   CascadeTreePicker.show(context,
-                                      data: model.buildingList,
+                                      data: buildingData ?? [],
                                       values: values,
                                       labelKey: 'title',
                                       valuesKey: 'id',
-                                      title: S.of(context).repairAddress,
+                                      title: S.of(context).selectAddress,
                                       clickCallBack: (selectItem, selectArr) {
                                     selectRoom = selectItem['title'];
                                     selectRoomId = selectItem['id'];
+                                    selectAreaId = selectArr[0]['id'];
+                                    selectArea = selectArr[0]['title'];
                                     setState(() {
                                       values = selectArr;
                                       List<Map<String, dynamic>>
@@ -169,12 +186,13 @@ class _AddAddressPageState extends State<AddAddressPage>
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius:
-                                        BorderRadius.circular(8), // 设置圆角半径
+                                        BorderRadius.circular(8.px), // 设置圆角半径
                                   ),
                                 ),
                                 child: Text(
-                                  '修改地址',
-                                  style: TextStyle(color: secondaryColor),
+                                  S.of(context).modifyAddress,
+                                  style: TextStyle(
+                                      color: secondaryColor, fontSize: 12.px),
                                 ))
                           ],
                         ),
@@ -185,7 +203,7 @@ class _AddAddressPageState extends State<AddAddressPage>
                       child: Column(
                         children: <Widget>[
                           Container(
-                            margin: EdgeInsets.only(bottom: 10),
+                            margin: EdgeInsets.only(bottom: 10.px),
                             decoration: BoxDecoration(
                                 border: Border(
                                     bottom: BorderSide(
@@ -196,16 +214,18 @@ class _AddAddressPageState extends State<AddAddressPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '联系人',
+                                  S.of(context).contactPerson,
                                   style: TextStyle(
-                                      fontSize: 14, color: Colors.black),
+                                      fontSize: 12.px, color: Colors.black),
                                 ),
                                 Expanded(
                                     child: TextFormField(
+                                  textAlign: TextAlign.right,
                                   controller: nameController,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: '请填写收货人的姓名',
+                                    hintText: S.of(context).inputMessage(
+                                        S.of(context).contactPerson),
                                     hintStyle: TextStyle(
                                         color: Colors.grey, fontSize: 12),
                                     contentPadding: EdgeInsets.symmetric(
@@ -215,7 +235,10 @@ class _AddAddressPageState extends State<AddAddressPage>
                                   // The validator receives the text that the user has entered.
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      ProgressHUD.showError('请填写收货人的姓名');
+                                      ProgressHUD.showError(S
+                                          .of(context)
+                                          .inputMessage(
+                                              S.of(context).contactPerson));
                                     }
                                     return null;
                                   },
@@ -235,26 +258,31 @@ class _AddAddressPageState extends State<AddAddressPage>
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '手机号',
+                                  S.of(context).contactPhone,
                                   style: TextStyle(
-                                      fontSize: 14, color: Colors.black),
+                                      fontSize: 12.px, color: Colors.black),
                                 ),
                                 Expanded(
                                     child: TextFormField(
+                                  textAlign: TextAlign.right,
                                   controller: telController,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
-                                    hintText: '请填写收货人的手机号码',
+                                    hintText: S.of(context).inputMessage(
+                                        S.of(context).contactPhone),
                                     hintStyle: TextStyle(
-                                        color: Colors.grey, fontSize: 12),
+                                        color: Colors.grey, fontSize: 12.px),
                                     contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
+                                        horizontal: 10.px, vertical: 10.px),
                                   ),
                                   keyboardType: TextInputType.phone,
                                   // The validator receives the text that the user has entered.
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      ProgressHUD.showError('请填写收货人的手机号码');
+                                      ProgressHUD.showError(S
+                                          .of(context)
+                                          .inputMessage(
+                                              S.of(context).contactPhone));
                                     }
                                     return null;
                                   },
@@ -274,26 +302,27 @@ class _AddAddressPageState extends State<AddAddressPage>
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      '是否默认',
+                                      S.of(context).isDefault,
                                       style: TextStyle(
-                                          fontSize: 14, color: Colors.black),
+                                          fontSize: 12.px, color: Colors.black),
                                     ),
                                     Checkbox(
                                         value: isDefault,
+                                        materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
                                         onChanged: (value) {
                                           setState(() {
                                             isDefault = !isDefault;
                                           });
-                                          print(value);
                                         }),
                                   ])),
                           Container(
-                            margin: EdgeInsets.only(top: 20),
+                            margin: EdgeInsets.only(top: 20.px),
                             width: double.infinity,
                             child: ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor:
-                                    WidgetStatePropertyAll(primaryColor[700]),
+                                    WidgetStatePropertyAll(primaryColor[500]),
                                 shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                     borderRadius:
@@ -305,7 +334,10 @@ class _AddAddressPageState extends State<AddAddressPage>
                                 // Validate returns true if the form is valid, or false otherwise.
                                 if (_formKey.currentState!.validate()) {
                                   if (selectRoomId == null) {
-                                    ProgressHUD.showError('请选择收货地址');
+                                    ProgressHUD.showError(S
+                                        .of(context)
+                                        .inputMessage(
+                                            S.of(context).selectAddress));
                                     return;
                                   }
                                   model.addressFormModel = AddressFormModel(
@@ -313,20 +345,27 @@ class _AddAddressPageState extends State<AddAddressPage>
                                     name: nameController.text,
                                     isDefault: isDefault ? '0' : '1',
                                     region: selectRoomId.toString(),
+                                    roomNo: selectRoom,
+                                    area: selectArea,
+                                    areaId: selectAreaId,
                                     detailedAddress: roomValue,
                                   );
                                   await model.addAddress().then((res) {
                                     if (res.success) {
-                                      ProgressHUD.showSuccess('保存地址成功');
+                                      ProgressHUD.showSuccess(
+                                          S.of(context).saveAddressSuccess);
                                       Navigator.pop(context, true);
                                     } else {
-                                      ProgressHUD.showError(
-                                          res.errorMessage ?? "保存地址失败，请稍后再试");
+                                      ProgressHUD.showError(res.errorMessage ??
+                                          S.of(context).saveAddressFail);
                                     }
                                   });
                                 }
                               },
-                              child: const Text('保存地址'),
+                              child: Text(
+                                S.of(context).saveAddress,
+                                style: TextStyle(fontSize: 12.px),
+                              ),
                             ),
                           )
                         ],

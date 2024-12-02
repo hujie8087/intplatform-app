@@ -6,6 +6,7 @@ import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +50,7 @@ class _LostFoundListPageState extends State<LostFoundListPage>
             curve: Interval(0, 0.3, curve: Curves.fastOutSlowIn)));
 
     super.initState();
-    model.getLostFoundModelList(1, 10);
+    model.getLostFoundModelList(true);
   }
 
   @override
@@ -92,14 +93,14 @@ class _LostFoundListPageState extends State<LostFoundListPage>
                       enablePullUp: true,
                       onRefresh: () {
                         //关闭刷新
-                        print('刷新完成');
-                        model.getLostFoundModelList(1, 10).then((value) {
+                        model.getLostFoundModelList(true).then((value) {
                           _refreshController.refreshCompleted();
+                          // 刷新完成
+                          animationController?.forward();
                         });
                       },
-                      onLoading: () {
-                        //关闭加载
-                        print('加载完成');
+                      onLoading: () async {
+                        await model.getLostFoundModelList(false);
                         _refreshController.loadComplete();
                       },
                       controller: _refreshController,
@@ -328,6 +329,9 @@ class LostFoundView extends StatelessWidget {
                                 Container(
                                   height: 100,
                                   child: GridView.builder(
+                                    // 禁止滚动
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
                                     gridDelegate:
                                         SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 4,
@@ -414,12 +418,12 @@ class HtmlLineLimit extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Container(
-          margin: EdgeInsets.only(top: 10, bottom: 10),
+          margin: EdgeInsets.only(top: 8.px, bottom: 8.px),
           alignment: Alignment.centerLeft,
           child: SingleChildScrollView(
             child: Text(
               _removeHtmlTags(htmlContent),
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: 10.px),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

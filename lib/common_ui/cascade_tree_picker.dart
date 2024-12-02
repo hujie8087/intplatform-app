@@ -10,6 +10,7 @@ import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/searchbar.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/utils.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 const String _labelKey = 'title';
 const String _valueKey = 'id';
@@ -18,14 +19,14 @@ const String _titleText = '请选择';
 const String _tabText = '请选择';
 const String _searchHintText = '搜索';
 const String _splitString = ' / ';
-const double _headerHeight = 50.0;
-const double _searchBarHeight = 58.0;
+const double _headerHeight = 40.0;
+const double _searchBarHeight = 56.0;
 const double _headerRadius = 10.0;
 const double _lineHeight = 0.5;
-const double _itemHeight = 50.0;
-const double _titleFontSize = 18.0;
-const double _textFontSize = 16.0;
-const double _searchResultTextFontSize = 14.0;
+const double _itemHeight = 36.0;
+const double _titleFontSize = 12.0;
+const double _textFontSize = 12.0;
+const double _searchResultTextFontSize = 10.0;
 
 /// 选择回调，返回选中末级节点对象和所有节点数组
 typedef _ClickCallBack = void Function(dynamic selectItem, dynamic selectArr);
@@ -320,12 +321,12 @@ class _CascadePickerViewState extends State<CascadePickerView>
               left: 0,
               right: 0,
               child: Container(
-                height: _headerHeight,
+                height: _headerHeight.px,
                 color: headerColor,
                 alignment: Alignment.center,
                 child: Text(widget.title,
-                    style:
-                        TextStyle(fontSize: _titleFontSize, color: titleColor)),
+                    style: TextStyle(
+                        fontSize: _titleFontSize.px, color: titleColor)),
               ),
             ),
             Positioned(
@@ -335,9 +336,9 @@ class _CascadePickerViewState extends State<CascadePickerView>
                 onTap: () => Navigator.pop(context),
                 child: Container(
                   alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  height: _headerHeight,
-                  width: _headerHeight * 2,
+                  padding: EdgeInsets.symmetric(horizontal: 15.px),
+                  height: _headerHeight.px,
+                  width: _headerHeight.px * 2,
                   child: Icon(
                     Icons.close,
                     color: titleColor,
@@ -368,7 +369,7 @@ class _CascadePickerViewState extends State<CascadePickerView>
 
     return Container(
       margin: EdgeInsets.only(
-          top: _headerHeight + (widget.isShowSearch ? _searchBarHeight : 0)),
+          top: _headerHeight.px + (widget.isShowSearch ? _searchBarHeight : 0)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -380,6 +381,8 @@ class _CascadePickerViewState extends State<CascadePickerView>
               // tabs: _myTabs.map<Tab>((Tab tab) {
               //   return Tab(text: tab.text);
               // }).toList(),
+              labelStyle: TextStyle(fontSize: _titleFontSize.px),
+              labelPadding: EdgeInsets.symmetric(horizontal: 5.px),
               tabs: _myTabs,
               controller: _tabController,
               isScrollable: true,
@@ -399,7 +402,7 @@ class _CascadePickerViewState extends State<CascadePickerView>
                   _setColumn(index);
                   _onClickTab(index);
                   _scrollController.animateTo(
-                    _positions[_currentColumn] * _itemHeight,
+                    _positions[_currentColumn] * _itemHeight.px,
                     duration: const Duration(milliseconds: 10),
                     curve: Curves.ease,
                   );
@@ -411,7 +414,7 @@ class _CascadePickerViewState extends State<CascadePickerView>
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              itemExtent: _itemHeight,
+              itemExtent: _itemHeight.px,
               itemBuilder: (_, index) {
                 return _buildItem(index, bgColor, textColor, labelColor);
               },
@@ -441,13 +444,13 @@ class _CascadePickerViewState extends State<CascadePickerView>
             Text(
               tempData['title'],
               style: TextStyle(
-                  fontSize: _textFontSize,
+                  fontSize: _textFontSize.px,
                   color: flag ? themeColor : textColor),
             ),
             const SizedBox(width: 8),
             Visibility(
               visible: flag,
-              child: Icon(Icons.check, size: 15, color: themeColor),
+              child: Icon(Icons.check, size: 15.px, color: themeColor),
             )
           ],
         ),
@@ -503,7 +506,7 @@ class _CascadePickerViewState extends State<CascadePickerView>
       } else {
         if (_isNotEmptyChildren(item)) {
           var res = _getTreeDataByKeyword(keyWord, item['children']);
-          if (res != null && res.length > 0) {
+          if (res.isNotEmpty) {
             var obj = {...item, widget.childrenKey: res};
             newArr.add(obj);
           }
@@ -523,7 +526,7 @@ class _CascadePickerViewState extends State<CascadePickerView>
       } else {
         // 找到末级节点，根据末级节点找到所有父节点进行拼接
         var res = _findParentNodeDataByValue(treeArr2, item['id']);
-        if (res != null && res.length > 0) {
+        if (res.isNotEmpty) {
           List tempArr = [];
           for (var j = 0; j < res.length; j++) {
             tempArr.add(res[j]['title']);
@@ -571,7 +574,9 @@ class _CascadePickerViewState extends State<CascadePickerView>
     return !widget.isShowSearch
         ? Container()
         : Container(
-            margin: const EdgeInsets.only(top: _headerHeight),
+            margin: EdgeInsets.only(
+              top: _headerHeight.px,
+            ),
             // child: SearchBar(),
             child: JhSearchBar(
               hintText: widget.searchHintText,
@@ -595,14 +600,15 @@ class _CascadePickerViewState extends State<CascadePickerView>
     return Container(
       color: bgColor,
       margin: EdgeInsets.only(
-          top: _headerHeight + (widget.isShowSearch ? _searchBarHeight : 0)),
+          top: _headerHeight.px +
+              (widget.isShowSearch ? _searchBarHeight.px : 0)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          SizedBox(height: _lineHeight, child: Container(color: lineColor)),
+          SizedBox(height: _lineHeight.px, child: Container(color: lineColor)),
           Expanded(
             child: ListView.builder(
-              itemExtent: _itemHeight,
+              itemExtent: _itemHeight.px,
               itemBuilder: (_, index) {
                 return _buildSearchResultItem(
                     index, bgColor, textColor, lineColor);
@@ -619,11 +625,11 @@ class _CascadePickerViewState extends State<CascadePickerView>
       index, Color bgColor, Color textColor, Color lineColor) {
     return InkWell(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        margin: EdgeInsets.symmetric(horizontal: 12.px),
         decoration: BoxDecoration(
           color: bgColor,
-          border:
-              Border(bottom: BorderSide(color: lineColor, width: _lineHeight)),
+          border: Border(
+              bottom: BorderSide(color: lineColor, width: _lineHeight.px)),
         ),
         child: Row(
           children: <Widget>[

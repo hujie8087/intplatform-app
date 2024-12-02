@@ -1,14 +1,14 @@
 import 'package:logistics_app/app_theme.dart';
-import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
-import 'package:logistics_app/pages/repair/content_page.dart';
+import 'package:logistics_app/pages/repair/components/content_page.dart';
 import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
@@ -25,16 +25,13 @@ class _RepairRatingPageState extends State<RepairRatingPage>
   int? id;
   String? title;
   double rating = 0;
-  bool isShowButton = false;
   final TextEditingController ratingMessageController = TextEditingController();
   bool _switchSelected = true; //维护单选开关状态
   RepairDataModel model = new RepairDataModel();
-  String imagePrefix = '';
+  String imagePrefix = APIs.imagePrefix;
 
   @override
   void initState() {
-    SpUtils.getString(Constants.SP_IMAGE_PREFIX)
-        .then((res) => {imagePrefix = res});
     super.initState();
     // 获取路由参数
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -42,7 +39,6 @@ class _RepairRatingPageState extends State<RepairRatingPage>
       if (map is Map) {
         id = map['repairId'];
         title = map['title'];
-        isShowButton = map['isShowButton'];
         if (id != null) {
           await model.getRepairDetail(id!);
         }
@@ -61,20 +57,21 @@ class _RepairRatingPageState extends State<RepairRatingPage>
             appBar: AppBar(
               title: Text(
                 title ?? '',
-                style: TextStyle(fontSize: 18, color: Colors.black),
+                style: TextStyle(fontSize: 16.px, color: Colors.black),
                 textAlign: TextAlign.left,
               ),
               actions: [
-                if (isShowButton)
-                  TextButton(
-                      onPressed: () {
-                        if (_switchSelected && rating.toInt() == 0) {
-                          showToast(
-                            S.of(context).repairServiceRate,
-                          );
-                          return;
-                        }
-                        showDialog(
+                Consumer<RepairDataModel>(
+                  builder: (context, model, child) {
+                    if (model.isShowButton)
+                      return TextButton(
+                        onPressed: () {
+                          if (_switchSelected && rating.toInt() == 0) {
+                            ProgressHUD.showError(
+                                S.of(context).repairServiceRate);
+                            return;
+                          }
+                          showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
@@ -82,49 +79,57 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                 content: Text(S.of(context).repairFeedbackTip),
                                 actions: [
                                   TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context)
+                                          .pop('submit'); // 返回上一页
+                                    },
+                                    child: Text(
+                                      S.of(context).cancel,
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.grey),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      RepairUtils.editRepairDetail({
+                                        'id': id,
+                                        'repairRoomId':
+                                            model.repairViewData?.repairRoomId,
+                                        'rating': rating.toInt(),
+                                        'repairState':
+                                            _switchSelected ? '3' : '2',
+                                        'ratingMessage':
+                                            ratingMessageController.text,
+                                      }, success: (data) {
+                                        Navigator.of(context).pop(); // 关闭对话框
                                         Navigator.of(context)
                                             .pop('submit'); // 返回上一页
-                                      },
-                                      child: Text(
-                                        S.of(context).cancel,
-                                        style: TextStyle(
-                                            fontSize: 16, color: Colors.grey),
-                                      )),
-                                  TextButton(
-                                      onPressed: () {
-                                        RepairUtils.editRepairDetail({
-                                          'id': id,
-                                          'repairRoomId': model
-                                              .repairViewData?.repairRoomId,
-                                          'rating': rating.toInt(),
-                                          'repairState':
-                                              _switchSelected ? '3' : '2',
-                                          'ratingMessage':
-                                              ratingMessageController.text,
-                                        }, success: (data) {
-                                          Navigator.of(context).pop(); // 关闭对话框
-                                          Navigator.of(context)
-                                              .pop('submit'); // 返回上一页
-                                        }, fail: (code, msg) {
-                                          showToast(msg);
-                                          Navigator.pop(context); // 关闭对话框
-                                        });
-                                      },
-                                      child: Text(
-                                        S.of(context).submit,
-                                        style: TextStyle(
-                                            fontSize: 16, color: primaryColor),
-                                      ))
+                                      }, fail: (code, msg) {
+                                        ProgressHUD.showError(msg);
+                                        Navigator.pop(context); // 关闭对话框
+                                      });
+                                    },
+                                    child: Text(
+                                      S.of(context).submit,
+                                      style: TextStyle(
+                                          fontSize: 16, color: primaryColor),
+                                    ),
+                                  )
                                 ],
                               );
-                            });
-                      },
-                      child: Text(
-                        S.of(context).submit,
-                        style: TextStyle(fontSize: 16, color: primaryColor),
-                      ))
+                            },
+                          );
+                        },
+                        child: Text(
+                          S.of(context).submit,
+                          style:
+                              TextStyle(fontSize: 12.px, color: primaryColor),
+                        ),
+                      );
+                    return SizedBox.shrink(); // 当 isShowButton 为 false 时不显示按钮
+                  },
+                )
               ],
             ),
             body: Consumer<RepairDataModel>(
@@ -136,7 +141,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                 }
                 return SingleChildScrollView(
                     child: Padding(
-                  padding: const EdgeInsets.all(15),
+                  padding: EdgeInsets.all(10.px),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -152,87 +157,89 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 12.px,
                                           fontWeight: FontWeight.bold)),
                                   Text('/',
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 12.px,
                                           fontWeight: FontWeight.bold)),
                                   Text(model.repairViewData?.roomNo ?? '',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 12.px,
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
                               SizedBox(
-                                height: 5,
+                                height: 5.px,
                               ),
                               Text(
                                   S.of(context).repairTime +
                                       ":" +
                                       (model.repairViewData?.createTime ?? ''),
                                   style: TextStyle(
-                                      fontSize: 14, color: Colors.grey))
+                                      fontSize: 10.px, color: Colors.grey))
                             ],
                           )),
-                          SizedBox(width: 10),
+                          SizedBox(width: 8.px),
                           // 维修状态
                           Container(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 2),
+                                horizontal: 5.px, vertical: 2.px),
                             child: Text(
                               getRepairStateText(
                                   model.repairViewData?.repairState),
                               style: TextStyle(
-                                color: getRepairStateColor(
-                                    model.repairViewData?.repairState),
-                                fontSize: 14,
-                              ),
+                                  color: getRepairStateColor(
+                                      model.repairViewData?.repairState),
+                                  fontSize: 12.px,
+                                  fontWeight: FontWeight.bold),
                             ),
                           )
                         ],
                       ),
                       SizedBox(
-                        height: 20,
+                        height: 14.px,
                       ),
                       Text(
                         S.of(context).repairPerson,
                         style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
+                            fontSize: 10.px, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 8.px,
                       ),
                       Container(
                         padding: EdgeInsets.only(
-                            left: 10, top: 10, right: 10, bottom: 10),
+                            left: 8.px, top: 8.px, right: 8.px, bottom: 8.px),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(10.px)),
                         ),
                         width: double.infinity,
                         child: Text(
                           model.repairViewData?.repairPerson ?? '',
+                          style: TextStyle(fontSize: 12.px),
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 8.px,
                       ),
                       Text(
                         S.of(context).contactPhone,
                         style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
+                            fontSize: 12.px, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 8.px,
                       ),
                       Container(
                         padding: EdgeInsets.only(
-                            left: 10, top: 10, right: 10, bottom: 10),
+                            left: 8.px, top: 8.px, right: 8.px, bottom: 8.px),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -240,23 +247,24 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                         width: double.infinity,
                         child: Text(
                           model.repairViewData?.tel ?? '',
+                          style: TextStyle(fontSize: 12.px),
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 8.px,
                       ),
                       Text(
                         S.of(context).repairContent,
                         style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
+                            fontSize: 12.px, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 8.px,
                       ),
                       Container(
                         padding: EdgeInsets.only(
-                            left: 10, top: 5, right: 10, bottom: 5),
+                            left: 8.px, top: 5.px, right: 8.px, bottom: 5.px),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -266,16 +274,16 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                 model.repairViewData?.repairMessage ?? ''),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 8.px,
                       ),
                       Text(
                         S.of(context).repairImages,
                         style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
+                            fontSize: 12.px, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 8.px,
                       ),
                       if (images.length > 0)
                         GridView.builder(
@@ -285,8 +293,8 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3, // 每行显示3张图片
-                            crossAxisSpacing: 8.0,
-                            mainAxisSpacing: 8.0,
+                            crossAxisSpacing: 8.px,
+                            mainAxisSpacing: 8.px,
                           ),
                           itemCount: images.length,
                           itemBuilder: (context, index) {
@@ -341,7 +349,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                           },
                         ),
                       SizedBox(
-                        height: 20,
+                        height: 16.px,
                       ),
                       if (model.repairViewData?.repairState != 0)
                         Column(
@@ -349,18 +357,18 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                             Text(
                               S.of(context).repairDetail,
                               style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
+                                  fontSize: 12.px, fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left,
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 8.px,
                             ),
                           ],
                         ),
                       if (model.repairViewData?.repairState != 0)
                         Container(
-                          padding:
-                              EdgeInsets.only(top: 10, left: 10, right: 10),
+                          padding: EdgeInsets.only(
+                              top: 8.px, left: 8.px, right: 8.px),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius:
@@ -372,42 +380,49 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                 children: [
                                   Text(
                                     S.of(context).repairTime + ':',
-                                    style: TextStyle(color: AppTheme.dark_grey),
+                                    style: TextStyle(
+                                        color: AppTheme.dark_grey,
+                                        fontSize: 12.px),
                                   ),
                                   Text(
                                     model.repairViewData?.repairTime ?? '',
-                                    style: TextStyle(color: secondaryColor),
+                                    style: TextStyle(
+                                        color: secondaryColor, fontSize: 12.px),
                                   ),
                                 ],
                               ),
                               SizedBox(
-                                height: 5,
+                                height: 5.px,
                               ),
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     S.of(context).repairDirection + ':',
-                                    style: TextStyle(color: AppTheme.dark_grey),
+                                    style: TextStyle(
+                                        color: AppTheme.dark_grey,
+                                        fontSize: 12.px),
                                   ),
                                   Expanded(
                                     child: Text(
                                       model.repairViewData?.repairNote ?? '',
-                                      style: TextStyle(color: secondaryColor),
+                                      style: TextStyle(
+                                          color: secondaryColor,
+                                          fontSize: 12.px),
                                     ),
                                   )
                                 ],
                               ),
                               SizedBox(
-                                height: 20,
+                                height: 15.px,
                               ),
                               Text(
                                 S.of(context).repairServiceRate,
-                                style:
-                                    TextStyle(fontSize: 14, color: Colors.grey),
+                                style: TextStyle(
+                                    fontSize: 10.px, color: Colors.grey),
                               ),
                               SizedBox(
-                                height: 10,
+                                height: 8.px,
                               ),
                               Row(
                                 mainAxisAlignment:
@@ -417,7 +432,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                     S.of(context).repairResult + ':',
                                     style: TextStyle(
                                         color: AppTheme.dark_grey,
-                                        fontSize: 14),
+                                        fontSize: 12.px),
                                   ),
                                   Row(
                                     children: [
@@ -431,10 +446,10 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                           style: TextStyle(
                                             color: getRepairStateColor(model
                                                 .repairViewData?.repairState),
-                                            fontSize: 14,
+                                            fontSize: 12.px,
                                           ),
                                         ),
-                                      if (isShowButton)
+                                      if (model.isShowButton)
                                         Text(
                                           _switchSelected
                                               ? S.of(context).fixed
@@ -443,10 +458,10 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                             color: _switchSelected
                                                 ? primaryColor
                                                 : secondaryColor,
-                                            fontSize: 14,
+                                            fontSize: 12.px,
                                           ),
                                         ),
-                                      if (isShowButton)
+                                      if (model.isShowButton)
                                         Switch(
                                             value: _switchSelected,
                                             activeColor: primaryColor,
@@ -475,7 +490,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                       S.of(context).satisfaction,
                                       style: TextStyle(
                                           color: AppTheme.dark_grey,
-                                          fontSize: 14),
+                                          fontSize: 12.px),
                                     ),
                                     if (model.repairViewData?.repairState == 3)
                                       SmoothStarRating(
@@ -483,7 +498,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                           starCount: 5,
                                           rating: model.repairViewData!.rating!
                                               .toDouble(),
-                                          size: 30.0,
+                                          size: 24.px,
                                           color: primaryColor,
                                           borderColor: primaryColor,
                                           spacing: 0.0),
@@ -491,7 +506,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                       SmoothStarRating(
                                           allowHalfRating: false,
                                           onRatingChanged: (v) {
-                                            if (!isShowButton) {
+                                            if (!model.isShowButton) {
                                               return;
                                             }
                                             rating = v;
@@ -499,14 +514,14 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                           },
                                           starCount: 5,
                                           rating: rating,
-                                          size: 30.0,
+                                          size: 24.px,
                                           color: primaryColor,
                                           borderColor: primaryColor,
                                           spacing: 0.0)
                                   ],
                                 ),
                               SizedBox(
-                                height: 10,
+                                height: 8.px,
                               ),
                               if (model.repairViewData?.repairState == 2)
                                 Column(
@@ -516,12 +531,13 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                       S.of(context).userFeedback + ":",
                                       style: TextStyle(
                                           color: AppTheme.dark_grey,
-                                          fontSize: 14),
+                                          fontSize: 12.px),
                                     ),
                                     Text(
                                       model.repairViewData?.ratingMessage ?? '',
                                       style: TextStyle(
-                                          color: secondaryColor, fontSize: 14),
+                                          color: secondaryColor,
+                                          fontSize: 12.px),
                                     ),
                                   ],
                                 ),
@@ -529,24 +545,24 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                           ),
                         ),
                       SizedBox(
-                        height: 10,
+                        height: 8.px,
                       ),
                       if (model.repairViewData?.repairState != 0 &&
                           !_switchSelected)
                         Container(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(8.px),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(6))),
+                                  BorderRadius.all(Radius.circular(4.px))),
                           child: TextFormField(
                             controller: ratingMessageController,
                             maxLines: 8,
                             decoration: new InputDecoration(
                               helper: Icon(Icons.edit),
                               hintText: S.of(context).unfixedReason,
-                              hintStyle:
-                                  TextStyle(color: Colors.grey, fontSize: 14),
+                              hintStyle: TextStyle(
+                                  color: Colors.grey, fontSize: 12.px),
                               // 取消边框
                               enabledBorder: InputBorder.none,
                               // 去除下划线

@@ -46,6 +46,16 @@ class DataUtils {
     HttpUtils.get(APIs.getUserInfo, null, success: success, fail: fail);
   }
 
+  // 获取用户消费信息
+  static void getUserConsumeInfo<T>(
+    userId, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(APIs.getUserConsumeInfo + userId, null,
+        success: success, fail: fail);
+  }
+
   // 编辑用户信息
   static void editUserInfo(
     parameters, {
@@ -66,12 +76,11 @@ class DataUtils {
 
   // 储存用户设置token
   static void setUserToken<T>(
-    token, {
+    parameters, {
     Success? success,
     Fail? fail,
   }) {
-    HttpUtils.put(APIs.addToken, {'mobilePhoneId': token},
-        success: success, fail: fail);
+    HttpUtils.put(APIs.addToken, parameters, success: success, fail: fail);
   }
 
   /// 分页加载数据
@@ -183,6 +192,24 @@ class DataUtils {
     Fail? fail,
   }) {
     HttpUtils.put(APIs.getMyAddressDetail, parameters,
+        success: success, fail: fail);
+  }
+
+  // 获取最新的区域楼栋版本号
+  static void getBuildingVersion({
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(APIs.getBuildingVersion, null, success: success, fail: fail);
+  }
+
+  // 提交留言
+  static void submitMessage<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.post(APIs.submitMessage, parameters,
         success: success, fail: fail);
   }
 }

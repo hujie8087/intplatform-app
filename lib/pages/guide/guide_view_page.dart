@@ -3,6 +3,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/guide_view_model.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class GuideViewPage extends StatefulWidget {
   const GuideViewPage({Key? key, required this.id}) : super(key: key);
@@ -37,7 +38,7 @@ class _GuideViewPageState extends State<GuideViewPage> {
           backgroundColor: Colors.transparent,
           title: Text(
             guideDetail?.title ?? '',
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 16.px),
           ),
         ),
         body: SafeArea(
@@ -51,21 +52,21 @@ class _GuideViewPageState extends State<GuideViewPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.px),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       guideDetail?.title ?? '',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 14.px, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 8.px,
                     ),
                     Text(guideDetail?.createTime ?? '',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 10.px,
                           color: Colors.grey,
                         )),
                   ],
@@ -73,8 +74,15 @@ class _GuideViewPageState extends State<GuideViewPage> {
               ),
               Expanded(
                   child: Container(
-                padding: EdgeInsets.all(10),
-                child: Html(data: guideDetail?.content ?? ''),
+                padding: EdgeInsets.all(8.px),
+                child: Html(
+                  data: guideDetail?.content ?? '',
+                  style: {
+                    'body': Style(
+                      fontSize: FontSize(12.px), // 全局文字大小
+                    ),
+                  },
+                ),
               ))
             ],
           ),

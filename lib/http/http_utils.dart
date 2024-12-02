@@ -142,9 +142,9 @@ class HttpUtils {
       if (!LogUtils.inProduction && isOpenLog) {
         print('---------- HttpUtils response ----------');
         print(result);
-        ProgressHUD.hide();
       }
-      if (result['code'] == ExceptionHandle.success) {
+      if (result['code'] == ExceptionHandle.success || result['code'] == '1') {
+        // ProgressHUD.hide();
         success?.call(result);
       } else if ((result['code'] == ExceptionHandle.unauthorized)) {
         ProgressHUD.showText('请登录您的帐号');

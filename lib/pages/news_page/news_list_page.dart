@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
-import 'package:logistics_app/pages/news_page/news_view_model.dart';
+import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
-import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
+import 'package:logistics_app/pages/news_page/news_detail_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:provider/provider.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class NewsListPage extends StatefulWidget {
@@ -17,8 +19,10 @@ class NewsListPage extends StatefulWidget {
 class _NewsListPageState extends State<NewsListPage>
     with TickerProviderStateMixin {
   AnimationController? animationController;
+  int _page = 1;
+  List<NoticeModel> _list = [];
+  int _total = 0;
 
-  var model = NewsViewModel();
   late RefreshController _refreshController;
 
   @override
@@ -26,9 +30,45 @@ class _NewsListPageState extends State<NewsListPage>
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
     _refreshController = RefreshController();
-
     super.initState();
-    model.getNewsModelList(1, 10);
+    getNewsModelList(true);
+  }
+
+  Future<void> getNewsModelList(bool isRefresh) async {
+    if (isRefresh) {
+      _page = 1;
+      _list = [];
+    }
+    try {
+      DataUtils.getPageList('/system/notice/list', {
+        'pageNum': _page,
+        'pageSize': 10,
+        'noticeType': 2,
+      }, success: (data) {
+        if (data != null) {
+          var noticeList = data['rows'] as List;
+          List<NoticeModel> rows =
+              noticeList.map((i) => NoticeModel.fromJson(i)).toList();
+          if (isRefresh) {
+            _list = rows;
+          } else {
+            _list = [..._list, ...rows];
+          }
+          _total = data['total'] ?? 0;
+          _page++;
+        }
+        setState(() {
+          if (_list.length >= _total) {
+            _refreshController.loadNoData();
+          } else {
+            _refreshController.loadComplete();
+          }
+        });
+      });
+    } catch (e) {
+      print('Error fetching news: $e');
+      rethrow;
+    }
   }
 
   @override
@@ -39,72 +79,64 @@ class _NewsListPageState extends State<NewsListPage>
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) {
-          return model;
-        },
-        child: Scaffold(
-            backgroundColor: backgroundColor,
-            appBar: AppBar(
-              title: Text(
-                '公司动态',
-                style: TextStyle(fontSize: 18),
-              ),
-              centerTitle: true,
-              backgroundColor: Colors.white,
-            ),
-            body: SafeArea(
-                child: SmartRefreshWidget(
-                    enablePullDown: true,
-                    enablePullUp: true,
-                    onRefresh: () {
-                      //关闭刷新
-                      print('刷新完成');
-                      model.getNewsModelList(1, 10).then((value) {
-                        _refreshController.refreshCompleted();
-                      });
-                    },
-                    controller: _refreshController,
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: newsListView(),
-                    )))));
+    return Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          title: Text(
+            S.of(context).companyNews,
+            style: TextStyle(fontSize: 16.px),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+        ),
+        body: SafeArea(
+            child: SmartRefreshWidget(
+                enablePullDown: true,
+                enablePullUp: true,
+                onRefresh: () {
+                  getNewsModelList(true).then((value) {
+                    _refreshController.refreshCompleted();
+                  });
+                },
+                onLoading: () {
+                  getNewsModelList(false);
+                },
+                controller: _refreshController,
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: newsListView(),
+                ))));
   }
 
   Widget newsListView() {
-    return Consumer<NewsViewModel>(
-      builder: (context, model, child) {
-        if (model.list?.isEmpty == true) {
-          return Center(
-            child: Text("暂无数据"),
-          );
-        }
-        return ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: model.list?.length ?? 0,
-          padding: EdgeInsets.all(0),
-          itemBuilder: (context, index) {
-            final int count = model.list?.length ?? 0;
-            final Animation<double> animation =
-                Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-                    parent: animationController!,
-                    curve: Interval((1 / count) * index, 1.0,
-                        curve: Curves.fastOutSlowIn)));
-            animationController?.forward();
-            return NewsDataView(
-              listData: model.list?[index],
-              index: index,
-              callBack: () => {
-                // 跳转到详情页
-                RouteUtils.push(context,
-                    NoticeDetailPage(noticeId: model.list![index]!.noticeId!))
-              },
-              animation: animation,
-              animationController: animationController,
-            );
-          },
-        );
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: _list.length,
+      padding: EdgeInsets.all(0),
+      itemBuilder: (context, index) {
+        final int count = _list.length;
+        final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
+            .animate(CurvedAnimation(
+                parent: animationController!,
+                curve: Interval((1 / count) * index, 1.0,
+                    curve: Curves.fastOutSlowIn)));
+        animationController?.forward();
+        return _list.isNotEmpty
+            ? NewsDataView(
+                listData: _list[index],
+                index: index,
+                callBack: () => {
+                  // 跳转到详情页
+                  RouteUtils.push(
+                      context,
+                      NewsDetailPage(
+                          noticeId: _list[index].noticeId.toString()))
+                },
+                animation: animation,
+                animationController: animationController,
+              )
+            : EmptyView();
       },
     );
   }
@@ -134,9 +166,9 @@ class NewsDataView extends StatelessWidget {
               opacity: animation!,
               child: Transform(
                 transform: Matrix4.translationValues(
-                    0.0, 50 * (1.0 - animation!.value), 0.0),
+                    0.0, 50.px * (1.0 - animation!.value), 0.0),
                 child: Container(
-                    margin: EdgeInsets.only(bottom: 10),
+                    margin: EdgeInsets.only(bottom: 10.px),
                     child: Material(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(10),
@@ -157,12 +189,12 @@ class NewsDataView extends StatelessWidget {
                                           Image.asset(
                                             'assets/images/inviteImage.png',
                                             width: double.infinity,
-                                            height: 200,
+                                            height: 180.px,
                                             fit: BoxFit.cover,
                                           ),
-                                          SizedBox(height: 10),
+                                          SizedBox(height: 10.px),
                                           Padding(
-                                            padding: EdgeInsets.all(10),
+                                            padding: EdgeInsets.all(10.px),
                                             child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -171,18 +203,20 @@ class NewsDataView extends StatelessWidget {
                                                       listData?.noticeTitle ??
                                                           '',
                                                       style: TextStyle(
-                                                          fontSize: 14,
+                                                          fontSize: 12.px,
                                                           fontWeight:
                                                               FontWeight.bold)),
                                                   HtmlLineLimit(
                                                       htmlContent: listData
                                                               ?.noticeContent ??
                                                           ''),
-                                                  SizedBox(height: 10),
-                                                  Text('2021-09-01 10:00:00',
+                                                  SizedBox(height: 10.px),
+                                                  Text(
+                                                      listData?.createTime ??
+                                                          '',
                                                       style: TextStyle(
                                                           color: Colors.grey,
-                                                          fontSize: 12)),
+                                                          fontSize: 10.px)),
                                                 ]),
                                           )
                                         ],
@@ -192,7 +226,7 @@ class NewsDataView extends StatelessWidget {
                                           left: 0,
                                           // 最新图标带文字
                                           child: Container(
-                                            padding: EdgeInsets.all(5),
+                                            padding: EdgeInsets.all(5.px),
                                             decoration: BoxDecoration(
                                                 color: Colors.red,
                                                 borderRadius: BorderRadius.only(
@@ -203,17 +237,17 @@ class NewsDataView extends StatelessWidget {
                                             child: Text('最新动态',
                                                 style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 12)),
+                                                    fontSize: 10.px)),
                                           )),
                                     ],
                                   )
                                 : Padding(
-                                    padding: EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(10.px),
                                     child: Row(
                                       children: [
                                         Expanded(
                                           child: Container(
-                                            height: 100,
+                                            height: 100.px,
                                             child: Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -229,7 +263,7 @@ class NewsDataView extends StatelessWidget {
                                                         listData?.noticeTitle ??
                                                             '',
                                                         style: TextStyle(
-                                                            fontSize: 14,
+                                                            fontSize: 12.px,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold)),
@@ -239,34 +273,36 @@ class NewsDataView extends StatelessWidget {
                                                             ''),
                                                   ],
                                                 ),
-                                                SizedBox(height: 10),
+                                                SizedBox(height: 10.px),
                                                 Row(children: [
-                                                  Text('2021-09-01 10:00:00',
+                                                  Text(
+                                                      listData?.createTime ??
+                                                          '',
                                                       style: TextStyle(
                                                           color: Colors.grey,
-                                                          fontSize: 12)),
-                                                  SizedBox(width: 20),
+                                                          fontSize: 10.px)),
+                                                  SizedBox(width: 20.px),
                                                   // 浏览次数图标
                                                   Icon(
                                                       Icons
                                                           .remove_red_eye_outlined,
                                                       color: Colors.grey,
-                                                      size: 16),
-                                                  SizedBox(width: 5),
+                                                      size: 16.px),
+                                                  SizedBox(width: 5.px),
                                                   Text('100',
                                                       style: TextStyle(
                                                           color: Colors.grey,
-                                                          fontSize: 12))
+                                                          fontSize: 10.px))
                                                 ])
                                               ],
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 20),
+                                        SizedBox(width: 20.px),
                                         Image.asset(
                                           'assets/images/inviteImage.png',
-                                          width: 100,
-                                          height: 100,
+                                          width: 100.px,
+                                          height: 100.px,
                                           fit: BoxFit.cover,
                                         ),
                                       ],
@@ -295,12 +331,12 @@ class HtmlLineLimit extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Container(
-          margin: EdgeInsets.only(top: 10),
+          margin: EdgeInsets.only(top: 10.px),
           alignment: Alignment.centerLeft,
           child: SingleChildScrollView(
             child: Text(
               _removeHtmlTags(htmlContent),
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: 10.px),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

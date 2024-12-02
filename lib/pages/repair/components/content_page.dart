@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
-import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/model/repair_view_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
@@ -11,8 +12,7 @@ import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -30,11 +30,11 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
     with TickerProviderStateMixin {
   bool get wantKeepAlive => true;
   AnimationController? animationController;
-  String imagePrefix = '';
+  String imagePrefix = APIs.imagePrefix;
 
   List<RepairViewModel> _dataArr = [];
   int _pageNum = 1;
-  final int _pageSize = 5;
+  final int _pageSize = 3;
   int _totalItems = 0;
 
   late RefreshController _refreshController;
@@ -45,9 +45,7 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
     _refreshController = RefreshController();
-    SpUtils.getString(Constants.SP_IMAGE_PREFIX)
-        .then((res) => {imagePrefix = res});
-    _requestData();
+    _requestData(true);
   }
 
   @override
@@ -56,12 +54,11 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
     super.dispose();
   }
 
-  void _requestData({isLoadMore = false}) {
-    if (isLoadMore && _dataArr.length == _totalItems) {
-      _refreshController.loadNoData();
-      return;
+  Future<void> _requestData(bool isRefresh) async {
+    if (isRefresh) {
+      _pageNum = 1;
+      _dataArr.clear();
     }
-    _pageNum = isLoadMore ? _pageNum + 1 : 1;
     var params = {
       'pageNum': _pageNum,
       'pageSize': _pageSize,
@@ -73,26 +70,23 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
       success: (data) {
         RowsModel<RepairViewModel> response =
             RowsModel.fromJson(data, (json) => RepairViewModel.fromJson(json));
-        if (isLoadMore) {
-          setState(() {
-            _dataArr = _dataArr + response.rows!;
-          });
-          _refreshController.loadComplete();
+        if (isRefresh) {
+          _dataArr = response.rows ?? [];
+          _totalItems = response.total ?? 0;
         } else {
-          setState(() {
-            _dataArr = response.rows ?? [];
-            _totalItems = response.total ?? 0;
-          });
-          _refreshController.loadComplete();
-          _refreshController.refreshCompleted();
+          _dataArr = [..._dataArr, ...response.rows ?? []];
         }
+        _pageNum++;
+        setState(() {
+          if (_dataArr.length >= _totalItems) {
+            _refreshController.loadNoData();
+          } else {
+            _refreshController.loadComplete();
+          }
+        });
       },
       fail: (code, msg) {
-        if (isLoadMore) {
-          _refreshController.loadComplete();
-        } else {
-          _refreshController.refreshCompleted();
-        }
+        _refreshController.refreshFailed();
       },
     );
   }
@@ -110,10 +104,14 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
             enablePullDown: true,
             enablePullUp: true,
             onRefresh: () {
-              _requestData(isLoadMore: false);
+              _requestData(true).then((value) {
+                _refreshController.refreshCompleted();
+              });
             },
             onLoading: () {
-              _requestData(isLoadMore: true);
+              _requestData(false).then((value) {
+                _refreshController.loadComplete();
+              });
             },
             controller: _refreshController,
             child: Padding(
@@ -156,11 +154,11 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
                     });
                 setState(() {
                   if (result != null && result == 'submit') {
-                    _requestData();
+                    _requestData(true);
                   }
                 });
               },
-              deleteCallBack: () => {_requestData()},
+              deleteCallBack: () => {_requestData(true)},
               animation: animation,
               animationController: animationController,
               imagePrefix: imagePrefix,
@@ -226,20 +224,20 @@ class _repairItem extends StatelessWidget {
               opacity: animation!,
               child: Transform(
                   transform: Matrix4.translationValues(
-                      0.0, 50 * (1.0 - animation!.value), 0.0),
+                      0.0, 50.px * (1.0 - animation!.value), 0.0),
                   child: Container(
-                    margin: EdgeInsets.only(bottom: 10),
+                    margin: EdgeInsets.only(bottom: 10.px),
                     child: Material(
                         color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20.px),
                         child: InkWell(
                           onTap: callBack,
                           child: Ink(
-                            padding:
-                                EdgeInsets.only(left: 10, right: 10, top: 10),
+                            padding: EdgeInsets.only(
+                                left: 10.px, right: 10.px, top: 10.px),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10.px),
                             ),
                             child: badges.Badge(
                                 showBadge: listData?.readStatus == '1',
@@ -259,12 +257,12 @@ class _repairItem extends StatelessWidget {
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     style: TextStyle(
-                                                        fontSize: 14,
+                                                        fontSize: 12.px,
                                                         fontWeight:
                                                             FontWeight.bold)),
                                                 Text('/',
                                                     style: TextStyle(
-                                                        fontSize: 14,
+                                                        fontSize: 12.px,
                                                         fontWeight:
                                                             FontWeight.bold)),
                                                 Text(listData?.roomNo ?? '',
@@ -272,32 +270,32 @@ class _repairItem extends StatelessWidget {
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     style: TextStyle(
-                                                        fontSize: 14,
+                                                        fontSize: 12.px,
                                                         fontWeight:
                                                             FontWeight.bold)),
                                               ],
                                             ),
                                             SizedBox(
-                                              height: 5,
+                                              height: 5.px,
                                             ),
                                             Text(listData?.createTime ?? '',
                                                 style: TextStyle(
-                                                    fontSize: 12,
+                                                    fontSize: 10.px,
                                                     color: Colors.grey))
                                           ],
                                         )),
-                                        SizedBox(width: 10),
+                                        SizedBox(width: 10.px),
                                         // 维修状态
                                         Container(
                                           padding: EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 2),
+                                              horizontal: 5.px, vertical: 2.px),
                                           child: Text(
                                             getRepairStateText(
                                                 listData?.repairState),
                                             style: TextStyle(
                                               color: getRepairStateColor(
                                                   listData?.repairState),
-                                              fontSize: 14,
+                                              fontSize: 12.px,
                                             ),
                                           ),
                                         )
@@ -323,7 +321,7 @@ class _repairItem extends StatelessWidget {
                                             clipBehavior: Clip.antiAlias,
                                             decoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(5)),
+                                                    BorderRadius.circular(5.px)),
                                             child: Image.network(
                                               imagePrefix + images[index],
                                               fit: BoxFit.cover,
@@ -348,11 +346,11 @@ class _repairItem extends StatelessWidget {
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.horizontal(
-                                                left: Radius.circular(15),
-                                                right: Radius.circular(15),
+                                                left: Radius.circular(12.px),
+                                                right: Radius.circular(12.px),
                                               ),
                                             ),
-                                            minimumSize: Size(100, 24),
+                                            minimumSize: Size(72.px, 20.px),
                                             side: BorderSide(
                                                 color: secondaryColor,
                                                 width: 1),
@@ -364,7 +362,7 @@ class _repairItem extends StatelessWidget {
                                           child: Text(
                                             S.of(context).deleteRepair,
                                             style: TextStyle(
-                                                fontSize: 12,
+                                                fontSize: 10.px,
                                                 color: secondaryColor),
                                           ),
                                         ),
@@ -391,11 +389,11 @@ class _repairItem extends StatelessWidget {
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.horizontal(
-                                                  left: Radius.circular(15),
-                                                  right: Radius.circular(15),
+                                                  left: Radius.circular(12.px),
+                                                  right: Radius.circular(12.px),
                                                 ),
                                               ),
-                                              minimumSize: Size(60, 24),
+                                              minimumSize: Size(42.px, 20.px),
                                               side: BorderSide(
                                                   color: primaryColor,
                                                   width: 1),
@@ -407,7 +405,7 @@ class _repairItem extends StatelessWidget {
                                             child: Text(
                                               S.of(context).evaluate,
                                               style: TextStyle(
-                                                  fontSize: 12,
+                                                  fontSize: 10.px,
                                                   color: primaryColor),
                                             ),
                                           ),
@@ -448,10 +446,10 @@ class _repairItem extends StatelessWidget {
               success: (data) {
                 callback();
                 Navigator.of(context).pop();
-                showToast(S.of(context).deleteRepairSuccess);
+                ProgressHUD.showSuccess(S.of(context).deleteRepairSuccess);
               },
               fail: (code, msg) {
-                showToast(msg);
+                ProgressHUD.showError(msg);
                 Navigator.of(context).pop();
               },
             );

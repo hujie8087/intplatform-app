@@ -1,5 +1,5 @@
-import 'package:logistics_app/pages/home_page/home_notice_list_view.dart';
 import 'package:flutter/material.dart';
+import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -69,9 +69,9 @@ class _FeedbackListViewState extends State<FeedbackListView>
                                 curve: Interval((1 / count) * index, 1.0,
                                     curve: Curves.fastOutSlowIn)));
                     widget.animationController?.forward();
-                    return HomeNoticeListView(
-                      noticeData: model.list?[index],
-                      callback: () => {},
+                    return NoticeDataView(
+                      listData: model.list?[index],
+                      callBack: () => {},
                       animation: animation,
                       animationController: widget.animationController,
                     );

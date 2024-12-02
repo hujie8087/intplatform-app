@@ -15,7 +15,7 @@ publish_to: 'none'
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.1+1
+version: 1.0.3+1
 
 environment:
   sdk: '>=2.17.5 <3.0.0'
@@ -37,6 +37,7 @@ dependencies:
   firebase_core: ^3.1.1
   firebase_messaging: ^15.0.2
   flustars_flutter3: ^3.0.0
+  qr_flutter: ^4.1.0
   flutter:
     sdk: flutter
   flutter_barrage: ^0.5.5
@@ -80,6 +81,11 @@ dependencies:
   video_player: ^2.8.6
   wechat_assets_picker: ^9.1.0
   wechat_camera_picker: ^4.3.1
+  mobile_scanner: ^3.5.5
+  flutter_datetime_picker_plus: ^2.1.0
+  grouped_list: ^5.1.2
+  carousel_slider: ^4.2.1
+  google_api_availability: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -92,6 +98,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
@@ -135,3 +142,8 @@ flutter_icons:
   image_path: 'assets/icon/icon.png'
 flutter_intl:
   enabled: true
+  class_name: S
+  main_locale: zh_CN
+  arb_dir: lib/l10n
+  output_dir: lib/generated
+  use_deferred_loading: false

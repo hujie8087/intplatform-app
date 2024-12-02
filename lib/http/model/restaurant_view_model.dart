@@ -27,7 +27,8 @@ class RestaurantModel {
   String? endTime;
   int? bookTable;
   int? pickup;
-  List<dynamic>? pickTypes;
+  List<dynamic>? pickupTypeIds;
+  List<dynamic>? newDeliveryIds;
   String? code;
 
   RestaurantModel(
@@ -45,7 +46,8 @@ class RestaurantModel {
       this.startTime,
       this.bookTable,
       this.pickup,
-      this.pickTypes,
+      this.pickupTypeIds,
+      this.newDeliveryIds,
       this.code});
 
   RestaurantModel.fromJson(Map<String, dynamic> json) {
@@ -63,7 +65,8 @@ class RestaurantModel {
     endTime = json['endTime'];
     bookTable = json['bookTable'];
     pickup = json['pickup'];
-    pickTypes = json['pickTypes'];
+    pickupTypeIds = json['pickupTypeIds'];
+    newDeliveryIds = json['newDeliveryIds'];
     code = json['code'];
   }
 
@@ -83,7 +86,8 @@ class RestaurantModel {
     data['endTime'] = this.endTime;
     data['bookTable'] = this.bookTable;
     data['pickup'] = this.pickup;
-    data['pickTypes'] = this.pickTypes ?? null;
+    data['pickupTypeIds'] = this.pickupTypeIds ?? null;
+    data['newDeliveryIds'] = this.newDeliveryIds ?? null;
     data['code'] = this.code;
     return data;
   }

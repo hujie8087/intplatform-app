@@ -75,7 +75,7 @@ class _CustomMaterialControlsState extends State<CustomMaterialControls> {
                 // 视频进度带数字显示
                 Expanded(
                   child: VideoProgressIndicator(
-                    ChewieController.of(context).videoPlayerController!,
+                    ChewieController.of(context).videoPlayerController,
                     allowScrubbing: true,
                     padding: EdgeInsets.only(right: 5),
                     colors: VideoProgressColors(
@@ -93,10 +93,8 @@ class _CustomMaterialControlsState extends State<CustomMaterialControls> {
                   icon: Icon(Icons.fullscreen, color: Colors.white),
                   onPressed: () {
                     final controller = ChewieController.of(context);
-                    if (controller != null) {
-                      controller.enterFullScreen();
-                      widget.resetBarrageWall();
-                    }
+                    controller.enterFullScreen();
+                    widget.resetBarrageWall();
                   },
                 ),
                 // 弹幕显示按钮
@@ -107,14 +105,12 @@ class _CustomMaterialControlsState extends State<CustomMaterialControls> {
                           : Icons.closed_caption_disabled,
                       color: Colors.white),
                   onPressed: () {
-                    final controller = ChewieController.of(context);
-                    if (controller != null) {
-                      // controller.toggleSubtitle();
-                      widget.showBarrageWall();
-                      setState(() {
-                        _isEnabled = _isEnabled ? false : true;
-                      });
-                    }
+                    // final controller = ChewieController.of(context);
+                    // controller.;
+                    widget.showBarrageWall();
+                    setState(() {
+                      _isEnabled = _isEnabled ? false : true;
+                    });
                   },
                 ),
                 // 弹幕更新按钮

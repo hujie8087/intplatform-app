@@ -15,28 +15,24 @@ class APIs {
   // static const String imagePrefixWifi =
   //     'http://192.168.90.30/static/intplatform'; // 图片内网地址
 
-  static const String apiPrefix =
-      'https://api.iwipwedabay.com/api/intplatform/app';
-  static const String imagePrefix =
-      'https://web.iwipwedabay.com/static/intplatform';
+  // static const String apiPrefix =
+  //     'https://api.iwipwedabay.com/api/intplatform/app';
+  // static const String imagePrefix =
+  //     'https://web.iwipwedabay.com/static/intplatform';
   // 餐饮图片资源前缀
   static const String foodPrefix = 'http://36.92.27.251:28080/static/';
 
   // 测试环境
   // static const String apiPrefix = 'http://192.168.91.50:10200'; // 外网
   // static const String apiPrefixWifi = 'http://192.168.91.50:10200'; // 内网
-  // static const String imagePrefix =
-  //     'http://192.168.91.50:9000/intplatform'; // 图片外网地址
-  // static const String imagePrefixWifi =
-  //     'http://192.168.91.50:9000/intplatform'; // 图片内网地址
+  static const String imagePrefix =
+      'http://192.168.91.50:9000/intplatform'; // 图片外网地址
 
   // 韩栋本地环境
-  // static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
-  // static const String apiPrefixWifi = 'http://10.40.10.18:10200'; // 内网
+  static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
 
   // 阿泽本地环境
   // static const String apiPrefix = 'http://10.40.11.26:10200'; // 外网
-  // static const String apiPrefixWifi = 'http://10.40.11.26:10200'; // 内网
 
   /// 注册接口
   static const String register = '/auth/register';
@@ -49,6 +45,9 @@ class APIs {
 
   // 获取用户信息
   static const String getUserInfo = '/system/user/getInfo';
+
+  // 获取用户消费信息
+  static const String getUserConsumeInfo = '/system/user/info/';
 
   // 编辑用户信息
   static const String editUser = '/system/user/edit';
@@ -83,14 +82,17 @@ class APIs {
   // 获取APP最新版本
   static const String getAppLastVersion = '/other/app/getNewApp';
 
+  // 获取区域楼栋最新版本
+  static const String getBuildingVersion = '/maintenance/building/version';
+
   // 新增我的地址
-  static const String addMyAddress = '/system/address';
+  static const String addMyAddress = '/other/address';
 
   // 获取我的地址列表
-  static const String getMyAddressList = '/system/address/list';
+  static const String getMyAddressList = '/other/address/list';
 
   // 获取我的地址详情
-  static const String getMyAddressDetail = '/system/address';
+  static const String getMyAddressDetail = '/other/address';
 
   // 服务指南类型列表
   static const String guideTypeList = '/other/guideType/list';
@@ -107,13 +109,77 @@ class APIs {
   // 获取餐厅列表
   static const String getRestaurantList = '/productdisplay/marketCanteen/list';
 
+  // 获取热门菜品
+  static const String getHotFoodList = '/productdisplay/commodity/chart';
+
   // 获取餐厅详情
   static const String getRestaurantDetail = '/productdisplay/marketCanteen';
 
   // 获取餐厅菜品列表
-  static const String getRestaurantMenuList = '/productdisplay/category/list';
+  static const String getRestaurantMenuList =
+      '/productdisplay/category/getCategoryByCanteenId';
 
   // 获取餐厅取餐类型列表
   static const String getRestaurantPickTypeList =
       '/productdisplay/pickupType/list';
+
+  // 获取我的订单列表
+  static const String getOrderList = '/productdisplay/food/order/listApp';
+
+  // 获取我的订单详情
+  static const String getOrderDetail = '/productdisplay/food/order';
+
+  // 获取门店配送时间
+  static const String getRestaurantDeliveryTime =
+      '/productdisplay/food/fee/find-delivery-time';
+
+  // 获取门店配送费用
+  static const String getRestaurantDeliveryFee =
+      '/productdisplay/food/fee/find-delivery-fee';
+
+  // 获取餐厅配送方式
+  static const String getCanteenPickupType = '/productdisplay/pickupType/list';
+
+  // 获取所有配送方式
+  static const String getAllPickupType = '/productdisplay/pickupType/list';
+
+  // 获取卡信息
+  static const String getCardInfo = '/productdisplay/card/getCardInfo';
+
+  // 挂失卡
+  static const String disableCard = '/productdisplay/card/reportLoss';
+
+  // 解挂卡
+  static const String enableCard = '/productdisplay/card/recover';
+
+  // 验证支付密码
+  static const String verifyPayPassword = '/productdisplay/card/verifyPassword';
+
+  // 修改支付密码
+  static const String updatePayPassword = '/productdisplay/card/updatePassword';
+
+  // 获取支付二维码
+  static const String getPayQrCode = '/productdisplay/card/getqrcode';
+
+  // 解析支付二维码
+  static const String parsePayQrCode = '/productdisplay/card/analysisQrcod';
+
+  // 二维码付款
+  static const String pay = '/productdisplay/card/merchanQrcodePay';
+
+  // 查询账单
+  static const String getBill = '/productdisplay/card/selectFlows';
+
+  /// 修改支付密码
+  static const String modifyPaymentPassword =
+      '/productdisplay/card/updatePassword';
+
+  // 提交订单
+  static const String submitOrder = '/productdisplay/food/order';
+
+  // 提交留言
+  static const String submitMessage = '/other/ComplaintMessage';
+
+  // 删除订单
+  static const String deleteOrder = '/productdisplay/food/order';
 }

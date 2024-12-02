@@ -1,0 +1,346 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/data/shopping_utils.dart';
+import 'package:logistics_app/http/model/card_info_model.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
+
+class CardInfoPage extends StatefulWidget {
+  @override
+  _CardInfoPageState createState() => _CardInfoPageState();
+}
+
+class _CardInfoPageState extends State<CardInfoPage> {
+  CardInfoModel? cardInfo;
+  TextEditingController _passwordController = TextEditingController();
+  UserInfoModel? userInfo;
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCardInfo();
+  }
+
+  void _fetchCardInfo() async {
+    setState(() {
+      isLoading = true;
+    });
+    var userInfoData = await SpUtils.getModel('userInfo');
+    if (userInfoData != null) {
+      userInfo = UserInfoModel.fromJson(userInfoData);
+    }
+    ShoppingUtils.getCardInfo(
+      {
+        'uniqueId': userInfo?.user?.userName,
+      },
+      success: (data) {
+        cardInfo = CardInfoModel.fromJson(data['data']);
+        setState(() {
+          isLoading = false;
+        });
+      },
+      fail: (code, msg) {
+        setState(() {
+          isLoading = false;
+        });
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final statusMap = {
+      '0': S.of(context).cardDelete,
+      '1': S.of(context).cardValid,
+      '2': S.of(context).cardLoss,
+      '3': S.of(context).cardFreeze,
+      '4': S.of(context).cardPreDelete,
+      '5': S.of(context).cardLock,
+    };
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(S.of(context).cardInfo, style: TextStyle(fontSize: 16.px)),
+      ),
+      body: Container(
+        padding: EdgeInsets.all(16.px),
+        width: double.infinity,
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(10.px),
+                    decoration: BoxDecoration(
+                      // 渐变背景
+                      gradient: LinearGradient(
+                        colors: [
+                          primaryColor.withOpacity(0.4),
+                          secondaryColor.withOpacity(0.4),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      // 阴影
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 5.px,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Column(
+                          children: [
+                            // 姓名
+                            Row(
+                              children: [
+                                Text(S.of(context).cardName,
+                                    style: TextStyle(fontSize: 14.px)),
+                                SizedBox(width: 5.px),
+                                Text(cardInfo?.accName ?? '',
+                                    style: TextStyle(
+                                        fontSize: 16.px,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                            SizedBox(height: 8.px),
+                            // 卡号
+                            Row(
+                              children: [
+                                Text(S.of(context).cardNumber,
+                                    style: TextStyle(fontSize: 14.px)),
+                                SizedBox(width: 5.px),
+                                Text(cardInfo?.accNum ?? '',
+                                    style: TextStyle(
+                                        fontSize: 16.px,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                            SizedBox(height: 8.px),
+                            // 部门
+                            Row(
+                              children: [
+                                Text(S.of(context).cardDep,
+                                    style: TextStyle(fontSize: 14.px)),
+                                SizedBox(width: 5.px),
+                                Text(cardInfo?.accDepName ?? '',
+                                    style: TextStyle(
+                                        fontSize: 16.px,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                            SizedBox(height: 8.px),
+                            Row(
+                              children: [
+                                Text(S.of(context).cardBalance,
+                                    style: TextStyle(fontSize: 14.px)),
+                                SizedBox(width: 5.px),
+                                Text(cardInfo?.balance ?? '',
+                                    style: TextStyle(
+                                        fontSize: 16.px,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ],
+                        )),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(S.of(context).cardStatus,
+                                style: TextStyle(fontSize: 10.px)),
+                            SizedBox(height: 8.px),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 5.px, vertical: 5.px),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                  statusMap[cardInfo?.cardStatusNum ?? '0'] ??
+                                      '',
+                                  style: TextStyle(
+                                      fontSize: 18.px,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 8.px),
+                  // 挂失或解锁
+                  Container(
+                    width: double.infinity / 2,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.px),
+                        ),
+                      ),
+                      onPressed: () {
+                        // 弹窗校验输入密码框
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(S.of(context).cardPassword),
+                            // 6位密码输入框
+                            content: Container(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: List.generate(6, (index) {
+                                  return Container(
+                                    width: 40.px,
+                                    height: 40.px,
+                                    alignment: Alignment.center,
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 2.px),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey[300]!,
+                                        width: 1.px,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.px),
+                                    ),
+                                    child: TextField(
+                                      controller: TextEditingController(
+                                        text: _passwordController.text.length >
+                                                index
+                                            ? _passwordController.text[index]
+                                            : '',
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 18.px,
+                                          fontWeight: FontWeight.bold),
+                                      keyboardType: TextInputType.number,
+                                      // 加密
+                                      obscureText: true,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        LengthLimitingTextInputFormatter(1),
+                                      ],
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        counterText: '',
+                                      ),
+                                      onChanged: (value) {
+                                        String currentText =
+                                            _passwordController.text;
+                                        if (value.isEmpty &&
+                                            currentText.isNotEmpty) {
+                                          // 删除操作
+                                          _passwordController.text =
+                                              currentText.substring(
+                                                  0, currentText.length - 1);
+                                        } else if (value.isNotEmpty) {
+                                          // 添加操作
+                                          if (currentText.length < 6) {
+                                            _passwordController.text =
+                                                currentText + value;
+                                          }
+                                        }
+
+                                        // 自动跳转到下一个输入框
+                                        if (value.isNotEmpty && index < 5) {
+                                          FocusScope.of(context).nextFocus();
+                                        }
+                                        // 自动跳转到上一个输入框
+                                        else if (value.isEmpty && index > 0) {
+                                          FocusScope.of(context)
+                                              .previousFocus();
+                                        }
+
+                                        setState(() {});
+                                      },
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text(S.of(context).cancel),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 关闭弹窗
+                                },
+                              ),
+                              TextButton(
+                                child: Text(S.of(context).confirm),
+                                onPressed: () {
+                                  String password = _passwordController.text;
+                                  // 处理密码逻辑
+                                  if (password.length != 6) {
+                                    ProgressHUD.showError(
+                                        S.of(context).inputPasswordError);
+                                    return;
+                                  }
+                                  // 验证密码
+                                  ShoppingUtils.verifyPayPassword({
+                                    'oriPassword': password,
+                                    'uniqueId': userInfo?.user?.userName,
+                                    'pwdType': '1'
+                                  }, success: (data) {
+                                    // 挂失
+                                    if (cardInfo?.cardStatusNum == '1') {
+                                      ShoppingUtils.disableCard(
+                                        {'uniqueId': userInfo?.user?.userName},
+                                        success: (data) {
+                                          ProgressHUD.showSuccess(
+                                              S.of(context).cardLossSuccess);
+                                          _fetchCardInfo();
+                                        },
+                                      );
+                                    } else {
+                                      ShoppingUtils.enableCard(
+                                        {'uniqueId': userInfo?.user?.userName},
+                                        success: (data) {
+                                          ProgressHUD.showSuccess(
+                                              S.of(context).cardLockSuccess);
+                                          _fetchCardInfo();
+                                        },
+                                      );
+                                    }
+                                    // 清楚密码
+                                    _passwordController.clear();
+                                  });
+
+                                  Navigator.of(context).pop(); // 关闭弹窗
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      child: Text(
+                        cardInfo?.cardStatusNum == '2'
+                            ? S.of(context).cardLock
+                            : S.of(context).cardLoss,
+                        style: TextStyle(fontSize: 16.px),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+}

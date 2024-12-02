@@ -6,6 +6,7 @@ import 'package:logistics_app/http/model/guide_view_model.dart';
 import 'package:logistics_app/pages/guide/guide_view_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class GuideListPage extends StatefulWidget {
   const GuideListPage(
@@ -37,7 +38,7 @@ class _GuideListPage extends State<GuideListPage>
       appBar: AppBar(
         title: Text(
           widget.guideType.title ?? '',
-          style: TextStyle(fontSize: 18),
+          style: TextStyle(fontSize: 16.px),
         ),
         centerTitle: false,
         backgroundColor: Colors.white,
@@ -45,7 +46,7 @@ class _GuideListPage extends State<GuideListPage>
       backgroundColor: backgroundColor,
       body: SafeArea(
           child: Padding(
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(10.px),
         child: restaurantListView(),
       )),
     );
@@ -56,7 +57,7 @@ class _GuideListPage extends State<GuideListPage>
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
         childAspectRatio: 1,
-        crossAxisSpacing: 10,
+        crossAxisSpacing: 6.px,
         mainAxisSpacing: 0,
       ),
       shrinkWrap: true,
@@ -112,49 +113,49 @@ class GuideViewDataView extends StatelessWidget {
               opacity: animation!,
               child: Transform(
                   transform: Matrix4.translationValues(
-                      0.0, 50 * (1.0 - animation!.value), 0.0),
+                      0.0, 50.px * (1.0 - animation!.value), 0.0),
                   child: Container(
-                    margin: EdgeInsets.only(bottom: 10),
+                    margin: EdgeInsets.only(bottom: 10.px),
                     child: Material(
                         color: Colors.transparent,
                         child: Ink(
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.px),
                           ),
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(10.px),
                             onTap: callBack,
                             child: Container(
-                              padding: EdgeInsets.all(10),
+                              padding: EdgeInsets.all(10.px),
                               child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(10.px),
                                     decoration: BoxDecoration(
                                         color: index! % 2 == 1
                                             ? primaryColor.withOpacity(0.1)
                                             : secondaryColor.withOpacity(0.1),
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(100))),
+                                            Radius.circular(100.px))),
                                     child: Icon(
                                       iconMap[listData.img],
-                                      size: 24,
+                                      size: 14.px,
                                       color: index! % 2 == 1
                                           ? primaryColor[500]
                                           : secondaryColor[500],
                                     ),
                                   ),
                                   SizedBox(
-                                    width: 10,
+                                    height: 2.px,
                                   ),
                                   Text(listData.title ?? '',
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: 10.px,
                                       )),
                                 ],
                               ),

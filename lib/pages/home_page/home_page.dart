@@ -4,12 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
-import 'package:logistics_app/common_ui/divider_widget.dart';
+import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
-import 'package:logistics_app/http/apis.dart';
-import 'package:logistics_app/http/http_utils.dart';
+import 'package:logistics_app/pages/home_page/message_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
@@ -17,20 +16,26 @@ import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
 import 'package:logistics_app/pages/repair/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
+import 'package:logistics_app/pages/shopping/order/order_list_page.dart';
+import 'package:logistics_app/pages/shopping/payment/payment_qrcode_page.dart';
 import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:logistics_app/utils/picker.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, this.animationController, required this.onChanged})
+  const HomePage(
+      {Key? key,
+      this.animationController,
+      required this.onChanged,
+      this.addClick})
       : super(key: key);
 
   final AnimationController? animationController;
   final ValueChanged<int>? onChanged;
+  final Function()? addClick;
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -63,7 +68,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             topBarOpacity = 1.0;
           });
         }
-      } else if (scrollController.offset <= 50 &&
+      } else if (scrollController.offset <= 50.px &&
           scrollController.offset >= 0) {
         if (topBarOpacity != scrollController.offset / 50) {
           setState(() {
@@ -79,7 +84,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       }
     });
     model.getNoticeModelList(1, 10);
-    model.getNewsModelList(1, 10);
+    // model.getNewsModelList(1, 10);
     super.initState();
     _fetchData();
     widget.animationController?.forward();
@@ -154,15 +159,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   builder: (context, model, child) {
                                   if (model.list?.isEmpty == true) {
                                     return Center(
-                                      child: Text("暂无数据"),
+                                      child: EmptyView(),
                                     );
                                   }
                                   return ListView.builder(
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
                                     itemCount: model.list?.length ?? 0,
-                                    padding:
-                                        EdgeInsets.only(left: 10, right: 10),
+                                    padding: EdgeInsets.only(
+                                        left: 8.px, right: 8.px),
                                     itemBuilder: (context, index) {
                                       final int count = model.list?.length ?? 0;
                                       final Animation<double> animation =
@@ -195,15 +200,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   builder: (context, model, child) {
                                   if (model.newsList?.isEmpty == true) {
                                     return Center(
-                                      child: Text("暂无数据"),
+                                      child: EmptyView(),
                                     );
                                   }
                                   return ListView.builder(
                                     shrinkWrap: true,
                                     physics: NeverScrollableScrollPhysics(),
                                     itemCount: model.newsList?.length ?? 0,
-                                    padding:
-                                        EdgeInsets.only(left: 10, right: 10),
+                                    padding: EdgeInsets.only(
+                                        left: 8.px, right: 8.px),
                                     itemBuilder: (context, index) {
                                       final int count = model.list?.length ?? 0;
                                       final Animation<double> animation =
@@ -260,12 +265,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 transform: Matrix4.translationValues(
                     0.0, 50 * (1.0 - topBarAnimation!.value), 0.0),
                 child: Container(
-                  margin:
-                      EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 0),
-                  padding: EdgeInsets.only(top: 10),
+                  margin: EdgeInsets.only(
+                      top: 10.px, left: 8.px, right: 8.px, bottom: 0),
+                  padding: EdgeInsets.only(top: 10.px),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(10.px),
                   ),
                   child: GridView(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -295,7 +300,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       // 通知公告
                       _FunctionAreaItem(
                           S.of(context).notifications,
-                          false,
+                          true,
                           Icons.notifications,
                           () => RouteUtils.push(context, NoticeListPage())),
                       // _FunctionAreaItem('意见反馈', true, Icons.feedback,
@@ -306,8 +311,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           false,
                           Icons.phone,
                           () => RouteUtils.push(context, ContactUsPage())),
-                      _FunctionAreaItem('在线订餐', false, Icons.fastfood,
+                      _FunctionAreaItem(
+                          S.of(context).onlineDining,
+                          true,
+                          Icons.fastfood,
                           () => RouteUtils.push(context, ShoppingScreenPage())),
+                      // 我的订单
+                      _FunctionAreaItem(
+                          S.of(context).myOrder,
+                          false,
+                          Icons.bookmark_outline,
+                          () => RouteUtils.push(context, OrderListPage())),
+                      // 付款码
+                      _FunctionAreaItem(
+                          S.of(context).paymentQRCode,
+                          false,
+                          Icons.qr_code,
+                          () => RouteUtils.push(context, PaymentQRCodePage())),
                       // _FunctionAreaItem(
                       //     '我的收藏',
                       //     true,
@@ -316,8 +336,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       //         color: Colors.red,
                       //         icon: Icon(Icons.error, color: Colors.red),
                       //         title: '功能开发中，敬请期待！')),
-                      // _FunctionAreaItem('更多功能', false, Icons.more_horiz,
-                      //     () => widget.onChanged!(4)),
+                      _FunctionAreaItem(S.of(context).moreFunction, false,
+                          Icons.more_horiz, () => widget.onChanged!(1)),
                     ],
                   ),
                 )),
@@ -334,35 +354,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             opacity: topBarAnimation!,
             child: Transform(
                 transform: Matrix4.translationValues(
-                    0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
+                    0.0, 30.px * (1.0 - topBarAnimation!.value), 0.0),
                 child: Container(
-                    margin: EdgeInsets.only(top: 10, left: 10, right: 10),
-                    padding: EdgeInsets.all(10),
+                    margin:
+                        EdgeInsets.only(top: 10.px, left: 8.px, right: 8.px),
+                    padding: EdgeInsets.all(10.px),
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.px),
                     ),
                     child: Row(
                       children: [
                         Container(
                             child: Text(S.current.notice,
                                 style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14.px,
                                     fontWeight: FontWeight.bold,
                                     color: primaryColor)),
-                            padding: EdgeInsets.only(right: 10),
+                            padding: EdgeInsets.only(right: 8.px),
                             decoration: BoxDecoration(
                                 border: Border(
                                     right: BorderSide(
                                         width: 2,
                                         color: Colors.grey.withOpacity(0.3))))),
-                        SizedBox(width: 10),
+                        SizedBox(width: 8.px),
                         Expanded(
                           child: Consumer<NoticeViewModel>(
                               builder: (context, model, child) {
                             return SizedBox(
-                                height: 30, // 限制高度以只显示一个公告
+                                height: 24.px, // 限制高度以只显示一个公告
                                 child: model.list?.isEmpty == true
                                     ? Text(
                                         S.of(context).noData,
@@ -389,14 +410,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                               ?.noticeTitle ??
                                                           '',
                                                       style: TextStyle(
-                                                          fontSize: 14))),
+                                                          fontSize: 12.px))),
                                               Container(
                                                   child: Container(
                                                 alignment:
                                                     Alignment.centerRight,
                                                 child: Icon(
                                                   Icons.arrow_forward_ios,
-                                                  size: 16,
+                                                  size: 14.px,
                                                   color: Colors.grey,
                                                 ),
                                               )),
@@ -421,10 +442,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             opacity: topBarAnimation!,
             child: Transform(
                 transform: Matrix4.translationValues(
-                    0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
+                    0.0, 24.px * (1.0 - topBarAnimation!.value), 0.0),
                 child: Container(
                   width: double.infinity,
-                  height: 200,
+                  height: 180.px,
                   child: Swiper(
                     itemCount: 2,
                     itemBuilder: (BuildContext context, int index) {
@@ -441,21 +462,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         });
   }
 
-  void _handleTap() {
+  void _handleTap(int value) {
     //给方法传值
-    widget.onChanged!(1);
+    widget.onChanged!(value);
   }
 
   //更新焦点的事件名
-  void updateCurrent(int text) {
-    if (text == 1) {
-      model.getNoticeModelList(1, 10);
+  void updateCurrent(int text) async {
+    if (text == 0) {
+      if (model.list?.isEmpty == true) {
+        await model.getNoticeModelList(1, 10);
+      }
     } else {
-      model.getNewsModelList(1, 10);
+      if (model.newsList?.isEmpty == true) {
+        await model.getNewsModelList(1, 10);
+      }
     }
-    setState(() {
-      current = text;
-    });
+    current = text;
+    setState(() {});
+    return;
   }
 
   // 头部
@@ -469,7 +494,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               opacity: topBarAnimation!,
               child: Transform(
                 transform: Matrix4.translationValues(
-                    0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
+                    0.0, 24.px * (1.0 - topBarAnimation!.value), 0.0),
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppTheme.white.withOpacity(topBarOpacity),
@@ -490,10 +515,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            left: 12,
-                            right: 12,
-                            top: 12.0 * topBarOpacity,
-                            bottom: 12),
+                            left: 10.px,
+                            right: 10.px,
+                            top: 10.px * topBarOpacity,
+                            bottom: 10.px),
                         child: Row(
                           mainAxisAlignment: userName != ''
                               ? MainAxisAlignment.spaceAround
@@ -502,11 +527,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             if (userName != '')
                               Expanded(
                                   child: InkWell(
-                                onTap: _handleTap,
+                                onTap: () => _handleTap(2),
                                 child: Row(
                                   children: [
                                     // 圆形图片
-                                    AvatarWidget(width: 40),
+                                    AvatarWidget(width: 36.px),
                                     Expanded(
                                         child: Column(
                                       crossAxisAlignment:
@@ -518,7 +543,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                             fontFamily: AppTheme.fontName,
                                             fontWeight: FontWeight.w700,
                                             fontSize:
-                                                14 + 2 - 2 * topBarOpacity,
+                                                (12 + 2 - 2 * topBarOpacity).px,
                                             letterSpacing: 1.2,
                                             color: topBarOpacity == 1.0
                                                 ? AppTheme.darkerText
@@ -530,7 +555,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           style: TextStyle(
                                             fontFamily: AppTheme.fontName,
                                             fontSize:
-                                                12 + 2 - 2 * topBarOpacity,
+                                                (12 + 2 - 2 * topBarOpacity).px,
                                             color: topBarOpacity == 1.0
                                                 ? AppTheme.darkerText
                                                 : Colors.white,
@@ -542,20 +567,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                               )),
                             Container(
-                              padding: const EdgeInsets.all(5),
+                              padding: EdgeInsets.all(5.px),
                               // 圆形背景
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.5),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(20),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(18.px),
                                 ),
                               ),
                               // 消息图标
                               child: InkWell(
                                 highlightColor: Colors.transparent,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(32.0)),
-                                onTap: () {},
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(18.px)),
+                                onTap: () {
+                                  RouteUtils.push(context, MessagePage());
+                                },
                                 child: Icon(
                                   Icons.notifications,
                                   color: primaryColor[500],
@@ -581,7 +608,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-        height: 40,
+        height: 36.px,
         child: child,
       ),
     );
@@ -595,8 +622,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 40,
-            height: 40,
+            width: 36.px,
+            height: 36.px,
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isEven
@@ -605,15 +632,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Icon(
               icon,
               color: isEven ? primaryColor : secondaryColor,
-              size: 24,
+              size: 20.px,
             ),
           ),
           SizedBox(
-            height: 5,
+            height: 5.px,
           ),
           Text(
             title,
-            style: TextStyle(fontSize: 12),
+            style: TextStyle(fontSize: 10.px),
           ),
         ],
       ),

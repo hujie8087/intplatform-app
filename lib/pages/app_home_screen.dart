@@ -1,7 +1,6 @@
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_update_dialog/update_dialog.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
@@ -24,7 +23,13 @@ import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// 在文件顶部定义全局 key
+final GlobalKey<_AppHomeScreenState> appHomeScreenKey =
+    GlobalKey<_AppHomeScreenState>();
+
 class AppHomeScreen extends StatefulWidget {
+  const AppHomeScreen({Key? key}) : super(key: key);
+
   @override
   _AppHomeScreenState createState() => _AppHomeScreenState();
 }
@@ -32,7 +37,9 @@ class AppHomeScreen extends StatefulWidget {
 class _AppHomeScreenState extends State<AppHomeScreen>
     with TickerProviderStateMixin {
   AnimationController? animationController;
-  final GlobalKey<NavigationBarItemState> navigationKey = GlobalKey();
+  final GlobalKey<NavigationBarItemState> navigationKey =
+      GlobalKey<NavigationBarItemState>();
+
   List<TabIconData> _tabIconsList = [];
 
   void updateTabIconsList() {
@@ -85,7 +92,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     // 判断是否登录
     final token = await SpUtils.getString(Constants.SP_TOKEN);
     if (token == null || token.isEmpty) {
-      ProgressHUD.showText('请登录您的帐号');
+      ProgressHUD.showText(S.of(context).needLogin);
       RouteUtils.navigateToLogin();
       return false;
     } else {
@@ -158,10 +165,10 @@ class _AppHomeScreenState extends State<AppHomeScreen>
                   topImageRes: 'bg_update_top');
             } else {
               UpdateDialog.showUpdate(context,
-                  title: '检测有新版本，请前往APPStore下载最新版',
+                  title: S.of(context).updateAppStore,
                   updateContent: updateModel.updateLog ?? '',
                   themeColor: Color.fromRGBO(255, 101, 50, 1),
-                  updateButtonText: '立即更新',
+                  updateButtonText: S.of(context).updateNow,
                   topImage: Image.asset('assets/images/bg_update_top.png'),
                   isForce: true, onUpdate: () async {
                 final url =
@@ -205,41 +212,36 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       tab.isSelected = false;
     });
     _tabIconsList[newValue].isSelected = true;
-    if (newValue == 0) {
-      animationController?.reverse().then<dynamic>((data) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {
-          tabBody = HomePage(
+    animationController?.reverse().then<dynamic>((data) async {
+      if (!mounted) {
+        return;
+      }
+      switch (newValue) {
+        case 0:
+          setState(() {
+            tabBody = HomePage(
+                animationController: animationController,
+                onChanged: _handleTabChanged);
+          });
+          break;
+        case 1:
+          setState(() {
+            tabBody = ToolBoxPage();
+          });
+          break;
+        case 2:
+          await isLogin();
+          setState(() {
+            tabBody = MinePage(
               animationController: animationController,
-              onChanged: _handleTabChanged);
-        });
-      });
-    } else if (newValue == 1) {
-      animationController?.reverse().then<dynamic>((data) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {
-          // tabBody = ShoppingScreenPage();
-          tabBody = ToolBoxPage();
-        });
-      });
-    } else if (newValue == 2) {
-      await isLogin();
-      animationController?.reverse().then<dynamic>((data) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {
-          tabBody = MinePage(
-            animationController: animationController,
-            updateTabIconsList: updateTabIconsList,
-          );
-        });
-      });
-    }
+              updateTabIconsList: updateTabIconsList,
+            );
+          });
+          break;
+      }
+      navigationKey.currentState
+          ?.setRemoveAllSelection(_tabIconsList[newValue]);
+    });
   }
 
   @override
@@ -292,12 +294,6 @@ class _AppHomeScreenState extends State<AppHomeScreen>
         NavigationBarItem(
           key: navigationKey,
           tabIconsList: _tabIconsList,
-          addClick: () {
-            setState(() {
-              tabBody = ToolBoxPage();
-              _handleTabChanged(4);
-            });
-          },
           changeIndex: (int index) {
             _handleTabChanged(index);
           },

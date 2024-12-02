@@ -43,7 +43,6 @@ class _FeedbackPageState extends State<FeedbackPage>
     switchAnimation = CurvedAnimation(
         parent: animationController!,
         curve: Interval(0.0, 1.0, curve: Curves.fastOutSlowIn));
-    tabBody = FeedbackFormView(animationController: animationController);
     animationController?.forward();
     super.initState();
   }
@@ -84,7 +83,8 @@ class _FeedbackPageState extends State<FeedbackPage>
                     current: current,
                   ),
                   Container(
-                    child: tabBody,
+                    child: FeedbackFormView(
+                        animationController: animationController),
                   )
                 ],
               ),

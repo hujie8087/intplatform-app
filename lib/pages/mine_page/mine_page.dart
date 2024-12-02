@@ -4,8 +4,8 @@ import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
 import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
-import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
@@ -17,10 +17,9 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/picker.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
-import 'package:restart_app/restart_app.dart';
 
 class MinePage extends StatefulWidget {
   const MinePage(
@@ -38,11 +37,9 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
 
   Animation<double>? opacityAnimation;
   Animation<double>? offsetAnimation;
-  String userName = '';
-  String deptName = '';
-  String avatar = '';
   String version = '';
   String localeName = '中文';
+  UserInfoModel? userInfo;
 
   List<Widget> listViews = <Widget>[];
 
@@ -60,11 +57,11 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
 
   Future<void> _fetchData() async {
     // 模拟异步数据获取
-    userName = await SpUtils.getString(Constants.SP_USER_NAME) ?? '';
-    deptName = await SpUtils.getString(Constants.SP_USER_DEPT) ?? '';
-    var userInfo = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('userInfo');
+    if (userInfoData != null) {
+      userInfo = UserInfoModel.fromJson(userInfoData);
+    }
     version = await DeviceUtils.version();
-    avatar = userInfo != null ? userInfo['user']['avatar'] : '';
     var languageCode = await SpUtils.getString('locale');
     if (languageCode == 'en') {
       localeName = 'English';
@@ -93,7 +90,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
       }
       widget.updateTabIconsList();
       Navigator.pop(context);
-      Restart.restartApp();
+      // Restart.restartApp();
     });
   }
 
@@ -133,7 +130,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-        height: 40,
+        height: 40.px,
         child: child,
       ),
     );
@@ -157,6 +154,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    ScreenAdapterHelper.init(context);
     return ChangeNotifierProvider(
         create: (context) => model,
         child: Container(
@@ -165,16 +163,17 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
             backgroundColor: Colors.transparent,
             body: SafeArea(
                 child: Padding(
-              padding: EdgeInsets.only(left: 20, top: 10, right: 20),
+              padding: EdgeInsets.only(left: 20.px, top: 10.px, right: 20.px),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     _personCard(),
                     SizedBox(
-                      height: 10,
+                      height: 10.px,
                     ),
                     Padding(
-                        padding: EdgeInsets.only(left: 10, right: 10, top: 20),
+                        padding: EdgeInsets.only(
+                            left: 10.px, right: 10.px, top: 20.px),
                         child: Column(
                           children: [
                             _commonItem(
@@ -195,9 +194,15 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                                 Icons.notifications, () {
                               RouteUtils.push(context, NoticeListPage());
                             }, '', 0.4),
-                            _commonItem('收货地址', Icons.location_on, () {
+                            _commonItem(
+                                S.of(context).myAddress, Icons.location_on, () {
                               RouteUtils.push(context, MyAddressPage());
                             }, '', 0.5),
+                            // 留言反馈
+                            // _commonItem(
+                            //     S.of(context).myFeedback, Icons.feedback, () {
+                            //   RouteUtils.push(context, FeedbackPage());
+                            // }, '', 0.6),
                             // 语言设置
                             _commonItem(
                                 S.of(context).changeLanguage, Icons.language,
@@ -227,13 +232,14 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                                               RouteUtils.push(
                                                   context, LoginPage())
                                             })
-                                        .catchError((e) {
-                                      showToast(S.of(context).logoutFailed);
-                                    });
+                                        .catchError((e) => {
+                                              ProgressHUD.showError(
+                                                  S.of(context).logoutFailed)
+                                            });
                                   },
                                 )),
                             SizedBox(
-                              height: 50,
+                              height: 50.px,
                             )
                           ],
                         )),
@@ -253,7 +259,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
           return FadeTransition(
               opacity: opacityAnimation!,
               child: Transform.translate(
-                offset: Offset(0.0, 50 * (1.0 - opacityAnimation!.value)),
+                offset: Offset(0.0, 40.px * (1.0 - opacityAnimation!.value)),
                 child: Container(
                   child: Column(
                     children: [
@@ -263,16 +269,15 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                           Text(
                             S.of(context).mine,
                             style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
+                                fontSize: 18.px, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                       SizedBox(
-                        height: 5,
+                        height: 5.px,
                       ),
                       Container(
-                        height: 100,
-                        padding: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(10.px),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
@@ -282,7 +287,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                             begin: Alignment.topRight,
                             end: Alignment.bottomLeft,
                           ),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(10.px),
                           boxShadow: <BoxShadow>[
                             BoxShadow(
                                 color: primaryColor.withOpacity(0.6),
@@ -295,6 +300,8 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                               alignment: Alignment.centerRight),
                         ),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -302,26 +309,39 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                                 Row(
                                   children: [
                                     AvatarWidget(
-                                      width: 60,
+                                      width: 60.px,
                                     ),
                                     SizedBox(
-                                      width: 10,
+                                      width: 10.px,
                                     ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          userName,
+                                          userInfo?.user?.nickName ?? '',
                                           style: TextStyle(
-                                              fontSize: 18,
+                                              fontSize: 14.px,
                                               fontWeight: FontWeight.bold,
                                               color: Colors.white),
                                         ),
+                                        SizedBox(
+                                          height: 5.px,
+                                        ),
                                         Text(
-                                          deptName,
+                                          userInfo?.user?.userName ?? '',
                                           style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 14.px,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
+                                        ),
+                                        SizedBox(
+                                          height: 5.px,
+                                        ),
+                                        Text(
+                                          userInfo?.user?.dept?.deptName ?? '',
+                                          style: TextStyle(
+                                              fontSize: 12.px,
                                               color: Colors.white),
                                         ),
                                         // 职位
@@ -332,8 +352,28 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                               ],
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 10.px,
                             ),
+                            Row(
+                              children: [
+                                Text(
+                                  S.of(context).cardBalance,
+                                  style: TextStyle(
+                                      fontSize: 14.px, color: Colors.white),
+                                ),
+                                SizedBox(
+                                  width: 5.px,
+                                ),
+                                Text(
+                                  userInfo?.user?.money ?? '',
+                                  style: TextStyle(
+                                      fontSize: 24.px,
+                                      letterSpacing: -1,
+                                      fontWeight: FontWeight.bold,
+                                      color: secondaryColor),
+                                ),
+                              ],
+                            )
                           ],
                         ),
                       ),
@@ -352,13 +392,15 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
           return FadeTransition(
               opacity: opacityAnimation!,
               child: Transform(
-                  transform: Matrix4.translationValues(0.0,
-                      100 * createOffsetAnimation(animationValue).value, 0.0),
+                  transform: Matrix4.translationValues(
+                      0.0,
+                      100.px * createOffsetAnimation(animationValue).value,
+                      0.0),
                   child: GestureDetector(
                     onTap: onTap,
                     child: Container(
-                      margin: EdgeInsets.only(bottom: 10),
-                      padding: EdgeInsets.only(bottom: 10),
+                      margin: EdgeInsets.only(bottom: 10.px),
+                      padding: EdgeInsets.only(bottom: 10.px),
                       decoration: BoxDecoration(
                           border: Border(
                               bottom: BorderSide(
@@ -369,16 +411,16 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                           Icon(
                             icon,
                             color: primaryColor,
-                            size: 24,
+                            size: 22.px,
                           ),
                           SizedBox(
-                            width: 10,
+                            width: 10.px,
                           ),
                           Expanded(
                             child: Text(
                               title,
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 14.px,
                               ),
                             ),
                           ),
@@ -387,12 +429,12 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                             style: TextStyle(color: Colors.grey),
                           ),
                           SizedBox(
-                            width: 10,
+                            width: 10.px,
                           ),
                           Icon(
                             Icons.arrow_forward_ios,
                             color: Colors.grey,
-                            size: 16,
+                            size: 16.px,
                           )
                         ],
                       ),
@@ -409,43 +451,25 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
           return FadeTransition(
               opacity: opacityAnimation!,
               child: Transform.translate(
-                offset: Offset(0.0, 50 * (1.0 - opacityAnimation!.value)),
+                offset: Offset(0.0, 40.px * (1.0 - opacityAnimation!.value)),
                 child: Container(
                   child: GestureDetector(
                       onTap: onTap,
                       child: Container(
                           width: double.infinity,
-                          height: 40,
+                          height: 30.px,
                           alignment: Alignment.center,
-                          margin: EdgeInsets.only(left: 40, right: 40, top: 50),
+                          margin: EdgeInsets.only(
+                              left: 30.px, right: 30.px, top: 40.px),
                           decoration: BoxDecoration(
                               color: Colors.teal,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
+                                  BorderRadius.all(Radius.circular(15.px))),
                           child: Text(S.of(context).logout,
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 16)))),
+                                  color: Colors.white, fontSize: 14.px)))),
                 ),
               ));
         });
   }
-
-// {createBy: ,
-// createTime: 2024-07-26 16:46:55,
-// updateBy: admin,
-// updateTime: 2024-08-10 10:17:51,
-// remark: null,
-// id: 23,
-// versionName: 1.0.0,
-// apkUrl: /APK/2024/08/10/app-release_20240810101745A001.apk,
-// versionCode: 1, updateType: 1,
-// system: 2,
-// hasUpdate: null,
-// isIgnorable: null,
-// apkSize: 39293855,
-// apkMd5: null,
-// delFlag: 0,
-// updateLog: 初版,
-// enableFlag: null
-// }
 }

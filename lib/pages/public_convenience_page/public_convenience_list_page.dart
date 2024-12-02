@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/base_list_model.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
@@ -6,6 +7,7 @@ import 'package:logistics_app/http/model/other_view_model.dart';
 import 'package:logistics_app/pages/public_convenience_page/other_content_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/picker.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class PublicConvenienceListPage extends StatefulWidget {
   @override
@@ -47,16 +49,16 @@ class _PublicConvenienceListPage extends State<PublicConvenienceListPage> {
         title: Text(
           '公共便利',
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 16.px,
           ),
           textAlign: TextAlign.left,
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(36.0),
+          preferredSize: Size.fromHeight(36.px),
           child: Row(
             children: [
               SizedBox(
-                width: 10,
+                width: 10.px,
               ),
               Expanded(
                 child: InkWell(
@@ -75,7 +77,7 @@ class _PublicConvenienceListPage extends State<PublicConvenienceListPage> {
                                       },
                                       child: Container(
                                         alignment: Alignment.center,
-                                        height: 50,
+                                        height: 50.px,
                                         child: Text(type.dictLabel ?? ''),
                                       ),
                                     ),
@@ -91,7 +93,7 @@ class _PublicConvenienceListPage extends State<PublicConvenienceListPage> {
                     });
                   },
                   child: Container(
-                    height: 40,
+                    height: 40.px,
                     decoration: BoxDecoration(
                         color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(20)),
@@ -105,11 +107,11 @@ class _PublicConvenienceListPage extends State<PublicConvenienceListPage> {
                         ),
                         Icon(
                           Icons.arrow_downward,
-                          size: 18,
+                          size: 16.px,
                           color: primaryColor,
                         ),
                         SizedBox(
-                          width: 10,
+                          width: 10.px,
                         )
                       ],
                     ),
@@ -117,30 +119,30 @@ class _PublicConvenienceListPage extends State<PublicConvenienceListPage> {
                 ),
               ),
               SizedBox(
-                width: 10,
+                width: 10.px,
               ),
               Expanded(
                 child: InkWell(
                   child: Container(
-                    height: 40,
+                    height: 40.px,
                     decoration: BoxDecoration(
                         color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(20)),
+                        borderRadius: BorderRadius.circular(20.px)),
                     child: Row(
                       children: [
                         Expanded(
                           child: Text(
-                            '请选择区域',
+                            S.of(context).repairArea,
                             textAlign: TextAlign.center,
                           ),
                         ),
                         Icon(
                           Icons.arrow_downward,
-                          size: 18,
+                          size: 16.px,
                           color: primaryColor,
                         ),
                         SizedBox(
-                          width: 10,
+                          width: 10.px,
                         )
                       ],
                     ),
@@ -148,14 +150,14 @@ class _PublicConvenienceListPage extends State<PublicConvenienceListPage> {
                 ),
               ),
               SizedBox(
-                width: 10,
+                width: 10.px,
               ),
             ],
           ),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.all(10.px),
         child: Stack(
           children: [
             Container(

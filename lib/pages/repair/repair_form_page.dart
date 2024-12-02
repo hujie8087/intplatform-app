@@ -3,20 +3,22 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/GalleryWidget.dart';
-import 'package:logistics_app/common_ui/cascade_tree_picker.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/repair_form_model.dart';
 import 'package:logistics_app/http/model/upload_image_model.dart';
+import 'package:logistics_app/pages/mine_page/my_address_page/add_address_page.dart';
 import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:logistics_app/utils/picker.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
+import 'package:logistics_app/pages/repair/components/my_address_view.dart';
 
 Future<List<String>> uploadImages(List<AssetEntity> selectedAssets) async {
   List<String> fileUrl = [];
@@ -77,13 +79,11 @@ class _RepairFormPage extends State<RepairFormPage>
   Animation<double>? opacityAnimation;
   AnimationController? animationController;
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _telController = TextEditingController();
-  final TextEditingController _repairPersonController = TextEditingController();
   final TextEditingController _repairMessageController =
       TextEditingController();
   List<String> _uploadedImageUrls = [];
   var model = RepairDataModel();
-  String roomValue = S.current.pleaseSelect;
+  String roomValue = S.current.pleaseSelect('');
   List<dynamic> values = [];
   String repairKey = '';
 
@@ -122,288 +122,346 @@ class _RepairFormPage extends State<RepairFormPage>
             parent: animationController!,
             curve: Interval(0.0, 1.0, curve: Curves.fastOutSlowIn)));
     animationController!.forward();
+    // 获取用户地址列表数据
+    model.getMyAddressList(1, 10000);
     // 获取楼栋信息
     model.getBuildingTreeModel();
   }
 
+// 第一个页面
+  void _navigateToSecondPage() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddAddressPage()),
+    );
+    // 处理返回值
+    if (result == true) {
+      model.getMyAddressList(1, 10000).then((value) {
+        // _refreshController.refreshCompleted();
+        setState(() {});
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) {
-        return model;
-      },
-      child: AnimatedBuilder(
-          animation: animationController!,
-          builder: (BuildContext context, Widget? child) {
-            return FadeTransition(
-                opacity: opacityAnimation!,
-                child: Transform(
-                    transform: Matrix4.translationValues(
-                        0.0, 50 * (1.0 - opacityAnimation!.value), 0.0),
-                    child: Scaffold(
-                      backgroundColor: AppTheme.background,
-                      appBar: AppBar(
-                        title: Text(
-                          S.of(context).repairOnline,
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        centerTitle: true,
-                      ),
-                      body: SafeArea(
-                        top: true,
-                        child: SingleChildScrollView(
-                          padding:
-                              EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                          child: Form(
-                              key: _formKey,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 2.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          S.of(context).repairAddress,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.black,
-                                              height: 3),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        Container(
-                                            height: 40,
-                                            width: double.infinity,
-                                            padding: EdgeInsets.only(
-                                                left: 10, right: 10),
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10))),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                if (model.list.isNotEmpty) {
-                                                  CascadeTreePicker.show(
-                                                      context,
-                                                      data: model.list,
-                                                      values: values,
-                                                      labelKey: 'title',
-                                                      valuesKey: 'id',
-                                                      title: S
-                                                          .of(context)
-                                                          .repairAddress,
-                                                      clickCallBack:
-                                                          (selectItem,
-                                                              selectArr) {
-                                                    setState(() {
-                                                      values = selectArr;
-                                                      List<Map<String, dynamic>>
-                                                          mappedSelectArr =
-                                                          List<
-                                                                  Map<String,
-                                                                      dynamic>>.from(
-                                                              selectArr);
-                                                      roomValue =
-                                                          mappedSelectArr
-                                                              .map((item) =>
-                                                                  item['title'])
-                                                              .join('/');
-                                                    });
-                                                    Navigator.pop(context);
-                                                  });
-                                                }
-                                              },
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      roomValue,
-                                                      style: TextStyle(
-                                                        color: values.isEmpty
-                                                            ? Colors.grey
-                                                            : Colors.black,
-                                                        fontSize: 14,
-                                                      ),
-                                                      maxLines: 1,
-                                                      textAlign: TextAlign.left,
-                                                    ),
-                                                  ),
-                                                  Icon(
-                                                    Icons.keyboard_arrow_right,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ],
-                                              ),
-                                            ))
-                                      ],
-                                    ),
-                                  ),
-                                  _buildFormColumn(S.of(context).repairPerson,
-                                      _repairPersonController,
-                                      validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return S.of(context).repairPersonNotEmpty;
-                                    }
-                                    return null;
-                                  }),
-                                  _buildFormColumn(S.of(context).contactPhone,
-                                      _telController,
-                                      keyboardType: TextInputType.phone,
-                                      validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return S.of(context).contactPhoneNotEmpty;
-                                    }
-                                    return null;
-                                  }),
-                                  _buildFormColumn(S.of(context).repairContent,
-                                      _repairMessageController, maxLines: 8,
-                                      validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return S
-                                          .of(context)
-                                          .repairContentNotEmpty;
-                                    }
-                                    return null;
-                                  }),
-                                  SizedBox(height: 16.0),
-                                  Row(
+    return ChangeNotifierProvider.value(
+      value: model,
+      child: Consumer<RepairDataModel>(
+        builder: (context, repairDataModel, child) {
+          return AnimatedBuilder(
+              animation: animationController!,
+              builder: (BuildContext context, Widget? child) {
+                return FadeTransition(
+                    opacity: opacityAnimation!,
+                    child: Transform(
+                        transform: Matrix4.translationValues(
+                            0.0, 50.px * (1.0 - opacityAnimation!.value), 0.0),
+                        child: Scaffold(
+                          backgroundColor: AppTheme.background,
+                          appBar: AppBar(
+                            title: Text(
+                              S.of(context).repairOnline,
+                              style: TextStyle(fontSize: 16.px),
+                            ),
+                            centerTitle: true,
+                          ),
+                          body: SafeArea(
+                            top: true,
+                            child: SingleChildScrollView(
+                              padding: EdgeInsets.only(
+                                  left: 16.px, right: 16.px, bottom: 16.px),
+                              child: Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(S.of(context).uploadImages),
-                                      Text(
-                                        '(' +
-                                            S.of(context).dragRemoveImage +
-                                            ')',
-                                        style: TextStyle(
-                                            color: Colors.grey, fontSize: 12),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  _buildPhotoList(),
-                                  Container(
-                                    child: _isLoading
-                                        ? Center(
-                                            child: CircularProgressIndicator(
-                                            valueColor: AlwaysStoppedAnimation(
-                                                primaryColor),
-                                          ))
-                                        : RaisedButton(
-                                            onPressed: () async {
-                                              if (values.isEmpty) {
-                                                showToast(S
-                                                    .of(context)
-                                                    .repairAddressNotEmpty);
-                                                return;
-                                              }
-                                              setState(() {
-                                                _isLoading = true;
-                                              });
-                                              // 校验表单
-                                              if (_formKey.currentState!
-                                                  .validate()) {
-                                                // 上传图片
-                                                if (selectedAssets.isNotEmpty) {
-                                                  ProgressHUD.showLoadingText(S
-                                                      .of(context)
-                                                      .imageUploading);
-                                                  final res =
-                                                      await uploadImages(
-                                                          selectedAssets);
-                                                  setState(() {
-                                                    _uploadedImageUrls = res;
-                                                  });
-                                                }
-                                                // 提交表单
-                                                _formKey.currentState!.save();
-                                                model.repairFormModel =
-                                                    RepairFormModel(
-                                                  repairPerson:
-                                                      _repairPersonController
-                                                          .text,
-                                                  tel: _telController.text,
-                                                  repairArea: values[0]
-                                                      ['title'],
-                                                  repairAreaId: values[0]['id'],
-                                                  repairMessage:
-                                                      _repairMessageController
-                                                          .text,
-                                                  repairPhoto:
-                                                      _uploadedImageUrls
-                                                          .join(','),
-                                                  repairRoomId:
-                                                      values[values.length - 1]
-                                                          ['id'],
-                                                  roomNo:
-                                                      values[values.length - 1]
-                                                          ['title'],
-                                                  repairKey: repairKey,
-                                                );
-                                                model
-                                                    .addRepairModel()
-                                                    .then((res) {
-                                                  ProgressHUD.hide();
-                                                  if (res.success) {
-                                                    showDialog(
-                                                        barrierDismissible:
-                                                            false,
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            content: Text(S
-                                                                .of(context)
-                                                                .repairSubmitSuccess),
-                                                            actions: [
-                                                              TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                  child: Text(
-                                                                    S
-                                                                        .of(context)
-                                                                        .confirm,
+                                      SizedBox(
+                                        height: 8.px,
+                                      ),
+                                      InkWell(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8.px)),
+                                        onTap: () => {
+                                          Picker.showModalSheet(
+                                            context,
+                                            child: ChangeNotifierProvider.value(
+                                              value: model,
+                                              child: MyAddressView(
+                                                addressList: model.addressList,
+                                                defaultAddress:
+                                                    model.defaultAddress,
+                                                onAddressSelected: (address) {
+                                                  Navigator.pop(
+                                                      context, address);
+                                                },
+                                                onAddAddress:
+                                                    _navigateToSecondPage,
+                                              ),
+                                            ),
+                                          ).then((value) {
+                                            if (value != null) {
+                                              model.defaultAddress = value;
+                                              setState(() {});
+                                            }
+                                          })
+                                        },
+                                        child: Ink(
+                                            padding: EdgeInsets.all(8.px),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(
+                                                      8.px)), // 确保边框效果
+                                            ),
+                                            child: model.defaultAddress != null
+                                                ? Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              model.defaultAddress
+                                                                      ?.detailedAddress ??
+                                                                  '',
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      12.px,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 5.px,
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Text(
+                                                                    model.defaultAddress
+                                                                            ?.name ??
+                                                                        '',
                                                                     style: TextStyle(
-                                                                        fontSize:
-                                                                            16,
-                                                                        color:
-                                                                            primaryColor),
-                                                                  )),
-                                                            ],
-                                                          );
-                                                        });
-                                                  } else {
-                                                    showToast(res
-                                                            .errorMessage ??
+                                                                        fontSize: 10
+                                                                            .px,
+                                                                        color: Colors
+                                                                            .grey)),
+                                                                SizedBox(
+                                                                  width: 8.px,
+                                                                ),
+                                                                Text(
+                                                                    model.defaultAddress
+                                                                            ?.tel ??
+                                                                        '',
+                                                                    style: TextStyle(
+                                                                        fontSize: 10
+                                                                            .px,
+                                                                        color: Colors
+                                                                            .grey))
+                                                              ],
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Icon(
+                                                        Icons.edit,
+                                                        color: primaryColor,
+                                                        size: 18.px,
+                                                      )
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
                                                         S
                                                             .of(context)
-                                                            .repairSubmitFailed);
+                                                            .pleaseSelect(S
+                                                                .of(context)
+                                                                .address),
+                                                        style: TextStyle(
+                                                            fontSize: 10.px,
+                                                            color:
+                                                                primaryColor),
+                                                      ),
+                                                      Icon(
+                                                        Icons
+                                                            .keyboard_arrow_right,
+                                                        color: primaryColor,
+                                                      )
+                                                    ],
+                                                  )),
+                                      ),
+                                      _buildFormColumn(
+                                          S.of(context).repairContent,
+                                          _repairMessageController,
+                                          maxLines: 8, validator: (val) {
+                                        if (val == null || val.isEmpty) {
+                                          return S
+                                              .of(context)
+                                              .repairContentNotEmpty;
+                                        }
+                                        return null;
+                                      }),
+                                      SizedBox(height: 16.px),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            S.of(context).uploadImages,
+                                            style: TextStyle(fontSize: 12.px),
+                                          ),
+                                          Text(
+                                            '(' +
+                                                S.of(context).dragRemoveImage +
+                                                ')',
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 10.px),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.px),
+                                      _buildPhotoList(),
+                                      Container(
+                                        child: _isLoading
+                                            ? Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation(
+                                                        primaryColor),
+                                              ))
+                                            : RaisedButton(
+                                                onPressed: () async {
+                                                  if (model.defaultAddress ==
+                                                      null) {
+                                                    ProgressHUD.showError(S
+                                                        .of(context)
+                                                        .repairAddressNotEmpty);
+                                                    return;
                                                   }
                                                   setState(() {
-                                                    _isLoading = false;
+                                                    _isLoading = true;
                                                   });
-                                                });
-                                              }
-                                            },
-                                            child: Text(S.of(context).submit),
-                                            color: primaryColor[700] ??
-                                                primaryColor,
-                                            textColor: Colors.white,
-                                          ),
-                                  ),
-                                ],
-                              )),
-                        ),
-                      ),
-                      bottomSheet: isDragNow ? _buildRemoveBar() : null,
-                    )));
-          }),
+                                                  // 校验表单
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    // 上传图片
+                                                    if (selectedAssets
+                                                        .isNotEmpty) {
+                                                      ProgressHUD
+                                                          .showLoadingText(S
+                                                              .of(context)
+                                                              .imageUploading);
+                                                      final res =
+                                                          await uploadImages(
+                                                              selectedAssets);
+                                                      setState(() {
+                                                        _uploadedImageUrls =
+                                                            res;
+                                                      });
+                                                    }
+                                                    // 提交表单
+                                                    _formKey.currentState!
+                                                        .save();
+                                                    model.repairFormModel =
+                                                        RepairFormModel(
+                                                      repairPerson: model
+                                                          .defaultAddress?.name,
+                                                      tel: model
+                                                          .defaultAddress?.tel,
+                                                      repairArea: model
+                                                          .defaultAddress?.area,
+                                                      repairAreaId: model
+                                                          .defaultAddress
+                                                          ?.areaId,
+                                                      repairMessage:
+                                                          _repairMessageController
+                                                              .text,
+                                                      repairPhoto:
+                                                          _uploadedImageUrls
+                                                              .join(','),
+                                                      repairRoomId: model
+                                                          .defaultAddress
+                                                          ?.region,
+                                                      roomNo: model
+                                                          .defaultAddress
+                                                          ?.roomNo,
+                                                      repairKey: repairKey,
+                                                    );
+                                                    model
+                                                        .addRepairModel()
+                                                        .then((res) {
+                                                      ProgressHUD.hide();
+                                                      if (res.success) {
+                                                        showDialog(
+                                                            barrierDismissible:
+                                                                false,
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                content: Text(S
+                                                                    .of(context)
+                                                                    .repairSubmitSuccess),
+                                                                actions: [
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        S
+                                                                            .of(context)
+                                                                            .confirm,
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                14.px,
+                                                                            color: primaryColor),
+                                                                      )),
+                                                                ],
+                                                              );
+                                                            });
+                                                      } else {
+                                                        ProgressHUD.showError(res
+                                                                .errorMessage ??
+                                                            S
+                                                                .of(context)
+                                                                .repairSubmitFailed);
+                                                      }
+                                                      setState(() {
+                                                        _isLoading = false;
+                                                      });
+                                                    });
+                                                  }
+                                                },
+                                                child:
+                                                    Text(S.of(context).submit),
+                                                color: primaryColor[700] ??
+                                                    primaryColor,
+                                                textColor: Colors.white,
+                                              ),
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ),
+                          bottomSheet: isDragNow ? _buildRemoveBar() : null,
+                        )));
+              });
+        },
+      ),
     );
   }
 
@@ -412,7 +470,7 @@ class _RepairFormPage extends State<RepairFormPage>
     return DragTarget<AssetEntity>(
       builder: (context, candidateData, rejectedData) {
         return Container(
-          height: 60,
+          height: 54.px,
           width: double.infinity,
           alignment: Alignment.center,
           decoration: BoxDecoration(
@@ -459,10 +517,10 @@ class _RepairFormPage extends State<RepairFormPage>
   Widget _buildPhotoList() {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constants) {
-      final double width = (constants.maxWidth - 10 * 2) / 3;
+      final double width = (constants.maxWidth - 8.px * 2) / 3;
       return Wrap(
-        spacing: 10,
-        runSpacing: 10,
+        spacing: 8.px,
+        runSpacing: 8.px,
         children: [
           for (final asset in selectedAssets)
             Draggable(
@@ -548,7 +606,7 @@ class _RepairFormPage extends State<RepairFormPage>
                   color: Colors.white,
                   child: Icon(
                     Icons.add,
-                    size: 24,
+                    size: 22.px,
                   ),
                 ),
               ),
@@ -569,25 +627,29 @@ class _RepairFormPage extends State<RepairFormPage>
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 14, color: Colors.black, height: 3),
+            style:
+                TextStyle(fontSize: 12.px, color: Colors.black, height: 3.px),
             textAlign: TextAlign.left,
           ),
           TextFormField(
             controller: controller,
             keyboardType: keyboardType,
             maxLines: maxLines,
+            style: TextStyle(fontSize: 10.px),
             decoration: InputDecoration(
               hintText: S.of(context).inputMessage(label),
-              hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
+              hintStyle: TextStyle(color: Colors.grey),
               filled: true,
               fillColor: Colors.white,
               isCollapsed: true,
+              // 设置输入时的文字大小
+              isDense: true,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8.px),
                 borderSide: BorderSide.none,
               ),
               contentPadding:
-                  EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
             ),
             validator: validator,
           ),
@@ -603,24 +665,24 @@ class _RepairFormPage extends State<RepairFormPage>
       required Color textColor}) {
     return Container(
       width: double.infinity,
-      height: 40,
+      height: 32.px,
       alignment: Alignment.center,
-      margin: EdgeInsets.only(left: 70, right: 70, top: 20),
+      margin: EdgeInsets.only(left: 64.px, right: 64.px, top: 18.px),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+        borderRadius: BorderRadius.all(Radius.circular(16.px)),
       ),
       child: TextButton(
         onPressed: onPressed,
         child: child,
         style: ButtonStyle(
+          textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
+            fontSize: 12.px,
+            color: textColor,
+          )),
           foregroundColor: MaterialStateProperty.all<Color>(textColor),
         ),
       ),
     );
   }
-}
-
-void showText(str) {
-  ProgressHUD.showText(str.toString());
 }

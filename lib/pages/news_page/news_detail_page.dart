@@ -1,30 +1,36 @@
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class NewsDetailPage extends StatefulWidget {
-  const NewsDetailPage({Key? key}) : super(key: key);
+  const NewsDetailPage({Key? key, required this.noticeId}) : super(key: key);
+
+  final String noticeId;
 
   @override
   _NewsDetailPageState createState() => _NewsDetailPageState();
 }
 
 class _NewsDetailPageState extends State<NewsDetailPage> {
-  String? title;
-  String? content;
+  NoticeModel? noticeModel;
 
   @override
   void initState() {
     super.initState();
-    // 获取路由参数
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      var map = ModalRoute.of(context)?.settings.arguments;
-      print(map);
-      if (map is Map) {
-        title = map['noticeTitle'];
-        content = map['noticeContent'];
-        setState(() {});
-      }
+    getNoticeDetail();
+  }
+
+  Future<void> getNoticeDetail() async {
+    DataUtils.getDetailById('/system/notice/' + widget.noticeId,
+        success: (data) {
+      noticeModel = NoticeModel.fromJson(data['data']);
+      setState(() {});
+    }, fail: (error, message) {
+      ProgressHUD.showError(message);
     });
   }
 
@@ -33,40 +39,40 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          title ?? '',
-          style: TextStyle(fontSize: 18),
+          noticeModel?.noticeTitle ?? '',
+          style: TextStyle(fontSize: 16.px),
           textAlign: TextAlign.left,
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: EdgeInsets.all(15.px),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title ?? '',
-              style: TextStyle(fontSize: 20),
+              noticeModel?.noticeTitle ?? '',
+              style: TextStyle(fontSize: 16.px),
             ),
             SizedBox(
-              height: 10,
+              height: 10.px,
             ),
             Row(
               children: [
                 Text(
-                  'ACC 后勤部',
-                  style: TextStyle(color: primaryColor, fontSize: 14),
+                  noticeModel?.createDept ?? '',
+                  style: TextStyle(color: primaryColor, fontSize: 12.px),
                 ),
                 SizedBox(
-                  width: 10,
+                  width: 10.px,
                 ),
                 Text(
-                  '2021-09-01 10:00:00',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                  noticeModel?.createTime ?? '',
+                  style: TextStyle(color: Colors.grey, fontSize: 12.px),
                 ),
               ],
             ),
             SizedBox(
-              height: 10,
+              height: 10.px,
             ),
             Image.asset(
               'assets/images/bg_video.gif',
@@ -74,9 +80,13 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
               fit: BoxFit.cover,
             ),
             SizedBox(
-              height: 10,
+              height: 10.px,
             ),
-            Container(child: Html(data: content ?? ''))
+            Container(
+                child: Html(
+              data: noticeModel?.noticeContent ?? '',
+              style: {'font-size': Style(fontSize: FontSize(10.px))},
+            ))
           ],
         ),
       ),

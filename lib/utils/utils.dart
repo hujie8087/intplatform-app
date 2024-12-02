@@ -335,4 +335,35 @@ class Utils {
       });
     };
   }
+
+  static bool evaluateExpression(String expression) {
+    // 正则表达式来分离数值和运算符
+    final regex = RegExp(r'(\d+)([<>=]+)(\d+)');
+    final match = regex.firstMatch(expression);
+
+    if (match != null) {
+      double left = double.parse(match.group(1)!); // 左侧数值
+      String operator = match.group(2)!; // 运算符
+      double right = double.parse(match.group(3)!); // 右侧数值
+
+      // 根据运算符进行判断
+      switch (operator) {
+        case '<':
+          return left < right;
+        case '>':
+          return left > right;
+        case '<=':
+          return left <= right;
+        case '>=':
+          return left >= right;
+        case '==':
+          return left == right;
+        case '!=':
+          return left != right;
+        default:
+          throw ArgumentError('Unsupported operator');
+      }
+    }
+    throw ArgumentError('Invalid expression format');
+  }
 }

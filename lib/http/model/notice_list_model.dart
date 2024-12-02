@@ -16,6 +16,7 @@ class NoticeModel {
   NoticeModel(
       {this.createBy,
       this.createTime,
+      this.createDept,
       this.updateBy,
       this.updateTime,
       this.remark,
@@ -24,7 +25,6 @@ class NoticeModel {
       this.noticeType,
       this.noticeContent,
       this.noticeGrade,
-      this.createDept,
       this.status});
 
   NoticeModel.fromJson(dynamic json) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
-import 'package:logistics_app/common_ui/dialog/parent_dialog.dart';
 import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
@@ -14,6 +13,7 @@ import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/picker.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -84,7 +84,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
         appBar: AppBar(
           title: Text(
             S.of(context).userInfo,
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: 16.px),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -98,12 +98,13 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                 // 自适应键盘弹起不遮挡
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+                    margin:
+                        EdgeInsets.only(top: 10.px, left: 10.px, right: 10.px),
                     padding: EdgeInsets.only(
-                        left: 20, right: 20, top: 10, bottom: 20),
+                        left: 20.px, right: 20.px, top: 10.px, bottom: 20.px),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(10.px),
                     ),
                     child: _PersonInfoForm(),
                   ),
@@ -139,10 +140,10 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
           child: Column(
             children: [
               Container(
-                width: 80,
-                height: 80,
+                width: 72.px,
+                height: 72.px,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
+                  borderRadius: BorderRadius.circular(40.px),
                   image: DecorationImage(
                     image: avatar.startsWith('assets')
                         ? AssetImage(avatar) as ImageProvider
@@ -154,7 +155,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
               ),
               Text(
                 S.of(context).changeAvatar,
-                style: TextStyle(color: secondaryColor, fontSize: 12),
+                style: TextStyle(color: secondaryColor, fontSize: 10.px),
               )
             ],
           ),
@@ -188,7 +189,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
             S.of(context).gender,
             userInfo?.user?.sex == '0'
                 ? S.of(context).man
-                : userInfo?.user?.sex == '0'
+                : userInfo?.user?.sex == '1'
                     ? S.of(context).woman
                     : S.of(context).secret,
             Icons.wc, () {
@@ -206,7 +207,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                             },
                             child: Container(
                               alignment: Alignment.center,
-                              height: 50,
+                              height: 44.px,
                               child: Text(sex.dictLabel ?? ''),
                             ),
                           ),
@@ -281,7 +282,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.only(top: 10, bottom: 10),
+        padding: EdgeInsets.only(top: 10.px, bottom: 10.px),
         decoration: BoxDecoration(
             border: Border(
                 bottom:
@@ -296,20 +297,20 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                 Icon(
                   icon,
                   color: primaryColor,
-                  size: 18,
+                  size: 16.px,
                 ),
                 SizedBox(
-                  width: 10,
+                  width: 10.px,
                 ),
                 Text(
                   title,
-                  style: TextStyle(fontSize: 14),
+                  style: TextStyle(fontSize: 12.px),
                 )
               ],
             )),
             Text(
               value,
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              style: TextStyle(fontSize: 12.px, color: Colors.grey),
             ),
             if (isEdit) Icon(Icons.chevron_right, color: Colors.grey)
           ],

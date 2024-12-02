@@ -4,6 +4,7 @@ import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class NoticeDetailPage extends StatefulWidget {
   const NoticeDetailPage({Key? key, required this.noticeId}) : super(key: key);
@@ -13,8 +14,6 @@ class NoticeDetailPage extends StatefulWidget {
 }
 
 class _NoticeDetailPageState extends State<NoticeDetailPage> {
-  String? title;
-  String? content;
   NoticeModel? noticeDetail;
 
   Future<void> _fetchData() async {
@@ -41,7 +40,7 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
         appBar: AppBar(
           title: Text(
             noticeDetail?.noticeTitle ?? '',
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: 16.px),
             textAlign: TextAlign.left,
           ),
         ),
@@ -50,34 +49,35 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10.px),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       noticeDetail?.noticeTitle ?? '',
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 16.px),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 10.px,
                     ),
                     Row(
                       children: [
                         Text(
                           noticeDetail?.createDept ?? '',
-                          style: TextStyle(color: primaryColor, fontSize: 14),
+                          style:
+                              TextStyle(color: primaryColor, fontSize: 12.px),
                         ),
                         SizedBox(
-                          width: 10,
+                          width: 10.px,
                         ),
                         Text(
                           noticeDetail?.createTime ?? '',
-                          style: TextStyle(color: Colors.grey, fontSize: 14),
+                          style: TextStyle(color: Colors.grey, fontSize: 12.px),
                         ),
                       ],
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 10.px,
                     ),
                   ],
                 ),
@@ -85,6 +85,10 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
               Container(
                   child: Html(
                 data: noticeDetail?.noticeContent ?? '',
+                // 设置字体大小
+                style: {
+                  'font-size': Style(fontSize: FontSize(10.px)),
+                },
                 extensions: [
                   const VideoHtmlExtension(),
                 ],

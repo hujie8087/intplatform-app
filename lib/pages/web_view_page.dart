@@ -1,30 +1,32 @@
+import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class WebViewPage extends StatefulWidget {
-  const WebViewPage({Key? key}) : super(key: key);
-
+  const WebViewPage({Key? key, required this.id}) : super(key: key);
+  final int id;
   @override
   _WebViewPageState createState() => _WebViewPageState();
 }
 
 class _WebViewPageState extends State<WebViewPage> {
-  String? title;
-  String? content;
+  NoticeModel? noticeData;
 
   @override
   void initState() {
     super.initState();
-    // 获取路由参数
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      var map = ModalRoute.of(context)?.settings.arguments;
-      print(map);
-      if (map is Map) {
-        title = map['noticeTitle'];
-        content = map['noticeContent'];
-        setState(() {});
-      }
+    getNoticeData();
+  }
+
+  // 异步获取数据
+  Future getNoticeData() async {
+    DataUtils.getDetailById('/system/notice/' + widget.id.toString(),
+        success: (data) {
+      noticeData = NoticeModel.fromJson(data);
+      setState(() {});
     });
   }
 
@@ -33,40 +35,40 @@ class _WebViewPageState extends State<WebViewPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          title ?? '',
-          style: TextStyle(fontSize: 18),
+          noticeData?.noticeTitle ?? '',
+          style: TextStyle(fontSize: 16.px),
           textAlign: TextAlign.left,
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: EdgeInsets.all(12.px),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title ?? '',
-              style: TextStyle(fontSize: 20),
+              noticeData?.noticeTitle ?? '',
+              style: TextStyle(fontSize: 16.px),
             ),
             SizedBox(
-              height: 10,
+              height: 8.px,
             ),
             Row(
               children: [
                 Text(
-                  'ACC 后勤部',
-                  style: TextStyle(color: primaryColor, fontSize: 14),
+                  noticeData?.createDept ?? '',
+                  style: TextStyle(color: primaryColor, fontSize: 12.px),
                 ),
                 SizedBox(
                   width: 10,
                 ),
                 Text(
-                  '2021-09-01 10:00:00',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                  noticeData?.createTime ?? '',
+                  style: TextStyle(color: Colors.grey, fontSize: 12.px),
                 ),
               ],
             ),
             SizedBox(
-              height: 10,
+              height: 8.px,
             ),
             Image.asset(
               'assets/images/bg_video.gif',
@@ -74,9 +76,9 @@ class _WebViewPageState extends State<WebViewPage> {
               fit: BoxFit.cover,
             ),
             SizedBox(
-              height: 10,
+              height: 8.px,
             ),
-            Container(child: Html(data: content ?? ''))
+            Container(child: Html(data: noticeData?.noticeContent ?? ''))
           ],
         ),
       ),

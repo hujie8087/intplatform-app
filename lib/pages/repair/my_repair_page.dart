@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/KeepAliveWrapper.dart';
 import 'package:logistics_app/generated/l10n.dart';
-import 'package:logistics_app/pages/repair/content_page.dart';
+import 'package:logistics_app/pages/repair/components/content_page.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class TabBarModel {
   final String? title; // 标题
@@ -45,7 +46,7 @@ class _MyRepairPage extends State<MyRepairPage> with TickerProviderStateMixin {
       appBar: AppBar(
         title: Text(
           S.of(context).myRepair,
-          style: TextStyle(fontSize: 18),
+          style: TextStyle(fontSize: 16.px),
         ),
         bottom: PreferredSize(
             preferredSize: Size.fromHeight(kToolbarHeight),
@@ -54,6 +55,7 @@ class _MyRepairPage extends State<MyRepairPage> with TickerProviderStateMixin {
               child: TabBar(
                   padding: EdgeInsets.zero,
                   controller: _tabController,
+                  labelStyle: TextStyle(fontSize: 12.px),
                   tabs: tabs.map((e) => Tab(text: e.title)).toList(),
                   labelColor: primaryColor,
                   indicatorColor: primaryColor,

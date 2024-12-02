@@ -3,17 +3,20 @@ import 'package:logistics_app/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/main.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 import '../../pages/models/tabIcon_data.dart';
 
 class NavigationBarItem extends StatefulWidget {
-  const NavigationBarItem(
-      {Key? key, this.tabIconsList, this.changeIndex, this.addClick})
-      : super(key: key);
+  final List<TabIconData> tabIconsList;
+  final Function(int index) changeIndex;
 
-  final Function(int index)? changeIndex;
-  final Function()? addClick;
-  final List<TabIconData>? tabIconsList;
+  const NavigationBarItem({
+    Key? key,
+    required this.tabIconsList,
+    required this.changeIndex,
+  }) : super(key: key);
+
   @override
   NavigationBarItemState createState() => NavigationBarItemState();
 }
@@ -29,13 +32,13 @@ class NavigationBarItemState extends State<NavigationBarItem>
   void initState() {
     animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 500),
     );
     animationController?.forward();
     super.initState();
     physicalShapeAnimationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 600), // 动画持续时间
+      duration: Duration(milliseconds: 300), // 动画持续时间
     );
     physicalShapeAnimationController.forward();
   }
@@ -63,7 +66,7 @@ class NavigationBarItemState extends State<NavigationBarItem>
                               parent: animationController!,
                               curve: Curves.fastOutSlowIn))
                           .value *
-                      38.0;
+                      30.px;
                   double horizontalOffset = prev == 1.0
                       ? Tween<double>(begin: 0.0, end: 1.0)
                               .animate(CurvedAnimation(
@@ -71,7 +74,7 @@ class NavigationBarItemState extends State<NavigationBarItem>
                                   curve: Curves.fastOutSlowIn))
                               .value *
                           screenWidth /
-                          widget.tabIconsList!.length *
+                          widget.tabIconsList.length *
                           (current - 1)
                       : Tween<double>(begin: -1.0, end: 1.0)
                               .animate(CurvedAnimation(
@@ -79,28 +82,27 @@ class NavigationBarItemState extends State<NavigationBarItem>
                                   curve: Curves.fastOutSlowIn))
                               .value *
                           screenWidth /
-                          widget.tabIconsList!.length *
+                          widget.tabIconsList.length *
                           (current - 1);
                   return Transform(
                     transform: Matrix4.translationValues(0.0, 0.0, 0.0),
                     child: PhysicalShape(
                       color: AppTheme.white,
-                      elevation: 16.0,
+                      elevation: 14.0.px,
                       clipper: TabClipper(
                           radius: radius, horizontalOffset: horizontalOffset),
                       child: Column(
                         children: <Widget>[
                           SizedBox(
-                            height: 50,
+                            height: 40.px,
                             child: Container(
                               child: Row(
-                                children: widget.tabIconsList!.map((item) {
+                                children: widget.tabIconsList.map((item) {
                                   return Expanded(
                                       child: TabIcons(
                                           tabIconData: item,
                                           removeAllSelect: () {
-                                            setRemoveAllSelection(item);
-                                            widget.changeIndex!(item.index);
+                                            widget.changeIndex(item.index);
                                           }));
                                 }).toList(),
                               ),
@@ -184,7 +186,7 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                   duration: Duration(milliseconds: 600), // 动画持续时间
                   curve: Curves.easeInOut, // 动画曲线
                   transform: Matrix4.translationValues(
-                      0.0, widget.tabIconData!.isSelected ? -20.0 : 0, 0.0),
+                      0.0, widget.tabIconData!.isSelected ? -20.px : 0, 0.0),
                   decoration: BoxDecoration(
                     color: widget.tabIconData!.isSelected
                         ? primaryColor
@@ -203,8 +205,8 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                         ? <BoxShadow>[
                             BoxShadow(
                                 color: primaryColor.withOpacity(0.4),
-                                offset: const Offset(8.0, 16.0),
-                                blurRadius: 16.0),
+                                offset: Offset(8.0.px, 16.0.px),
+                                blurRadius: 16.0.px),
                           ]
                         : null,
                   ),
@@ -238,13 +240,13 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                             color: widget.tabIconData!.isSelected
                                 ? primaryColor
                                 : Colors.grey,
-                            fontSize: 14),
+                            fontSize: 12.px),
                       ),
                     ),
                   ),
                 Positioned(
-                  top: 4,
-                  left: 6,
+                  top: 4.px,
+                  left: 6.px,
                   right: 0,
                   child: ScaleTransition(
                     alignment: Alignment.topCenter,
@@ -254,8 +256,8 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                             curve: Interval(0.2, 1.0,
                                 curve: Curves.fastOutSlowIn))),
                     child: Container(
-                      width: 8,
-                      height: 8,
+                      width: 8.px,
+                      height: 8.px,
                       decoration: BoxDecoration(
                         color: primaryColor,
                         shape: BoxShape.circle,
@@ -264,9 +266,9 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                   ),
                 ),
                 Positioned(
-                  top: 0,
-                  left: 6,
-                  bottom: 8,
+                  top: 0.px,
+                  left: 6.px,
+                  bottom: 8.px,
                   child: ScaleTransition(
                     alignment: Alignment.topCenter,
                     scale: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -275,8 +277,8 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                             curve: Interval(0.5, 0.8,
                                 curve: Curves.fastOutSlowIn))),
                     child: Container(
-                      width: 4,
-                      height: 4,
+                      width: 4.px,
+                      height: 4.px,
                       decoration: BoxDecoration(
                         color: primaryColor,
                         shape: BoxShape.circle,
@@ -285,9 +287,9 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                   ),
                 ),
                 Positioned(
-                  top: 6,
-                  right: 8,
-                  bottom: 0,
+                  top: 6.px,
+                  right: 8.px,
+                  bottom: 0.px,
                   child: ScaleTransition(
                     alignment: Alignment.topCenter,
                     scale: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -296,8 +298,8 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                             curve: Interval(0.5, 0.6,
                                 curve: Curves.fastOutSlowIn))),
                     child: Container(
-                      width: 6,
-                      height: 6,
+                      width: 6.px,
+                      height: 6.px,
                       decoration: BoxDecoration(
                         color: primaryColor,
                         shape: BoxShape.circle,
@@ -314,6 +316,7 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
   }
 }
 
+//
 class TabClipper extends CustomClipper<Path> {
   TabClipper({this.radius = 38.0, this.horizontalOffset = 0.0});
 

@@ -3,6 +3,7 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/Login_form.dart';
 import 'package:logistics_app/route/route_utils.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -53,30 +54,30 @@ class _LoginScreenState extends State<LoginPage> {
                         // 自适应键盘弹起不遮挡
                         children: [
                           Container(
-                            padding: EdgeInsets.only(left: 30, right: 30),
+                            padding: EdgeInsets.only(left: 26.px, right: 26.px),
                             width: SizedBox.expand().width,
                             child: Text(
                               S.of(context).hello,
                               style: TextStyle(
-                                  fontSize: 32,
+                                  fontSize: 28.px,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left,
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.only(left: 30, right: 30),
+                            padding: EdgeInsets.only(left: 26.px, right: 26.px),
                             width: SizedBox.expand().width,
                             child: Text(
                               S.of(context).welcome,
-                              style:
-                                  TextStyle(fontSize: 18, color: Colors.grey),
+                              style: TextStyle(
+                                  fontSize: 16.px, color: Colors.grey),
                               textAlign: TextAlign.left,
                             ),
-                            margin: EdgeInsets.only(bottom: 50),
+                            margin: EdgeInsets.only(bottom: 40.px),
                           ),
                           Container(
-                            padding: EdgeInsets.only(left: 20, right: 20),
+                            padding: EdgeInsets.only(left: 18.px, right: 18.px),
                             child: LoginForm(),
                           )
                         ],

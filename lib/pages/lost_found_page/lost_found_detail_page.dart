@@ -30,7 +30,6 @@ class _LostFoundDetailPageState extends State<LostFoundDetailPage> {
     // 获取路由参数
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       var map = ModalRoute.of(context)?.settings.arguments;
-      print(map);
       if (map is Map) {
         title = map['noticeTitle'];
         content = map['noticeContent'];
@@ -41,7 +40,7 @@ class _LostFoundDetailPageState extends State<LostFoundDetailPage> {
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickMultiImage();
-    if (pickedFile != null && _images.length < 5) {
+    if (_images.length < 5) {
       setState(() {
         _images.addAll(pickedFile.map((e) => File(e.path)));
       });

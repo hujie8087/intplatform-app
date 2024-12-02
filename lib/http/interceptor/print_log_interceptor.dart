@@ -8,7 +8,7 @@ class PrintLogInterceptor extends InterceptorsWrapper {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     log("\nrequest-------------->");
-    options.headers?.forEach((key, value) {
+    options.headers.forEach((key, value) {
       log("请求头信息：key=$key  value=${value.toString()}");
     });
     log("path:${options.uri}");

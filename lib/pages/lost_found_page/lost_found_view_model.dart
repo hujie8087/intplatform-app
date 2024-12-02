@@ -7,11 +7,21 @@ import '../../http/model/notice_list_model.dart';
 
 class LostFoundViewModel with ChangeNotifier {
   List<NoticeModel?>? list = [];
+  int pageNum = 1;
+  int pageSize = 2;
+  // 数据加载完成
+  bool isLoadComplete = false;
 
-  Future getLostFoundModelList(pageNum, pageSize) async {
+  Future getLostFoundModelList(bool isRefresh) async {
+    if (isRefresh) {
+      list = null;
+      pageNum = 1;
+    } else {
+      pageNum++;
+    }
     var params = {
-      'page': pageNum,
-      'limit': pageSize,
+      'pageNum': pageNum,
+      'pageSize': pageSize,
     };
     Loading.showLoading();
     DataUtils.getPageList('/system/notice/list', params, success: (data) {
@@ -21,7 +31,14 @@ class LostFoundViewModel with ChangeNotifier {
         var noticeList = data['rows'] as List;
         List<NoticeModel> rows =
             noticeList.map((i) => NoticeModel.fromJson(i)).toList();
-        list = rows;
+        if (list == null) {
+          list = rows;
+        } else {
+          list?.addAll(rows);
+        }
+        if (rowsModel.total == list?.length) {
+          isLoadComplete = true;
+        }
       }
       notifyListeners();
       Loading.dismissAll();

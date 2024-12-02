@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/dialog/parent_dialog.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 ///通用弹窗工具类
 class DialogFactory {
@@ -65,6 +66,10 @@ class DialogFactory {
           title: "检测到新版本，请前往APPStore更新",
           dialogContentType: DialogContentType.Normal,
           dialogButtonType: DialogButtonType.DoubleButton,
+          titleStyle: TextStyle(fontSize: 12.px),
+          contentStyle: TextStyle(fontSize: 10.px),
+          leftTextStyle: TextStyle(fontSize: 12.px),
+          rightTextStyle: TextStyle(fontSize: 12.px),
           rightOnTap: () {
             confirmClick?.call();
           },
@@ -85,6 +90,10 @@ class DialogFactory {
         child: TipsCommonDialog(
           title: title,
           content: content,
+          titleStyle: TextStyle(fontSize: 12.px),
+          contentStyle: TextStyle(fontSize: 10.px),
+          leftTextStyle: TextStyle(fontSize: 12.px),
+          rightTextStyle: TextStyle(fontSize: 12.px),
           dialogContentType: dialogContentType,
           dialogButtonType: DialogButtonType.DoubleButton,
           leftOnTap: () {
@@ -110,6 +119,10 @@ class DialogFactory {
         context: context,
         child: TipsCommonDialog(
           title: title,
+          titleStyle: TextStyle(fontSize: 12.px),
+          contentStyle: TextStyle(fontSize: 10.px),
+          leftTextStyle: TextStyle(fontSize: 12.px),
+          rightTextStyle: TextStyle(fontSize: 12.px),
           customContentWidget: customContentWidget,
           dialogContentType: DialogContentType.Normal,
           dialogButtonType: DialogButtonType.DoubleButton,

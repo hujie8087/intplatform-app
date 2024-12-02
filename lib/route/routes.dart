@@ -5,21 +5,17 @@ import 'package:logistics_app/pages/film_page/film_view_page.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_detail_page.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
-import 'package:logistics_app/pages/forget_password_page.dart';
+import 'package:logistics_app/pages/auth/forget_password_page.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
-import 'package:logistics_app/pages/mine_page/mine_page.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
-import 'package:logistics_app/pages/news_page/news_detail_page.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
-import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/public_convenience_page/public_convenience_list_page.dart';
 import 'package:logistics_app/pages/repair/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/pages/repair/repair_rating_page.dart';
 import 'package:logistics_app/pages/route_query_page/route_query_page.dart';
-import 'package:logistics_app/pages/web_view_page.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
@@ -28,14 +24,12 @@ class Routes {
       RoutePath.login: (context) => LoginPage(),
       RoutePath.home: (context) => AppHomeScreen(),
       RoutePath.ForgetPasswordPage: (context) => ForgetPasswordPage(),
-      RoutePath.WebViewPage: (context) => WebViewPage(),
       RoutePath.ChangePasswordPage: (context) => ChangePasswordPage(),
       RoutePath.PersonInfoPage: (context) => PersonInfoPage(),
       RoutePath.ContactUsPage: (context) => ContactUsPage(),
       RoutePath.RouteQueryPage: (context) => RouteQueryPage(),
       RoutePath.NoticeListPage: (context) => NoticeListPage(),
       RoutePath.NewsListPage: (context) => NewsListPage(),
-      RoutePath.NewsDetailPage: (context) => NewsDetailPage(),
       RoutePath.LostFoundListPage: (context) => LostFoundListPage(),
       RoutePath.LostFoundDetailPage: (context) => LostFoundDetailPage(),
       RoutePath.FilmScreenPage: (context) => FilmScreenPage(),

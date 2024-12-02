@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 const Color _bgColor = Color.fromARGB(150, 0, 0, 0);
 const double _radius = 10.0;
-const int _closeTime = 2000;
+const int _closeTime = 3000;
 // 表示是否该分组内是否在同一时间里只存在一个Toast,区分是哪一个组是按照[groupKey]来区分的,默认false
 const bool _onlyOne = true;
 // 是否在点击屏幕触发事件时自动关闭该Toast,默认false
@@ -79,10 +80,10 @@ Widget _showCustomToast(String loadingText, _ToastType toastType) {
     topWidget = Container();
   } else if (toastType == _ToastType.loading) {
     topWidget = Container(
-      width: 40.0,
-      height: 40.0,
-      margin: const EdgeInsets.only(bottom: 8.0),
-      padding: const EdgeInsets.all(4.0),
+      width: 36.0.px,
+      height: 36.0.px,
+      margin: EdgeInsets.only(bottom: 8.px),
+      padding: EdgeInsets.all(4.px),
       child: const CircularProgressIndicator(
         strokeWidth: 3.0,
         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -100,17 +101,17 @@ Widget _showCustomToast(String loadingText, _ToastType toastType) {
       icon = Icons.info_outline;
     }
     topWidget = Container(
-      width: 40.0,
-      height: 40.0,
-      margin: const EdgeInsets.only(bottom: 8.0),
-      padding: const EdgeInsets.all(4.0),
-      child: Icon(icon, size: 30, color: Colors.white),
+      width: 40.px,
+      height: 40.px,
+      margin: EdgeInsets.only(bottom: 8.px),
+      padding: EdgeInsets.all(4.px),
+      child: Icon(icon, size: 24.px, color: Colors.white),
     );
   }
 
   var w = Container(
-    margin: const EdgeInsets.all(50.0),
-    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+    margin: EdgeInsets.all(40.px),
+    padding: EdgeInsets.symmetric(horizontal: 20.px, vertical: 14.px),
     decoration: BoxDecoration(
         color: _bgColor, borderRadius: BorderRadius.circular(_radius)),
     child: ClipRect(
@@ -122,7 +123,7 @@ Widget _showCustomToast(String loadingText, _ToastType toastType) {
             child: topWidget,
           ),
           Text(loadingText,
-              style: const TextStyle(fontSize: 16, color: Colors.white),
+              style: TextStyle(fontSize: 14.px, color: Colors.white),
               textAlign: TextAlign.center),
         ],
       ),

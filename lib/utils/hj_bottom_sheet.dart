@@ -1,7 +1,9 @@
 // 微信底部弹出框
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/divider_widget.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/utils/picker.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class HJBottomSheet {
@@ -15,7 +17,7 @@ class HJBottomSheet {
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildButton(
-              Text('拍摄'),
+              Text(S.of(context).takePhoto),
               onTap: () {
                 final result = Picker.assetsCamera(context: context);
                 result.then((value) {
@@ -28,7 +30,7 @@ class HJBottomSheet {
             ),
             DividerWidget(),
             _buildButton(
-              Text('相册'),
+              Text(S.of(context).photoAlbum),
               onTap: () {
                 final result = Picker.assets(context: context);
                 result.then((value) {
@@ -37,10 +39,10 @@ class HJBottomSheet {
               },
             ),
             DividerWidget(
-              height: 6,
+              height: 5.px,
             ),
             _buildButton(
-              Text('取消'),
+              Text(S.of(context).cancel),
               onTap: () {
                 Navigator.pop(context);
               },
@@ -54,7 +56,7 @@ class HJBottomSheet {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-        height: 40,
+        height: 36.px,
         child: child,
       ),
     );

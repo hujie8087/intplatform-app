@@ -1,3 +1,4 @@
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
@@ -54,7 +55,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
                 decoration: InputDecoration(
-                  hintText: '请输入您的姓名',
+                  hintText: S.of(context).inputMessage(S.of(context).name),
                   prefixIcon: Icon(
                     Icons.person_2_outlined,
                     color: primaryColor,

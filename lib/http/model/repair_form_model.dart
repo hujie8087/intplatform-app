@@ -1,7 +1,7 @@
 class RepairFormModel {
   int? repairAreaId;
   String? repairArea;
-  int? repairRoomId;
+  String? repairRoomId;
   String? repairMessage;
   String? roomNo;
   String? tel;

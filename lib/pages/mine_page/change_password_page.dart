@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key? key, this.animationController})
@@ -51,20 +52,20 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   // 自适应键盘弹起不遮挡
                   children: [
                     Container(
-                      padding: EdgeInsets.only(left: 30, right: 30),
-                      margin: EdgeInsets.only(bottom: 40),
+                      padding: EdgeInsets.only(left: 24.px, right: 24.px),
+                      margin: EdgeInsets.only(bottom: 28.px),
                       width: SizedBox.expand().width,
                       child: Text(
                         S.of(context).changePassword,
                         style: TextStyle(
-                            fontSize: 36,
+                            fontSize: 20.px,
                             color: Colors.black,
                             fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.only(left: 20, right: 20),
+                      padding: EdgeInsets.only(left: 16.px, right: 16.px),
                       child: _ChangePasswordForm(),
                     )
                   ],
@@ -72,8 +73,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               ),
               // 返回按钮
               Positioned(
-                top: 40,
-                left: 20,
+                top: 36.px,
+                left: 20.px,
                 child: IconButton(
                   icon: Icon(Icons.arrow_back_ios, color: Colors.black),
                   onPressed: () {
@@ -102,10 +103,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             },
             obscureText: !oldInputState,
             decoration: InputDecoration(
+                labelStyle:
+                    TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold),
                 hintText: S.of(context).inputMessage(S.of(context).oldPassword),
                 hintStyle: TextStyle(
                     color: Colors.grey,
-                    fontSize: 16,
+                    fontSize: 12.px,
                     fontWeight: FontWeight.bold),
                 border: InputBorder.none,
                 prefixIcon: Icon(Icons.lock_outlined, color: primaryColor),
@@ -120,16 +123,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 )),
           ),
           SizedBox(
-            height: 30,
+            height: 20.px,
           ),
           TextFormField(
             controller: _newPasswordController,
             obscureText: !newPasswordInputState,
             decoration: InputDecoration(
+                labelStyle:
+                    TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold),
                 hintText: S.of(context).inputMessage(S.of(context).newPassword),
                 hintStyle: TextStyle(
                     color: Colors.grey,
-                    fontSize: 16,
+                    fontSize: 12.px,
                     fontWeight: FontWeight.bold),
                 border: InputBorder.none,
                 prefixIcon: Icon(Icons.lock_outlined, color: primaryColor),
@@ -151,16 +156,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             },
           ),
           SizedBox(
-            height: 30,
+            height: 16.px,
           ),
           TextFormField(
             controller: _confirmPasswordController,
             obscureText: !confirmInputState,
             decoration: InputDecoration(
+                labelStyle:
+                    TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold),
                 hintText: S.of(context).enterNewPasswordAgin,
                 hintStyle: TextStyle(
                     color: Colors.grey,
-                    fontSize: 16,
+                    fontSize: 12.px,
                     fontWeight: FontWeight.bold),
                 border: InputBorder.none,
                 prefixIcon: Icon(Icons.lock_outlined, color: primaryColor),
@@ -187,30 +194,30 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             },
           ),
           SizedBox(
-            height: 20,
+            height: 16.px,
           ),
           // 提示信息
           Padding(
-            padding: EdgeInsets.only(left: 15, right: 15),
+            padding: EdgeInsets.only(left: 15.px, right: 15.px),
             child: Row(
               children: [
                 Icon(
                   Icons.info,
                   color: primaryColor,
-                  size: 14,
+                  size: 12.px,
                 ),
                 Text(
                   S.of(context).passwordLength,
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                  style: TextStyle(color: Colors.grey, fontSize: 10.px),
                 ),
               ],
             ),
           ),
           SizedBox(
-            height: 30,
+            height: 26.px,
           ),
           Padding(
-              padding: EdgeInsets.only(left: 15, right: 15),
+              padding: EdgeInsets.only(left: 15.px, right: 15.px),
               child: ElevatedButton(
                 onPressed: () {
                   if ((_formKey.currentState as FormState).validate()) {
@@ -230,15 +237,16 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   }
                 },
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(primaryColor),
+                    backgroundColor:
+                        MaterialStateProperty.all(primaryColor[500]),
                     minimumSize:
-                        MaterialStateProperty.all(Size(double.infinity, 50)),
+                        MaterialStateProperty.all(Size(double.infinity, 32.px)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25)))),
+                        borderRadius: BorderRadius.circular(16.px)))),
                 child: Text(
                   S.of(context).submit,
                   style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14.px,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
                 ),

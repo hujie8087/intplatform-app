@@ -9,10 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 const double _lineHeight = 0.8; // 底部线高
-const double _textFontSize = 15.0;
-const double _hintTextFontSize = 15.0;
+const double _textFontSize = 12.0;
+const double _hintTextFontSize = 12.0;
 
 /// 录入回调
 typedef _InputCallBack = void Function(String value);
@@ -180,7 +181,7 @@ class _JhLoginTextFieldState extends State<JhLoginTextField> {
 
     // 默认颜色
     var textColor = AppTheme.darkerText;
-    var textStyle = TextStyle(fontSize: _textFontSize, color: textColor);
+    var textStyle = TextStyle(fontSize: _textFontSize.px, color: textColor);
     var hintColor = AppTheme.darkerText;
     var hintTextStyle =
         TextStyle(fontSize: _hintTextFontSize, color: hintColor);
@@ -189,7 +190,7 @@ class _JhLoginTextFieldState extends State<JhLoginTextField> {
     // final provider = Provider.of<ThemeProvider>(context);
     var themeColor = primaryColor;
     var labelTextStyle =
-        TextStyle(fontSize: _hintTextFontSize, color: themeColor);
+        TextStyle(fontSize: _hintTextFontSize.px, color: themeColor);
 
     return Stack(
       alignment: Alignment.centerRight,

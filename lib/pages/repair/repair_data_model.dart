@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/loading.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
-import 'package:logistics_app/http/model/base_model.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/my_address_view_model.dart';
 import 'package:logistics_app/http/model/repair_form_model.dart';
 import 'package:logistics_app/http/model/repair_view_model.dart';
+import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
+import 'package:logistics_app/utils/address_service.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 
 class RepairResult {
@@ -22,18 +25,44 @@ class RepairResult {
 class RepairDataModel with ChangeNotifier {
   List list = [];
   RepairFormModel? repairFormModel;
+  List<AddressModel> addressList = [];
+  AddressModel? defaultAddress;
   RepairViewModel? repairViewData;
+  bool isShowButton = false;
+
+// 获取我的地址列表
+  Future getMyAddressList(pageNum, pageSize) async {
+    var params = {
+      'pageNum': pageNum,
+      'pageSize': pageSize,
+    };
+    DataUtils.getPageList(APIs.getMyAddressList, params, success: (data) {
+      RowsModel rowsModel =
+          RowsModel.fromJson(data, (json) => MyAddressViewModel.fromJson(json));
+      if (rowsModel.rows != null) {
+        var myAddressList = data['rows'] as List;
+        List<AddressModel> rows =
+            myAddressList.map((i) => AddressModel.fromJson(i)).toList();
+        addressList = rows;
+        // 修改默认地址的获取逻辑，避免空值异常
+        if (addressList.isNotEmpty) {
+          defaultAddress = addressList.firstWhere(
+            (element) => element.isDefault == '0',
+            orElse: () => addressList.first, // 如果没有默认地址，使用第一个地址
+          );
+        } else {
+          defaultAddress = null; // 如果地址列表为空，设置为 null
+        }
+        notifyListeners();
+      }
+    });
+  }
 
   Future getBuildingTreeModel() async {
     var userInfo = await SpUtils.getModel('userInfo');
     if (userInfo != null) {
-      DataUtils.getBuildingTree(success: (data) {
-        BaseModel rowsModel = BaseModel.fromJson(data);
-        if (rowsModel.data != null) {
-          list = rowsModel.data;
-        }
-        notifyListeners();
-      });
+      list = await AddressService().getAddressData();
+      notifyListeners();
     } else {
       ProgressHUD.showText(S.current.needLogin);
       RouteUtils.navigateToLogin();
@@ -66,6 +95,7 @@ class RepairDataModel with ChangeNotifier {
             'repairRoomId': repairViewData?.repairRoomId,
           });
         }
+        isShowButton = repairViewData?.repairState == 1;
         notifyListeners();
         Loading.dismissAll();
       },

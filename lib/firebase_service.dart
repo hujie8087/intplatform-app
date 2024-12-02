@@ -51,10 +51,24 @@ class FirebaseService {
   }
 
   Future<void> initNotifications() async {
-    await _firebaseMessaging.requestPermission();
-    await _firebaseMessaging.subscribeToTopic("notification");
+    try {
+      await _firebaseMessaging.requestPermission();
+    } catch (e) {
+      print("请求通知权限失败: $e");
+    }
+    try {
+      await _firebaseMessaging.subscribeToTopic("notification");
+    } catch (e) {
+      print("订阅通知失败: $e");
+    }
     // 获取Firebase Cloud 消息传递令牌
-    final fCMToken = await _firebaseMessaging.getToken();
+    try {
+      final fCMToken = await _firebaseMessaging.getToken();
+      print("fCMToken: $fCMToken");
+      SpUtils.saveString(Constants.SP_DEVICE_TOKEN, fCMToken ?? '');
+    } catch (e) {
+      print("获取Firebase Cloud 消息传递令牌失败: $e");
+    }
     // 后台运行通知回调
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     // 前台运行通知监听
@@ -69,9 +83,6 @@ class FirebaseService {
     }).onError((err) {
       // Error getting token.
     });
-
-    print("message-Token:$fCMToken");
-    SpUtils.saveString(Constants.SP_DEVICE_TOKEN, fCMToken ?? '');
   }
 
   void onMessageOpenedApp(RemoteMessage message) {

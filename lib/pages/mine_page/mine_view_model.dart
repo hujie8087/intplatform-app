@@ -3,6 +3,7 @@ import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/app_check_update_model.dart';
+import 'package:logistics_app/http/model/user_consume_model.dart';
 import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
@@ -14,6 +15,7 @@ class MineViewModel with ChangeNotifier {
   bool? shouldLogin;
   bool needUpdate = false;
   UpdateInfoData? updateModel;
+  UserConsumeInfoData? userConsumeInfo;
 
   Future initData() async {
     String? name = await SpUtils.getString(Constants.SP_USER_NAME);
