@@ -6,7 +6,9 @@ import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/data/tool_utils.dart';
+import 'package:logistics_app/http/model/base_list_model.dart';
 import 'package:logistics_app/http/model/base_model.dart';
+import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/guide_type_view_model.dart';
 import 'package:logistics_app/http/model/guide_view_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
@@ -15,6 +17,7 @@ import 'package:logistics_app/pages/guide/guide_type_page.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/my_address_page.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
+import 'package:logistics_app/pages/public_convenience_page/public_list_page.dart';
 import 'package:logistics_app/pages/repair/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/pages/shopping/card_bill_page.dart';
@@ -50,6 +53,44 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
   List<GuideTypeViewModel> guideTypeList = [];
   List<GuideViewModel> guideList = [];
   List<MenuItemModel> commonMenu = [];
+  List<MenuItemModel> publicMenu = [];
+  List<Map<String, dynamic>> publicIconMap = [
+    {
+      'id': 1,
+      'title': '缝纫店',
+      'icon': Icons.local_laundry_service,
+    },
+    {
+      'id': 2,
+      'title': '超市',
+      'icon': Icons.shopping_bag,
+    },
+    {
+      'id': 3,
+      'title': '配钥匙',
+      'icon': Icons.key,
+    },
+    {
+      'id': 4,
+      'title': '理发店',
+      'icon': Icons.content_cut,
+    },
+    {
+      'id': 5,
+      'title': '消费卡',
+      'icon': Icons.credit_card,
+    },
+    {
+      'id': 6,
+      'title': '健身房',
+      'icon': Icons.fitness_center,
+    },
+    {
+      'id': 7,
+      'title': '体育馆',
+      'icon': Icons.sports_soccer,
+    },
+  ];
 
   Future<void> _fetchGuideListData(GuideTypeViewModel guideType) async {
     ToolUtils.getGuideList<GuideViewModel>(
@@ -96,6 +137,34 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
         ProgressHUD.showError(msg);
       },
     );
+
+    // 模拟异步数据获取
+    DataUtils.getDictDataList(
+      'public_common_type',
+      success: (data) {
+        BaseListModel<DictModel> response =
+            BaseListModel.fromJson(data, (json) => DictModel.fromJson(json));
+        setState(() {
+          publicMenu = response.data?.map((item) {
+                return MenuItemModel(
+                    title: item.dictLabel,
+                    isEven: int.parse(item.dictValue!) % 2 == 0,
+                    icon: publicIconMap.firstWhere(
+                            (e) => e['id'].toString() == item.dictValue)['icon']
+                        as IconData,
+                    showBadge: false,
+                    onTap: () => {
+                          RouteUtils.push(
+                              context,
+                              PublicListPage(
+                                  souceType: item.dictValue,
+                                  title: item.dictLabel))
+                        });
+              }).toList() ??
+              [];
+        });
+      },
+    );
   }
 
   // 更新区域数据
@@ -138,38 +207,6 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final List<MenuItemModel> transportMenu = [
-    //   MenuItemModel(
-    //       title: '路线查询',
-    //       icon: Icons.directions,
-    //       isEven: true,
-    //       showBadge: false,
-    //       onTap: null),
-    //   MenuItemModel(
-    //       title: '车辆信息',
-    //       icon: Icons.directions_car,
-    //       isEven: false,
-    //       showBadge: false,
-    //       onTap: null),
-    //   MenuItemModel(
-    //       title: '评价与建议',
-    //       icon: Icons.feedback,
-    //       isEven: true,
-    //       showBadge: false,
-    //       onTap: null),
-    //   MenuItemModel(
-    //       title: '车牌申请',
-    //       icon: Icons.card_membership,
-    //       isEven: false,
-    //       showBadge: false,
-    //       onTap: null),
-    //   MenuItemModel(
-    //       title: '挂失及注销',
-    //       icon: Icons.card_giftcard,
-    //       isEven: true,
-    //       showBadge: false,
-    //       onTap: null),
-    // ];
     final List<MenuItemModel> newsMenu = [
       MenuItemModel(
           title: S.of(context).notifications,
@@ -554,6 +591,49 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                                 crossAxisSpacing: 8.px,
                                 itemBuilder: (context, index) {
                                   return _FunctionAreaItem(commonMenu[index]);
+                                },
+                              ),
+                            ],
+                          )),
+                    // 公共设施
+                    if (publicMenu.isNotEmpty)
+                      Container(
+                          padding: EdgeInsets.all(8.px),
+                          margin: EdgeInsets.only(bottom: 8.px),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.px)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.local_convenience_store,
+                                    color: primaryColor,
+                                    size: 18.px,
+                                  ),
+                                  SizedBox(
+                                    width: 4.px,
+                                  ),
+                                  Text(
+                                    '公共便利',
+                                    style: TextStyle(
+                                        fontSize: 12.px,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 8.px,
+                              ),
+                              OptionGridView(
+                                itemCount: publicMenu.length,
+                                rowCount: 5,
+                                mainAxisSpacing: 8.px,
+                                crossAxisSpacing: 8.px,
+                                itemBuilder: (context, index) {
+                                  return _FunctionAreaItem(publicMenu[index]);
                                 },
                               ),
                             ],

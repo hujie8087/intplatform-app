@@ -76,7 +76,8 @@ class ParentDialog extends Dialog {
                   if (touchOutsideCloseKeyboard == true) {
                     FocusScope.of(context).unfocus();
                   }
-                  if (touchOutsideDismiss != null && touchOutsideDismiss == true) {
+                  if (touchOutsideDismiss != null &&
+                      touchOutsideDismiss == true) {
                     Navigator.pop(context);
                   }
                   if (outsideOnTap != null) {
@@ -92,7 +93,11 @@ class ParentDialog extends Dialog {
       return ListView(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          children: [_dialogBody(context), SizedBox(height: 20.h), _dismissBtnWidget(context)]);
+          children: [
+            _dialogBody(context),
+            SizedBox(height: 20.h),
+            _dismissBtnWidget(context)
+          ]);
     } else {
       return _dialogBody(context);
     }
@@ -102,11 +107,12 @@ class ParentDialog extends Dialog {
   Widget _dialogBody(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 10.r)),
+            borderRadius:
+                BorderRadius.all(Radius.circular(borderRadius ?? 10.r)),
             color: bodyBgColor ?? Theme.of(context).listTileTheme.tileColor),
         width: width ?? double.infinity,
         height: height,
-        margin: margin ?? EdgeInsets.symmetric(horizontal: 37.w),
+        margin: margin ?? EdgeInsets.zero,
         padding: padding ?? EdgeInsets.zero,
         child: IntrinsicHeight(child: childWidget));
   }
@@ -122,8 +128,10 @@ class ParentDialog extends Dialog {
                 dismissClick?.call();
               }
             },
-            child: Image.asset("assets/wt_res/images/icon_survey_dialog_dismiss.png",
-                width: 45.r, height: 45.r)));
+            child: Image.asset(
+                "assets/wt_res/images/icon_survey_dialog_dismiss.png",
+                width: 45.r,
+                height: 45.r)));
   }
 }
 
@@ -266,7 +274,8 @@ class TipsCommonDialog extends StatelessWidget {
     return Container(
         decoration: BoxDecoration(
             color: backgroundColor ?? Colors.white,
-            borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(10.r))),
+            borderRadius:
+                borderRadius ?? BorderRadius.all(Radius.circular(10.r))),
         child: Column(children: [
           getContentWidget(),
 
@@ -384,10 +393,12 @@ class TipsCommonDialog extends StatelessWidget {
         height: contentHeight,
         child: Column(children: [
           Text(title ?? '',
-              style: titleStyle ?? TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
+              style: titleStyle ??
+                  TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600)),
           SizedBox(height: 8.h),
           customContentWidget ??
-              Text(content ?? '', style: contentStyle ?? TextStyle(fontSize: 14.sp))
+              Text(content ?? '',
+                  style: contentStyle ?? TextStyle(fontSize: 14.sp))
         ]));
   }
 
@@ -417,7 +428,9 @@ class TipsCommonDialog extends StatelessWidget {
           Text(title ?? '',
               style: titleStyle ??
                   TextStyle(
-                      fontSize: 16.sp, fontWeight: FontWeight.w600, color: Color(0xFF333333))),
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF333333))),
           SizedBox(height: 8.h),
           RichText(
               text: TextSpan(
@@ -443,7 +456,8 @@ class TipsCommonDialog extends StatelessWidget {
         height: contentHeight,
         child: Center(
             child: customContentWidget ??
-                Text(content ?? '', style: contentStyle ?? TextStyle(fontSize: 14.sp))));
+                Text(content ?? '',
+                    style: contentStyle ?? TextStyle(fontSize: 14.sp))));
   }
 
   ///没有标题的富文本内容样式
@@ -492,19 +506,28 @@ class TipsCommonDialog extends StatelessWidget {
         width: double.infinity,
         height: height,
         child: Column(children: [
-          Container(width: double.infinity, height: 0.5.h, color: const Color(0xFFEEEEEE)),
+          Container(
+              width: double.infinity,
+              height: 0.5.h,
+              color: const Color(0xFFEEEEEE)),
           Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             GestureDetector(
                 onTap: leftOnTap,
                 child: Text(leftBtnText ?? '取消',
-                    style: leftTextStyle ?? TextStyle(fontSize: 16.sp, color: Color(0xFF666666)))),
-            Container(width: 0.5.w, height: verticalLineHeight, color: const Color(0xFFEEEEEE)),
+                    style: leftTextStyle ??
+                        TextStyle(fontSize: 16.sp, color: Color(0xFF666666)))),
+            Container(
+                width: 0.5.w,
+                height: verticalLineHeight,
+                color: const Color(0xFFEEEEEE)),
             GestureDetector(
                 onTap: rightOnTap,
                 child: Text(rightBtnText ?? '确定',
                     style: rightTextStyle ??
                         TextStyle(
-                            fontSize: 16.sp, fontWeight: FontWeight.w600, color: Colors.teal)))
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.teal)))
           ])
         ]));
   }
@@ -526,7 +549,10 @@ class TipsCommonDialog extends StatelessWidget {
         child: GestureDetector(
             onTap: singleButtonOnTap,
             child: Column(children: [
-              Container(width: double.infinity, height: 0.5.h, color: const Color(0xFFEEEEEE)),
+              Container(
+                  width: double.infinity,
+                  height: 0.5.h,
+                  color: const Color(0xFFEEEEEE)),
               Expanded(
                   child: Center(
                       child: Text(singleButtonText ?? '我知道了',
@@ -573,15 +599,19 @@ class TipsCommonDialog extends StatelessWidget {
   }) {
     return Column(children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        smallRadiusButton(isLeft: true, title: leftBtnText ?? '取消', onTap: leftOnTap),
-        smallRadiusButton(isLeft: false, title: rightBtnText ?? '同意', onTap: rightOnTap)
+        smallRadiusButton(
+            isLeft: true, title: leftBtnText ?? '取消', onTap: leftOnTap),
+        smallRadiusButton(
+            isLeft: false, title: rightBtnText ?? '同意', onTap: rightOnTap)
       ]),
       SizedBox(height: 20.h)
     ]);
   }
 
   Widget smallRadiusButton(
-      {required bool isLeft, required String title, GestureTapCallback? onTap}) {
+      {required bool isLeft,
+      required String title,
+      GestureTapCallback? onTap}) {
     return GestureDetector(
         onTap: onTap,
         child: Container(
@@ -594,7 +624,8 @@ class TipsCommonDialog extends StatelessWidget {
           child: Center(
               child: Text(title,
                   style: TextStyle(
-                      fontSize: 16.sp, color: isLeft ? const Color(0xFFF74350) : Colors.white))),
+                      fontSize: 16.sp,
+                      color: isLeft ? const Color(0xFFF74350) : Colors.white))),
         ));
   }
 
@@ -618,8 +649,10 @@ class TipsCommonDialog extends StatelessWidget {
             padding: padding,
             margin: margin,
             decoration: BoxDecoration(
-                color: color ?? const Color(0xFFF74350), borderRadius: BorderRadius.circular(22.r)),
+                color: color ?? const Color(0xFFF74350),
+                borderRadius: BorderRadius.circular(22.r)),
             child: child ??
-                Text(butStr ?? "", style: TextStyle(fontSize: 18.sp, color: Colors.white))));
+                Text(butStr ?? "",
+                    style: TextStyle(fontSize: 18.sp, color: Colors.white))));
   }
 }

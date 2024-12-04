@@ -20,6 +20,9 @@ class _CardInfoPageState extends State<CardInfoPage> {
   TextEditingController _passwordController = TextEditingController();
   UserInfoModel? userInfo;
   bool isLoading = false;
+  final List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
+  final List<TextEditingController> controllers =
+      List.generate(6, (index) => TextEditingController());
 
   @override
   void initState() {
@@ -182,7 +185,7 @@ class _CardInfoPageState extends State<CardInfoPage> {
                   SizedBox(height: 8.px),
                   // 挂失或解锁
                   Container(
-                    width: double.infinity / 2,
+                    width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
@@ -210,72 +213,7 @@ class _CardInfoPageState extends State<CardInfoPage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: List.generate(6, (index) {
-                                  return Container(
-                                    width: 40.px,
-                                    height: 40.px,
-                                    alignment: Alignment.center,
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 2.px),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.grey[300]!,
-                                        width: 1.px,
-                                      ),
-                                      borderRadius: BorderRadius.circular(8.px),
-                                    ),
-                                    child: TextField(
-                                      controller: TextEditingController(
-                                        text: _passwordController.text.length >
-                                                index
-                                            ? _passwordController.text[index]
-                                            : '',
-                                      ),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 18.px,
-                                          fontWeight: FontWeight.bold),
-                                      keyboardType: TextInputType.number,
-                                      // 加密
-                                      obscureText: true,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(1),
-                                      ],
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        counterText: '',
-                                      ),
-                                      onChanged: (value) {
-                                        String currentText =
-                                            _passwordController.text;
-                                        if (value.isEmpty &&
-                                            currentText.isNotEmpty) {
-                                          // 删除操作
-                                          _passwordController.text =
-                                              currentText.substring(
-                                                  0, currentText.length - 1);
-                                        } else if (value.isNotEmpty) {
-                                          // 添加操作
-                                          if (currentText.length < 6) {
-                                            _passwordController.text =
-                                                currentText + value;
-                                          }
-                                        }
-
-                                        // 自动跳转到下一个输入框
-                                        if (value.isNotEmpty && index < 5) {
-                                          FocusScope.of(context).nextFocus();
-                                        }
-                                        // 自动跳转到上一个输入框
-                                        else if (value.isEmpty && index > 0) {
-                                          FocusScope.of(context)
-                                              .previousFocus();
-                                        }
-
-                                        setState(() {});
-                                      },
-                                    ),
-                                  );
+                                  return _buildCardNumberInput(index);
                                 }),
                               ),
                             ),
@@ -350,6 +288,53 @@ class _CardInfoPageState extends State<CardInfoPage> {
   @override
   void dispose() {
     _passwordController.dispose();
+    for (var node in focusNodes) {
+      node.dispose();
+    }
+    for (var controller in controllers) {
+      controller.dispose();
+    }
     super.dispose();
+  }
+
+  Widget _buildCardNumberInput(int index) {
+    return Container(
+      width: 40.px,
+      height: 40.px,
+      margin: EdgeInsets.symmetric(horizontal: 3.px),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(8.px),
+      ),
+      child: TextField(
+        controller: controllers[index],
+        focusNode: focusNodes[index],
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.number,
+        maxLength: 1,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        // 加密
+        obscureText: true,
+        decoration: InputDecoration(
+          counterText: '',
+          border: InputBorder.none,
+        ),
+        onChanged: (value) {
+          if (value.isNotEmpty) {
+            if (index < 5) {
+              // 跳转到下一个输入框
+              focusNodes[index + 1].requestFocus();
+            } else {
+              // 最后一个输入框，收起键盘
+              FocusScope.of(context).unfocus();
+            }
+          } else if (value.isEmpty && index > 0) {
+            // 跳转到上一个输入框
+            focusNodes[index - 1].requestFocus();
+          }
+        },
+      ),
+    );
   }
 }

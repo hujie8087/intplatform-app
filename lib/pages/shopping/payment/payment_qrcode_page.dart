@@ -29,7 +29,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
   UserInfoModel? userInfo;
   String? version;
   TextEditingController _passwordController = TextEditingController();
-
+  final List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
   @override
   void initState() {
     super.initState();
@@ -113,7 +113,6 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                           color: Colors.grey[300]!,
                           width: 1,
                         ),
-                        borderRadius: BorderRadius.circular(8.px),
                       ),
                       child: TextField(
                         controller: TextEditingController(
@@ -121,6 +120,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                               ? _passwordController.text[index]
                               : '',
                         ),
+                        focusNode: focusNodes[index],
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 18.px, fontWeight: FontWeight.bold),
@@ -136,25 +136,17 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                           counterText: '',
                         ),
                         onChanged: (value) {
-                          String currentText = _passwordController.text;
-                          if (value.isEmpty && currentText.isNotEmpty) {
-                            // 删除操作
-                            _passwordController.text = currentText.substring(
-                                0, currentText.length - 1);
-                          } else if (value.isNotEmpty) {
-                            // 添加操作
-                            if (currentText.length < 6) {
-                              _passwordController.text = currentText + value;
+                          if (value.isNotEmpty) {
+                            if (index < 5) {
+                              // 跳转到下一个输入框
+                              focusNodes[index + 1].requestFocus();
+                            } else {
+                              // 最后一个输入框，收起键盘
+                              FocusScope.of(context).unfocus();
                             }
-                          }
-
-                          // 自动跳转到下一个输入框
-                          if (value.isNotEmpty && index < 5) {
-                            FocusScope.of(context).nextFocus();
-                          }
-                          // 自动跳转到上一个输入框
-                          else if (value.isEmpty && index > 0) {
-                            FocusScope.of(context).previousFocus();
+                          } else if (value.isEmpty && index > 0) {
+                            // 跳转到上一个输入框
+                            focusNodes[index - 1].requestFocus();
                           }
 
                           setState(() {});

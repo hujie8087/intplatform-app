@@ -11,7 +11,6 @@ import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
 import 'package:logistics_app/pages/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
-import 'package:logistics_app/pages/public_convenience_page/public_convenience_list_page.dart';
 import 'package:logistics_app/pages/repair/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_form_page.dart';
 import 'package:logistics_app/pages/repair/repair_rating_page.dart';
@@ -38,8 +37,6 @@ class Routes {
       RoutePath.RepairFormPage: (context) => RepairFormPage(),
       RoutePath.RepairRatingPage: (context) => RepairRatingPage(),
       RoutePath.MyRepairPage: (context) => MyRepairPage(),
-      RoutePath.PublicConvenienceListPage: (context) =>
-          PublicConvenienceListPage(),
     };
 
     final builder = routeBuilders[settings.name];

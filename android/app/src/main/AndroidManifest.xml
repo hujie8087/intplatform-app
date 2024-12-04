@@ -24,6 +24,8 @@
     <!-- Firebase 消息权限 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 添加电话权限 -->
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
     <application
         android:label="IWIP后勤综合服务"
         android:name="${applicationName}"

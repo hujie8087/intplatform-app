@@ -364,10 +364,19 @@ class _RepairFormPage extends State<RepairFormPage>
                                                       final res =
                                                           await uploadImages(
                                                               selectedAssets);
-                                                      setState(() {
-                                                        _uploadedImageUrls =
-                                                            res;
-                                                      });
+                                                      if (res.isNotEmpty) {
+                                                        setState(() {
+                                                          _uploadedImageUrls =
+                                                              res;
+                                                        });
+                                                      } else {
+                                                        ProgressHUD.showError(
+                                                            '图片上传失败');
+                                                        setState(() {
+                                                          _isLoading = false;
+                                                        });
+                                                        return;
+                                                      }
                                                     }
                                                     // 提交表单
                                                     _formKey.currentState!

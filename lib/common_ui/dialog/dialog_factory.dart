@@ -90,6 +90,7 @@ class DialogFactory {
         child: TipsCommonDialog(
           title: title,
           content: content,
+          contentPadding: EdgeInsets.zero,
           titleStyle: TextStyle(fontSize: 12.px),
           contentStyle: TextStyle(fontSize: 10.px),
           leftTextStyle: TextStyle(fontSize: 12.px),
