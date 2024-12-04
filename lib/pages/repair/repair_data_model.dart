@@ -2,18 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/loading.dart';
-import 'package:logistics_app/common_ui/progress_hud.dart.dart';
-import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
-import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/model/my_address_view_model.dart';
 import 'package:logistics_app/http/model/repair_form_model.dart';
 import 'package:logistics_app/http/model/repair_view_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
-import 'package:logistics_app/route/route_utils.dart';
-import 'package:logistics_app/utils/address_service.dart';
-import 'package:logistics_app/utils/sp_utils.dart';
 
 class RepairResult {
   final bool success;
@@ -56,17 +51,6 @@ class RepairDataModel with ChangeNotifier {
         notifyListeners();
       }
     });
-  }
-
-  Future getBuildingTreeModel() async {
-    var userInfo = await SpUtils.getModel('userInfo');
-    if (userInfo != null) {
-      list = await AddressService().getAddressData();
-      notifyListeners();
-    } else {
-      ProgressHUD.showText(S.current.needLogin);
-      RouteUtils.navigateToLogin();
-    }
   }
 
   Future<RepairResult> addRepairModel() async {

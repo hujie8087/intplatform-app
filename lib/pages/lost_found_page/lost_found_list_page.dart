@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
-import 'package:logistics_app/pages/lost_found_page/lost_found_view_model.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
+import 'package:logistics_app/pages/lost_found_page/lost_found_view_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -423,7 +423,7 @@ class HtmlLineLimit extends StatelessWidget {
           child: SingleChildScrollView(
             child: Text(
               _removeHtmlTags(htmlContent),
-              style: TextStyle(fontSize: 10.px),
+              style: TextStyle(fontSize: 12.px),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

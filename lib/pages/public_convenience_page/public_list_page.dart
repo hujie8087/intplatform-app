@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
@@ -198,169 +197,181 @@ class _otherItem extends StatelessWidget {
                   child: Container(
                     margin: EdgeInsets.only(bottom: 10.px),
                     child: Material(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(20.px),
-                      child: InkWell(
-                          onTap: () {
-                            RouteUtils.push(
-                                context,
-                                PublicDetailPage(
-                                    listData: listData ?? OtherViewModel()));
-                          },
-                          child: Container(
+                        color: Colors.transparent,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Ink(
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              // 超出隐藏
-                              borderRadius: BorderRadius.circular(10.px),
+                              borderRadius: BorderRadius.circular(20.px),
                             ),
-                            child: Row(
-                              children: [
-                                if (listData?.image != null)
-                                  Container(
-                                    width: 100.px,
-                                    height: 100.px,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(10.px),
-                                          bottomLeft: Radius.circular(10.px)),
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                            imagePrefix + listData!.image!),
-                                        fit: BoxFit.cover,
-                                        alignment: Alignment.centerLeft,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20.px),
+                              onTap: () {
+                                RouteUtils.push(
+                                    context,
+                                    PublicDetailPage(
+                                        listData:
+                                            listData ?? OtherViewModel()));
+                              },
+                              child: Row(
+                                children: [
+                                  if (listData?.image != null)
+                                    Container(
+                                      width: 100.px,
+                                      height: 100.px,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10.px),
+                                            bottomLeft: Radius.circular(10.px)),
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                              imagePrefix + listData!.image!),
+                                          fit: BoxFit.cover,
+                                          alignment: Alignment.centerLeft,
+                                        ),
                                       ),
                                     ),
+                                  SizedBox(
+                                    width: 10.px,
                                   ),
-                                SizedBox(
-                                  width: 10.px,
-                                ),
-                                Expanded(
+                                  Expanded(
+                                      child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: listData?.image != null
+                                            ? 0
+                                            : 10.px),
                                     child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        // 标题
-                                        Text(
-                                          listData?.showTitle ?? '',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 14.px,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 6.px, vertical: 2.px),
-                                          decoration: BoxDecoration(
-                                            color: Colors.blue[50],
-                                            borderRadius:
-                                                BorderRadius.circular(4.px),
-                                          ),
-                                          child: Text(
-                                            listData?.region ?? '',
-                                            style: TextStyle(
-                                              fontSize: 12.px,
-                                              color: Colors.blue,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 6.px),
-
-                                    // 类型和负责人
-                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text('负责人：',
+                                            // 标题
+                                            Text(
+                                              listData?.showTitle ?? '',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 14.px,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 6.px,
+                                                  vertical: 2.px),
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue[50],
+                                                borderRadius:
+                                                    BorderRadius.circular(4.px),
+                                              ),
+                                              child: Text(
+                                                listData?.region ?? '',
                                                 style: TextStyle(
-                                                    fontSize: 10.px,
-                                                    color: Colors.grey[600])),
-                                            Text(listData?.head ?? '',
-                                                style: TextStyle(
-                                                    fontSize: 12.px,
-                                                    color: primaryColor,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
+                                                  fontSize: 12.px,
+                                                  color: Colors.blue,
+                                                ),
+                                              ),
+                                            ),
                                           ],
                                         ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 6.px),
-                                    // 联系电话
-                                    Row(
-                                      children: [
-                                        Icon(Icons.phone,
-                                            size: 14.px,
-                                            color: Colors.grey[600]),
-                                        SizedBox(width: 4.px),
-                                        // 点击拨打电话
-                                        InkWell(
-                                          onTap: () => {
-                                            // 拨打电话
-                                            launchPhone(
-                                                listData?.telephone ?? '')
-                                          },
-                                          child: Text(
-                                            listData?.telephone ?? '',
-                                            style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.grey[600]),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 4.px),
-                                    // 营业时间
-                                    Row(
-                                      children: [
-                                        Icon(Icons.access_time,
-                                            size: 14.px,
-                                            color: Colors.grey[600]),
-                                        SizedBox(width: 4.px),
-                                        Expanded(
-                                          child: Text(
-                                            listData?.businessHours ?? '',
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              fontSize: 12.px,
-                                              color: Colors.grey[600],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 4.px),
+                                        SizedBox(height: 6.px),
 
-                                    // 所在区域
-                                    Row(
-                                      children: [
-                                        Icon(Icons.location_on,
-                                            size: 14.px,
-                                            color: Colors.grey[600]),
-                                        SizedBox(width: 4.px),
-                                        Text(
-                                          listData?.address ?? '',
-                                          style: TextStyle(
-                                            fontSize: 12.px,
-                                            color: Colors.grey[600],
-                                          ),
+                                        // 类型和负责人
+                                        Row(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('负责人：',
+                                                    style: TextStyle(
+                                                        fontSize: 12.px,
+                                                        color:
+                                                            Colors.grey[600])),
+                                                Text(listData?.head ?? '',
+                                                    style: TextStyle(
+                                                        fontSize: 12.px,
+                                                        color: primaryColor,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                              ],
+                                            ),
+                                          ],
                                         ),
+                                        SizedBox(height: 6.px),
+                                        // 联系电话
+                                        Row(
+                                          children: [
+                                            Icon(Icons.phone,
+                                                size: 14.px,
+                                                color: Colors.grey[600]),
+                                            SizedBox(width: 4.px),
+                                            // 点击拨打电话
+                                            InkWell(
+                                              onTap: () => {
+                                                // 拨打电话
+                                                launchPhone(
+                                                    listData?.telephone ?? '')
+                                              },
+                                              child: Text(
+                                                listData?.telephone ?? '',
+                                                style: TextStyle(
+                                                    fontSize: 12.px,
+                                                    color: Colors.grey[600]),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4.px),
+                                        // 营业时间
+                                        Row(
+                                          children: [
+                                            Icon(Icons.access_time,
+                                                size: 14.px,
+                                                color: Colors.grey[600]),
+                                            SizedBox(width: 4.px),
+                                            Expanded(
+                                              child: Text(
+                                                listData?.businessHours ?? '',
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontSize: 12.px,
+                                                  color: Colors.grey[600],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4.px),
+
+                                        // 所在区域
+                                        Row(
+                                          children: [
+                                            Icon(Icons.location_on,
+                                                size: 14.px,
+                                                color: Colors.grey[600]),
+                                            SizedBox(width: 4.px),
+                                            Text(
+                                              listData?.address ?? '',
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4.px),
                                       ],
                                     ),
-                                    SizedBox(height: 4.px),
-                                  ],
-                                )),
-                              ],
+                                  )),
+                                ],
+                              ),
                             ),
-                          )),
-                    ),
+                          ),
+                        )),
                   )));
         });
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
@@ -6,7 +7,6 @@ import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
 import 'package:logistics_app/pages/repair/components/content_page.dart';
 import 'package:logistics_app/pages/repair/repair_data_model.dart';
-import 'package:flutter/material.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:photo_view/photo_view.dart';
@@ -179,7 +179,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                       ":" +
                                       (model.repairViewData?.createTime ?? ''),
                                   style: TextStyle(
-                                      fontSize: 10.px, color: Colors.grey))
+                                      fontSize: 12.px, color: Colors.grey))
                             ],
                           )),
                           SizedBox(width: 8.px),
@@ -205,7 +205,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                       Text(
                         S.of(context).repairPerson,
                         style: TextStyle(
-                            fontSize: 10.px, fontWeight: FontWeight.bold),
+                            fontSize: 12.px, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(
@@ -222,7 +222,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                         width: double.infinity,
                         child: Text(
                           model.repairViewData?.repairPerson ?? '',
-                          style: TextStyle(fontSize: 12.px),
+                          style: TextStyle(fontSize: 14.px),
                         ),
                       ),
                       SizedBox(

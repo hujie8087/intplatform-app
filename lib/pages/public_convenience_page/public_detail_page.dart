@@ -81,7 +81,7 @@ class _PublicDetailPageState extends State<PublicDetailPage> {
                         Text(
                           widget.listData.details ?? '',
                           style: TextStyle(
-                            fontSize: 10.px,
+                            fontSize: 12.px,
                             color: Colors.grey[600],
                           ),
                         ),
@@ -105,7 +105,7 @@ class _PublicDetailPageState extends State<PublicDetailPage> {
                         Text(
                           widget.listData.remark ?? '',
                           style: TextStyle(
-                            fontSize: 10.px,
+                            fontSize: 12.px,
                             color: Colors.grey[600],
                           ),
                         ),
@@ -137,7 +137,7 @@ class _PublicDetailPageState extends State<PublicDetailPage> {
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: 10.px,
+                    fontSize: 12.px,
                     color: Colors.grey[600],
                   ),
                 ),
@@ -145,7 +145,7 @@ class _PublicDetailPageState extends State<PublicDetailPage> {
                 Text(
                   value,
                   style: TextStyle(
-                    fontSize: 12.px,
+                    fontSize: 14.px,
                     color: Colors.black87,
                   ),
                 ),

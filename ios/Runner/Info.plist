@@ -26,6 +26,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>
+		NSUserNotificationUsageDescription
+	</key>
+	<string>我们需要您的允许发送通知。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>“IWIP后勤综合服务”需要访问您的照片库以选择和上传图片或视频，用于发布内容或设置个人资料</string>
 	<key>NSAppleMusicUsageDescription</key>

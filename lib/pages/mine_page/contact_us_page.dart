@@ -51,7 +51,7 @@ class _ContactUsPage extends State<ContactUsPage> {
               data: htmlContent,
               // 设置字体大小
               style: {
-                'body': Style(fontSize: FontSize(10.px)),
+                'body': Style(fontSize: FontSize(12.px)),
               },
             )
           ]),

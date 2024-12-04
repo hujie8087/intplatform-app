@@ -4,6 +4,7 @@ import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/address_form_model.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/my_address_model.dart';
+import 'package:logistics_app/utils/address_service.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -84,7 +85,7 @@ class _AddAddressPageState extends State<AddAddressPage>
                                     BorderRadius.circular(10.px), // 设置圆角半径
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               if (buildingData != null) {
                                 CascadeTreePicker.show(context,
                                     data: buildingData ?? [],
@@ -110,6 +111,9 @@ class _AddAddressPageState extends State<AddAddressPage>
                                   });
                                   Navigator.pop(context);
                                 });
+                              } else {
+                                AddressService().refreshAddressData();
+                                _fetchData();
                               }
                             },
                             child: Row(

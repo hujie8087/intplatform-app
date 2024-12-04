@@ -279,7 +279,7 @@ class _repairItem extends StatelessWidget {
                                             ),
                                             Text(listData?.createTime ?? '',
                                                 style: TextStyle(
-                                                    fontSize: 10.px,
+                                                    fontSize: 12.px,
                                                     color: Colors.grey))
                                           ],
                                         )),
@@ -362,7 +362,7 @@ class _repairItem extends StatelessWidget {
                                           child: Text(
                                             S.of(context).deleteRepair,
                                             style: TextStyle(
-                                                fontSize: 10.px,
+                                                fontSize: 12.px,
                                                 color: secondaryColor),
                                           ),
                                         ),

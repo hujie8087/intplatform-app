@@ -3,8 +3,8 @@ import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
-import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
+import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -200,11 +200,11 @@ class NoticeDataView extends StatelessWidget {
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                                fontSize: 12.px,
+                                                fontSize: 14.px,
                                                 fontWeight: FontWeight.bold)),
                                         Text(listData?.createTime ?? '',
                                             style: TextStyle(
-                                                fontSize: 10.px,
+                                                fontSize: 12.px,
                                                 color: Colors.grey))
                                       ],
                                     )),
@@ -217,13 +217,14 @@ class NoticeDataView extends StatelessWidget {
                                         '已查看',
                                         style: TextStyle(
                                             color: Colors.grey,
-                                            fontSize: 10.px),
+                                            fontSize: 12.px),
                                       ),
                                     )
                                   ],
                                 ),
                                 HtmlLineLimit(
-                                    htmlContent: listData?.noticeContent ?? '')
+                                  htmlContent: listData?.noticeContent ?? '',
+                                )
                               ],
                             ),
                           ),
@@ -255,7 +256,7 @@ class HtmlLineLimit extends StatelessWidget {
           child: SingleChildScrollView(
             child: Text(
               _removeHtmlTags(htmlContent),
-              style: TextStyle(fontSize: 10.px),
+              style: TextStyle(fontSize: 12.px),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

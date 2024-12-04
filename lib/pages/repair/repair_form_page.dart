@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'dart:io';
+
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/material.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/GalleryWidget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
-import 'package:dio/dio.dart' as dio;
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/repair_form_model.dart';
 import 'package:logistics_app/http/model/upload_image_model.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/add_address_page.dart';
+import 'package:logistics_app/pages/repair/components/my_address_view.dart';
 import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
@@ -18,7 +20,6 @@ import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
-import 'package:logistics_app/pages/repair/components/my_address_view.dart';
 
 Future<List<String>> uploadImages(List<AssetEntity> selectedAssets) async {
   List<String> fileUrl = [];
@@ -124,8 +125,6 @@ class _RepairFormPage extends State<RepairFormPage>
     animationController!.forward();
     // 获取用户地址列表数据
     model.getMyAddressList(1, 10000);
-    // 获取楼栋信息
-    model.getBuildingTreeModel();
   }
 
 // 第一个页面
@@ -233,7 +232,7 @@ class _RepairFormPage extends State<RepairFormPage>
                                                                   '',
                                                               style: TextStyle(
                                                                   fontSize:
-                                                                      12.px,
+                                                                      14.px,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold),
@@ -248,7 +247,7 @@ class _RepairFormPage extends State<RepairFormPage>
                                                                             ?.name ??
                                                                         '',
                                                                     style: TextStyle(
-                                                                        fontSize: 10
+                                                                        fontSize: 12
                                                                             .px,
                                                                         color: Colors
                                                                             .grey)),
@@ -260,7 +259,7 @@ class _RepairFormPage extends State<RepairFormPage>
                                                                             ?.tel ??
                                                                         '',
                                                                     style: TextStyle(
-                                                                        fontSize: 10
+                                                                        fontSize: 12
                                                                             .px,
                                                                         color: Colors
                                                                             .grey))
@@ -288,7 +287,7 @@ class _RepairFormPage extends State<RepairFormPage>
                                                                 .of(context)
                                                                 .address),
                                                         style: TextStyle(
-                                                            fontSize: 10.px,
+                                                            fontSize: 12.px,
                                                             color:
                                                                 primaryColor),
                                                       ),
@@ -316,7 +315,7 @@ class _RepairFormPage extends State<RepairFormPage>
                                         children: [
                                           Text(
                                             S.of(context).uploadImages,
-                                            style: TextStyle(fontSize: 12.px),
+                                            style: TextStyle(fontSize: 14.px),
                                           ),
                                           Text(
                                             '(' +
@@ -324,7 +323,7 @@ class _RepairFormPage extends State<RepairFormPage>
                                                 ')',
                                             style: TextStyle(
                                                 color: Colors.grey,
-                                                fontSize: 10.px),
+                                                fontSize: 12.px),
                                           )
                                         ],
                                       ),
@@ -637,14 +636,14 @@ class _RepairFormPage extends State<RepairFormPage>
           Text(
             label,
             style:
-                TextStyle(fontSize: 12.px, color: Colors.black, height: 3.px),
+                TextStyle(fontSize: 14.px, color: Colors.black, height: 3.px),
             textAlign: TextAlign.left,
           ),
           TextFormField(
             controller: controller,
             keyboardType: keyboardType,
             maxLines: maxLines,
-            style: TextStyle(fontSize: 10.px),
+            style: TextStyle(fontSize: 12.px),
             decoration: InputDecoration(
               hintText: S.of(context).inputMessage(label),
               hintStyle: TextStyle(color: Colors.grey),
@@ -686,7 +685,7 @@ class _RepairFormPage extends State<RepairFormPage>
         child: child,
         style: ButtonStyle(
           textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
-            fontSize: 12.px,
+            fontSize: 14.px,
             color: textColor,
           )),
           foregroundColor: MaterialStateProperty.all<Color>(textColor),

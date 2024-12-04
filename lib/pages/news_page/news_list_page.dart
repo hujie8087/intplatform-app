@@ -203,7 +203,7 @@ class NewsDataView extends StatelessWidget {
                                                       listData?.noticeTitle ??
                                                           '',
                                                       style: TextStyle(
-                                                          fontSize: 12.px,
+                                                          fontSize: 14.px,
                                                           fontWeight:
                                                               FontWeight.bold)),
                                                   HtmlLineLimit(
@@ -216,7 +216,7 @@ class NewsDataView extends StatelessWidget {
                                                           '',
                                                       style: TextStyle(
                                                           color: Colors.grey,
-                                                          fontSize: 10.px)),
+                                                          fontSize: 12.px)),
                                                 ]),
                                           )
                                         ],
@@ -237,7 +237,7 @@ class NewsDataView extends StatelessWidget {
                                             child: Text('最新动态',
                                                 style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 10.px)),
+                                                    fontSize: 12.px)),
                                           )),
                                     ],
                                   )
@@ -263,7 +263,7 @@ class NewsDataView extends StatelessWidget {
                                                         listData?.noticeTitle ??
                                                             '',
                                                         style: TextStyle(
-                                                            fontSize: 12.px,
+                                                            fontSize: 14.px,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold)),
@@ -280,7 +280,7 @@ class NewsDataView extends StatelessWidget {
                                                           '',
                                                       style: TextStyle(
                                                           color: Colors.grey,
-                                                          fontSize: 10.px)),
+                                                          fontSize: 12.px)),
                                                   SizedBox(width: 20.px),
                                                   // 浏览次数图标
                                                   Icon(
@@ -292,7 +292,7 @@ class NewsDataView extends StatelessWidget {
                                                   Text('100',
                                                       style: TextStyle(
                                                           color: Colors.grey,
-                                                          fontSize: 10.px))
+                                                          fontSize: 12.px))
                                                 ])
                                               ],
                                             ),
@@ -336,7 +336,7 @@ class HtmlLineLimit extends StatelessWidget {
           child: SingleChildScrollView(
             child: Text(
               _removeHtmlTags(htmlContent),
-              style: TextStyle(fontSize: 10.px),
+              style: TextStyle(fontSize: 12.px),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

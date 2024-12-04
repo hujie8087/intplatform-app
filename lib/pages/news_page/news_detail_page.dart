@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class NewsDetailPage extends StatefulWidget {
@@ -51,7 +51,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           children: [
             Text(
               noticeModel?.noticeTitle ?? '',
-              style: TextStyle(fontSize: 16.px),
+              style: TextStyle(fontSize: 16.px, fontWeight: FontWeight.bold),
             ),
             SizedBox(
               height: 10.px,
@@ -85,7 +85,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
             Container(
                 child: Html(
               data: noticeModel?.noticeContent ?? '',
-              style: {'font-size': Style(fontSize: FontSize(10.px))},
+              style: {'body': Style(fontSize: FontSize(12.px))},
             ))
           ],
         ),

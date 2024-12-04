@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/my_address_view_model.dart';
+import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:logistics_app/pages/repair/repair_data_model.dart';
 
 class MyAddressView extends StatelessWidget {
   final List<AddressModel> addressList;
@@ -87,7 +87,7 @@ class MyAddressView extends StatelessWidget {
                                           Text(
                                             address.detailedAddress ?? '',
                                             style: TextStyle(
-                                                fontSize: 12.px,
+                                                fontSize: 14.px,
                                                 fontWeight: FontWeight.bold,
                                                 color: areaIds == null ||
                                                         areaIds!.contains(
@@ -100,12 +100,12 @@ class MyAddressView extends StatelessWidget {
                                             children: [
                                               Text(address.name ?? '',
                                                   style: TextStyle(
-                                                      fontSize: 10.px,
+                                                      fontSize: 12.px,
                                                       color: Colors.grey)),
                                               SizedBox(width: 8.px),
                                               Text(address.tel ?? '',
                                                   style: TextStyle(
-                                                      fontSize: 10.px,
+                                                      fontSize: 12.px,
                                                       color: Colors.grey)),
                                               SizedBox(width: 8.px),
                                               // 默认地址
@@ -123,7 +123,7 @@ class MyAddressView extends StatelessWidget {
                                                   child: Text(
                                                     S.of(context).defaultValue,
                                                     style: TextStyle(
-                                                        fontSize: 10.px,
+                                                        fontSize: 12.px,
                                                         color: Colors.white),
                                                   ),
                                                 )

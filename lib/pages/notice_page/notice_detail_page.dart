@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_video/flutter_html_video.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class NoticeDetailPage extends StatefulWidget {
@@ -55,7 +55,8 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
                   children: [
                     Text(
                       noticeDetail?.noticeTitle ?? '',
-                      style: TextStyle(fontSize: 16.px),
+                      style: TextStyle(
+                          fontSize: 16.px, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       height: 10.px,
@@ -87,7 +88,7 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
                 data: noticeDetail?.noticeContent ?? '',
                 // 设置字体大小
                 style: {
-                  'font-size': Style(fontSize: FontSize(10.px)),
+                  'body': Style(fontSize: FontSize(12.px)),
                 },
                 extensions: [
                   const VideoHtmlExtension(),

@@ -111,11 +111,11 @@ class _EditAddressPageState extends State<EditAddressPage>
                                   selectRoom,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 12.px),
+                                      fontSize: 14.px),
                                 ),
                                 Text(
                                   roomValue,
-                                  style: TextStyle(fontSize: 10.px),
+                                  style: TextStyle(fontSize: 12.px),
                                 )
                               ],
                             ),

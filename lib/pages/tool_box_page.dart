@@ -330,7 +330,8 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
         child: Stack(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.all(8.px),
+              padding: EdgeInsets.only(
+                  top: 8.px, bottom: 20.px, left: 8.px, right: 8.px),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -356,7 +357,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                                 Text(
                                   S.of(context).information,
                                   style: TextStyle(
-                                      fontSize: 12.px,
+                                      fontSize: 14.px,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ],
@@ -449,7 +450,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                                 Text(
                                   S.of(context).repairService,
                                   style: TextStyle(
-                                      fontSize: 12.px,
+                                      fontSize: 14.px,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ],
@@ -491,7 +492,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                                 Text(
                                   S.of(context).diningService,
                                   style: TextStyle(
-                                      fontSize: 12.px,
+                                      fontSize: 14.px,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ],
@@ -576,7 +577,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                                   Text(
                                     S.of(context).serviceGuide,
                                     style: TextStyle(
-                                        fontSize: 12.px,
+                                        fontSize: 14.px,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ],
@@ -619,7 +620,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                                   Text(
                                     '公共便利',
                                     style: TextStyle(
-                                        fontSize: 12.px,
+                                        fontSize: 14.px,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ],
@@ -680,7 +681,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
             Text(
               meneItem.title,
               maxLines: 2,
-              style: TextStyle(fontSize: 10.px),
+              style: TextStyle(fontSize: 12.px),
               textAlign: TextAlign.center,
               softWrap: true,
             ),

@@ -109,15 +109,21 @@ class FirebaseService {
   Future<void> _notifyShow(
       int id, String title, String content, String payload) async {
     // const chanel = "me.liucx.demoNotification"; //channel name
-    await flutterLocalNotificationsPlugin.show(
-        id,
-        title,
-        content,
-        const NotificationDetails(
-            android: AndroidNotificationDetails(_chanelName, _chanelName),
-            iOS: DarwinNotificationDetails(
-              threadIdentifier: _chanelName,
-            )),
-        payload: payload);
+    print(
+        'id:${id},string:${title},content:${content},_chanelName:${_chanelName}');
+    try {
+      await flutterLocalNotificationsPlugin.show(
+          id,
+          title,
+          content,
+          const NotificationDetails(
+              android: AndroidNotificationDetails(_chanelName, _chanelName),
+              iOS: DarwinNotificationDetails(
+                threadIdentifier: _chanelName,
+              )),
+          payload: payload);
+    } catch (e) {
+      print(e);
+    }
   }
 }
