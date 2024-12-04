@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/generated/l10n.dart';
@@ -111,7 +112,8 @@ class _ShoppingScreenPage extends State<ShoppingScreenPage>
                 ],
                 centerTitle: false,
                 pinned: true, // 确保 AppBar 固定在顶部
-                collapsedHeight: 100.px,
+                collapsedHeight: 50.px,
+                toolbarHeight: 50.px,
                 expandedHeight: 200.px, // 设置扩展高度
                 flexibleSpace: FlexibleSpaceBar(
                   background: Consumer<FoodViewModel>(

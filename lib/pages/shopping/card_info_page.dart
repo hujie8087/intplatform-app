@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/shopping_utils.dart';
@@ -191,10 +192,18 @@ class _CardInfoPageState extends State<CardInfoPage> {
                       ),
                       onPressed: () {
                         // 弹窗校验输入密码框
-                        showDialog(
+                        DialogFactory.instance.showParentDialog(
                           context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(S.of(context).cardPassword),
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.zero,
+                          padding: EdgeInsets.zero,
+                          child: AlertDialog(
+                            insetPadding: EdgeInsets.zero,
+                            contentPadding: EdgeInsets.all(20.px),
+                            title: Text(
+                              S.of(context).cardPassword,
+                              style: TextStyle(fontSize: 16.px),
+                            ),
                             // 6位密码输入框
                             content: Container(
                               child: Row(

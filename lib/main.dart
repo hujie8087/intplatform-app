@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
+import 'package:google_api_availability/google_api_availability.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/firebase_service.dart';
 import 'package:logistics_app/http/http_utils.dart';
@@ -16,7 +17,6 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:google_api_availability/google_api_availability.dart';
 import 'package:oktoast/oktoast.dart';
 
 import 'firebase_options.dart';
@@ -41,12 +41,14 @@ void main() async {
 }
 
 Future<void> initializeFirebase() async {
-  final availability = await GoogleApiAvailability.instance
-      .checkGooglePlayServicesAvailability();
+  if (Platform.isAndroid) {
+    final availability = await GoogleApiAvailability.instance
+        .checkGooglePlayServicesAvailability();
 
-  if (availability != GooglePlayServicesAvailability.success) {
-    print("Google Play 服务不可用: $availability");
-    return; // 跳过 Firebase 初始化
+    if (availability != GooglePlayServicesAvailability.success) {
+      print("Google Play 服务不可用: $availability");
+      return; // 跳过 Firebase 初始化
+    }
   }
 
   try {

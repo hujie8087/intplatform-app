@@ -37,7 +37,7 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>是否允许此APP使用日历？</string>
 	<key>NSCameraUsageDescription</key>
-	<string>“IWIP后勤综合服务”需要访问您的相机以拍摄照片和视频，用于用户头像和发布内容。</string>
+	<string>“IWIP后勤综合服务”需要访问您的相机以拍摄照片和视频，用于用户头像和发布内容，以及扫描功能。</string>
 	<key>NSContactsUsageDescription</key>
 	<string>是否允许此APP访问您的通讯录？</string>
 	<key>NSLocationAlwaysUsageDescription</key>
