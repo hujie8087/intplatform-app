@@ -26,6 +26,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- 添加电话权限 -->
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:label="IWIP后勤综合服务"
         android:name="${applicationName}"

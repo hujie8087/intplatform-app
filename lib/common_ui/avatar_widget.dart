@@ -38,7 +38,7 @@ class _AvatarWidgetState extends State<AvatarWidget> {
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   image: NetworkImage(APIs.imagePrefix + avatar),
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
                 color: primaryColor),
           )

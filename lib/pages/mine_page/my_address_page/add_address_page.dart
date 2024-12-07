@@ -32,6 +32,7 @@ class _AddAddressPageState extends State<AddAddressPage>
 
   void _fetchData() async {
     buildingData = await SpUtils.getModel('building');
+    setState(() {});
   }
 
   @override
@@ -114,6 +115,7 @@ class _AddAddressPageState extends State<AddAddressPage>
                               } else {
                                 AddressService().refreshAddressData();
                                 _fetchData();
+                                setState(() {});
                               }
                             },
                             child: Row(
