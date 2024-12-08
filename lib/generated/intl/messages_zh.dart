@@ -36,7 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addressInfo": MessageLookupByLibrary.simpleMessage("地址信息"),
         "addressManagement": MessageLookupByLibrary.simpleMessage("地址管理"),
         "addressOutOfRange":
-            MessageLookupByLibrary.simpleMessage("不再配送范围，请重新选择地址"),
+            MessageLookupByLibrary.simpleMessage("不在配送范围，请重新选择地址"),
         "all": MessageLookupByLibrary.simpleMessage("全部"),
         "allRead": MessageLookupByLibrary.simpleMessage("全部已读"),
         "appTitle": MessageLookupByLibrary.simpleMessage("IWIP后勤综合服务"),

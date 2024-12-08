@@ -1920,10 +1920,10 @@ class S {
     );
   }
 
-  /// `不再配送范围，请重新选择地址`
+  /// `不在配送范围，请重新选择地址`
   String get addressOutOfRange {
     return Intl.message(
-      '不再配送范围，请重新选择地址',
+      '不在配送范围，请重新选择地址',
       name: 'addressOutOfRange',
       desc: '',
       args: [],

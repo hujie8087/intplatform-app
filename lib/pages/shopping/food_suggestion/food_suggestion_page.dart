@@ -292,7 +292,7 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
       required Color textColor}) {
     return Container(
       width: double.infinity,
-      height: 32.px,
+      height: 36.px,
       alignment: Alignment.center,
       margin: EdgeInsets.only(left: 64.px, right: 64.px, top: 15.px),
       decoration: BoxDecoration(

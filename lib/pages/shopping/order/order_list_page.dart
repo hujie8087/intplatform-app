@@ -293,6 +293,7 @@ class _OrderListPageState extends State<OrderListPage> {
                       DialogFactory.instance.showConfirmDialog(
                           context: context,
                           title: S.of(context).deleteOrder,
+                          content: '',
                           confirmClick: () {
                             // 删除订单
                             ShoppingUtils.deleteOrder(order.id.toString(),

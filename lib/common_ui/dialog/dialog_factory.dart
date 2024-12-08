@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/dialog/parent_dialog.dart';
+import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 ///通用弹窗工具类
@@ -78,36 +80,35 @@ class DialogFactory {
   }
 
   // 确认弹窗
-  Future showConfirmDialog(
-      {required BuildContext context,
-      String? title,
-      String? content,
-      DialogContentType dialogContentType = DialogContentType.Normal,
-      GestureTapCallback? dismissClick,
-      GestureTapCallback? confirmClick}) async {
-    showParentDialog(
-        context: context,
-        child: TipsCommonDialog(
-          title: title,
-          content: content,
-          contentPadding: EdgeInsets.zero,
-          titleStyle: TextStyle(fontSize: 12.px),
-          contentStyle: TextStyle(fontSize: 10.px),
-          leftTextStyle: TextStyle(fontSize: 12.px),
-          rightTextStyle: TextStyle(fontSize: 12.px),
-          dialogContentType: dialogContentType,
-          dialogButtonType: DialogButtonType.DoubleButton,
-          leftOnTap: () {
-            Navigator.pop(context);
-            dismissClick?.call();
-          },
-          rightOnTap: () {
-            Navigator.pop(context);
-            confirmClick?.call();
-          },
-        ),
-        touchOutsideDismiss: false);
-  }
+  // Future showConfirmDialog(
+  //     {required BuildContext context,
+  //     String? title,
+  //     String? content,
+  //     DialogContentType dialogContentType = DialogContentType.Normal,
+  //     GestureTapCallback? dismissClick,
+  //     GestureTapCallback? confirmClick}) async {
+  //   showParentDialog(
+  //       context: context,
+  //       child: TipsCommonDialog(
+  //         title: title,
+  //         content: content,
+  //         titleStyle: TextStyle(fontSize: 12.px),
+  //         contentStyle: TextStyle(fontSize: 10.px),
+  //         leftTextStyle: TextStyle(fontSize: 12.px),
+  //         rightTextStyle: TextStyle(fontSize: 12.px),
+  //         dialogContentType: dialogContentType,
+  //         dialogButtonType: DialogButtonType.DoubleButton,
+  //         leftOnTap: () {
+  //           Navigator.pop(context);
+  //           dismissClick?.call();
+  //         },
+  //         rightOnTap: () {
+  //           Navigator.pop(context);
+  //           confirmClick?.call();
+  //         },
+  //       ),
+  //       touchOutsideDismiss: false);
+  // }
 
   // 带输入框的弹窗
   Future showFieldDialog(
@@ -118,6 +119,7 @@ class DialogFactory {
       GestureTapCallback? confirmClick}) async {
     showParentDialog(
         context: context,
+        width: MediaQuery.of(context).size.width * 0.8,
         child: TipsCommonDialog(
           title: title,
           titleStyle: TextStyle(fontSize: 12.px),
@@ -137,5 +139,50 @@ class DialogFactory {
           },
         ),
         touchOutsideDismiss: false);
+  }
+
+  Future<T?> showConfirmDialog<T>({
+    required BuildContext context,
+    required String title,
+    required String content,
+    double? width,
+    VoidCallback? confirmClick,
+    VoidCallback? cancelClick,
+    String? confirmText,
+    String? cancelText,
+  }) {
+    return showDialog<T>(
+      context: context,
+      builder: (context) => Center(
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: 400,
+            minWidth: 280,
+          ),
+          child: AlertDialog(
+            title: Text(title, style: TextStyle(fontSize: 14.px)),
+            content: Text(content, style: TextStyle(fontSize: 12.px)),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  cancelClick?.call();
+                },
+                child: Text(cancelText ?? S.of(context).cancel,
+                    style: TextStyle(fontSize: 12.px, color: Colors.grey[600])),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  confirmClick?.call();
+                },
+                child: Text(confirmText ?? S.of(context).confirm,
+                    style: TextStyle(fontSize: 12.px, color: primaryColor)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

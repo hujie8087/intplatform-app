@@ -457,7 +457,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                       onTap: onTap,
                       child: Container(
                           width: double.infinity,
-                          height: 30.px,
+                          height: 36.px,
                           alignment: Alignment.center,
                           margin: EdgeInsets.only(
                               left: 30.px, right: 30.px, top: 40.px),

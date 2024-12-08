@@ -186,7 +186,7 @@
   "goodsInfo": "商品信息",
   "pickupType": "取餐方式",
   "addressInfo": "地址信息",
-  "addressOutOfRange": "不再配送范围，请重新选择地址",
+  "addressOutOfRange": "不在配送范围，请重新选择地址",
   "selectAddress": "选择收货地址",
   "deliveryTime": "配送时间",
   "deliveryFee": "配送费",

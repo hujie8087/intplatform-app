@@ -170,6 +170,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
             customContentWidget: Container(
               child: TextField(
                 controller: _controller,
+                style: TextStyle(fontSize: 12.px),
                 decoration: InputDecoration(
                   hintText: S.of(context).inputMessage(S.of(context).name),
                 ),

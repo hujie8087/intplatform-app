@@ -391,6 +391,7 @@ class MyAddressDataView extends StatelessWidget {
                                                 .showConfirmDialog(
                                                     context: context,
                                                     title: title,
+                                                    content: '',
                                                     confirmClick: () {
                                                       editCallBack!();
                                                     });
@@ -437,6 +438,7 @@ class MyAddressDataView extends StatelessWidget {
                                         DialogFactory.instance
                                             .showConfirmDialog(
                                                 context: context,
+                                                content: '',
                                                 title:
                                                     S.of(context).deleteAddress,
                                                 confirmClick: () {

@@ -627,50 +627,42 @@ class _RestaurantBodyState extends State<RestaurantBody>
           ),
         );
       },
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, i) {
-            // 判断是否是最后一个分类
-            bool isLastCategory = categories.last.id == category.id;
-            return Column(
-              children: [
-                buildFoodList(foods: category.foodCommodityList),
-                // 只在最后一个分类的底部添加提示
-                if (isLastCategory)
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 12.px),
-                    margin: EdgeInsets.only(bottom: 36.px),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 50.px,
-                          height: 1.px,
-                          color: Colors.grey[300],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.px),
-                          child: Text(
-                            S.current.endOfList,
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 10.px,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 50.px,
-                          height: 1.px,
-                          color: Colors.grey[300],
-                        ),
-                      ],
+      sliver: SliverToBoxAdapter(
+        child: Column(
+          children: [
+            buildFoodList(foods: category.foodCommodityList),
+            if (categories.last.id == category.id)
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 12.px),
+                margin: EdgeInsets.only(bottom: 36.px),
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 50.px,
+                      height: 1.px,
+                      color: Colors.grey[300],
                     ),
-                  ),
-              ],
-            );
-          },
-          childCount: 1,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.px),
+                      child: Text(
+                        S.current.endOfList,
+                        style: TextStyle(
+                          color: Colors.grey[500],
+                          fontSize: 10.px,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 50.px,
+                      height: 1.px,
+                      color: Colors.grey[300],
+                    ),
+                  ],
+                ),
+              ),
+          ],
         ),
       ),
     );
