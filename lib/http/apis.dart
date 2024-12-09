@@ -107,7 +107,8 @@ class APIs {
   static const String guideUrl = '/other/guideArticle';
 
   // 获取餐厅列表
-  static const String getRestaurantList = '/productdisplay/marketCanteen/list';
+  static const String getRestaurantList =
+      '/productdisplay/marketCanteen/appList';
 
   // 获取热门菜品
   static const String getHotFoodList = '/productdisplay/commodity/chart';
