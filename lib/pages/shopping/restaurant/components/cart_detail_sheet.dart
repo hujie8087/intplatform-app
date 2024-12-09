@@ -158,7 +158,9 @@ class CartDetailSheet extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: CachedNetworkImage(
-              imageUrl: APIs.foodPrefix + item.image,
+              imageUrl: item.image.indexOf('food') != -1
+                  ? APIs.foodPrefix + item.image
+                  : APIs.imagePrefix + item.image,
               width: 54.px,
               height: 54.px,
               fit: BoxFit.cover,

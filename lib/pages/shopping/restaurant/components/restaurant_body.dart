@@ -704,15 +704,21 @@ class _RestaurantBodyState extends State<RestaurantBody>
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ImagePreview(
-                                    imageUrl:
-                                        APIs.foodPrefix + foods[index].image,
+                                    imageUrl: foods[index]
+                                                .image
+                                                .indexOf('food') !=
+                                            -1
+                                        ? APIs.foodPrefix + foods[index].image
+                                        : APIs.imagePrefix + foods[index].image,
                                     tag: 'food_image_${foods[index].id}',
                                   ),
                                 ),
                               );
                             },
                             child: CachedNetworkImage(
-                              imageUrl: APIs.foodPrefix + foods[index].image,
+                              imageUrl: foods[index].image.indexOf('food') != -1
+                                  ? APIs.foodPrefix + foods[index].image
+                                  : APIs.imagePrefix + foods[index].image,
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.error), // 加载失败时的图标
                               fadeInDuration: Duration(milliseconds: 500),

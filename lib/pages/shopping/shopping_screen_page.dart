@@ -31,6 +31,7 @@ class _ShoppingScreenPage extends State<ShoppingScreenPage>
   bool isCollapsed = false;
 
   String imagePrefix = APIs.foodPrefix;
+  String imageNewPrefix = APIs.imagePrefix;
 
   @override
   void initState() {
@@ -227,6 +228,7 @@ class _ShoppingScreenPage extends State<ShoppingScreenPage>
                       RestaurantScreenPage(id: model.list![index]!.id!))
                 },
                 imagePrefix: imagePrefix,
+                imageNewPrefix: imageNewPrefix,
                 animation: animation,
                 animationController: animationController,
                 pickupTypes: model.pickupTypes,
@@ -246,6 +248,7 @@ class RestaurantDataView extends StatelessWidget {
       required this.listData,
       this.callBack,
       required this.imagePrefix,
+      required this.imageNewPrefix,
       this.animationController,
       this.animation,
       this.pickupTypes,
@@ -255,6 +258,7 @@ class RestaurantDataView extends StatelessWidget {
   final RestaurantModel listData;
   final VoidCallback? callBack;
   final String imagePrefix;
+  final String imageNewPrefix;
   final List<RestaurantPickupViewModel?>? pickupTypes;
   final AnimationController? animationController;
   final Animation<double>? animation;
@@ -306,7 +310,12 @@ class RestaurantDataView extends StatelessWidget {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Image.network(
-                                              imagePrefix + listData.image!,
+                                              listData.image?.indexOf('food') !=
+                                                      -1
+                                                  ? imagePrefix +
+                                                      listData.image!
+                                                  : imageNewPrefix +
+                                                      listData.image!,
                                               width: 32.px,
                                               height: 32.px,
                                             ),

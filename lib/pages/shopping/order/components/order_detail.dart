@@ -37,7 +37,9 @@ class OrderDetail extends StatelessWidget {
                         child: Stack(
                           children: [
                             CachedNetworkImage(
-                              imageUrl: APIs.foodPrefix + (detail.image ?? ''),
+                              imageUrl: detail.image?.indexOf('food') != -1
+                                  ? APIs.foodPrefix + detail.image!
+                                  : APIs.imagePrefix + detail.image!,
                               width: 60.px,
                               height: 60.px,
                               fit: BoxFit.cover,

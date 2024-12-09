@@ -184,7 +184,11 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                         borderRadius: BorderRadius.circular(5.px),
                         child: CachedNetworkImage(
                           imageUrl:
-                              APIs.foodPrefix + (restaurantDetail?.image ?? ''),
+                              restaurantDetail?.image?.indexOf('food') != -1
+                                  ? APIs.foodPrefix +
+                                      (restaurantDetail?.image ?? '')
+                                  : APIs.imagePrefix +
+                                      (restaurantDetail?.image ?? ''),
                           width: 54.px,
                           height: 54.px,
                           fit: BoxFit.cover,
@@ -747,7 +751,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
         children: [
           if (item.image.isNotEmpty)
             CachedNetworkImage(
-              imageUrl: APIs.foodPrefix + item.image,
+              imageUrl: item.image.indexOf('food') != -1
+                  ? APIs.foodPrefix + item.image
+                  : APIs.imagePrefix + item.image,
               width: 54.px,
               height: 54.px,
               fit: BoxFit.cover,

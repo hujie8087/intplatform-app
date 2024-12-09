@@ -88,7 +88,6 @@ class ShoppingCart extends StatelessWidget {
               ElevatedButton(
                 onPressed: totalQuantity > 0
                     ? () {
-                        // TODO: 实现结算功能
                         Navigator.push(
                           context,
                           MaterialPageRoute(
