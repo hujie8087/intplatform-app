@@ -145,67 +145,72 @@ class MyApp extends StatelessWidget {
         child: ScreenUtilInit(
       designSize: designSize,
       builder: (context, child) {
-        return MaterialApp(
-          builder: (context, child) {
-            // 初始化屏幕适配
-            ScreenAdapterHelper.init(context);
-            return child!;
+        return GestureDetector(
+          onTap: () {
+            FocusManager.instance.primaryFocus?.unfocus();
           },
-          onGenerateTitle: (context) {
-            return S.of(context).appTitle;
-          },
-          debugShowCheckedModeBanner: false,
-          supportedLocales: const [
-            Locale('zh', 'CN'),
-            Locale('en', ''),
-            Locale('id', ''),
-          ],
-          locale: const Locale('zh', 'CN'),
-          localizationsDelegates: const [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          localeResolutionCallback: (locale, supportedLocales) {
-            SpUtils.getString('locale').then((languageCode) {
-              // 如果语言是英语
-              if (languageCode == 'en') {
-                //注意大小写，返回美国英语
-                S.load(Locale('en', 'US'));
-                return const Locale('en', 'US');
-              } else if (languageCode == 'id') {
-                S.load(Locale('id', 'ID'));
-                return const Locale('id', 'ID');
-              } else {
-                S.load(Locale('zh', 'CN'));
-                return const Locale('zh', 'CN');
-              }
-            });
-          },
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            platform: TargetPlatform.iOS,
-            navigationBarTheme: const NavigationBarThemeData(
-              backgroundColor: Colors.white,
-              indicatorColor: Colors.transparent,
-            ),
-            appBarTheme: const AppBarTheme(
-              centerTitle: true,
-              elevation: 0,
-              backgroundColor: Colors.white,
-              foregroundColor: AppTheme.darkText,
-              systemOverlayStyle: SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-                statusBarIconBrightness: Brightness.dark,
+          child: MaterialApp(
+            builder: (context, child) {
+              // 初始化屏幕适配
+              ScreenAdapterHelper.init(context);
+              return child!;
+            },
+            onGenerateTitle: (context) {
+              return S.of(context).appTitle;
+            },
+            debugShowCheckedModeBanner: false,
+            supportedLocales: const [
+              Locale('zh', 'CN'),
+              Locale('en', ''),
+              Locale('id', ''),
+            ],
+            locale: const Locale('zh', 'CN'),
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            localeResolutionCallback: (locale, supportedLocales) {
+              SpUtils.getString('locale').then((languageCode) {
+                // 如果语言是英语
+                if (languageCode == 'en') {
+                  //注意大小写，返回美国英语
+                  S.load(Locale('en', 'US'));
+                  return const Locale('en', 'US');
+                } else if (languageCode == 'id') {
+                  S.load(Locale('id', 'ID'));
+                  return const Locale('id', 'ID');
+                } else {
+                  S.load(Locale('zh', 'CN'));
+                  return const Locale('zh', 'CN');
+                }
+              });
+            },
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              platform: TargetPlatform.iOS,
+              navigationBarTheme: const NavigationBarThemeData(
+                backgroundColor: Colors.white,
+                indicatorColor: Colors.transparent,
               ),
+              appBarTheme: const AppBarTheme(
+                centerTitle: true,
+                elevation: 0,
+                backgroundColor: Colors.white,
+                foregroundColor: AppTheme.darkText,
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.dark,
+                ),
+              ),
+              useMaterial3: false,
             ),
-            useMaterial3: false,
+            navigatorKey: RouteUtils.navigatorKey,
+            onGenerateRoute: Routes.generateRoute,
+            initialRoute: RoutePath.home,
+            // home:FitnessAppHomeScreen(),
           ),
-          navigatorKey: RouteUtils.navigatorKey,
-          onGenerateRoute: Routes.generateRoute,
-          initialRoute: RoutePath.home,
-          // home:FitnessAppHomeScreen(),
         );
       },
     ));
