@@ -12,6 +12,7 @@ import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:logistics_app/common_ui/password_input.dart';
 
 class PaymentQRCodePage extends StatefulWidget {
   const PaymentQRCodePage({
@@ -253,130 +254,59 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                   style: TextStyle(fontSize: 16.px),
                 ),
                 // 6位密码输入框
-                content: Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(6, (index) {
-                      return Container(
-                        width: 40.px,
-                        height: 40.px,
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.symmetric(horizontal: 2.px),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey[300]!,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(8.px),
-                        ),
-                        child: TextField(
-                          controller: TextEditingController(
-                            text: _passwordController.text.length > index
-                                ? _passwordController.text[index]
-                                : '',
-                          ),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18.px, fontWeight: FontWeight.bold),
-                          keyboardType: TextInputType.number,
-                          // 加密
-                          obscureText: true,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            LengthLimitingTextInputFormatter(1),
-                          ],
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            counterText: '',
-                          ),
-                          onChanged: (value) {
-                            String currentText = _passwordController.text;
-                            if (value.isEmpty && currentText.isNotEmpty) {
-                              // 删除操作
-                              _passwordController.text = currentText.substring(
-                                  0, currentText.length - 1);
-                            } else if (value.isNotEmpty) {
-                              // 添加操作
-                              if (currentText.length < 6) {
-                                _passwordController.text = currentText + value;
-                              }
-                            }
-
-                            // 自动跳转到下一个输入框
-                            if (value.isNotEmpty && index < 5) {
-                              FocusScope.of(context).nextFocus();
-                            }
-                            // 自动跳转到上一个输入框
-                            else if (value.isEmpty && index > 0) {
-                              FocusScope.of(context).previousFocus();
-                            }
-
-                            setState(() {});
-                          },
-                        ),
+                content: PasswordInput(
+                  onCompleted: (password) {
+                    // 处理密码逻辑
+                    if (password.length != 6) {
+                      ProgressHUD.showError(S.of(context).inputPasswordError);
+                      return;
+                    }
+                    // 验证密码
+                    ShoppingUtils.verifyPayPassword({
+                      'oriPassword': password,
+                      'uniqueId': userInfo?.user?.userName,
+                      'pwdType': '1'
+                    }, success: (data) {
+                      ShoppingUtils.parsePayQrCode(
+                        {'qrCode': result},
+                        success: (data) {
+                          ParseQrCodeModel parseQrCodeData =
+                              ParseQrCodeModel.fromJson(data['data']);
+                          ShoppingUtils.processPaymentQRCode(
+                            //交易类型 1:充值消费 3:充值 5:消费
+                            {
+                              'sign': parseQrCodeData.sign,
+                              'uniqueId': userInfo?.user?.userName,
+                              'otpType': '5',
+                              'queryType': '2',
+                              'eWalletNum': ' 1',
+                              'dealerNum': parseQrCodeData.dealerNum,
+                              'orderNum': parseQrCodeData.recId,
+                              'staNum': parseQrCodeData.staNum,
+                              'password': password,
+                              'type': parseQrCodeData.type,
+                              'monDeal': parseQrCodeData.amount,
+                            },
+                            success: (data) {
+                              // showToast('支付成功');
+                              ProgressHUD.showSuccess(S.of(context).paySuccess);
+                              // Navigator.pop(context, true); // 返回上一页并传递支付成功状态
+                            },
+                            fail: (code, msg) {
+                              ProgressHUD.showError(
+                                  '${S.of(context).payFail}:$msg');
+                            },
+                          );
+                        },
                       );
-                    }),
-                  ),
+                    });
+                  },
                 ),
+
                 actions: <Widget>[
                   TextButton(
                     child: Text(S.of(context).cancel),
                     onPressed: () {
-                      Navigator.of(context).pop(); // 关闭弹窗
-                    },
-                  ),
-                  TextButton(
-                    child: Text(S.of(context).confirm),
-                    onPressed: () {
-                      String password = _passwordController.text;
-                      // 处理密码逻辑
-                      if (password.length != 6) {
-                        ProgressHUD.showError(S.of(context).inputPasswordError);
-                        return;
-                      }
-                      // 验证密码
-                      ShoppingUtils.verifyPayPassword({
-                        'oriPassword': password,
-                        'uniqueId': userInfo?.user?.userName,
-                        'pwdType': '1'
-                      }, success: (msg) {
-                        ShoppingUtils.parsePayQrCode(
-                          {'qrCode': result},
-                          success: (data) {
-                            ParseQrCodeModel parseQrCodeData =
-                                ParseQrCodeModel.fromJson(data['data']);
-                            ShoppingUtils.processPaymentQRCode(
-                              //交易类型 1:充值消费 3:充值 5:消费
-                              {
-                                'sign': parseQrCodeData.sign,
-                                'uniqueId': userInfo?.user?.userName,
-                                'otpType': '5',
-                                'queryType': '2',
-                                'eWalletNum': ' 1',
-                                'dealerNum': parseQrCodeData.dealerNum,
-                                'orderNum': parseQrCodeData.recId,
-                                'staNum': parseQrCodeData.staNum,
-                                'password': password,
-                                'type': parseQrCodeData.type,
-                                'monDeal': parseQrCodeData.amount,
-                              },
-                              success: (data) {
-                                // showToast('支付成功');
-                                ProgressHUD.showSuccess(
-                                    S.of(context).paySuccess);
-                                // Navigator.pop(context, true); // 返回上一页并传递支付成功状态
-                              },
-                              fail: (code, msg) {
-                                ProgressHUD.showError(
-                                    '${S.of(context).payFail}:$msg');
-                              },
-                            );
-                          },
-                        );
-                        // 清楚密码
-                        _passwordController.clear();
-                      });
-
                       Navigator.of(context).pop(); // 关闭弹窗
                     },
                   ),
@@ -390,8 +320,6 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
           ProgressHUD.showError(S.current.needCameraPermission);
         }
       }
-
-      print('requestStatus::${requestStatus}');
     } else if (status.isPermanentlyDenied) {
       ProgressHUD.showError('相机权限被永久拒绝，打开设置页面');
       openAppSettings();

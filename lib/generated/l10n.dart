@@ -370,6 +370,16 @@ class S {
     );
   }
 
+  /// `报修订单`
+  String get repairOrder {
+    return Intl.message(
+      '报修订单',
+      name: 'repairOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `公司新闻`
   String get news {
     return Intl.message(
@@ -635,6 +645,16 @@ class S {
     return Intl.message(
       '工号',
       name: 'workNo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `身份证号`
+  String get idCard {
+    return Intl.message(
+      '身份证号',
+      name: 'idCard',
       desc: '',
       args: [],
     );
@@ -1440,10 +1460,10 @@ class S {
     );
   }
 
-  /// `锁卡`
+  /// `解挂`
   String get cardLock {
     return Intl.message(
-      '锁卡',
+      '解挂',
       name: 'cardLock',
       desc: '',
       args: [],
@@ -1555,6 +1575,16 @@ class S {
     return Intl.message(
       '请输入您的工号',
       name: 'inputWorkNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入您的身份证号`
+  String get inputIdCard {
+    return Intl.message(
+      '请输入您的身份证号',
+      name: 'inputIdCard',
       desc: '',
       args: [],
     );
@@ -2190,6 +2220,36 @@ class S {
     );
   }
 
+  /// `留言反馈`
+  String get feedback {
+    return Intl.message(
+      '留言反馈',
+      name: 'feedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `留言标题`
+  String get feedbackTitle {
+    return Intl.message(
+      '留言标题',
+      name: 'feedbackTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `留言内容`
+  String get feedbackContent {
+    return Intl.message(
+      '留言内容',
+      name: 'feedbackContent',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `新增地址`
   String get addAddress {
     return Intl.message(
@@ -2345,6 +2405,66 @@ class S {
     return Intl.message(
       '相册',
       name: 'photoAlbum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `宣传片`
+  String get promo {
+    return Intl.message(
+      '宣传片',
+      name: 'promo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `宣传片列表`
+  String get promoList {
+    return Intl.message(
+      '宣传片列表',
+      name: 'promoList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `宣传片详情`
+  String get promoDetail {
+    return Intl.message(
+      '宣传片详情',
+      name: 'promoDetail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `小K拾光`
+  String get kTimeList {
+    return Intl.message(
+      '小K拾光',
+      name: 'kTimeList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `小K拾光详情`
+  String get kTimeDetail {
+    return Intl.message(
+      '小K拾光详情',
+      name: 'kTimeDetail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `纬达贝月刊`
+  String get monthly {
+    return Intl.message(
+      '纬达贝月刊',
+      name: 'monthly',
       desc: '',
       args: [],
     );

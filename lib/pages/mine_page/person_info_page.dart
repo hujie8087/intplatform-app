@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
 import 'package:logistics_app/common_ui/divider_widget.dart';
@@ -10,7 +9,7 @@ import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
-import 'package:logistics_app/pages/repair/repair_form_page.dart';
+import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -186,6 +185,32 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
         // 工号
         _PersonInfoItem(S.of(context).workNo, userInfo?.user?.userName ?? '',
             Icons.workspace_premium, () {}),
+        // 身份证号
+        _PersonInfoItem(
+            S.of(context).idCard,
+            userInfo?.user?.card ?? '身份证号可用于找回密码，请尽快绑定！',
+            Icons.credit_card, () {
+          _controller.text = userInfo?.user?.card ?? '';
+          DialogFactory.instance.showFieldDialog(
+            context: context,
+            title: S.of(context).inputMessage(S.of(context).idCard),
+            customContentWidget: Container(
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: S.of(context).inputMessage(S.of(context).idCard),
+                ),
+              ),
+            ),
+            confirmClick: () async {
+              final result = _controller.text;
+              userInfo!.user!.card = result;
+              await _updateData();
+            },
+          );
+        },
+            isEdit: true,
+            isWarning: userInfo?.user?.card != null ? false : true),
         _PersonInfoItem(
             S.of(context).gender,
             userInfo?.user?.sex == '0'
@@ -271,15 +296,15 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
           );
         }, isEdit: true),
         // 部门
-        _PersonInfoItem(S.of(context).dept,
-            userInfo?.user?.dept?.deptName ?? '', Icons.work, () {},
-            isEdit: false),
+        // _PersonInfoItem(S.of(context).dept,
+        //     userInfo?.user?.dept?.deptName ?? '', Icons.work, () {},
+        //     isEdit: false),
       ],
     );
   }
 
   Widget _PersonInfoItem(String title, String value, IconData icon, onTap,
-      {bool isEdit = false}) {
+      {bool isEdit = false, bool isWarning = false}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -305,13 +330,17 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                 ),
                 Text(
                   title,
-                  style: TextStyle(fontSize: 12.px),
+                  style: TextStyle(
+                    fontSize: 12.px,
+                  ),
                 )
               ],
             )),
             Text(
               value,
-              style: TextStyle(fontSize: 12.px, color: Colors.grey),
+              style: TextStyle(
+                  fontSize: isWarning ? 10.px : 12.px,
+                  color: isWarning ? secondaryColor : Colors.grey),
             ),
             if (isEdit) Icon(Icons.chevron_right, color: Colors.grey)
           ],

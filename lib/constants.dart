@@ -4,6 +4,12 @@ class Constants {
   //用户名称
   static const String SP_USER_NAME = "SP_USER_NAME";
 
+  //用户昵称
+  static const String SP_USER_NICKNAME = "SP_USER_NICKNAME";
+
+  //用户密码
+  static const String SP_USER_PASSWORD = "SP_USER_PASSWORD";
+
   //cookie缓存
   static const String SP_COOKIE_LIST = "SP_COOKIE_LIST";
 
@@ -24,4 +30,13 @@ class Constants {
 
   // 用户设备TOKEN
   static const String SP_DEVICE_TOKEN = 'SP_DEVICE_TOKEN';
+
+  // 用户权限标识
+  static const String SP_USER_PERMISSION = 'SP_USER_PERMISSION';
+
+  // 报修剩余未处理数量
+  static const String SP_REPAIR_UNFINISHED_COUNT = 'SP_REPAIR_UNFINISHED_COUNT';
+
+  // 用户登录状态
+  static const String SP_IS_LOGIN = 'SP_IS_LOGIN';
 }

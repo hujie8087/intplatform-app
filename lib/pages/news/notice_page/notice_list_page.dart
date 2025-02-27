@@ -4,7 +4,7 @@ import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart'
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
-import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
+import 'package:logistics_app/pages/news/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -45,6 +45,8 @@ class _NoticeListPageState extends State<NoticeListPage>
       'pageNum': _page,
       'pageSize': _pageSize,
       'noticeType': 1,
+      "status": '0',
+      "approvalStatus": 4
     }, success: (data) {
       var noticeList = data['rows'] as List;
       List<NoticeModel> rows =

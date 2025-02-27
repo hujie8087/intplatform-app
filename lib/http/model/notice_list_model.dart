@@ -19,8 +19,12 @@ class NoticeModel {
       this.createDept,
       this.updateBy,
       this.updateTime,
-      this.remark,
+      this.papeView,
+      this.img,
+      this.file,
+      this.video,
       this.noticeId,
+      this.remark,
       this.noticeTitle,
       this.noticeType,
       this.noticeContent,
@@ -60,6 +64,18 @@ class NoticeModel {
     if (json["status"] is String) {
       status = json["status"];
     }
+    if (json["img"] is String) {
+      img = json["img"];
+    }
+    if (json["file"] is String) {
+      file = json["file"];
+    }
+    if (json["video"] is String) {
+      video = json["video"];
+    }
+    if (json["papeView"] is int) {
+      papeView = json["papeView"];
+    }
   }
 
   String? createBy;
@@ -71,10 +87,13 @@ class NoticeModel {
   String? noticeTitle;
   String? noticeType;
   String? noticeContent;
+  String? img;
+  String? file;
+  String? video;
   dynamic noticeGrade;
   String? createDept;
   String? status;
-
+  int? papeView;
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["createBy"] = createBy;
@@ -89,6 +108,10 @@ class NoticeModel {
     _data["noticeGrade"] = noticeGrade;
     _data["createDept"] = createDept;
     _data["status"] = status;
+    _data["img"] = img;
+    _data["file"] = file;
+    _data["video"] = video;
+    _data["papeView"] = papeView;
     return _data;
   }
 }

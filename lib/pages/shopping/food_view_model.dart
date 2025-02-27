@@ -32,7 +32,7 @@ class FoodViewModel with ChangeNotifier {
 
   // 获取购物车总数量
   int get cartTotalQuantity {
-    return cartItems.fold(0, (sum, item) => sum + (item.num ?? 0));
+    return cartItems.fold(0, (sum, item) => sum + item.num);
   }
 
   // 获取餐厅列表
@@ -117,8 +117,7 @@ class FoodViewModel with ChangeNotifier {
     var existingItemIndex = cartItems.indexWhere((item) => item.id == food.id);
 
     if (existingItemIndex != -1) {
-      cartItems[existingItemIndex].num =
-          (cartItems[existingItemIndex].num ?? 0) + 1;
+      cartItems[existingItemIndex].num = (cartItems[existingItemIndex].num) + 1;
     } else {
       food.num = 1;
       cartItems.add(food);
@@ -132,7 +131,7 @@ class FoodViewModel with ChangeNotifier {
   // 计算总价
   void calculateTotal() {
     totalPrice =
-        cartItems.fold(0, (sum, item) => sum + (item.price * (item.num ?? 0)));
+        cartItems.fold(0, (sum, item) => sum + (item.price * (item.num)));
     notifyListeners();
   }
 
@@ -141,9 +140,8 @@ class FoodViewModel with ChangeNotifier {
     var existingItemIndex = cartItems.indexWhere((item) => item.id == food.id);
 
     if (existingItemIndex != -1) {
-      if (cartItems[existingItemIndex].num! > 1) {
-        cartItems[existingItemIndex].num =
-            cartItems[existingItemIndex].num! - 1;
+      if (cartItems[existingItemIndex].num > 1) {
+        cartItems[existingItemIndex].num = cartItems[existingItemIndex].num - 1;
       } else {
         cartItems.removeAt(existingItemIndex);
       }

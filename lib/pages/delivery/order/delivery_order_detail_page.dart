@@ -1,0 +1,601 @@
+import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/delivery_order_detail_model.dart';
+import 'package:logistics_app/http/model/delivery_order_model.dart';
+import 'package:logistics_app/http/model/delivery_station_model.dart';
+import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
+import 'package:timeline_tile/timeline_tile.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+class DeliveryOrderDetailPage extends StatefulWidget {
+  const DeliveryOrderDetailPage({super.key, required this.order});
+
+  final DeliveryOrderModel order;
+
+  @override
+  _DeliveryOrderDetailPageState createState() =>
+      _DeliveryOrderDetailPageState();
+}
+
+class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
+  // 轨迹
+  List<LatLng> trackPoints = [];
+  // 当前位置
+  Position? _currentPosition;
+  Position? _deliveryStaffPosition;
+  DeliveryOrderDetailModel? _orderDetail;
+  List<StatusNodes>? statusNodes;
+  DeliveryStationModel? deliveryStation;
+
+  @override
+  void initState() {
+    super.initState();
+    getOrderDetail();
+    _getCurrentLocation();
+  }
+
+  Future<void> _fetchDeliveryStationInfo(String code) async {
+    DataUtils.getDeliveryStationByCode({'code': code}, success: (data) {
+      deliveryStation = DeliveryStationModel.fromJson(data['data']);
+      setState(() {});
+    });
+  }
+
+  // 获取订单详情
+  Future<void> getOrderDetail() async {
+    DataUtils.getDetailById('/delivery/order/' + widget.order.id.toString(),
+        success: (data) {
+      _orderDetail = DeliveryOrderDetailModel.fromJson(data['data']);
+      if (_orderDetail?.orderDelivery?.code != null) {
+        _fetchDeliveryStationInfo(_orderDetail?.orderDelivery?.code ?? '');
+      }
+
+      setState(() {
+        statusNodes = _orderDetail?.statusNodes;
+        trackPoints = _orderDetail?.orderDeliveryLocations
+                ?.map((e) => LatLng(double.parse(e.latitude ?? '0'),
+                    double.parse(e.longitude ?? '0')))
+                .toList() ??
+            [];
+        if (_orderDetail?.orderDelivery?.deliveryStatus == 1 &&
+            trackPoints.length > 0) {
+          _deliveryStaffPosition = Position(
+            latitude: double.parse(trackPoints.last.latitude.toString()),
+            longitude: double.parse(trackPoints.last.longitude.toString()),
+            timestamp: DateTime.now(),
+            accuracy: 0,
+            altitude: 0,
+            altitudeAccuracy: 0,
+            heading: 0,
+            headingAccuracy: 0,
+            speed: 0,
+            speedAccuracy: 0,
+          );
+        }
+      });
+    }, fail: (error, message) {
+      ProgressHUD.showError(message);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '配送订单详情',
+          style: TextStyle(fontSize: 16.px),
+        ),
+      ),
+      body: Stack(
+        children: [
+          FlutterMap(
+            options: MapOptions(
+              initialCenter:
+                  LatLng(0.48037046303693953, 127.9839849472046), // 默认经纬度，丹江坞食堂
+              initialZoom: 16,
+              maxZoom: 20,
+              minZoom: 12,
+            ),
+            children: [
+              // 地图底图
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                subdomains: ['a', 'b', 'c'],
+              ),
+              // 自定义地图图层
+              OverlayImageLayer(
+                overlayImages: [
+                  OverlayImage(
+                    imageProvider: AssetImage(
+                      'assets/images/south-all.webp',
+                    ),
+                    bounds: LatLngBounds(
+                      LatLng(0.462128, 128.047638),
+                      LatLng(0.554159, 127.883903),
+                    ),
+                  ),
+                ],
+              ),
+              // 绘制轨迹的图层
+              PolylineLayer(
+                polylines: [
+                  Polyline(
+                    points: trackPoints, // 轨迹点
+                    strokeWidth: 4.0, // 线宽
+                    color: Colors.deepOrange, // 轨迹颜色
+                  ),
+                ],
+              ),
+              // 发货点标点
+              MarkerLayer(
+                markers: [
+                  Marker(
+                      point: LatLng(
+                          double.parse(deliveryStation?.latitude ?? '0'),
+                          double.parse(deliveryStation?.longitude ?? '0')),
+                      height: 50.px,
+                      width: 120.px,
+                      // 给标点添加动画
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 4.px),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(4.px),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(2.px),
+                                  margin: EdgeInsets.all(2.px),
+                                  decoration: BoxDecoration(
+                                    color: secondaryColor[50],
+                                    borderRadius: BorderRadius.circular(1.px),
+                                  ),
+                                  child: Text(
+                                    '发',
+                                    style: TextStyle(
+                                        color: secondaryColor, fontSize: 10.px),
+                                  ),
+                                ),
+                                SizedBox(width: 4.px),
+                                Expanded(
+                                    child: Text(
+                                  deliveryStation?.sourceStation ?? '',
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10.px),
+                                  overflow: TextOverflow.ellipsis,
+                                ))
+                              ],
+                            ),
+                          ),
+                          Icon(
+                            Icons.location_on,
+                            color: primaryColor,
+                            size: 24.px,
+                          )
+                        ],
+                      )),
+                  // 配送员位置
+                  if (_orderDetail?.orderDelivery?.deliveryStatus == 1)
+                    Marker(
+                        point: LatLng(_deliveryStaffPosition?.latitude ?? 0,
+                            _deliveryStaffPosition?.longitude ?? 0),
+                        height: 50.px,
+                        width: 80.px,
+                        // 给标点添加动画
+                        child: Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 4.px),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4.px),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(2.px),
+                                    margin: EdgeInsets.all(2.px),
+                                    decoration: BoxDecoration(
+                                      color: secondaryColor[50],
+                                      borderRadius: BorderRadius.circular(1.px),
+                                    ),
+                                    child: Text(
+                                      '送',
+                                      style: TextStyle(
+                                          color: secondaryColor,
+                                          fontSize: 10.px),
+                                    ),
+                                  ),
+                                  SizedBox(width: 4.px),
+                                  Expanded(
+                                      child: Text(
+                                    '正在配送中...',
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10.px),
+                                    overflow: TextOverflow.ellipsis,
+                                  ))
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.delivery_dining,
+                              color: secondaryColor,
+                              size: 24.px,
+                            )
+                          ],
+                        )),
+                ],
+              ),
+              // 收货点标点
+              // MarkerLayer(
+              //   markers: [
+              //     Marker(
+              //       point: LatLng(
+              //           double.parse(deliveryStation?.latitude ?? '0'),
+              //           double.parse(deliveryStation?.longitude ?? '0')),
+              //       height: 50.px,
+              //       width: 70.px,
+              //       // 给标点添加动画
+              //       child: Column(
+              //         children: [
+              //           Container(
+              //             padding: EdgeInsets.symmetric(horizontal: 4.px),
+              //             decoration: BoxDecoration(
+              //               color: Colors.white,
+              //               borderRadius: BorderRadius.circular(4.px),
+              //             ),
+              //             child: Row(
+              //               mainAxisAlignment: MainAxisAlignment.start,
+              //               children: [
+              //                 Container(
+              //                   padding: EdgeInsets.all(2.px),
+              //                   margin: EdgeInsets.all(2.px),
+              //                   decoration: BoxDecoration(
+              //                     color: secondaryColor[50],
+              //                     borderRadius: BorderRadius.circular(1.px),
+              //                   ),
+              //                   child: Text(
+              //                     '收',
+              //                     style: TextStyle(
+              //                         color: secondaryColor, fontSize: 10.px),
+              //                   ),
+              //                 ),
+              //                 SizedBox(width: 4.px),
+              //                 Expanded(
+              //                     child: Text(
+              //                   '李四',
+              //                   maxLines: 1,
+              //                   style: TextStyle(
+              //                       fontWeight: FontWeight.bold,
+              //                       fontSize: 10.px),
+              //                   overflow: TextOverflow.ellipsis,
+              //                 ))
+              //               ],
+              //             ),
+              //           ),
+              //           Icon(
+              //             Icons.location_on,
+              //             color: primaryColor,
+              //             size: 24.px,
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // 配送员位置
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: LatLng(_currentPosition?.latitude ?? 0,
+                        _currentPosition?.longitude ?? 0),
+                    child:
+                        Icon(Icons.location_on, color: Colors.red, size: 24.px),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          // 底部信息栏
+          Positioned(
+            bottom: 5.px,
+            left: 5.px,
+            right: 5.px,
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.circular(8.px),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 10,
+                    offset: Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 5.px, horizontal: 10.px),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 20.px,
+                              backgroundColor: Colors.grey[200],
+                              child: Icon(Icons.delivery_dining,
+                                  color: Colors.grey),
+                            ),
+                            SizedBox(width: 10.px),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _orderDetail?.deliveryStaff?.nickName ?? '',
+                                  style: TextStyle(
+                                    fontSize: 14.px,
+                                  ),
+                                ),
+
+                                // 五星好评
+                                SmoothStarRating(
+                                    allowHalfRating: false,
+                                    starCount: 5,
+                                    rating: 5.0,
+                                    size: 14.px,
+                                    color: secondaryColor,
+                                    borderColor: secondaryColor,
+                                    spacing: 0.0),
+                              ],
+                            ),
+                          ],
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            // 拨打电话
+                            launchUrl(Uri.parse(
+                                'tel:${_orderDetail?.deliveryStaff?.tel}'));
+                          },
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: Size(40.px, 10.px),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 6.px,
+                              vertical: 4.px,
+                            ),
+                            side: BorderSide(color: primaryColor),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min, // 保证内容占最小空间
+                            children: [
+                              Icon(Icons.phone_outlined,
+                                  size: 14.px, color: primaryColor),
+                              SizedBox(width: 4.px), // 控制图标和文字的间距
+                              Text(
+                                '联系Ta',
+                                style: TextStyle(
+                                    color: primaryColor, fontSize: 12.px),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        vertical: 10.px, horizontal: 16.px),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.px),
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              // 订单号图标
+                              Icons.delivery_dining,
+                              size: 24.px,
+                              color: secondaryColor,
+                            ),
+                            SizedBox(width: 4.px),
+                            Text(
+                              '配送单号: ',
+                              style: TextStyle(
+                                fontSize: 12.px,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            Text(
+                              '${_orderDetail?.orderDelivery?.deliveryNo}',
+                              style: TextStyle(
+                                fontSize: 14.px,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 6.px),
+                        Row(
+                          children: [
+                            Icon(
+                              // 订单号图标
+                              Icons.location_on,
+                              size: 24.px,
+                              color: primaryColor,
+                            ),
+                            SizedBox(width: 4.px),
+                            Text(
+                              '配送地址：${_orderDetail?.orderDelivery?.deliveryAddress}',
+                              style: TextStyle(
+                                fontSize: 12.px,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 6.px),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            // 循环订单状态
+                            for (int index = 0;
+                                index < (statusNodes?.length ?? 0);
+                                index++)
+                              TimelineTile(
+                                isFirst: index == 0,
+                                isLast: index == (statusNodes?.length ?? 0) - 1,
+                                indicatorStyle: const IndicatorStyle(
+                                  width: 10,
+                                  color: secondaryColor,
+                                  indicatorXY: 0.2,
+                                  padding: EdgeInsets.all(8),
+                                ),
+                                beforeLineStyle: LineStyle(
+                                  color: Colors.grey[300]!,
+                                  thickness: 2,
+                                ),
+                                endChild: Container(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 4.px,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                              _getStatusText(statusNodes?[index]
+                                                      .status
+                                                      .toString() ??
+                                                  ''),
+                                              style: TextStyle(
+                                                  fontSize: 14.px,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: index == 0
+                                                      ? secondaryColor
+                                                      : Colors.grey[400])),
+                                          SizedBox(
+                                            width: 4.px,
+                                          ),
+                                          Text(
+                                              '${statusNodes?[index].time ?? ''}',
+                                              style: TextStyle(
+                                                  fontSize: 12.px,
+                                                  color: index == 0
+                                                      ? secondaryColor
+                                                      : Colors.grey[400])),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 4.px,
+                                      ),
+                                      // 操作人
+                                      Text(
+                                          '操作人：${statusNodes?[index].deliveryStaffMsg ?? ''}',
+                                          style: TextStyle(
+                                            fontSize: 12.px,
+                                            color: index == 0
+                                                ? Colors.black
+                                                : Colors.grey[400],
+                                          )),
+                                      SizedBox(
+                                        height: 4.px,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // 检查服务是否启用
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {});
+      return;
+    }
+
+    // 检查权限
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ProgressHUD.showError('请开启定位权限');
+        setState(() {});
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ProgressHUD.showError('请开启定位权限');
+      setState(() {});
+      return;
+    }
+
+    // 获取当前位置
+    // Position position = await Geolocator.getCurrentPosition(
+    //     desiredAccuracy: LocationAccuracy.high);
+    // setState(() {
+    //   print('position::${position}');
+    //   _currentPosition = position;
+    // });
+  }
+
+  // 获取状态文本
+  String _getStatusText(String? status) {
+    switch (status) {
+      case '0':
+        return '待接单';
+      case '1':
+        return '配送中';
+      case '2':
+        return '已送达';
+      case '3':
+        return '已收货';
+      case '4':
+        return '已评价';
+      default:
+        return '未知状态';
+    }
+  }
+}

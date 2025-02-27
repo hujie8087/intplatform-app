@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/pages/auth/auth_view_model.dart';
+import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class ForgetPasswordPage extends StatefulWidget {
@@ -8,6 +10,23 @@ class ForgetPasswordPage extends StatefulWidget {
 }
 
 class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
+  final AuthViewModel model = AuthViewModel();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _cardController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final FocusNode _usernameFocusNode = FocusNode();
+  final FocusNode _cardFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameFocusNode.requestFocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +58,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 child: Text(
                   S.of(context).resetPassword,
                   style: TextStyle(
-                      fontSize: 36.px,
+                      fontSize: 24.px,
                       color: Colors.black,
                       fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
@@ -52,38 +71,60 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                     Container(
                       margin: EdgeInsets.only(bottom: 10.px),
                       child: TextField(
+                        controller: _usernameController,
+                        focusNode: _usernameFocusNode,
                         autofocus: true,
-                        cursorColor: Colors.blue,
+                        cursorColor: primaryColor,
                         style: TextStyle(
-                            fontSize: 16.px,
+                            fontSize: 14.px,
                             color: Colors.black,
                             fontWeight: FontWeight.bold),
                         decoration: InputDecoration(
                           hintText: S.of(context).inputWorkNumber,
                           prefixIcon: Icon(
                             Icons.person_2_outlined,
-                            color: Colors.blue,
+                            color: primaryColor,
                           ),
                           border: InputBorder.none,
                         ),
-                        onChanged: (value) {
-                          print(value);
-                        },
                       ),
                     ),
                     Container(
                       margin: EdgeInsets.only(bottom: 10.px),
                       child: TextField(
-                        cursorColor: Colors.blue,
+                        autofocus: true,
+                        cursorColor: primaryColor,
+                        controller: _cardController,
+                        focusNode: _cardFocusNode,
                         style: TextStyle(
-                            fontSize: 16.px,
+                            fontSize: 14.px,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                        decoration: InputDecoration(
+                          hintText: S.of(context).inputIdCard,
+                          prefixIcon: Icon(
+                            Icons.card_travel_outlined,
+                            color: primaryColor,
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 10.px),
+                      child: TextField(
+                        cursorColor: primaryColor,
+                        controller: _passwordController,
+                        focusNode: _passwordFocusNode,
+                        style: TextStyle(
+                            fontSize: 14.px,
                             color: Colors.black,
                             fontWeight: FontWeight.bold),
                         decoration: InputDecoration(
                           hintText: S.of(context).inputNewPassword,
                           prefixIcon: Icon(
                             Icons.lock,
-                            color: Colors.blue,
+                            color: primaryColor,
                           ),
                           border: InputBorder.none,
                         ),
@@ -95,17 +136,20 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                     ),
                     Container(
                       margin: EdgeInsets.only(bottom: 10.px),
+                      width: double.infinity,
                       child: TextField(
-                        cursorColor: Colors.blue,
+                        cursorColor: primaryColor,
+                        controller: _confirmPasswordController,
+                        focusNode: _confirmPasswordFocusNode,
                         style: TextStyle(
-                            fontSize: 16.px,
+                            fontSize: 14.px,
                             color: Colors.black,
                             fontWeight: FontWeight.bold),
                         decoration: InputDecoration(
                           hintText: S.of(context).inputConfirmPassword,
                           prefixIcon: Icon(
                             Icons.lock,
-                            color: Colors.blue,
+                            color: primaryColor,
                           ),
                           border: InputBorder.none,
                         ),
@@ -117,8 +161,20 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 20.px),
+                      width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          model.forgetPassword(
+                            context,
+                            {
+                              'userName': _usernameController.text,
+                              'card': _cardController.text,
+                              'newPassword': _passwordController.text,
+                              'confirmPassword':
+                                  _confirmPasswordController.text,
+                            },
+                          );
+                        },
                         child: Text(
                           S.of(context).confirm,
                           style:
@@ -126,9 +182,9 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                         ),
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.blue),
-                          minimumSize: MaterialStateProperty.all(
-                              Size(double.infinity, 40)),
+                              MaterialStateProperty.all(primaryColor[500]),
+                          textStyle: MaterialStateProperty.all(
+                              TextStyle(fontSize: 14.px, color: Colors.white)),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20.px))),

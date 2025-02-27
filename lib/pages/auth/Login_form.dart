@@ -5,6 +5,8 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
+import 'package:logistics_app/pages/auth/forget_password_page.dart';
+import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -24,9 +26,24 @@ class _LoginFormState extends State<LoginForm> {
   TextEditingController _usernameController = TextEditingController(text: '');
   TextEditingController _passwordController = TextEditingController(text: '');
   bool _isLoading = false;
+  bool _isRememberPassword = false;
+  bool _isPasswordVisible = false;
 
   void initState() {
     super.initState();
+    getRememberPassword();
+  }
+
+  // 获取记住密码
+  void getRememberPassword() async {
+    var username = await SpUtils.getString(Constants.SP_USER_NICKNAME);
+    var password = await SpUtils.getString(Constants.SP_USER_PASSWORD);
+    _usernameController.text = username ?? '';
+    _passwordController.text = password ?? '';
+    _isRememberPassword = username != null && password != null;
+    model.inputUserName = username;
+    model.inputPassword = password;
+    setState(() {});
   }
 
   @override
@@ -75,7 +92,7 @@ class _LoginFormState extends State<LoginForm> {
                     fontSize: 14.px,
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
-                obscureText: true,
+                obscureText: !_isPasswordVisible,
                 controller: _passwordController,
                 decoration: InputDecoration(
                   hintText: S.of(context).passwordPlaceholder,
@@ -83,12 +100,54 @@ class _LoginFormState extends State<LoginForm> {
                     Icons.lock,
                     color: primaryColor,
                   ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _isPasswordVisible
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: primaryColor,
+                    ),
+                    onPressed: () {
+                      // 密码可见
+                      _isPasswordVisible = !_isPasswordVisible;
+                      setState(() {});
+                    },
+                  ),
                   border: InputBorder.none,
                 ),
                 onChanged: (value) {
                   model.inputPassword = value;
                 },
               ),
+            ),
+            // 记住密码
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Expanded(
+                    // 忘记密码
+                    child: GestureDetector(
+                  onTap: () {
+                    RouteUtils.push(context, ForgetPasswordPage());
+                  },
+                  child: Text(
+                    '忘记密码？',
+                  ),
+                )),
+                // 记住密码
+                Text(
+                  '记住密码',
+                  style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
+                ),
+                Checkbox(
+                    value: _isRememberPassword,
+                    checkColor: Colors.white,
+                    activeColor: primaryColor,
+                    onChanged: (value) {
+                      _isRememberPassword = value!;
+                      setState(() {});
+                    }),
+              ],
             ),
             Container(
               width: double.infinity,
@@ -107,11 +166,29 @@ class _LoginFormState extends State<LoginForm> {
                             var token = await SpUtils.getString(
                                     Constants.SP_DEVICE_TOKEN) ??
                                 '';
+                            var isLogin =
+                                await SpUtils.getInt(Constants.SP_IS_LOGIN) ??
+                                    0;
+                            if (_isRememberPassword) {
+                              SpUtils.saveString(Constants.SP_USER_NICKNAME,
+                                  _usernameController.text);
+                              SpUtils.saveString(Constants.SP_USER_PASSWORD,
+                                  _passwordController.text);
+                            } else {
+                              SpUtils.remove(Constants.SP_USER_NICKNAME);
+                              SpUtils.remove(Constants.SP_USER_PASSWORD);
+                            }
+
                             if (token != '') {
                               DataUtils.setUserToken({'mobilePhoneId': token});
                             }
-
                             RouteUtils.push(context, AppHomeScreen());
+                            // if (isLogin != 0) {
+                            //   RouteUtils.push(context, AppHomeScreen());
+                            // } else {
+                            //   RouteUtils.push(context,
+                            //       ChangePasswordPage(isFirstLogin: true));
+                            // }
                             ProgressHUD.showText(S.of(context).loginSuccess);
                             setState(() {
                               _isLoading = false;

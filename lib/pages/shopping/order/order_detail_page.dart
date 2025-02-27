@@ -295,7 +295,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '¥${detail.price}',
+                      '${detail.price}',
                       style: TextStyle(
                         color: secondaryColor,
                         fontSize: 12.px,
@@ -360,7 +360,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 ),
               ),
               Text(
-                '¥${_orderDetail?.totalPrice?.toStringAsFixed(2)}',
+                '${_orderDetail?.totalPrice?.toStringAsFixed(2)}',
                 style: TextStyle(
                   color: secondaryColor,
                   fontSize: 16.px,

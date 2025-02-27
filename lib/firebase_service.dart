@@ -16,6 +16,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("body: ${message.notification?.body}");
   print("payload: ${message.data}");
   print('Handling a background message: ${message.messageId}');
+  // updateAndroidBadge(5);
   await Firebase.initializeApp();
 }
 

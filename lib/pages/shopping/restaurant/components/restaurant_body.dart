@@ -276,6 +276,7 @@ class _RestaurantBodyState extends State<RestaurantBody>
       value: foodViewModel,
       child: SafeArea(
         top: true,
+        bottom: false,
         child: Stack(
           children: [
             NestedScrollView(
@@ -786,8 +787,7 @@ class _RestaurantBodyState extends State<RestaurantBody>
                                   return Row(
                                     children: [
                                       // 只有当商品在购物车中时才显示减号按钮和数量
-                                      if (cartItem.num != null &&
-                                          cartItem.num! > 0) ...[
+                                      if (cartItem.num > 0) ...[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               shape: CircleBorder(),

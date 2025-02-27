@@ -4,7 +4,7 @@ class FoodModel {
   String image;
   double price;
   int stock;
-  int? num; // 购物车中的数量
+  int num; // 购物车中的数量
 
   FoodModel({
     this.id,
@@ -12,7 +12,7 @@ class FoodModel {
     required this.image,
     required this.price,
     required this.stock,
-    this.num,
+    required this.num,
   });
 
   factory FoodModel.fromJson(Map<String, dynamic> json) {
@@ -22,7 +22,7 @@ class FoodModel {
       image: json['image'] ?? '',
       price: (json['price'] ?? 0.0).toDouble(),
       stock: json['stock'] ?? 0,
-      num: json['num'],
+      num: json['num'] ?? 0,
     );
   }
 

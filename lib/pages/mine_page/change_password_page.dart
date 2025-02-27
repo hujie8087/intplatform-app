@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class ChangePasswordPage extends StatefulWidget {
-  const ChangePasswordPage({Key? key, this.animationController})
+  const ChangePasswordPage(
+      {Key? key, this.isFirstLogin = false, this.animationController})
       : super(key: key);
 
   final AnimationController? animationController;
+  final bool isFirstLogin;
   @override
   _ChangePasswordPageState createState() => _ChangePasswordPageState();
 }
@@ -24,6 +28,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.isFirstLogin);
     return Scaffold(
       body: SafeArea(
           top: false,
@@ -53,7 +58,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   children: [
                     Container(
                       padding: EdgeInsets.only(left: 24.px, right: 24.px),
-                      margin: EdgeInsets.only(bottom: 28.px),
+                      margin: EdgeInsets.only(bottom: 10.px),
                       width: SizedBox.expand().width,
                       child: Text(
                         S.of(context).changePassword,
@@ -64,6 +69,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         textAlign: TextAlign.left,
                       ),
                     ),
+                    if (widget.isFirstLogin)
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.only(left: 24.px, right: 24.px),
+                        margin: EdgeInsets.only(bottom: 14.px),
+                        child: Text(
+                          '为了您的资金安全，首次登录请您尽快修改密码！',
+                          style:
+                              TextStyle(fontSize: 12.px, color: secondaryColor),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
                     Container(
                       padding: EdgeInsets.only(left: 16.px, right: 16.px),
                       child: _ChangePasswordForm(),
@@ -72,16 +89,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 ),
               ),
               // 返回按钮
-              Positioned(
-                top: 36.px,
-                left: 20.px,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back_ios, color: Colors.black),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              )
+              if (!widget.isFirstLogin)
+                Positioned(
+                  top: 36.px,
+                  left: 20.px,
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
             ],
           )
           // 居中显示
@@ -228,10 +246,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         'newPassword': _newPasswordController.text
                       },
                       success: (data) {
-                        Navigator.of(context).pop({
-                          'code': 1,
-                          'msg': S.of(context).passwordChangeSuccess
-                        });
+                        ProgressHUD.showText(
+                            S.of(context).passwordChangeSuccess);
+                        Navigator.pushNamed(context, RoutePath.login);
                       },
                     );
                   }

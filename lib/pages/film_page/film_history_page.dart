@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/pages/film_page/film_download_model.dart';
-import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
+import 'package:logistics_app/pages/news/notice_page/notice_view_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

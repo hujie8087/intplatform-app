@@ -25,20 +25,20 @@ class NavigationBarItemState extends State<NavigationBarItem>
     with TickerProviderStateMixin {
   AnimationController? animationController;
   late AnimationController physicalShapeAnimationController;
-  double current = 0.0;
-  double prev = 0.0;
+  double current = 1.0;
+  double prev = 1.0;
 
   @override
   void initState() {
     animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 100),
     );
     animationController?.forward();
     super.initState();
     physicalShapeAnimationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300), // 动画持续时间
+      duration: Duration(milliseconds: 200), // 动画持续时间
     );
     physicalShapeAnimationController.forward();
   }

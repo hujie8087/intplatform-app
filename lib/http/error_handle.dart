@@ -72,12 +72,19 @@ class NetError {
 }
 
 extension DioErrorTypeExtension on DioExceptionType {
-  int get errorCode => [
-        ExceptionHandle.connect_timeout_error,
-        ExceptionHandle.send_timeout_error,
-        ExceptionHandle.receive_timeout_error,
-        0,
-        ExceptionHandle.cancel_error,
-        0,
-      ][index];
+  int get errorCode {
+    print('DioExceptionType index: $index'); // 调试日志
+    final errorCodes = [
+      ExceptionHandle.connect_timeout_error,
+      ExceptionHandle.send_timeout_error,
+      ExceptionHandle.receive_timeout_error,
+      0,
+      ExceptionHandle.cancel_error,
+      0,
+    ];
+
+    return (index >= 0 && index < errorCodes.length)
+        ? errorCodes[index]
+        : 0; // 默认错误码
+  }
 }

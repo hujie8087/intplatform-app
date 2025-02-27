@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/icon_api_widget.dart';
 import 'package:logistics_app/http/apis.dart';
+import 'package:logistics_app/http/data/tool_utils.dart';
 import 'package:logistics_app/http/model/guide_type_view_model.dart';
 import 'package:logistics_app/http/model/guide_view_model.dart';
+import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/pages/guide/guide_view_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class GuideListPage extends StatefulWidget {
-  const GuideListPage(
-      {Key? key, required this.guideType, required this.guideList})
-      : super(key: key);
-  final GuideTypeViewModel guideType;
-  final List<GuideViewModel> guideList;
+  const GuideListPage({Key? key, required this.guideTypeId}) : super(key: key);
+  final int guideTypeId;
   @override
   _GuideListPage createState() => _GuideListPage();
 }
@@ -21,14 +21,38 @@ class GuideListPage extends StatefulWidget {
 class _GuideListPage extends State<GuideListPage>
     with TickerProviderStateMixin {
   AnimationController? animationController;
+  GuideTypeViewModel? guideType;
+  List<GuideViewModel> guideList = [];
 
   String imagePrefix = APIs.foodPrefix;
+
+  // 获取引导类型
+  void getGuideType() async {
+    ToolUtils.getGuideTypeDetail(widget.guideTypeId, success: (data) {
+      setState(() {
+        guideType = GuideTypeViewModel.fromJson(data['data']);
+      });
+    });
+  }
+
+  // 获取引导列表
+  void getGuideList() async {
+    ToolUtils.getGuideList({'typeId': widget.guideTypeId}, success: (data) {
+      setState(() {
+        guideList =
+            RowsModel.fromJson(data, (json) => GuideViewModel.fromJson(json))
+                    .rows ??
+                [];
+      });
+    });
+  }
 
   @override
   void initState() {
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
-
+    getGuideType();
+    getGuideList();
     super.initState();
   }
 
@@ -37,7 +61,7 @@ class _GuideListPage extends State<GuideListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.guideType.title ?? '',
+          guideType?.title ?? '',
           style: TextStyle(fontSize: 16.px),
         ),
         centerTitle: false,
@@ -47,7 +71,7 @@ class _GuideListPage extends State<GuideListPage>
       body: SafeArea(
           child: Padding(
         padding: EdgeInsets.all(10.px),
-        child: restaurantListView(),
+        child: guideList.length > 0 ? restaurantListView() : EmptyView(),
       )),
     );
   }
@@ -55,17 +79,17 @@ class _GuideListPage extends State<GuideListPage>
   Widget restaurantListView() {
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
+        crossAxisCount: 3,
         childAspectRatio: 1,
         crossAxisSpacing: 6.px,
         mainAxisSpacing: 0,
       ),
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: widget.guideList.length,
+      physics: guideList.length > 0 ? NeverScrollableScrollPhysics() : null,
       padding: EdgeInsets.all(0),
+      itemCount: guideList.length,
       itemBuilder: (context, index) {
-        final int count = widget.guideList.length;
+        final int count = guideList.length;
         final Animation<double> animation = Tween<double>(begin: 0.0, end: 1.0)
             .animate(CurvedAnimation(
                 parent: animationController!,
@@ -73,10 +97,10 @@ class _GuideListPage extends State<GuideListPage>
                     curve: Curves.fastOutSlowIn)));
         animationController?.forward();
         return GuideViewDataView(
-            listData: widget.guideList[index],
+            listData: guideList[index],
             callBack: () => {
                   RouteUtils.push(
-                      context, GuideViewPage(id: widget.guideList[index].id!))
+                      context, GuideViewPage(id: guideList[index].id!))
                 },
             imagePrefix: imagePrefix,
             animation: animation,
@@ -133,7 +157,7 @@ class GuideViewDataView extends StatelessWidget {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.all(10.px),
+                                    padding: EdgeInsets.all(12.px),
                                     decoration: BoxDecoration(
                                         color: index! % 2 == 1
                                             ? primaryColor.withOpacity(0.1)
@@ -142,7 +166,7 @@ class GuideViewDataView extends StatelessWidget {
                                             Radius.circular(100.px))),
                                     child: Icon(
                                       iconMap[listData.img],
-                                      size: 14.px,
+                                      size: 20.px,
                                       color: index! % 2 == 1
                                           ? primaryColor[500]
                                           : secondaryColor[500],
@@ -155,7 +179,7 @@ class GuideViewDataView extends StatelessWidget {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        fontSize: 10.px,
+                                        fontSize: 12.px,
                                       )),
                                 ],
                               ),

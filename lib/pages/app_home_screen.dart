@@ -42,11 +42,6 @@ class _AppHomeScreenState extends State<AppHomeScreen>
 
   List<TabIconData> _tabIconsList = [];
 
-  void updateTabIconsList() {
-    _loadTabIcons();
-    setState(() {});
-  }
-
   void _loadTabIcons() {
     setState(() {
       if (_tabIconsList.isEmpty) {
@@ -145,23 +140,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           }
           if (oldVersion < newVersion) {
             if (Platform.isAndroid) {
-              UpdateEntity customParseJson() {
-                return UpdateEntity(
-                    isForce: true,
-                    hasUpdate: true,
-                    isIgnorable: false,
-                    versionCode: int.parse(updateModel.versionCode),
-                    versionName: updateModel.versionName,
-                    updateContent: updateModel.updateLog,
-                    downloadUrl: downloadUrlPre + updateModel.apkUrl,
-                    apkSize: updateModel.apkSize);
-              }
-
-              FlutterXUpdate.updateByInfo(
-                  updateEntity: customParseJson(),
-                  themeColor: '#ff6532',
-                  buttonTextColor: '#ffffff',
-                  topImageRes: 'bg_update_top');
+              checkUpdateFlutterXUpdate(updateModel, downloadUrlPre);
             } else {
               UpdateDialog.showUpdate(context,
                   title: S.of(context).updateAppStore,
@@ -188,21 +167,47 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     );
   }
 
+  void checkUpdateFlutterXUpdate(
+      UpdateInfoData updateModel, String downloadUrlPre) {
+    FlutterXUpdate.updateByInfo(
+      updateEntity: UpdateEntity(
+        isForce: true,
+        hasUpdate: true,
+        isIgnorable: false,
+        versionCode: int.parse(updateModel.versionCode),
+        versionName: updateModel.versionName,
+        updateContent: updateModel.updateLog,
+        downloadUrl: downloadUrlPre + updateModel.apkUrl,
+        // downloadUrl:
+        //     'https://web.iwipwedabay.com/static/intplatform/APK/IWIP-intplatform.apk',
+        // downloadUrl:
+        //     'http://192.168.91.52/static/food/upgrade/apk/food_app_v1.6.6.apk',
+        // apkSize: 32092,
+        apkSize: updateModel.apkSize,
+        apkMd5: '',
+      ),
+      themeColor: '#ff6532',
+      topImageRes: 'bg_update_top',
+      buttonTextColor: '#ffffff',
+      overrideGlobalRetryStrategy: true,
+      enableRetry: false,
+    );
+  }
+
   @override
   void initState() {
     _loadTabIcons();
     _tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
-    _tabIconsList[0].isSelected = true;
+    _tabIconsList[1].isSelected = true;
 
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
     super.initState();
-    _handleTabChanged(0);
+    _handleTabChanged(1);
     // tabBody = HomePage(
     //     animationController: animationController, onChanged: _handleTabChanged);
-
     checkUpdate(context);
   }
 
@@ -218,9 +223,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       switch (newValue) {
         case 0:
           setState(() {
-            tabBody = HomePage(
-                animationController: animationController,
-                onChanged: _handleTabChanged);
+            tabBody = HomePage(onChanged: _handleTabChanged);
           });
           break;
         case 1:
@@ -231,10 +234,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
         case 2:
           await isLogin();
           setState(() {
-            tabBody = MinePage(
-              animationController: animationController,
-              updateTabIconsList: updateTabIconsList,
-            );
+            tabBody = MinePage();
           });
           break;
       }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
-import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
+import 'package:logistics_app/pages/news/notice_page/notice_list_page.dart';
+import 'package:logistics_app/pages/news/notice_page/notice_view_model.dart';
 import 'package:provider/provider.dart';
 
 class FeedbackListView extends StatefulWidget {

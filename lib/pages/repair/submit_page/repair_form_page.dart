@@ -101,20 +101,9 @@ class _RepairFormPage extends State<RepairFormPage>
 
   late List<Item> items;
 
-  // Future<void> _fetchData() async {
-  //   var userInfo = await SpUtils.getModel('userInfo');
-  //   UserInfoModel userInfoModel = UserInfoModel.fromJson(userInfo);
-  //   // 更新状态
-  //   setState(() {
-  //     repairKey = DateTime.now().millisecondsSinceEpoch.toString() +
-  //         userInfoModel.user!.userId.toString();
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
-    // _fetchData();
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
 
@@ -125,6 +114,7 @@ class _RepairFormPage extends State<RepairFormPage>
     animationController!.forward();
     // 获取用户地址列表数据
     model.getMyAddressList(1, 10000);
+    sendMessage();
   }
 
 // 第一个页面
@@ -140,6 +130,19 @@ class _RepairFormPage extends State<RepairFormPage>
         setState(() {});
       });
     }
+  }
+
+// 发送消息通知
+  void sendMessage() {
+    DataUtils.sendOneMessage(
+      {
+        'title': '维修通知',
+        'body': '您有新的维修订单，请及时处理',
+        "address": model.defaultAddress?.detailedAddress ?? '',
+        "remark": _repairMessageController.text,
+        "type": 1,
+      },
+    );
   }
 
   @override
@@ -602,7 +605,7 @@ class _RepairFormPage extends State<RepairFormPage>
               child: GestureDetector(
                 onTap: () async {
                   final result =
-                      await HJBottomSheet.wxPicker(context, selectedAssets);
+                      await HJBottomSheet.wxPicker(context, selectedAssets, 6);
                   if (result != null) {
                     selectedAssets = result;
                     setState(() {});

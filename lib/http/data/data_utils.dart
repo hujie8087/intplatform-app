@@ -31,6 +31,24 @@ class DataUtils {
     HttpUtils.post(APIs.login, parameters, success: success, fail: fail);
   }
 
+  /// 忘记密码
+  static void forgetPassword<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put(APIs.forgetPassword, parameters,
+        success: success, fail: fail);
+  }
+
+  // 刷新token
+  static void updateToken<T>({
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.post(APIs.updateToken, null, success: success, fail: fail);
+  }
+
   static void logout<T>({
     Success? success,
     Fail? fail,
@@ -210,6 +228,146 @@ class DataUtils {
     Fail? fail,
   }) {
     HttpUtils.post(APIs.submitMessage, parameters,
+        success: success, fail: fail);
+  }
+
+  // 获取住宿流程
+  static void getAccommodationProcessList(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(APIs.getAccommodationProcessList, parameters,
+        success: success, fail: fail);
+  }
+
+  // 获取申请列表
+  static void getApplyList(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/other/applyOnline', parameters,
+        success: success, fail: fail);
+  }
+
+  // 获取申请链接
+  static void getApplyUrl(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(
+        '/other/applyOnline/getOaFormUrl/' + parameters['id'].toString(), null,
+        success: success, fail: fail);
+  }
+
+  // 获取在线接单列表
+  static void getOnlineOrderList(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(APIs.getOnlineOrderList, parameters,
+        success: success, fail: fail);
+  }
+
+  // 获取我的订单列表
+  static void getMyOrderList(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/delivery/acceptOrder/myDeliveryOrder', parameters,
+        success: success, fail: fail);
+  }
+
+  // 接单
+  static void acceptOrder(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.post('/delivery/acceptOrder', parameters,
+        success: success, fail: fail);
+  }
+
+  // 取消订单
+  static void cancelOrder(
+    id, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.patch('/delivery/acceptOrder/' + id, null,
+        success: success, fail: fail);
+  }
+
+  // 送达
+  static void deliverOrder(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put('/delivery/acceptOrder/' + parameters['id'].toString(),
+        {'msg': parameters['msg']},
+        success: success, fail: fail);
+  }
+
+  // 上传位置
+  static void uploadLocation(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.post('/delivery/location/addLocation', parameters,
+        success: success, fail: fail);
+  }
+
+  // 获取配送站点列表
+  static void getDeliveryStationList({
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/delivery/sourceMsg', null, success: success, fail: fail);
+  }
+
+  // 根据编码获取站点详情
+  static void getDeliveryStationByCode(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/delivery/sourceMsg/station', parameters,
+        success: success, fail: fail);
+  }
+
+  // 确认收货
+  static void confirmDelivery(
+    id, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put('/delivery/order/' + id.toString(), null,
+        success: success, fail: fail);
+  }
+
+  // 发送消息通知
+  static void sendOneMessage(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.post(APIs.sendOneMessage, parameters,
+        success: success, fail: fail);
+  }
+
+  // 根据用户名获取用户id
+  static void getUserInfoByUsername(
+    username, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/system/user/getSenderId/${username}', null,
         success: success, fail: fail);
   }
 }

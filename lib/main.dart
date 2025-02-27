@@ -11,14 +11,15 @@ import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/firebase_service.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/http/log_utils.dart';
+import 'package:logistics_app/http/model/app_info.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
-
 import 'firebase_options.dart';
 import 'generated/l10n.dart';
 
@@ -39,6 +40,9 @@ void main() async {
     languageCode: languageCode,
   ));
 }
+
+final RouteObserver<ModalRoute<void>> routeObserver =
+    RouteObserver<ModalRoute<void>>();
 
 Future<void> initializeFirebase() async {
   if (Platform.isAndroid) {
@@ -69,45 +73,58 @@ Future<void> initializeFirebase() async {
   }
 }
 
-///初始化在线升级
+///初始化在线级
 void initXUpdate() async {
   if (Platform.isAndroid) {
     FlutterXUpdate.init(
+      ///是否输出日志
+      debug: true,
 
-            ///是否输出日志
-            debug: true,
+      ///是否使用post请求
+      isPost: false,
 
-            ///是否使用post请求
-            isPost: false,
+      ///post请求是否是上传json
+      isPostJson: false,
 
-            ///post请求是否是上传json
-            isPostJson: false,
+      ///请求响应超时时间
+      timeout: 25000,
 
-            ///请求响应超时时间
-            timeout: 25000,
+      ///是否开启自动模式
+      isWifiOnly: false,
 
-            ///是否开启自动模式
-            isWifiOnly: false,
+      ///是否开启自动模式
+      isAutoMode: false,
 
-            ///是否开启自动模式
-            isAutoMode: false,
+      ///需要设置的公共参数
+      supportSilentInstall: false,
 
-            ///需要设置的公共参数
-            supportSilentInstall: false,
-
-            ///在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
-            enableRetry: false)
-        .then((value) {
-      FlutterXUpdate.setErrorHandler(
-        onUpdateError: (Map<String, dynamic>? message) async {
-          print("下载错误: $message");
+      ///在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
+      enableRetry: false,
+    ).then((value) {
+      FlutterXUpdate.setCustomParseHandler(
+        onUpdateParse: (String? json) async {
+          print("更新解析: $json");
+          return customParseJson(json!);
         },
       );
-      FlutterXUpdate.setCustomParseHandler();
+      print("初始化更新模块成功");
     }).catchError((error) {
-      print(error);
+      print("初始化更新模块出错: $error");
     });
   }
+}
+
+UpdateEntity customParseJson(String json) {
+  AppInfo appInfo = AppInfo.fromJson(json);
+  print(appInfo);
+  return UpdateEntity(
+      hasUpdate: appInfo.hasUpdate,
+      isIgnorable: appInfo.isIgnorable,
+      versionCode: appInfo.versionCode,
+      versionName: appInfo.versionName,
+      updateContent: appInfo.updateLog,
+      downloadUrl: appInfo.apkUrl,
+      apkSize: appInfo.apkSize);
 }
 
 /// 设计尺寸
@@ -126,9 +143,38 @@ Size get designSize {
       logicalShortestSide * scaleFactor, logicalLongestSide * scaleFactor);
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key, required this.languageCode}) : super(key: key);
   final String languageCode;
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // 应用从后台返回前台时刷新 token
+      _checkAndRefreshToken();
+    }
+  }
+
+  Future<void> _checkAndRefreshToken() async {
+    DataUtils.updateToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -207,6 +253,7 @@ class MyApp extends StatelessWidget {
               useMaterial3: false,
             ),
             navigatorKey: RouteUtils.navigatorKey,
+            navigatorObservers: [routeObserver],
             onGenerateRoute: Routes.generateRoute,
             initialRoute: RoutePath.home,
             // home:FitnessAppHomeScreen(),

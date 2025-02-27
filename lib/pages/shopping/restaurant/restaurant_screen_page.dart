@@ -25,15 +25,18 @@ class _RestaurantScreenPageState extends State<RestaurantScreenPage> {
     return ChangeNotifierProvider.value(
       value: foodViewModel,
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/restaurant-bg.jpg'),
-                  fit: BoxFit.fitWidth,
-                  alignment: Alignment.topCenter)),
-          child: RestaurantBody(
-            id: widget.id,
+        body: SafeArea(
+          top: false,
+          bottom: false,
+          child: Container(
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/restaurant-bg.jpg'),
+                    fit: BoxFit.fitWidth,
+                    alignment: Alignment.topCenter)),
+            child: RestaurantBody(
+              id: widget.id,
+            ),
           ),
         ),
       ),

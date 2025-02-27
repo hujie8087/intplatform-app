@@ -52,4 +52,33 @@ class RepairUtils {
     HttpUtils.put('/maintenance/repair', parameters,
         success: success, fail: fail);
   }
+
+  // 获取维修订单未完成数量
+  static void getRepairUnfinishedCount<T>({
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/maintenance/repair/unfinishedCountApp', null,
+        success: success, fail: fail);
+  }
+
+  // 获取维修订单列表
+  static void getRepairList<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/maintenance/repair/listApp', parameters,
+        success: success, fail: fail);
+  }
+
+  // 获取维修类型
+  static void getRepairType<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/maintenance/repairType/list', parameters,
+        success: success, fail: fail);
+  }
 }

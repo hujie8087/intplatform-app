@@ -18,7 +18,8 @@ class MyRepairPage extends StatefulWidget {
   _MyRepairPage createState() => _MyRepairPage();
 }
 
-class _MyRepairPage extends State<MyRepairPage> with TickerProviderStateMixin {
+class _MyRepairPage extends State<MyRepairPage>
+    with TickerProviderStateMixin, RouteAware {
   late TabController _tabController;
   final List<TabBarModel> tabs = [
     TabBarModel(title: S.current.all, repairState: null),

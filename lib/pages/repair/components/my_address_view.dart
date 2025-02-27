@@ -155,7 +155,7 @@ class MyAddressView extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.only(top: 10.px),
                 // 这个container的高度
-                height: 40.px,
+                height: 46.px,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor[500],

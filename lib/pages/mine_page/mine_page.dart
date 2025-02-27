@@ -12,7 +12,7 @@ import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_view_model.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/my_address_page.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
-import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
+import 'package:logistics_app/pages/news/notice_page/notice_list_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/device_utils.dart';
@@ -22,12 +22,8 @@ import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
 
 class MinePage extends StatefulWidget {
-  const MinePage(
-      {Key? key, this.animationController, required this.updateTabIconsList})
-      : super(key: key);
+  const MinePage({Key? key}) : super(key: key);
 
-  final AnimationController? animationController;
-  final Function updateTabIconsList;
   @override
   _MinePageState createState() => _MinePageState();
 }
@@ -40,17 +36,20 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
   String version = '';
   String localeName = '中文';
   UserInfoModel? userInfo;
-
+  AnimationController? animationController;
   List<Widget> listViews = <Widget>[];
 
   @override
   void initState() {
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 300), vsync: this);
+
     opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
-            parent: widget.animationController!,
+            parent: animationController!,
             curve: Interval(0.0, 1.0, curve: Curves.fastOutSlowIn)));
 
-    widget.animationController!.forward();
+    animationController!.forward();
     super.initState();
     _fetchData();
   }
@@ -88,7 +87,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
         localeName = '中文';
         S.load(Locale('zh', 'CN'));
       }
-      widget.updateTabIconsList();
+      // widget.updateTabIconsList();
       Navigator.pop(context);
       // Restart.restartApp();
     });
@@ -142,7 +141,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
       end: 0.0,
     ).animate(
       CurvedAnimation(
-        parent: widget.animationController!,
+        parent: animationController!,
         curve: Interval(
           0.0,
           endValue,
@@ -254,7 +253,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
   // 人物卡片
   Widget _personCard() {
     return AnimatedBuilder(
-        animation: widget.animationController!,
+        animation: animationController!,
         builder: (BuildContext context, Widget? child) {
           return FadeTransition(
               opacity: opacityAnimation!,
@@ -387,7 +386,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
   Widget _commonItem(String title, IconData icon, GestureTapCallback? onTap,
       String? subTitle, animationValue) {
     return AnimatedBuilder(
-        animation: widget.animationController!,
+        animation: animationController!,
         builder: (BuildContext context, Widget? child) {
           return FadeTransition(
               opacity: opacityAnimation!,
@@ -446,7 +445,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
   ///退出登录按钮
   Widget _logoutButton(GestureTapCallback? onTap) {
     return AnimatedBuilder(
-        animation: widget.animationController!,
+        animation: animationController!,
         builder: (BuildContext context, Widget? child) {
           return FadeTransition(
               opacity: opacityAnimation!,

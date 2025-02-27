@@ -10,12 +10,12 @@ import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/home_page/message_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
-import 'package:logistics_app/pages/news_page/news_list_page.dart';
-import 'package:logistics_app/pages/notice_page/notice_detail_page.dart';
-import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
-import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
-import 'package:logistics_app/pages/repair/my_repair_page.dart';
-import 'package:logistics_app/pages/repair/repair_form_page.dart';
+import 'package:logistics_app/pages/news/news_page/news_list_page.dart';
+import 'package:logistics_app/pages/news/notice_page/notice_detail_page.dart';
+import 'package:logistics_app/pages/news/notice_page/notice_list_page.dart';
+import 'package:logistics_app/pages/news/notice_page/notice_view_model.dart';
+import 'package:logistics_app/pages/repair/my_repair_page/my_repair_page.dart';
+import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/pages/shopping/order/order_list_page.dart';
 import 'package:logistics_app/pages/shopping/payment/payment_qrcode_page.dart';
 import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
@@ -26,14 +26,9 @@ import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage(
-      {Key? key,
-      this.animationController,
-      required this.onChanged,
-      this.addClick})
+  const HomePage({Key? key, required this.onChanged, this.addClick})
       : super(key: key);
 
-  final AnimationController? animationController;
   final ValueChanged<int>? onChanged;
   final Function()? addClick;
   @override
@@ -44,22 +39,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   var model = NoticeViewModel();
   final ScrollController scrollController = ScrollController();
   String userName = '';
-  String deptName = '';
+  String nickName = '';
   String avatar = '';
   double topBarOpacity = 0.0;
   Animation<double>? topBarAnimation;
   int current = 0;
   Timer? _timer;
   PageController _pageController = PageController();
+  AnimationController? animationController;
 
   final List<SwitchType> buttonLabels = [
     SwitchType(S.current.notifications, 0),
     SwitchType(S.current.news, 1),
   ];
   void initState() {
+    animationController = AnimationController(
+        duration: const Duration(milliseconds: 300), vsync: this);
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
-            parent: widget.animationController!,
+            parent: animationController!,
             curve: Interval(0, 0.3, curve: Curves.fastOutSlowIn)));
     scrollController.addListener(() {
       if (scrollController.offset >= 50) {
@@ -87,21 +85,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     // model.getNewsModelList(1, 10);
     super.initState();
     _fetchData();
-    widget.animationController?.forward();
+    animationController?.forward();
   }
 
   Future<void> _fetchData() async {
     // 模拟异步数据获取
     var res = await SpUtils.getString(Constants.SP_USER_NAME);
-    var dept = await SpUtils.getString(Constants.SP_USER_DEPT);
     // 模拟异步数据获取
     var userInfo = await SpUtils.getModel('userInfo');
     // 更新状态
     avatar = userInfo != null ? userInfo['user']['avatar'] : '';
+
     // 更新状态
     setState(() {
       userName = res ?? '';
-      deptName = dept ?? '';
+      nickName = userInfo != null ? userInfo['user']['userName'] : '';
       _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
         if (_pageController.hasClients) {
           int nextPage = _pageController.page!.toInt() + 1;
@@ -149,7 +147,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           callBack: (int value) {
                             updateCurrent(value);
                           },
-                          animationController: widget.animationController,
+                          animationController: animationController,
                           animation: topBarAnimation,
                           current: current,
                         ),
@@ -173,8 +171,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       final Animation<double> animation =
                                           Tween<double>(begin: 0.0, end: 1.0)
                                               .animate(CurvedAnimation(
-                                                  parent: widget
-                                                      .animationController!,
+                                                  parent: animationController!,
                                                   curve: Interval(
                                                       (1 / count) * index, 1.0,
                                                       curve: Curves
@@ -191,7 +188,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         },
                                         animation: animation,
                                         animationController:
-                                            widget.animationController,
+                                            animationController,
                                       );
                                     },
                                   );
@@ -214,13 +211,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       final Animation<double> animation =
                                           Tween<double>(begin: 0.0, end: 1.0)
                                               .animate(CurvedAnimation(
-                                                  parent: widget
-                                                      .animationController!,
+                                                  parent: animationController!,
                                                   curve: Interval(
                                                       (1 / count) * index, 1.0,
                                                       curve: Curves
                                                           .fastOutSlowIn)));
-                                      widget.animationController?.forward();
+                                      animationController?.forward();
                                       return NewsDataView(
                                         listData: model.newsList?[index],
                                         callBack: () => {
@@ -234,7 +230,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         },
                                         animation: animation,
                                         animationController:
-                                            widget.animationController,
+                                            animationController,
                                       );
                                     },
                                   );
@@ -257,7 +253,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // 功能图标区域
   Widget _FunctionArea() {
     return AnimatedBuilder(
-        animation: widget.animationController!,
+        animation: animationController!,
         builder: (BuildContext context, Widget? child) {
           return FadeTransition(
             opacity: topBarAnimation!,
@@ -348,7 +344,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // 公告
   Widget _Announcement() {
     return AnimatedBuilder(
-        animation: widget.animationController!,
+        animation: animationController!,
         builder: (BuildContext context, Widget? child) {
           return FadeTransition(
             opacity: topBarAnimation!,
@@ -436,7 +432,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // 广告图轮播
   Widget _Banner() {
     return AnimatedBuilder(
-        animation: widget.animationController!,
+        animation: animationController!,
         builder: (BuildContext context, Widget? child) {
           return FadeTransition(
             opacity: topBarAnimation!,
@@ -488,7 +484,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       children: <Widget>[
         AnimatedBuilder(
-          animation: widget.animationController!,
+          animation: animationController!,
           builder: (BuildContext context, Widget? child) {
             return FadeTransition(
               opacity: topBarAnimation!,
@@ -551,7 +547,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           ),
                                         ),
                                         Text(
-                                          deptName,
+                                          nickName,
                                           style: TextStyle(
                                             fontFamily: AppTheme.fontName,
                                             fontSize:

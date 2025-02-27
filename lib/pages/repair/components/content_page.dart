@@ -8,6 +8,7 @@ import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/model/repair_view_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
+import 'package:logistics_app/main.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
@@ -26,7 +27,7 @@ class ContentPage extends StatefulWidget {
 }
 
 class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, RouteAware {
   bool get wantKeepAlive => true;
   AnimationController? animationController;
   String imagePrefix = APIs.imagePrefix;
@@ -88,6 +89,18 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
         _refreshController.refreshFailed();
       },
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    _requestData(true);
   }
 
   @override

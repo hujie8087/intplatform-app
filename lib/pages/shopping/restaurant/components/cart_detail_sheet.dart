@@ -183,7 +183,7 @@ class CartDetailSheet extends StatelessWidget {
                 ),
                 SizedBox(height: 4.px),
                 Text(
-                  '¥${item.price}',
+                  '${item.price}',
                   style: TextStyle(
                     color: secondaryColor,
                     fontSize: 12.px,

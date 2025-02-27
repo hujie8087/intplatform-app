@@ -83,6 +83,17 @@ class _LoginScreenState extends State<LoginPage> {
                         ],
                       ),
                     ),
+                    // 返回首页
+                    Positioned(
+                      top: 50.px,
+                      left: 20.px,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back, size: 24.px),
+                        onPressed: () {
+                          RouteUtils.push(context, AppHomeScreen());
+                        },
+                      ),
+                    ),
                   ],
                 ),
               )

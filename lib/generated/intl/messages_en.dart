@@ -136,6 +136,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "evaluation": MessageLookupByLibrary.simpleMessage("Evaluation"),
         "exitManage": MessageLookupByLibrary.simpleMessage("Exit manage"),
         "expenditure": MessageLookupByLibrary.simpleMessage("Expenditure"),
+        "feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
+        "feedbackContent": MessageLookupByLibrary.simpleMessage("Content"),
+        "feedbackTitle": MessageLookupByLibrary.simpleMessage("Title"),
         "fixed": MessageLookupByLibrary.simpleMessage("Fixed"),
         "gender": MessageLookupByLibrary.simpleMessage("Gender"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("Goods info"),
@@ -144,11 +147,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "homePage": MessageLookupByLibrary.simpleMessage("Home"),
         "iWantToEat": MessageLookupByLibrary.simpleMessage("I want to eat"),
         "id": MessageLookupByLibrary.simpleMessage("Indonesia"),
+        "idCard": MessageLookupByLibrary.simpleMessage("ID Card"),
         "imageUploading":
             MessageLookupByLibrary.simpleMessage("Image uploading..."),
         "information": MessageLookupByLibrary.simpleMessage("Information"),
         "inputConfirmPassword": MessageLookupByLibrary.simpleMessage(
             "Please enter the new password again"),
+        "inputIdCard": MessageLookupByLibrary.simpleMessage(
+            "Please enter your ID card number"),
         "inputMessage": m1,
         "inputNewPassword":
             MessageLookupByLibrary.simpleMessage("Please enter a new password"),
@@ -160,6 +166,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please enter your employee number"),
         "isDefault": MessageLookupByLibrary.simpleMessage("Is default"),
         "items": MessageLookupByLibrary.simpleMessage("Items"),
+        "kTimeDetail": MessageLookupByLibrary.simpleMessage("K Time Detail"),
+        "kTimeList": MessageLookupByLibrary.simpleMessage("K Time"),
         "livingAreaDataLoading":
             MessageLookupByLibrary.simpleMessage("Living Area Data Loading..."),
         "loading": MessageLookupByLibrary.simpleMessage("Data loading..."),
@@ -177,6 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "mine": MessageLookupByLibrary.simpleMessage("Mine"),
         "minePage": MessageLookupByLibrary.simpleMessage("Mine"),
         "modifyAddress": MessageLookupByLibrary.simpleMessage("Modify address"),
+        "monthly": MessageLookupByLibrary.simpleMessage("Monthly"),
         "monthlySales": MessageLookupByLibrary.simpleMessage("Monthly Sales"),
         "moreFunction": MessageLookupByLibrary.simpleMessage("More Function"),
         "myAddress": MessageLookupByLibrary.simpleMessage("My Address"),
@@ -238,6 +247,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "pickupType": MessageLookupByLibrary.simpleMessage("Pickup type"),
         "pleaseFillIn": m2,
         "pleaseSelect": m3,
+        "promo": MessageLookupByLibrary.simpleMessage("Promotional Video"),
+        "promoDetail": MessageLookupByLibrary.simpleMessage("Promo Detail"),
+        "promoList": MessageLookupByLibrary.simpleMessage("Promo List"),
         "read": MessageLookupByLibrary.simpleMessage("Read"),
         "remaining": MessageLookupByLibrary.simpleMessage("Remaining"),
         "remark": MessageLookupByLibrary.simpleMessage("Remark"),
@@ -255,6 +267,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Confirm to submit repair feedback?"),
         "repairImages": MessageLookupByLibrary.simpleMessage("Repair Images"),
         "repairOnline": MessageLookupByLibrary.simpleMessage("Repair Now"),
+        "repairOrder": MessageLookupByLibrary.simpleMessage("Repair Order"),
         "repairPerson": MessageLookupByLibrary.simpleMessage("Repair Person"),
         "repairPersonNotEmpty": MessageLookupByLibrary.simpleMessage(
             "Repair person cannot be empty"),

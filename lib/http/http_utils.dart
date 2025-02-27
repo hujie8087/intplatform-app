@@ -77,7 +77,20 @@ class HttpUtils {
         loadingText: loadingText, success: success, fail: fail);
   }
 
+  /// patch 请求
+  static void patch<T>(
+    String url,
+    params, {
+    String? loadingText,
+    Success? success,
+    Fail? fail,
+  }) {
+    request(Method.patch, url, params,
+        loadingText: loadingText, success: success, fail: fail);
+  }
+
   /// delete 请求
+
   static void delete<T>(
     String url,
     params, {

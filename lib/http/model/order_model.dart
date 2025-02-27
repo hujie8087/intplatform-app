@@ -20,7 +20,7 @@ class OrderModel {
   String? tableNumber;
   String? address;
   List<OrderDetailsList>? orderDetailsList;
-  String? versionNum;
+  int? versionNum;
 
   OrderModel(
       {this.id,

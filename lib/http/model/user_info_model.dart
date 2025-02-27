@@ -55,6 +55,7 @@ class User {
   String? money;
   bool? vip;
   bool? admin;
+  int? isLogin;
 
   User(
       {this.createBy,
@@ -88,7 +89,8 @@ class User {
       this.card,
       this.money,
       this.vip,
-      this.admin});
+      this.admin,
+      this.isLogin});
 
   User.fromJson(Map<String, dynamic> json) {
     createBy = json['createBy'];
@@ -128,6 +130,7 @@ class User {
     money = json['money'];
     vip = json['vip'];
     admin = json['admin'];
+    isLogin = json['isLogin'];
   }
 
   Map<String, dynamic> toJson() {
@@ -168,6 +171,7 @@ class User {
     data['money'] = this.money;
     data['vip'] = this.vip;
     data['admin'] = this.admin;
+    data['isLogin'] = this.isLogin;
     return data;
   }
 }

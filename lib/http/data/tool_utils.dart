@@ -33,4 +33,13 @@ class ToolUtils {
   }) {
     HttpUtils.get(APIs.guideList, parameters, success: success, fail: fail);
   }
+
+  // 获取App菜单数据
+  static void getAppMenu<T>({
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/other/icon/type/iconAllList', null,
+        success: success, fail: fail);
+  }
 }

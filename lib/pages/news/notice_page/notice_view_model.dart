@@ -4,7 +4,7 @@ import 'package:logistics_app/common_ui/loading.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
 
-import '../../http/model/notice_list_model.dart';
+import '../../../http/model/notice_list_model.dart';
 
 class NoticeViewModel with ChangeNotifier {
   List<NoticeModel?>? list = [];
@@ -16,6 +16,7 @@ class NoticeViewModel with ChangeNotifier {
       'pageNum': pageNum,
       'pageSize': pageSize,
       'noticeType': 1,
+      'approvalStatus': 4,
     };
     DataUtils.getPageList('/system/notice/list', params, success: (data) {
       RowsModel rowsModel =
@@ -40,6 +41,7 @@ class NoticeViewModel with ChangeNotifier {
       'pageNum': pageNum,
       'pageSize': pageSize,
       'noticeType': 2,
+      'approvalStatus': 4,
     };
     DataUtils.getPageList('/system/notice/list', params, success: (data) {
       RowsModel rowsModel =

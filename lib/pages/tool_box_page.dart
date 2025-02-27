@@ -3,45 +3,99 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/icon_api_widget.dart';
 import 'package:logistics_app/common_ui/option_grid_view.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/data/tool_utils.dart';
+import 'package:logistics_app/http/model/app_menu_model.dart';
+import 'package:logistics_app/http/model/apply_view_model.dart';
 import 'package:logistics_app/http/model/base_list_model.dart';
 import 'package:logistics_app/http/model/base_model.dart';
-import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/guide_type_view_model.dart';
 import 'package:logistics_app/http/model/guide_view_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/pages/accommodation_page/apply_detail_page.dart';
 import 'package:logistics_app/pages/guide/guide_list_page.dart';
 import 'package:logistics_app/pages/guide/guide_type_page.dart';
-import 'package:logistics_app/pages/mine_page/my_address_page/my_address_page.dart';
-import 'package:logistics_app/pages/news_page/news_list_page.dart';
-import 'package:logistics_app/pages/notice_page/notice_list_page.dart';
-import 'package:logistics_app/pages/public_convenience_page/public_list_page.dart';
-import 'package:logistics_app/pages/repair/my_repair_page.dart';
-import 'package:logistics_app/pages/repair/repair_form_page.dart';
-import 'package:logistics_app/pages/shopping/card_bill_page.dart';
-import 'package:logistics_app/pages/shopping/card_info_page.dart';
-import 'package:logistics_app/pages/shopping/food_suggestion/food_suggestion_page.dart';
-import 'package:logistics_app/pages/shopping/order/order_list_page.dart';
-import 'package:logistics_app/pages/shopping/payment/modify_payment_password_page.dart';
-import 'package:logistics_app/pages/shopping/payment/payment_qrcode_page.dart';
-import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:logistics_app/main.dart';
 
 // String title, bool isEven, IconData icon,
 // bool showBadge, GestureTapCallback? onTap
 class MenuItemModel {
-  final String? title; // 标题
-  final bool? isEven; // 对应的widget
+  final String? cname; // 标题
+  final String? yname; // 标题
+  final String? uname; // 标题
   final IconData? icon;
-  final bool? showBadge;
+  final bool showBadge;
   final GestureTapCallback? onTap;
+  final int? badgeContent;
+
   const MenuItemModel(
-      {this.title, this.isEven, this.icon, this.showBadge, this.onTap});
+      {this.cname,
+      this.yname,
+      this.uname,
+      this.icon,
+      this.showBadge = false,
+      this.onTap,
+      this.badgeContent});
+  factory MenuItemModel.fromJson(Map<String, dynamic> json) {
+    return MenuItemModel(
+      cname: json['cname'],
+      yname: json['yname'],
+      uname: json['uname'],
+      icon: json['icon'],
+      showBadge: json['showBadge'],
+      badgeContent: json['badgeContent'],
+      onTap: json['onTap'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'cname': cname,
+      'yname': yname,
+      'uname': uname,
+      'icon': icon,
+      'showBadge': showBadge,
+      'badgeContent': badgeContent,
+      'onTap': onTap,
+    };
+  }
+}
+
+class AppMenuListModel {
+  final String? cname;
+  final String? yname;
+  final String? uname;
+  final List<MenuItemModel>? menuItemList;
+  final IconData? icon;
+  const AppMenuListModel(
+      {this.cname, this.yname, this.uname, this.menuItemList, this.icon});
+  factory AppMenuListModel.fromJson(Map<String, dynamic> json) {
+    return AppMenuListModel(
+      cname: json['cname'],
+      yname: json['yname'],
+      uname: json['uname'],
+      menuItemList: json['menuItemList']
+          ?.map((item) => MenuItemModel.fromJson(item))
+          .toList(),
+      icon: json['icon'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'cname': cname,
+      'yname': yname,
+      'uname': uname,
+      'menuItemList': menuItemList,
+      'icon': icon,
+    };
+  }
 }
 
 class ToolBoxPage extends StatefulWidget {
@@ -49,11 +103,16 @@ class ToolBoxPage extends StatefulWidget {
   _ToolBoxPageState createState() => _ToolBoxPageState();
 }
 
-class _ToolBoxPageState extends State<ToolBoxPage> {
+class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   List<GuideTypeViewModel> guideTypeList = [];
   List<GuideViewModel> guideList = [];
-  List<MenuItemModel> commonMenu = [];
-  List<MenuItemModel> publicMenu = [];
+  List<String>? permission;
+  int repairUnfinishedCount = 0;
+  int repairUnreadCount = 0;
+  List<AppMenuListModel> appMenuList = [];
+  List<AppMenuModel> appMenuListFilter = [];
+  UserInfoModel? userInfoData;
+  String token = '';
   List<Map<String, dynamic>> publicIconMap = [
     {
       'id': 1,
@@ -91,80 +150,218 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
       'icon': Icons.sports_soccer,
     },
   ];
+  // 获取当前语言版本
 
-  Future<void> _fetchGuideListData(GuideTypeViewModel guideType) async {
-    ToolUtils.getGuideList<GuideViewModel>(
-      {'pageNum': 1, 'pageSize': 1000, 'typeId': guideType.id},
-      success: (res) {
-        RowsModel<GuideViewModel> rowsModel =
-            RowsModel.fromJson(res, (json) => GuideViewModel.fromJson(json));
-        guideList = rowsModel.rows ?? [];
-        if (guideList.isNotEmpty) {
-          RouteUtils.push(context,
-              GuideListPage(guideType: guideType, guideList: guideList));
+  String languageCode = 'zh';
+
+  // 获取维修订单未完成数量
+  Future<void> getRepairUnfinishedCount() async {
+    RepairUtils.getRepairUnfinishedCount(
+      success: (data) {
+        setState(() {
+          repairUnfinishedCount = data['data']['waitRepairCount'] +
+              data['data']['againRepairCount'];
+          SpUtils.saveInt(
+              Constants.SP_REPAIR_UNFINISHED_COUNT, repairUnfinishedCount);
+        });
+        if (appMenuList.isEmpty) {
+          getAppMenu();
         } else {
-          RouteUtils.push(context, GuideTypePage(id: guideType.id!));
+          filterAppMenu();
         }
-        setState(() {});
       },
     );
   }
 
-  Future<void> _fetchData() async {
+  // 获取我的报修未读数量
+  Future<void> getMyRepairUnreadCount() async {
+    RepairUtils.getMyRepairList(
+      {'pageNum': 1, 'pageSize': 1000, 'status': 1, 'readStatus': 1},
+      success: (data) {
+        setState(() {
+          if (repairUnreadCount != data['total']) {
+            repairUnreadCount = data['total'];
+            filterAppMenu();
+          }
+        });
+      },
+    );
+  }
+
+  // 获取服务指南
+  Future<void> getGuideList() async {
     ToolUtils.getGuideTypeList<GuideTypeViewModel>(
       {'pageNum': 1, 'pageSize': 1000},
       success: (res) {
         RowsModel<GuideTypeViewModel> rowsModel = RowsModel.fromJson(
             res, (json) => GuideTypeViewModel.fromJson(json));
-        guideTypeList = rowsModel.rows ?? [];
         setState(() {
-          if (guideTypeList.isNotEmpty) {
-            commonMenu = guideTypeList.map((item) {
-              return MenuItemModel(
-                  title: item.title,
-                  icon: iconMap[item.img],
-                  isEven: item.id! % 2 == 0,
-                  showBadge: false,
-                  onTap: () async {
-                    await _fetchGuideListData(item);
-                    // RouteUtils.push(context, GuideTypePage(id: item.id!));
-                  });
-            }).toList();
-          }
+          guideTypeList = rowsModel.rows ?? [];
         });
       },
       fail: (code, msg) {
         ProgressHUD.showError(msg);
       },
     );
+  }
 
-    // 模拟异步数据获取
-    DataUtils.getDictDataList(
-      'public_common_type',
+  // 设置badgeContent数量
+  int setBadgeContent(String permission) {
+    int badgeContent = 0;
+    switch (permission) {
+      case 'commonality:repair:unfinishedCountApp':
+        badgeContent = repairUnfinishedCount;
+        break;
+      case 'commonality:repair:listApp':
+        badgeContent = repairUnreadCount;
+        break;
+      default:
+        badgeContent = 0;
+        break;
+    }
+
+    return badgeContent;
+  }
+
+  // 获取App菜单
+  Future<void> getAppMenu() async {
+    ToolUtils.getAppMenu<AppMenuModel>(
       success: (data) {
-        BaseListModel<DictModel> response =
-            BaseListModel.fromJson(data, (json) => DictModel.fromJson(json));
+        BaseListModel<AppMenuModel> response =
+            BaseListModel.fromJson(data, (json) => AppMenuModel.fromJson(json));
+        appMenuListFilter = response.data ?? [];
         setState(() {
-          publicMenu = response.data?.map((item) {
-                return MenuItemModel(
-                    title: item.dictLabel,
-                    isEven: int.parse(item.dictValue!) % 2 == 0,
-                    icon: publicIconMap.firstWhere(
-                            (e) => e['id'].toString() == item.dictValue)['icon']
-                        as IconData,
-                    showBadge: false,
-                    onTap: () => {
-                          RouteUtils.push(
-                              context,
-                              PublicListPage(
-                                  souceType: item.dictValue,
-                                  title: item.dictLabel))
-                        });
-              }).toList() ??
-              [];
+          filterAppMenu();
         });
       },
     );
+  }
+
+  // 设置过滤App菜单
+  Future<void> filterAppMenu() async {
+    token = await SpUtils.getString(Constants.SP_TOKEN);
+    // 未登录，过滤需要登录的菜单
+    if (token == '' || token.isEmpty) {
+      appMenuListFilter = appMenuListFilter
+          .map(
+            (menu) {
+              return AppMenuModel(
+                remark: menu.remark,
+                id: menu.id,
+                cname: menu.cname,
+                yname: menu.yname,
+                uname: menu.uname,
+                sort: menu.sort,
+                status: menu.status,
+                icon: menu.icon,
+                permissions: menu.permissions,
+                isLogin: menu.isLogin,
+                iconArticles: menu.iconArticles?.where((article) {
+                  if (article.status == 1 || article.isLogin == 1) {
+                    return false;
+                  }
+                  return true;
+                }) // 过滤 `iconArticles`
+                    .toList(),
+              );
+            },
+          )
+          .where((menu) => menu.isLogin == 0)
+          .toList();
+    } else {
+      // 已登录，过滤需要权限的菜单
+      appMenuListFilter = appMenuListFilter.map(
+        (menu) {
+          return AppMenuModel(
+            remark: menu.remark,
+            id: menu.id,
+            cname: menu.cname,
+            yname: menu.yname,
+            uname: menu.uname,
+            sort: menu.sort,
+            status: menu.status,
+            icon: menu.icon,
+            permissions: menu.permissions,
+            isLogin: menu.isLogin,
+            iconArticles: menu.iconArticles?.where((article) {
+              if (article.status == 1) {
+                return false;
+              } else if (article.permissions != null) {
+                return permission!.contains(article.permissions);
+              }
+              return true;
+            }) // 过滤 `iconArticles`
+                .toList(),
+          );
+        },
+      ).toList();
+    }
+    appMenuList = appMenuListFilter
+        .map((e) => AppMenuListModel(
+              cname: e.cname,
+              yname: e.yname,
+              uname: e.uname,
+              icon: iconMap[e.icon] as IconData,
+              menuItemList: e.iconArticles
+                  ?.map((article) => MenuItemModel(
+                        cname: article.cname,
+                        yname: article.yname,
+                        uname: article.uname,
+                        icon: iconMap[article.icon] as IconData,
+                        showBadge: article.isMic == 1,
+                        badgeContent:
+                            setBadgeContent(article.permissions ?? ''),
+                        onTap: () {
+                          switch (article.router) {
+                            case 'apply_url':
+                              _getApplyUrl();
+                              break;
+                            case 'refresh_address_data':
+                              refreshAddressData();
+                              break;
+                            case 'guide_type_page':
+                              RouteUtils.push(
+                                  context,
+                                  GuideTypePage(
+                                      id: int.parse(article.remark!)));
+                              break;
+                            case 'guide_list_page':
+                              RouteUtils.push(
+                                  context,
+                                  GuideListPage(
+                                      guideTypeId: int.parse(article.remark!)));
+                              break;
+                            default:
+                              RouteUtils.pushNamed(context, article.router!);
+                          }
+                        },
+                      ))
+                  .toList(),
+            ))
+        .where((menu) => menu.menuItemList!.length > 0)
+        .toList();
+  }
+
+  Future<void> _fetchData() async {
+    languageCode = await SpUtils.getString('locale') ?? 'zh';
+    final userInfoDataModel = await SpUtils.getModel('userInfo');
+    token = await SpUtils.getString(Constants.SP_TOKEN);
+    userInfoData = UserInfoModel.fromJson(userInfoDataModel);
+    if (userInfoData != null && token != '') {
+      permission = userInfoData?.permissions;
+      if (permission != null &&
+          permission!.contains('commonality:repair:unfinishedCountApp')) {
+        getRepairUnfinishedCount();
+      }
+      if (appMenuList.isEmpty) {
+        await getAppMenu();
+      }
+      getMyRepairUnreadCount();
+    } else {
+      if (appMenuList.isEmpty) {
+        await getAppMenu();
+      }
+    }
   }
 
   // 更新区域数据
@@ -198,113 +395,79 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
     );
   }
 
+  void _getApplyUrl() async {
+    ProgressHUD.showLoadingText('数据加载中...');
+    DataUtils.getApplyList(
+      {
+        'status': '2',
+        'type': '1',
+        'pageNum': 1,
+        'pageSize': 100,
+      },
+      success: (data) {
+        RowsModel<ApplyViewModel> response =
+            RowsModel.fromJson(data, (json) => ApplyViewModel.fromJson(json));
+        List<ApplyViewModel> applyList = response.rows ?? [];
+        if (applyList.isNotEmpty) {
+          DataUtils.getApplyUrl(
+            {
+              'id': applyList[0].formId,
+            },
+            success: (data) {
+              ProgressHUD.hide();
+              String applyUrl = data['data']['url'];
+              if (applyUrl.isNotEmpty) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ApplyDetailPage(
+                              url: applyUrl,
+                              title: '我的流程',
+                            )));
+              }
+              setState(() {});
+            },
+          );
+        }
+      },
+    );
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    getGuideList();
     _fetchData();
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPopNext() {
+    // 当从其他页面返回时触发
+    print("页面重新进入，触发请求...");
+    if (permission != null &&
+        permission!.contains('commonality:repair:unfinishedCountApp')) {
+      getRepairUnfinishedCount();
+    }
+    if (token != '' && token.isNotEmpty) {
+      getMyRepairUnreadCount();
+    }
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final List<MenuItemModel> newsMenu = [
-      MenuItemModel(
-          title: S.of(context).notifications,
-          icon: Icons.notifications,
-          isEven: false,
-          showBadge: false,
-          onTap: () => RouteUtils.push(context, NoticeListPage())),
-      MenuItemModel(
-          title: S.of(context).news,
-          icon: Icons.newspaper_rounded,
-          isEven: true,
-          showBadge: false,
-          onTap: () => RouteUtils.push(context, NewsListPage())),
-    ];
-    final List<MenuItemModel> repairMenu = [
-      MenuItemModel(
-          title: S.of(context).repairOnline,
-          icon: Icons.build,
-          isEven: true,
-          showBadge: false,
-          onTap: () => RouteUtils.push(context, RepairFormPage())),
-      MenuItemModel(
-          title: S.of(context).myRepair,
-          icon: Icons.history,
-          isEven: false,
-          showBadge: false,
-          onTap: () => RouteUtils.push(context, MyRepairPage())),
-      MenuItemModel(
-          title: S.of(context).addressManagement,
-          icon: Icons.location_on,
-          isEven: true,
-          showBadge: false,
-          onTap: () => RouteUtils.push(context, MyAddressPage())),
-      // 更新区域数据
-      MenuItemModel(
-          title: S.of(context).updateAddressData,
-          icon: Icons.update,
-          isEven: false,
-          showBadge: false,
-          onTap: () => {refreshAddressData()}),
-    ];
-
-    final List<MenuItemModel> foodMenu = [
-      MenuItemModel(
-          title: S.of(context).onlineDining,
-          icon: Icons.book_online,
-          isEven: true,
-          showBadge: false,
-          onTap: () => {RouteUtils.push(context, ShoppingScreenPage())}),
-      MenuItemModel(
-          title: S.of(context).myOrder,
-          icon: Icons.bookmark_outline,
-          isEven: false,
-          showBadge: false,
-          onTap: () => {RouteUtils.push(context, OrderListPage())}),
-      MenuItemModel(
-          title: S.of(context).iWantToEat,
-          icon: Icons.restaurant,
-          isEven: true,
-          showBadge: false,
-          onTap: () => {RouteUtils.push(context, FoodSuggestionPage())}),
-      MenuItemModel(
-          title: S.of(context).paymentQRCode,
-          icon: Icons.qr_code_scanner,
-          isEven: false,
-          showBadge: false,
-          onTap: () => {RouteUtils.push(context, PaymentQRCodePage())}),
-      // 消费卡挂失解锁
-      MenuItemModel(
-          title: S.of(context).cardLoss,
-          icon: Icons.credit_card,
-          isEven: true,
-          showBadge: false,
-          onTap: () => {RouteUtils.push(context, CardInfoPage())}),
-      // 消费卡账单
-      MenuItemModel(
-          title: S.of(context).cardBill,
-          icon: Icons.receipt,
-          isEven: false,
-          showBadge: false,
-          onTap: () => {RouteUtils.push(context, CardBillPage())}),
-      // 修改支付密码
-      MenuItemModel(
-          title: S.of(context).updatePaymentPassword,
-          icon: Icons.lock,
-          isEven: true,
-          showBadge: false,
-          onTap: () => {RouteUtils.push(context, ModifyPaymentPasswordPage())}),
-    ];
-
-    // final List<MenuItemModel> lostFoundMenu = [
-    //   MenuItemModel(
-    //       title: '失物招领',
-    //       icon: Icons.find_in_page,
-    //       isEven: true,
-    //       showBadge: false,
-    //       onTap: () => {RouteUtils.push(context, LostFoundListPage())}),
-    // ];
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
@@ -334,8 +497,9 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                   top: 8.px, bottom: 20.px, left: 8.px, right: 8.px),
               child: SingleChildScrollView(
                 child: Column(
-                  children: [
-                    Container(
+                  children: List.generate(
+                    appMenuList.length,
+                    (index) => Container(
                         padding: EdgeInsets.all(8.px),
                         margin: EdgeInsets.only(bottom: 8.px),
                         decoration: BoxDecoration(
@@ -347,7 +511,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                             Row(
                               children: [
                                 Icon(
-                                  Icons.newspaper,
+                                  appMenuList[index].icon as IconData,
                                   color: primaryColor,
                                   size: 18.px,
                                 ),
@@ -355,7 +519,11 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                                   width: 4.px,
                                 ),
                                 Text(
-                                  S.of(context).information,
+                                  languageCode == 'zh'
+                                      ? appMenuList[index].cname ?? ''
+                                      : languageCode == 'en'
+                                          ? appMenuList[index].uname ?? ''
+                                          : appMenuList[index].yname ?? '',
                                   style: TextStyle(
                                       fontSize: 14.px,
                                       fontWeight: FontWeight.bold),
@@ -366,283 +534,19 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
                               height: 8.px,
                             ),
                             OptionGridView(
-                              itemCount: newsMenu.length,
+                              itemCount:
+                                  appMenuList[index].menuItemList?.length ?? 0,
                               rowCount: 5,
                               mainAxisSpacing: 8.px,
                               crossAxisSpacing: 8.px,
-                              itemBuilder: (context, index) {
-                                return _FunctionAreaItem(newsMenu[index]);
+                              itemBuilder: (context, idx) {
+                                return _FunctionAreaItem(
+                                    appMenuList[index].menuItemList![idx], idx);
                               },
                             ),
                           ],
                         )),
-                    // 住宿服务
-                    // Container(
-                    //     padding: EdgeInsets.all(10),
-                    //     margin: EdgeInsets.only(bottom: 10),
-                    //     decoration: BoxDecoration(
-                    //         color: Colors.white,
-                    //         borderRadius: BorderRadius.circular(10)),
-                    //     child: Column(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         Row(
-                    //           children: [
-                    //             Icon(
-                    //               Icons.hotel,
-                    //               color: primaryColor,
-                    //               size: 20,
-                    //             ),
-                    //             SizedBox(
-                    //               width: 5,
-                    //             ),
-                    //             Text(
-                    //               '住宿服务',
-                    //               style: TextStyle(
-                    //                   fontSize: 14,
-                    //                   fontWeight: FontWeight.bold),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         SizedBox(
-                    //           height: 10,
-                    //         ),
-                    //         GridView(
-                    //           shrinkWrap: true,
-                    //           physics: NeverScrollableScrollPhysics(),
-                    //           gridDelegate:
-                    //               SliverGridDelegateWithFixedCrossAxisCount(
-                    //                   crossAxisCount: 5,
-                    //                   crossAxisSpacing: 10,
-                    //                   mainAxisSpacing: 10,
-                    //                   childAspectRatio: 1.0),
-                    //           children: [
-                    //             // 住宿流程
-                    //             _FunctionAreaItem(
-                    //                 '住宿流程', false, Icons.hotel, false, null),
-                    //             // 在线申请
-                    //             _FunctionAreaItem('在线申请', true,
-                    //                 Icons.edit_document, false, null),
-                    //           ],
-                    //         ),
-                    //       ],
-                    //     )),
-                    // 报修服务
-                    Container(
-                        padding: EdgeInsets.all(8.px),
-                        margin: EdgeInsets.only(bottom: 8.px),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8.px)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.build,
-                                  color: primaryColor,
-                                  size: 18.px,
-                                ),
-                                SizedBox(
-                                  width: 4.px,
-                                ),
-                                Text(
-                                  S.of(context).repairService,
-                                  style: TextStyle(
-                                      fontSize: 14.px,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 8.px,
-                            ),
-                            OptionGridView(
-                              itemCount: repairMenu.length,
-                              rowCount: 5,
-                              mainAxisSpacing: 8.px,
-                              crossAxisSpacing: 8.px,
-                              itemBuilder: (context, index) {
-                                return _FunctionAreaItem(repairMenu[index]);
-                              },
-                            ),
-                          ],
-                        )),
-                    // 餐饮服务
-                    Container(
-                        padding: EdgeInsets.all(8.px),
-                        margin: EdgeInsets.only(bottom: 8.px),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8.px)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.fastfood,
-                                  color: primaryColor,
-                                  size: 18.px,
-                                ),
-                                SizedBox(
-                                  width: 4.px,
-                                ),
-                                Text(
-                                  S.of(context).diningService,
-                                  style: TextStyle(
-                                      fontSize: 14.px,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 8.px,
-                            ),
-                            OptionGridView(
-                              itemCount: foodMenu.length,
-                              rowCount: 5,
-                              mainAxisSpacing: 8.px,
-                              crossAxisSpacing: 8.px,
-                              itemBuilder: (context, index) {
-                                return _FunctionAreaItem(foodMenu[index]);
-                              },
-                            ),
-                          ],
-                        )),
-                    // 失物招领
-                    // Container(
-                    //     padding: EdgeInsets.all(10),
-                    //     margin: EdgeInsets.only(bottom: 10),
-                    //     decoration: BoxDecoration(
-                    //         color: Colors.white,
-                    //         borderRadius: BorderRadius.circular(10)),
-                    //     child: Column(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         Row(
-                    //           children: [
-                    //             Icon(
-                    //               Icons.find_in_page,
-                    //               color: primaryColor,
-                    //               size: 20,
-                    //             ),
-                    //             SizedBox(
-                    //               width: 5,
-                    //             ),
-                    //             Text(
-                    //               '公共服务',
-                    //               style: TextStyle(
-                    //                   fontSize: 14,
-                    //                   fontWeight: FontWeight.bold),
-                    //             ),
-                    //           ],
-                    //         ),
-                    //         SizedBox(
-                    //           height: 10,
-                    //         ),
-                    //         OptionGridView(
-                    //           itemCount: lostFoundMenu.length,
-                    //           rowCount: 5,
-                    //           mainAxisSpacing: 10,
-                    //           crossAxisSpacing: 10,
-                    //           itemBuilder: (context, index) {
-                    //             return _FunctionAreaItem(lostFoundMenu[index]);
-                    //           },
-                    //         ),
-                    //       ],
-                    //     )),
-                    // 服务指南
-                    if (commonMenu.isNotEmpty)
-                      Container(
-                          padding: EdgeInsets.all(8.px),
-                          margin: EdgeInsets.only(bottom: 8.px),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8.px)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.public,
-                                    color: primaryColor,
-                                    size: 18.px,
-                                  ),
-                                  SizedBox(
-                                    width: 4.px,
-                                  ),
-                                  Text(
-                                    S.of(context).serviceGuide,
-                                    style: TextStyle(
-                                        fontSize: 14.px,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 8.px,
-                              ),
-                              OptionGridView(
-                                itemCount: commonMenu.length,
-                                rowCount: 5,
-                                mainAxisSpacing: 8.px,
-                                crossAxisSpacing: 8.px,
-                                itemBuilder: (context, index) {
-                                  return _FunctionAreaItem(commonMenu[index]);
-                                },
-                              ),
-                            ],
-                          )),
-                    // 公共设施
-                    if (publicMenu.isNotEmpty)
-                      Container(
-                          padding: EdgeInsets.all(8.px),
-                          margin: EdgeInsets.only(bottom: 8.px),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8.px)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.local_convenience_store,
-                                    color: primaryColor,
-                                    size: 18.px,
-                                  ),
-                                  SizedBox(
-                                    width: 4.px,
-                                  ),
-                                  Text(
-                                    '公共便利',
-                                    style: TextStyle(
-                                        fontSize: 14.px,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 8.px,
-                              ),
-                              OptionGridView(
-                                itemCount: publicMenu.length,
-                                rowCount: 5,
-                                mainAxisSpacing: 8.px,
-                                crossAxisSpacing: 8.px,
-                                itemBuilder: (context, index) {
-                                  return _FunctionAreaItem(publicMenu[index]);
-                                },
-                              ),
-                            ],
-                          )),
-                    SizedBox(
-                      height: 50.px,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -652,25 +556,31 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
     );
   }
 
-  Widget _FunctionAreaItem(meneItem) {
+  Widget _FunctionAreaItem(MenuItemModel meneItem, int index) {
     return GestureDetector(
       child: Container(
         width: double.infinity,
         child: Column(
           children: [
             badges.Badge(
-              showBadge: meneItem.showBadge,
+              badgeContent: meneItem.badgeContent != null
+                  ? Text(
+                      meneItem.badgeContent.toString(),
+                      style: TextStyle(color: Colors.white, fontSize: 10.px),
+                    )
+                  : null,
+              showBadge: meneItem.showBadge && meneItem.badgeContent != 0,
               child: Container(
                 width: 36.px,
                 height: 36.px,
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: meneItem.isEven
+                    color: index % 2 == 0
                         ? primaryColor.withOpacity(0.1)
                         : secondaryColor.withOpacity(0.1)),
                 child: Icon(
                   meneItem.icon,
-                  color: meneItem.isEven ? primaryColor : secondaryColor,
+                  color: index % 2 == 0 ? primaryColor : secondaryColor,
                   size: 18.px,
                 ),
               ),
@@ -679,7 +589,11 @@ class _ToolBoxPageState extends State<ToolBoxPage> {
               height: 4.px,
             ),
             Text(
-              meneItem.title,
+              languageCode == 'zh'
+                  ? meneItem.cname ?? ''
+                  : languageCode == 'en'
+                      ? meneItem.yname ?? ''
+                      : meneItem.uname ?? '',
               maxLines: 2,
               style: TextStyle(fontSize: 12.px),
               textAlign: TextAlign.center,

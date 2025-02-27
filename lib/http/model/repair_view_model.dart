@@ -7,13 +7,17 @@ class RepairViewModel {
   String? repairArea;
   int? repairAreaId;
   int? repairRoomId;
+  String? engineer;
+  int? engineerId;
   String? repairMessage;
+  String? repairNo;
   String? roomNo;
   String? repairPerson;
   String? tel;
   String? repairPhoto;
   int? repairType;
   int? repairManId;
+
   String? repairMan;
   int? repairState;
   String? repairTime;
@@ -34,7 +38,10 @@ class RepairViewModel {
       this.repairArea,
       this.repairAreaId,
       this.repairRoomId,
+      this.engineer,
+      this.engineerId,
       this.repairMessage,
+      this.repairNo,
       this.roomNo,
       this.repairPerson,
       this.tel,
@@ -57,12 +64,16 @@ class RepairViewModel {
     createTime = json["createTime"];
     updateBy = json["updateBy"];
     updateTime = json["updateTime"];
+    engineer = json["engineer"];
+    engineerId = json["engineerId"];
     id = json["id"];
     repairArea = json["repairArea"];
     repairAreaId = json["repairAreaId"];
     repairRoomId = json["repairRoomId"];
     repairMessage = json["repairMessage"];
     roomNo = json["roomNo"];
+    repairNo = json["repairNo"];
+
     repairPerson = json["repairPerson"];
     tel = json["tel"];
     repairPhoto = json["repairPhoto"];
@@ -90,9 +101,13 @@ class RepairViewModel {
     _data["repairArea"] = repairArea;
     _data["repairAreaId"] = repairAreaId;
     _data["repairRoomId"] = repairRoomId;
+    _data["engineer"] = engineer;
+    _data["engineerId"] = engineerId;
     _data["repairMessage"] = repairMessage;
     _data["roomNo"] = roomNo;
     _data["repairPerson"] = repairPerson;
+    _data["repairNo"] = repairNo;
+
     _data["tel"] = tel;
     _data["repairPhoto"] = repairPhoto;
     _data["repairType"] = repairType;

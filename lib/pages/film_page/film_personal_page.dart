@@ -5,7 +5,7 @@ import 'package:logistics_app/pages/film_page/film_feedback_page.dart';
 import 'package:logistics_app/pages/film_page/film_history_page.dart';
 import 'package:logistics_app/pages/film_page/film_message_page.dart';
 import 'package:logistics_app/pages/film_page/film_request_page.dart';
-import 'package:logistics_app/pages/notice_page/notice_view_model.dart';
+import 'package:logistics_app/pages/news/notice_page/notice_view_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:oktoast/oktoast.dart';

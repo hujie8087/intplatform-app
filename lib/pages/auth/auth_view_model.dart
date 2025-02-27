@@ -6,6 +6,8 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/base_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/route/route_utils.dart';
+import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -43,6 +45,7 @@ class AuthViewModel with ChangeNotifier {
                 Constants.SP_USER_NAME, userInfo.user?.nickName ?? '');
             SpUtils.saveString(
                 Constants.SP_USER_DEPT, userInfo.user?.dept?.deptName ?? '');
+            SpUtils.saveInt(Constants.SP_IS_LOGIN, userInfo.user?.isLogin ?? 0);
             getAddressData();
             completer.complete(true);
           },
@@ -130,5 +133,41 @@ class AuthViewModel with ChangeNotifier {
         ProgressHUD.showError(S.current.networkError);
       },
     );
+  }
+
+  Future<void> forgetPassword(
+      BuildContext context, Map<String, dynamic> params) async {
+    if (params['userName']?.trim().isEmpty == true) {
+      ProgressHUD.showError(S.current.inputMessage(S.current.userName));
+      return;
+    }
+    if (params['card']?.trim().isEmpty == true) {
+      ProgressHUD.showError(S.current.inputIdCard);
+      return;
+    }
+    if (params['newPassword']?.trim().isEmpty == true) {
+      ProgressHUD.showError(S.current.inputNewPassword);
+      return;
+    }
+    if (params['confirmPassword']?.trim().isEmpty == true) {
+      ProgressHUD.showError(S.current.inputConfirmPassword);
+      return;
+    }
+    if (params['confirmPassword']?.trim() != params['newPassword']?.trim()) {
+      ProgressHUD.showError("输入的两次密码不同");
+      return;
+    }
+    DataUtils.forgetPassword({
+      'userName': params['userName'],
+      'newPassword': params['newPassword'],
+      'card': params['card']
+    }, success: (res) {
+      print(res.toString());
+      RouteUtils.pushNamed(context, RoutePath.login);
+    }, fail: (code, msg) {
+      ProgressHUD.showError(msg);
+      return;
+    });
+    return;
   }
 }

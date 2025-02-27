@@ -29,5 +29,4 @@ class MessageViewModel with ChangeNotifier {
       notifyListeners();
     });
   }
-  
 }

@@ -4,7 +4,7 @@ import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart'
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
-import 'package:logistics_app/pages/news_page/news_detail_page.dart';
+import 'package:logistics_app/pages/news/news_page/news_detail_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -44,6 +44,8 @@ class _NewsListPageState extends State<NewsListPage>
         'pageNum': _page,
         'pageSize': 10,
         'noticeType': 2,
+        "status": '0',
+        "approvalStatus": 4
       }, success: (data) {
         if (data != null) {
           var noticeList = data['rows'] as List;

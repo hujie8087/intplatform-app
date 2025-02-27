@@ -139,6 +139,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "evaluation": MessageLookupByLibrary.simpleMessage("Ulasan"),
         "exitManage": MessageLookupByLibrary.simpleMessage("Keluar manajemen"),
         "expenditure": MessageLookupByLibrary.simpleMessage("Biaya"),
+        "feedback": MessageLookupByLibrary.simpleMessage("Umpan balik"),
+        "feedbackContent":
+            MessageLookupByLibrary.simpleMessage("Isi umpan balik"),
+        "feedbackTitle":
+            MessageLookupByLibrary.simpleMessage("Judul umpan balik"),
         "fixed": MessageLookupByLibrary.simpleMessage("Diperbaiki"),
         "gender": MessageLookupByLibrary.simpleMessage("Jenis Kelamin"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("Info barang"),
@@ -147,11 +152,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "homePage": MessageLookupByLibrary.simpleMessage("Beranda"),
         "iWantToEat": MessageLookupByLibrary.simpleMessage("Ingin makan"),
         "id": MessageLookupByLibrary.simpleMessage("Indonesia"),
+        "idCard": MessageLookupByLibrary.simpleMessage("Nomor Kartu"),
         "imageUploading":
             MessageLookupByLibrary.simpleMessage("Mengunggah gambar..."),
         "information": MessageLookupByLibrary.simpleMessage("Informasi"),
         "inputConfirmPassword": MessageLookupByLibrary.simpleMessage(
             "Masukkan kata sandi baru kembali"),
+        "inputIdCard":
+            MessageLookupByLibrary.simpleMessage("Masukkan nomor kartu Anda"),
         "inputMessage": m1,
         "inputNewPassword":
             MessageLookupByLibrary.simpleMessage("Masukkan kata sandi baru"),
@@ -163,6 +171,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Masukkan nomor karyawan Anda"),
         "isDefault": MessageLookupByLibrary.simpleMessage("Apakah default"),
         "items": MessageLookupByLibrary.simpleMessage("pcs"),
+        "kTimeDetail": MessageLookupByLibrary.simpleMessage("K Time Detail"),
+        "kTimeList": MessageLookupByLibrary.simpleMessage("K Time"),
         "livingAreaDataLoading":
             MessageLookupByLibrary.simpleMessage("Memuat Data Area Hidup..."),
         "loading": MessageLookupByLibrary.simpleMessage("Memuat..."),
@@ -181,6 +191,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "mine": MessageLookupByLibrary.simpleMessage("Milikku"),
         "minePage": MessageLookupByLibrary.simpleMessage("Milikku"),
         "modifyAddress": MessageLookupByLibrary.simpleMessage("Ubah alamat"),
+        "monthly": MessageLookupByLibrary.simpleMessage("Wedabay Monthly"),
         "monthlySales": MessageLookupByLibrary.simpleMessage("Bulanan"),
         "moreFunction": MessageLookupByLibrary.simpleMessage("Fitur Lainnya"),
         "myAddress": MessageLookupByLibrary.simpleMessage("Alamat Saya"),
@@ -241,6 +252,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "pickupType": MessageLookupByLibrary.simpleMessage("Cara ambil"),
         "pleaseFillIn": m2,
         "pleaseSelect": m3,
+        "promo": MessageLookupByLibrary.simpleMessage("Video Promosi"),
+        "promoDetail": MessageLookupByLibrary.simpleMessage("Promo Detail"),
+        "promoList": MessageLookupByLibrary.simpleMessage("Promo List"),
         "read": MessageLookupByLibrary.simpleMessage("Baca"),
         "remaining": MessageLookupByLibrary.simpleMessage("Sisa"),
         "remark": MessageLookupByLibrary.simpleMessage("Catatan"),
@@ -262,6 +276,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Gambar Perbaikan"),
         "repairOnline":
             MessageLookupByLibrary.simpleMessage("Perbaiki Sekarang"),
+        "repairOrder":
+            MessageLookupByLibrary.simpleMessage("Pesanan Perbaikan"),
         "repairPerson": MessageLookupByLibrary.simpleMessage("Orang Perbaikan"),
         "repairPersonNotEmpty": MessageLookupByLibrary.simpleMessage(
             "Orang perbaikan tidak boleh kosong"),

@@ -9,7 +9,7 @@ class GuideViewModel {
   String? content;
   String? img;
   int? isLogin;
-  String? sort;
+  int? sort;
   String? status;
   String? delFlag;
   String? deleteBy;

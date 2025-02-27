@@ -11,6 +11,7 @@ class HJBottomSheet {
   static Future wxPicker(
     BuildContext context,
     List<AssetEntity>? selectedAssets,
+    int? maxAssets,
   ) {
     return Picker.showModalSheet(context,
         child: Column(
@@ -32,7 +33,8 @@ class HJBottomSheet {
             _buildButton(
               Text(S.of(context).photoAlbum),
               onTap: () {
-                final result = Picker.assets(context: context);
+                final result =
+                    Picker.assets(context: context, maxAssets: maxAssets ?? 6);
                 result.then((value) {
                   Navigator.pop(context, value);
                 });
