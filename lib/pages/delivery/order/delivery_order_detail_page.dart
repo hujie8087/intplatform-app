@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/delivery_order_detail_model.dart';
-import 'package:logistics_app/http/model/delivery_order_model.dart';
 import 'package:logistics_app/http/model/delivery_station_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DeliveryOrderDetailPage extends StatefulWidget {
-  const DeliveryOrderDetailPage({super.key, required this.order});
+  const DeliveryOrderDetailPage({super.key, required this.orderNo});
 
-  final DeliveryOrderModel order;
+  final String orderNo;
 
   @override
   _DeliveryOrderDetailPageState createState() =>
@@ -49,7 +48,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
 
   // 获取订单详情
   Future<void> getOrderDetail() async {
-    DataUtils.getDetailById('/delivery/order/' + widget.order.id.toString(),
+    DataUtils.getDetailById('/delivery/order/' + widget.orderNo,
         success: (data) {
       _orderDetail = DeliveryOrderDetailModel.fromJson(data['data']);
       if (_orderDetail?.orderDelivery?.code != null) {

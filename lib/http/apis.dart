@@ -29,7 +29,7 @@ class APIs {
       'http://192.168.91.50:9000/intplatform'; // 图片外网地址
 
   // 韩栋本地环境
-  // static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
+  static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
 
   // 阿泽本地环境
   // static const String apiPrefix = 'http://10.40.11.26:10200'; // 外网
@@ -38,7 +38,7 @@ class APIs {
   // static const String apiPrefix = 'http://10.40.10.31:10200'; // 外网
 
   // 测试环境box
-  static const String apiPrefix = 'http://192.168.91.50:10200'; // 外网
+  // static const String apiPrefix = 'http://192.168.91.50:10200'; // 外网
 
   /// 注册接口
   static const String register = '/auth/register';

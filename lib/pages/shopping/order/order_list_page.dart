@@ -5,10 +5,12 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/base_list_model.dart';
-import 'package:logistics_app/http/model/order_model.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
-import 'package:logistics_app/pages/shopping/order/order_detail_page.dart';
+import 'package:logistics_app/http/model/order_model.dart';
+import 'package:logistics_app/pages/delivery/order/delivery_order_detail_page.dart';
 import 'package:logistics_app/pages/shopping/order/components/order_detail.dart';
+import 'package:logistics_app/pages/shopping/order/order_detail_page.dart';
+import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -268,67 +270,97 @@ class _OrderListPageState extends State<OrderListPage> {
                 ),
               ),
               SizedBox(height: 4.px),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: [
-              //     // 删除订单,圆角带边框按钮
-              //     OutlinedButton(
-              //       style: OutlinedButton.styleFrom(
-              //         minimumSize: Size.zero,
-              //         side: BorderSide(color: secondaryColor),
-              //         padding: EdgeInsets.symmetric(
-              //             vertical: 5.px, horizontal: 8.px),
-              //         shape: RoundedRectangleBorder(
-              //           borderRadius: BorderRadius.circular(8.px),
-              //         ),
-              //         // 实际大小
-              //         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              //       ),
-              //       onPressed: () {
-              //         // 弹窗删除订单
-              //         DialogFactory.instance.showConfirmDialog(
-              //             context: context,
-              //             title: S.of(context).deleteOrder,
-              //             content: '',
-              //             confirmClick: () {
-              //               // 删除订单
-              //               ShoppingUtils.deleteOrder(order.id.toString(),
-              //                   success: (data) async {
-              //                 pageNum = 1;
-              //                 await _getOrders();
-              //                 ProgressHUD.showSuccess(S
-              //                     .of(context)
-              //                     .deleteSuccess(S.of(context).orderInfo));
-              //               }, fail: (code, msg) {
-              //                 ProgressHUD.showError(msg);
-              //               });
-              //             });
-              //       },
-              //       child: Text(
-              //         S.of(context).deleteOrder,
-              //         style: TextStyle(color: secondaryColor, fontSize: 10.px),
-              //       ),
-              //     ),
-              //     // SizedBox(width: 10),
-              //     // // 查看评价,圆角带边框按钮
-              //     // OutlinedButton(
-              //     //   style: OutlinedButton.styleFrom(
-              //     //     minimumSize: Size.zero,
-              //     //     side: BorderSide(color: primaryColor),
-              //     //     padding:
-              //     //         EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              //     //     shape: RoundedRectangleBorder(
-              //     //       borderRadius: BorderRadius.circular(10),
-              //     //     ),
-              //     //   ),
-              //     //   onPressed: () {},
-              //     //   child: Text(
-              //     //     '评价',
-              //     //     style: TextStyle(color: primaryColor),
-              //     //   ),
-              //     // ),
-              //   ],
-              // )
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // 查看配送信息,圆角带边框按钮
+                  if (order.pickupType == 3)
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: Size.zero,
+                        side: BorderSide(color: primaryColor),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 5.px, horizontal: 8.px),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.px),
+                        ),
+                        // 实际大小
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      onPressed: () {
+                        // 查看配送信息
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeliveryOrderDetailPage(
+                              orderNo: order.no.toString(),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        '查看配送信息',
+                        style: TextStyle(color: primaryColor, fontSize: 10.px),
+                      ),
+                    ),
+                  // 删除订单,圆角带边框按钮
+                  // OutlinedButton(
+                  //   style: OutlinedButton.styleFrom(
+                  //     minimumSize: Size.zero,
+                  //     side: BorderSide(color: secondaryColor),
+                  //     padding: EdgeInsets.symmetric(
+                  //         vertical: 5.px, horizontal: 8.px),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(8.px),
+                  //     ),
+                  //     // 实际大小
+                  //     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  //   ),
+                  //   onPressed: () {
+                  //     // 弹窗删除订单
+                  //     DialogFactory.instance.showConfirmDialog(
+                  //         context: context,
+                  //         title: S.of(context).deleteOrder,
+                  //         content: '',
+                  //         confirmClick: () {
+                  //           // 删除订单
+                  //           ShoppingUtils.deleteOrder(order.id.toString(),
+                  //               success: (data) async {
+                  //             pageNum = 1;
+                  //             await _getOrders();
+                  //             ProgressHUD.showSuccess(S
+                  //                 .of(context)
+                  //                 .deleteSuccess(S.of(context).orderInfo));
+                  //           }, fail: (code, msg) {
+                  //             ProgressHUD.showError(msg);
+                  //           });
+                  //         });
+                  //   },
+                  //   child: Text(
+                  //     S.of(context).deleteOrder,
+                  //     style: TextStyle(color: secondaryColor, fontSize: 10.px),
+                  //   ),
+                  // ),
+                  // SizedBox(width: 10),
+                  // // 查看评价,圆角带边框按钮
+                  // OutlinedButton(
+                  //   style: OutlinedButton.styleFrom(
+                  //     minimumSize: Size.zero,
+                  //     side: BorderSide(color: primaryColor),
+                  //     padding:
+                  //         EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(10),
+                  //     ),
+                  //   ),
+                  //   onPressed: () {},
+                  //   child: Text(
+                  //     '评价',
+                  //     style: TextStyle(color: primaryColor),
+                  //   ),
+                  // ),
+                ],
+              )
             ],
           ),
         ),

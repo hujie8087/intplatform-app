@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
-import 'package:logistics_app/common_ui/dialog/parent_dialog.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/base_list_model.dart';
+import 'package:logistics_app/http/model/delivery_order_model.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/pages/delivery/order/delivery_order_detail_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
-import 'package:logistics_app/http/model/delivery_order_model.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -245,7 +244,8 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        DeliveryOrderDetailPage(order: order),
+                                        DeliveryOrderDetailPage(
+                                            orderNo: order.orderNo),
                                   ),
                                 );
                               },

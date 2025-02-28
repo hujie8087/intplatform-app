@@ -5,7 +5,10 @@
 
 import 'package:dio/dio.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/route/route_utils.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
+
 import 'apis.dart';
 import 'dio_utils.dart';
 import 'error_handle.dart';
@@ -161,6 +164,10 @@ class HttpUtils {
         success?.call(result);
       } else if ((result['code'] == ExceptionHandle.unauthorized)) {
         ProgressHUD.showText('请登录您的帐号');
+
+        SpUtils.remove(Constants.SP_USER_NAME);
+        SpUtils.remove(Constants.SP_USER_DEPT);
+        SpUtils.remove(Constants.SP_TOKEN);
         RouteUtils.navigateToLogin();
       } else if ((result['status'] == ExceptionHandle.not_found)) {
         ProgressHUD.showText('无法连接服务器');

@@ -16,6 +16,7 @@ import 'package:logistics_app/http/model/guide_type_view_model.dart';
 import 'package:logistics_app/http/model/guide_view_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/main.dart';
 import 'package:logistics_app/pages/accommodation_page/apply_detail_page.dart';
 import 'package:logistics_app/pages/guide/guide_list_page.dart';
 import 'package:logistics_app/pages/guide/guide_type_page.dart';
@@ -23,7 +24,6 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:logistics_app/main.dart';
 
 // String title, bool isEven, IconData icon,
 // bool showBadge, GestureTapCallback? onTap
@@ -239,7 +239,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
 
   // 设置过滤App菜单
   Future<void> filterAppMenu() async {
-    token = await SpUtils.getString(Constants.SP_TOKEN);
+    token = await SpUtils.getString(Constants.SP_TOKEN) ?? '';
     // 未登录，过滤需要登录的菜单
     if (token == '' || token.isEmpty) {
       appMenuListFilter = appMenuListFilter
@@ -345,8 +345,11 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   Future<void> _fetchData() async {
     languageCode = await SpUtils.getString('locale') ?? 'zh';
     final userInfoDataModel = await SpUtils.getModel('userInfo');
-    token = await SpUtils.getString(Constants.SP_TOKEN);
-    userInfoData = UserInfoModel.fromJson(userInfoDataModel);
+    token = await SpUtils.getString(Constants.SP_TOKEN) ?? '';
+    userInfoData = userInfoDataModel != null
+        ? UserInfoModel.fromJson(userInfoDataModel)
+        : null;
+    print('token: $token');
     if (userInfoData != null && token != '') {
       permission = userInfoData?.permissions;
       if (permission != null &&
@@ -489,7 +492,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
       ),
       body: SafeArea(
         top: false,
-        bottom: false,
+        bottom: true,
         child: Stack(
           children: <Widget>[
             Container(
