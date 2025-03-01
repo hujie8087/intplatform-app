@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -103,8 +105,7 @@ class FirebaseService {
     print("title: ${message.notification?.title}");
     print("body: ${message.notification?.body}");
     print("payload: ${message.data}");
-    _notifyShow(0, message.notification?.title ?? '',
-        message.notification?.body ?? '', message.data['payload'] ?? '');
+    showWeChatNotification(message);
   }
 
   Future<void> _notifyShow(
@@ -126,5 +127,36 @@ class FirebaseService {
     } catch (e) {
       print(e);
     }
+  }
+
+  void showWeChatNotification(RemoteMessage message) {
+    showSimpleNotification(
+      Row(
+        children: [
+          Icon(Icons.notifications, color: Colors.white),
+          SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message.notification?.title ?? "新消息",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+      subtitle: Text(
+        message.notification?.body ?? "您有一条新通知",
+        style: TextStyle(color: Colors.white),
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
+      background: Colors.black87,
+      duration: Duration(seconds: 3),
+      slideDismiss: true, // 允许滑动关闭
+    );
   }
 }
