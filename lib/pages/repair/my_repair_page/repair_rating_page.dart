@@ -113,7 +113,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                                     child: Text(
                                       S.of(context).submit,
                                       style: TextStyle(
-                                          fontSize: 16, color: primaryColor),
+                                          fontSize: 16.px, color: primaryColor),
                                     ),
                                   )
                                 ],
@@ -124,7 +124,7 @@ class _RepairRatingPageState extends State<RepairRatingPage>
                         child: Text(
                           S.of(context).submit,
                           style:
-                              TextStyle(fontSize: 12.px, color: primaryColor),
+                              TextStyle(fontSize: 14.px, color: primaryColor),
                         ),
                       );
                     return SizedBox.shrink(); // 当 isShowButton 为 false 时不显示按钮

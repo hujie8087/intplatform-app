@@ -154,8 +154,8 @@ class FirebaseService {
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),
-      background: Colors.black87,
-      duration: Duration(seconds: 3),
+      background: Colors.black87.withOpacity(0.6),
+      duration: Duration(seconds: 5),
       slideDismiss: true, // 允许滑动关闭
     );
   }

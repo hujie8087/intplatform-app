@@ -48,7 +48,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
 
   // 获取订单详情
   Future<void> getOrderDetail() async {
-    DataUtils.getDetailById('/delivery/order/ByNo/' + widget.orderNo,
+    DataUtils.getDeliveryOrderDetail({'orderNo': widget.orderNo},
         success: (data) {
       _orderDetail = DeliveryOrderDetailModel.fromJson(data['data']);
       if (_orderDetail?.orderDelivery?.code != null) {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
-
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
 import 'package:logistics_app/generated/l10n.dart';
@@ -21,6 +20,7 @@ import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+
 import 'location_service_model.dart';
 
 class DeliveryOnlineListPage extends StatefulWidget {

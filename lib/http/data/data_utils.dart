@@ -370,4 +370,14 @@ class DataUtils {
     HttpUtils.get('/system/user/getSenderId/${username}', null,
         success: success, fail: fail);
   }
+
+  //根据来源编号查询配送订单详情
+  static void getDeliveryOrderDetail(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/delivery/order/ByNo', parameters,
+        success: success, fail: fail);
+  }
 }
