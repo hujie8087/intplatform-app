@@ -58,9 +58,8 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
 
   @override
   void initState() {
-    _fetchOrderStatus();
     super.initState();
-    _loadOrders(isRefresh: true);
+    _fetchOrderStatus();
   }
 
 // 获取订单类型
@@ -71,7 +70,9 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
         statusList = BaseListModel<DictModel>.fromJson(
                 data, (json) => DictModel.fromJson(json)).data ??
             [];
-        setState(() {});
+        setState(() {
+          _loadOrders(isRefresh: true);
+        });
       },
     );
   }
@@ -245,7 +246,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                                   MaterialPageRoute(
                                     builder: (context) =>
                                         DeliveryOrderDetailPage(
-                                            orderNo: order.orderNo),
+                                            orderNo: order.sourceNo),
                                   ),
                                 );
                               },
@@ -291,9 +292,11 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                       ),
                       child: Text(
                         statusList
-                                .firstWhere((element) =>
-                                    element.dictValue ==
-                                    order.orderType.toString())
+                                .firstWhere(
+                                    (element) =>
+                                        element.dictValue ==
+                                        order.orderType.toString(),
+                                    orElse: () => DictModel())
                                 .dictLabel ??
                             '',
                         style: TextStyle(

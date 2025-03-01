@@ -10,13 +10,10 @@ class DeliveryStaffModel {
   String userName;
   String nickName;
   String tel;
-  String type;
+  String? type;
   String? def1;
   String? def2;
   String status;
-  String delFlag;
-  String deleteBy;
-  DateTime deleteTime;
 
   DeliveryStaffModel({
     required this.createBy,
@@ -34,9 +31,6 @@ class DeliveryStaffModel {
     this.def1,
     this.def2,
     required this.status,
-    required this.delFlag,
-    required this.deleteBy,
-    required this.deleteTime,
   });
 
   factory DeliveryStaffModel.fromJson(Map<String, dynamic> json) {
@@ -60,9 +54,6 @@ class DeliveryStaffModel {
       def1: json['def1'],
       def2: json['def2'],
       status: json['status'],
-      delFlag: json['delFlag'],
-      deleteBy: json['deleteBy'],
-      deleteTime: DateTime.parse(json['deleteTime']),
     );
   }
 
@@ -83,9 +74,6 @@ class DeliveryStaffModel {
       'def1': def1,
       'def2': def2,
       'status': status,
-      'delFlag': delFlag,
-      'deleteBy': deleteBy,
-      'deleteTime': deleteTime.toIso8601String(),
     };
   }
 }

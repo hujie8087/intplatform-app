@@ -11,6 +11,7 @@ import 'package:logistics_app/http/model/delivery_order_model.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/pages/delivery/order/delivery_order_detail_page.dart';
 import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/pages/shopping/payment/qr_scanner_page.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -225,7 +226,8 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
           'id': _orders[0].id.toString(),
           'msg': fileUrl[0],
         };
-
+        var deliveryAddress = _orders[0].deliveryAddress;
+        var nick = _orders[0].nick;
         DataUtils.deliverOrder(
           parameters,
           success: (data) {
@@ -235,10 +237,10 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                 DataUtils.sendOneMessage(
                   {
                     'title': '您的订单已送达',
-                    'body': _orders[0].deliveryAddress,
+                    'body': deliveryAddress,
                     'type': "1",
                     'payload': '',
-                    'userName': _orders[0].nick,
+                    'userName': nick,
                     'equipmentToken': data['msg']
                   },
                   success: (data) {
@@ -396,6 +398,15 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String dictLabel = statusList.isNotEmpty
+        ? statusList
+                .firstWhere(
+                  (element) => element.dictValue == order.orderType.toString(),
+                  orElse: () => DictModel(),
+                )
+                .dictLabel ??
+            ''
+        : '';
     return Card(
       margin: const EdgeInsets.all(8.0),
       // 圆角
@@ -418,11 +429,7 @@ class OrderCard extends StatelessWidget {
               children: [
                 Text('订单号：${order.sourceNo}'),
                 Text(
-                  statusList
-                          .firstWhere((element) =>
-                              element.dictValue == order.orderType.toString())
-                          .dictLabel ??
-                      '',
+                  dictLabel,
                   style: TextStyle(
                     color: primaryColor,
                     fontSize: 12.px,
@@ -543,7 +550,11 @@ class OrderCard extends StatelessWidget {
                       minimumSize: Size(42.px, 20.px),
                     ),
                     onPressed: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => DeliveryOrderDetailPage(order: order)));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DeliveryOrderDetailPage(
+                                  orderNo: order.sourceNo)));
                     },
                     child: Text(
                       '查看订单',

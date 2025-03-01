@@ -235,7 +235,11 @@ class _OrderListPageState extends State<OrderListPage> {
                                 (e) => e.dictValue == order.status.toString())
                             .dictLabel ??
                         '',
-                    style: TextStyle(color: Colors.grey, fontSize: 14.px),
+                    style: TextStyle(
+                        color: order.status == 4 || order.status == 2
+                            ? secondaryColor
+                            : Colors.grey,
+                        fontSize: 14.px),
                   ),
                 ],
               ),

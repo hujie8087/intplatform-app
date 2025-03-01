@@ -34,7 +34,7 @@ class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
 
   List<RepairViewModel> _dataArr = [];
   int _pageNum = 1;
-  final int _pageSize = 3;
+  final int _pageSize = 10;
   int _totalItems = 0;
 
   late RefreshController _refreshController;

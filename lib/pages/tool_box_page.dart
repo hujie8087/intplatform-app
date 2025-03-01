@@ -167,6 +167,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
         if (appMenuList.isEmpty) {
           getAppMenu();
         } else {
+          print('123456');
           filterAppMenu();
         }
       },
@@ -211,6 +212,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     switch (permission) {
       case 'commonality:repair:unfinishedCountApp':
         badgeContent = repairUnfinishedCount;
+        print(badgeContent);
         break;
       case 'commonality:repair:listApp':
         badgeContent = repairUnreadCount;
@@ -349,7 +351,6 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     userInfoData = userInfoDataModel != null
         ? UserInfoModel.fromJson(userInfoDataModel)
         : null;
-    print('token: $token');
     if (userInfoData != null && token != '') {
       permission = userInfoData?.permissions;
       if (permission != null &&
