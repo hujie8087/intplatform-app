@@ -388,4 +388,14 @@ class DataUtils {
     HttpUtils.get('/delivery/order/ByNo', parameters,
         success: success, fail: fail);
   }
+
+  // 获取站点信息
+  static void getDeliveryStationInfo(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get('/delivery/sourceMsg/list', parameters,
+        success: success, fail: fail);
+  }
 }

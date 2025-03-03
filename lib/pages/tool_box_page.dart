@@ -505,7 +505,9 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
                     appMenuList.length,
                     (index) => Container(
                         padding: EdgeInsets.all(8.px),
-                        margin: EdgeInsets.only(bottom: 8.px),
+                        margin: EdgeInsets.only(
+                            bottom:
+                                index == appMenuList.length - 1 ? 25.px : 8.px),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8.px)),

@@ -361,6 +361,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       borderRadius: BorderRadius.circular(10.px),
                     ),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                             child: Text(S.current.notice,
@@ -383,7 +384,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 child: model.list?.isEmpty == true
                                     ? Text(
                                         S.of(context).noData,
-                                        style: TextStyle(height: 2),
+                                        style: TextStyle(height: 1.5),
                                       )
                                     : PageView.builder(
                                         controller: _pageController,

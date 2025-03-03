@@ -5,9 +5,8 @@ import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart'
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
-import 'package:logistics_app/http/model/base_list_model.dart';
 import 'package:logistics_app/http/model/delivery_order_model.dart';
-import 'package:logistics_app/http/model/dict_model.dart';
+import 'package:logistics_app/http/model/delivery_station_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/pages/delivery/order/delivery_order_detail_page.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -54,7 +53,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
   int total = 0;
   String searchText = '';
   TextEditingController searchController = TextEditingController();
-  List<DictModel> statusList = [];
+  List<DeliveryStationModel> stationList = [];
   final _refreshController = RefreshController();
   final _errorMsgController = TextEditingController();
 
@@ -66,11 +65,14 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
 
 // 获取订单类型
   Future<void> _fetchOrderStatus() async {
-    DataUtils.getDictDataList(
-      'delivery_staff_type',
+    DataUtils.getDeliveryStationInfo(
+      {
+        'pageNum': 1,
+        'pageSize': 1000,
+      },
       success: (data) {
-        statusList = BaseListModel<DictModel>.fromJson(
-                data, (json) => DictModel.fromJson(json)).data ??
+        stationList = RowsModel<DeliveryStationModel>.fromJson(
+                data, (json) => DeliveryStationModel.fromJson(json)).rows ??
             [];
         setState(() {
           _loadOrders(isRefresh: true);
@@ -308,13 +310,11 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                         borderRadius: BorderRadius.circular(4.px),
                       ),
                       child: Text(
-                        statusList
+                        stationList
                                 .firstWhere(
-                                    (element) =>
-                                        element.dictValue ==
-                                        order.code.toString(),
-                                    orElse: () => DictModel())
-                                .dictLabel ??
+                                    (element) => element.code == order.code,
+                                    orElse: () => DeliveryStationModel())
+                                .sourceStation ??
                             '',
                         style: TextStyle(
                           color: primaryColor,
@@ -324,7 +324,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                     ),
                     SizedBox(width: 8.px),
                     Text(
-                      S.of(context).orderNo + ': ${order.orderNo}',
+                      order.orderNo,
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],
