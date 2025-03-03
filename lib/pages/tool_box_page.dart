@@ -426,7 +426,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
                     MaterialPageRoute(
                         builder: (context) => ApplyDetailPage(
                               url: applyUrl,
-                              title: '我的流程',
+                              title: S.of(context).myProcess,
                             )));
               }
               setState(() {});

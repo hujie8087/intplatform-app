@@ -3,6 +3,7 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
 import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
@@ -64,8 +65,8 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
   // 维修状态选项
 
   final List<Map<String, dynamic>> statusOptions = [
-    {'label': '已维修', 'value': 1},
-    {'label': '待返修', 'value': 2},
+    {'label': S.current.repaired, 'value': 1},
+    {'label': S.current.pendingRepair, 'value': 2},
   ];
 
   @override
@@ -92,22 +93,22 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
   // 提交处理结果
   void _submitRepair() {
     if (selectedRepairType == null) {
-      ProgressHUD.showError('请选择维修类型');
+      ProgressHUD.showError(S.of(context).selectRepairType);
       return;
     }
     if (selectedRepairTime == null) {
-      ProgressHUD.showError('请选择维修时间');
+      ProgressHUD.showError(S.of(context).selectRepairTime);
       return;
     }
     if (_noteController.text.isEmpty) {
-      ProgressHUD.showError('请填写维修说明');
+      ProgressHUD.showError(S.of(context).repairDescription);
       return;
     }
 
     DialogFactory.instance.showConfirmDialog(
       context: context,
-      title: '确认提交',
-      content: '是否确认提交维修处理结果？',
+      title: S.of(context).confirmSubmit,
+      content: S.of(context).confirmSubmitContent,
       confirmClick: () {
         widget.order.repairType = selectedRepairType?.id;
         widget.order.repairTime = selectedRepairTime;
@@ -118,13 +119,13 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
         RepairUtils.editRepairDetail(
           widget.order,
           success: (data) {
-            ProgressHUD.showSuccess('提交成功');
+            ProgressHUD.showSuccess(S.of(context).submitSuccess);
             DataUtils.getUserInfoByUsername(widget.order.createBy,
                 success: (data) {
               if (data['msg'] != null) {
                 DataUtils.sendOneMessage(
                   {
-                    'title': '您的维修单已处理',
+                    'title': S.of(context).repairOrderProcessed,
                     'body':
                         widget.order.repairArea! + "/" + widget.order.roomNo!,
                     'type': "1",
@@ -155,7 +156,8 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('维修单处理', style: TextStyle(fontSize: 16.px)),
+        title: Text(S.of(context).repairOrderProcess,
+            style: TextStyle(fontSize: 16.px)),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -180,44 +182,44 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildInfoRow(
-                              label: '订单编号:',
+                              label: S.of(context).orderNo,
                               value: widget.order.repairNo,
                               icon: Icon(Icons.info_outline,
                                   size: 16.px, color: Colors.grey)),
                           _buildInfoRow(
-                              label: '报修房间号:',
+                              label: S.of(context).repairRoomNo,
                               value: widget.order.roomNo,
                               icon: Icon(Icons.home,
                                   size: 16.px, color: Colors.grey)),
                           _buildInfoRow(
-                              label: '报修区域:',
+                              label: S.of(context).repairArea,
                               value: widget.order.repairArea,
                               icon: Icon(Icons.location_on,
                                   size: 16.px, color: Colors.grey)),
 
                           _buildInfoRow(
-                              label: '联系人:',
+                              label: S.of(context).repairPerson,
                               value: widget.order.repairPerson,
                               icon: Icon(Icons.person,
                                   size: 16.px, color: Colors.grey)),
                           _buildInfoRow(
-                              label: '联系电话:',
+                              label: S.of(context).repairTel,
                               value: widget.order.tel,
                               icon: Icon(Icons.phone,
                                   size: 16.px, color: Colors.grey)),
                           _buildInfoRow(
-                              label: '提交时间:',
+                              label: S.of(context).createTime,
                               value: widget.order.createTime,
                               icon: Icon(Icons.access_time,
                                   size: 16.px, color: Colors.grey)),
                           _buildInfoRow(
-                              label: '报修信息:',
+                              label: S.of(context).repairMessage,
                               value: widget.order.repairMessage,
                               icon: Icon(Icons.message,
                                   size: 16.px, color: Colors.grey)),
                           if (widget.order.repairState == 2)
                             _buildInfoRow(
-                                label: '返修信息:',
+                                label: S.of(context).repairFeedback,
                                 value: widget.order.repairMessage,
                                 icon: Icon(Icons.feedback,
                                     size: 16.px, color: Colors.grey),
@@ -234,7 +236,7 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                                         size: 16.px, color: Colors.grey),
                                     SizedBox(height: 4.px),
                                     Text(
-                                      '报修图片:',
+                                      S.of(context).repairImage,
                                       style: TextStyle(
                                         fontSize: 12.px,
                                         color: Colors.grey[600],
@@ -333,7 +335,7 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                     Row(
                       children: [
                         Text(
-                          '维修类型',
+                          S.of(context).repairType,
                           style: TextStyle(
                             fontSize: 14.px,
                             fontWeight: FontWeight.w500,
@@ -380,7 +382,8 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text(selectedRepairType?.name ?? '请选择维修类型'),
+                                  Text(selectedRepairType?.name ??
+                                      S.of(context).selectRepairType),
                                   Icon(Icons.chevron_right,
                                       size: 16.px, color: Colors.grey),
                                 ],
@@ -392,7 +395,7 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
 
                     // 维修时间选择
                     Text(
-                      '维修时间',
+                      S.of(context).repairTime,
                       style: TextStyle(
                         fontSize: 14.px,
                         fontWeight: FontWeight.w500,
@@ -423,7 +426,8 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                           children: [
                             Expanded(
                               child: Text(
-                                selectedRepairTime ?? '请选择维修时间',
+                                selectedRepairTime ??
+                                    S.of(context).selectRepairTime,
                                 style: TextStyle(
                                   fontSize: 12.px,
                                   color: selectedRepairTime != null
@@ -443,7 +447,7 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
 
                     // 维修状态选择
                     Text(
-                      '维修状态',
+                      S.of(context).repairStatus,
                       style: TextStyle(
                         fontSize: 14.px,
                         fontWeight: FontWeight.w500,
@@ -489,7 +493,7 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
 
                     // 维修说明输入框
                     Text(
-                      '维修说明',
+                      S.of(context).repairDirection,
                       style: TextStyle(
                         fontSize: 14.px,
                         fontWeight: FontWeight.w500,
@@ -500,7 +504,7 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                       controller: _noteController,
                       maxLines: 4,
                       decoration: InputDecoration(
-                        hintText: '请输入维修说明',
+                        hintText: S.of(context).repairDescription,
                         hintStyle:
                             TextStyle(fontSize: 12.px, color: Colors.grey[400]),
                         border: OutlineInputBorder(
@@ -538,7 +542,7 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
               padding: EdgeInsets.symmetric(vertical: 5.px),
             ),
             child: Text(
-              '提交',
+              S.of(context).submit,
               style: TextStyle(
                 fontSize: 16.px,
                 fontWeight: FontWeight.w500,

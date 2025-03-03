@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/model/accommodation_process_model.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -113,7 +114,7 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '流程说明',
+                                  S.of(context).processDescription,
                                   style: TextStyle(
                                     fontSize: 14.px,
                                     fontWeight: FontWeight.bold,
@@ -139,7 +140,7 @@ class _ProcessDetailPageState extends State<ProcessDetailPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '注意事项',
+                                  S.of(context).attention,
                                   style: TextStyle(
                                     fontSize: 14.px,
                                     fontWeight: FontWeight.bold,

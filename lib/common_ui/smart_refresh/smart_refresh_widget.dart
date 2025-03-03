@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -52,24 +53,24 @@ class SmartRefreshWidget extends StatelessWidget {
       enablePullUp: enablePullUp ?? true,
       header: WaterDropHeader(
         refresh: Text(
-          '刷新中...',
+          S.current.refreshing,
           style: TextStyle(fontSize: 12.px, color: Colors.grey),
         ), // 指定语言文本
         complete: Text(
-          '刷新完成',
+          S.current.refreshComplete,
           style: TextStyle(fontSize: 12.px, color: Colors.grey),
         ),
         failed: Text(
-          '刷新失败',
+          S.current.refreshFailed,
           style: TextStyle(fontSize: 12.px, color: Colors.grey),
         ),
       ),
       footer: ClassicFooter(
-        loadingText: '加载中...', // 指定语言文本
-        noDataText: '没有更多数据',
-        idleText: '上拉加载更多',
-        failedText: '加载失败',
-        canLoadingText: '松开加载更多',
+        loadingText: S.current.loading, // 指定语言文本
+        noDataText: S.current.noMoreData,
+        idleText: S.current.pullUpLoadMore,
+        failedText: S.current.loadFailed,
+        canLoadingText: S.current.releaseLoadMore,
         textStyle: TextStyle(fontSize: 12.px, color: Colors.grey),
       ),
       onRefresh: onRefresh,

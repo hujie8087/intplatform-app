@@ -308,8 +308,7 @@ class DataUtils {
     Success? success,
     Fail? fail,
   }) {
-    HttpUtils.put('/delivery/acceptOrder/' + parameters['id'].toString(),
-        {'msg': parameters['msg']},
+    HttpUtils.put('/delivery/acceptOrder', parameters,
         success: success, fail: fail);
   }
 

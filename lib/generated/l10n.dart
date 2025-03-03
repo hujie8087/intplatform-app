@@ -1080,6 +1080,16 @@ class S {
     );
   }
 
+  /// `待返修`
+  String get pendingRepair {
+    return Intl.message(
+      '待返修',
+      name: 'pendingRepair',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `已完结`
   String get completed {
     return Intl.message(
@@ -1155,6 +1165,166 @@ class S {
     return Intl.message(
       '确认删除该报修单吗?',
       name: 'deleteRepairTips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `您的维修单已处理`
+  String get repairOrderProcessed {
+    return Intl.message(
+      '您的维修单已处理',
+      name: 'repairOrderProcessed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `维修单处理`
+  String get repairOrderProcess {
+    return Intl.message(
+      '维修单处理',
+      name: 'repairOrderProcess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择维修类型`
+  String get selectRepairType {
+    return Intl.message(
+      '请选择维修类型',
+      name: 'selectRepairType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择维修时间`
+  String get selectRepairTime {
+    return Intl.message(
+      '请选择维修时间',
+      name: 'selectRepairTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请填写维修说明`
+  String get repairDescription {
+    return Intl.message(
+      '请填写维修说明',
+      name: 'repairDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `报修房间号`
+  String get repairRoomNo {
+    return Intl.message(
+      '报修房间号',
+      name: 'repairRoomNo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `联系电话`
+  String get repairTel {
+    return Intl.message(
+      '联系电话',
+      name: 'repairTel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `报修信息`
+  String get repairMessage {
+    return Intl.message(
+      '报修信息',
+      name: 'repairMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `返修信息`
+  String get repairFeedback {
+    return Intl.message(
+      '返修信息',
+      name: 'repairFeedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `报修图片`
+  String get repairImage {
+    return Intl.message(
+      '报修图片',
+      name: 'repairImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `维修类型`
+  String get repairType {
+    return Intl.message(
+      '维修类型',
+      name: 'repairType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `维修状态`
+  String get repairStatus {
+    return Intl.message(
+      '维修状态',
+      name: 'repairStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `维修订单管理`
+  String get repairOrderManagement {
+    return Intl.message(
+      '维修订单管理',
+      name: 'repairOrderManagement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `处理时间`
+  String get updateTime {
+    return Intl.message(
+      '处理时间',
+      name: 'updateTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `处理结果`
+  String get repairNote {
+    return Intl.message(
+      '处理结果',
+      name: 'repairNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `处理`
+  String get process {
+    return Intl.message(
+      '处理',
+      name: 'process',
       desc: '',
       args: [],
     );
@@ -2465,6 +2635,626 @@ class S {
     return Intl.message(
       '纬达贝月刊',
       name: 'monthly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `我的流程`
+  String get myProcess {
+    return Intl.message(
+      '我的流程',
+      name: 'myProcess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `查看配送信息`
+  String get deliveryInfo {
+    return Intl.message(
+      '查看配送信息',
+      name: 'deliveryInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送中`
+  String get delivering {
+    return Intl.message(
+      '配送中',
+      name: 'delivering',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已送达`
+  String get delivered {
+    return Intl.message(
+      '已送达',
+      name: 'delivered',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已收货`
+  String get received {
+    return Intl.message(
+      '已收货',
+      name: 'received',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送异常`
+  String get exception {
+    return Intl.message(
+      '配送异常',
+      name: 'exception',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单状态`
+  String get orderStatus {
+    return Intl.message(
+      '订单状态',
+      name: 'orderStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送地址`
+  String get deliveryAddress {
+    return Intl.message(
+      '配送地址',
+      name: 'deliveryAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送电话`
+  String get deliveryPhone {
+    return Intl.message(
+      '配送电话',
+      name: 'deliveryPhone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送员`
+  String get deliveryName {
+    return Intl.message(
+      '配送员',
+      name: 'deliveryName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `接单成功`
+  String get acceptOrderSuccess {
+    return Intl.message(
+      '接单成功',
+      name: 'acceptOrderSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `接单失败`
+  String get acceptOrderFailed {
+    return Intl.message(
+      '接单失败',
+      name: 'acceptOrderFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `接单`
+  String get acceptOrder {
+    return Intl.message(
+      '接单',
+      name: 'acceptOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `接单时间`
+  String get acceptTime {
+    return Intl.message(
+      '接单时间',
+      name: 'acceptTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `相机权限被永久拒绝，打开设置页面`
+  String get cameraPermissionDenied {
+    return Intl.message(
+      '相机权限被永久拒绝，打开设置页面',
+      name: 'cameraPermissionDenied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请先接单`
+  String get pleaseAcceptOrder {
+    return Intl.message(
+      '请先接单',
+      name: 'pleaseAcceptOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请先取消订单`
+  String get pleaseCancelOrder {
+    return Intl.message(
+      '请先取消订单',
+      name: 'pleaseCancelOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `送达成功`
+  String get deliverSuccess {
+    return Intl.message(
+      '送达成功',
+      name: 'deliverSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `送达失败`
+  String get deliverFailed {
+    return Intl.message(
+      '送达失败',
+      name: 'deliverFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `送达`
+  String get deliver {
+    return Intl.message(
+      '送达',
+      name: 'deliver',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `送达时间`
+  String get deliverTime {
+    return Intl.message(
+      '送达时间',
+      name: 'deliverTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `您的订单已送达`
+  String get deliverSuccessTips {
+    return Intl.message(
+      '您的订单已送达',
+      name: 'deliverSuccessTips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认取消送达该订单吗？`
+  String get deliverFailedTips {
+    return Intl.message(
+      '确认取消送达该订单吗？',
+      name: 'deliverFailedTips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `在线接单`
+  String get onlineDelivery {
+    return Intl.message(
+      '在线接单',
+      name: 'onlineDelivery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `停止定位`
+  String get stopLocation {
+    return Intl.message(
+      '停止定位',
+      name: 'stopLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `开始定位`
+  String get startLocation {
+    return Intl.message(
+      '开始定位',
+      name: 'startLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无订单`
+  String get noOrder {
+    return Intl.message(
+      '暂无订单',
+      name: 'noOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `取消订单`
+  String get cancelOrder {
+    return Intl.message(
+      '取消订单',
+      name: 'cancelOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `取消订单成功`
+  String get cancelOrderSuccess {
+    return Intl.message(
+      '取消订单成功',
+      name: 'cancelOrderSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `取消订单失败`
+  String get cancelOrderFailed {
+    return Intl.message(
+      '取消订单失败',
+      name: 'cancelOrderFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `查看订单`
+  String get viewOrder {
+    return Intl.message(
+      '查看订单',
+      name: 'viewOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送订单详情`
+  String get deliveryOrderDetail {
+    return Intl.message(
+      '配送订单详情',
+      name: 'deliveryOrderDetail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `联系Ta`
+  String get contact {
+    return Intl.message(
+      '联系Ta',
+      name: 'contact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送订单`
+  String get deliveryOrder {
+    return Intl.message(
+      '配送订单',
+      name: 'deliveryOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送单号`
+  String get deliveryOrderNo {
+    return Intl.message(
+      '配送单号',
+      name: 'deliveryOrderNo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `操作人`
+  String get operator {
+    return Intl.message(
+      '操作人',
+      name: 'operator',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `待接单`
+  String get pendingOrder {
+    return Intl.message(
+      '待接单',
+      name: 'pendingOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下单时间`
+  String get createTime {
+    return Intl.message(
+      '下单时间',
+      name: 'createTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认收货`
+  String get confirmDelivery {
+    return Intl.message(
+      '确认收货',
+      name: 'confirmDelivery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认收货后，订单将无法修改，请确认是否收货？`
+  String get confirmDeliveryContent {
+    return Intl.message(
+      '确认收货后，订单将无法修改，请确认是否收货？',
+      name: 'confirmDeliveryContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已评价`
+  String get evaluated {
+    return Intl.message(
+      '已评价',
+      name: 'evaluated',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `在线申请`
+  String get onlineApply {
+    return Intl.message(
+      '在线申请',
+      name: 'onlineApply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `流程说明`
+  String get processDescription {
+    return Intl.message(
+      '流程说明',
+      name: 'processDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `注意事项`
+  String get attention {
+    return Intl.message(
+      '注意事项',
+      name: 'attention',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `住宿流程`
+  String get accommodationProcess {
+    return Intl.message(
+      '住宿流程',
+      name: 'accommodationProcess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `输入的两次密码不同`
+  String get inputDifferentPassword {
+    return Intl.message(
+      '输入的两次密码不同',
+      name: 'inputDifferentPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `忘记密码？`
+  String get forgetPassword {
+    return Intl.message(
+      '忘记密码？',
+      name: 'forgetPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `记住密码`
+  String get rememberPassword {
+    return Intl.message(
+      '记住密码',
+      name: 'rememberPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `内容待更新，敬请期待...`
+  String get contentUpdating {
+    return Intl.message(
+      '内容待更新，敬请期待...',
+      name: 'contentUpdating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `附件`
+  String get attachment {
+    return Intl.message(
+      '附件',
+      name: 'attachment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `身份证号可用于找回密码，请尽快绑定！`
+  String get idCardTips {
+    return Intl.message(
+      '身份证号可用于找回密码，请尽快绑定！',
+      name: 'idCardTips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `为了您的资金安全，首次登录请您尽快修改密码！`
+  String get firstLoginTips {
+    return Intl.message(
+      '为了您的资金安全，首次登录请您尽快修改密码！',
+      name: 'firstLoginTips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已查看`
+  String get viewed {
+    return Intl.message(
+      '已查看',
+      name: 'viewed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `异常原因`
+  String get deliveryException {
+    return Intl.message(
+      '异常原因',
+      name: 'deliveryException',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `没有更多数据`
+  String get noMoreData {
+    return Intl.message(
+      '没有更多数据',
+      name: 'noMoreData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `上拉加载更多`
+  String get pullUpLoadMore {
+    return Intl.message(
+      '上拉加载更多',
+      name: 'pullUpLoadMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `加载失败`
+  String get loadFailed {
+    return Intl.message(
+      '加载失败',
+      name: 'loadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `释放加载更多`
+  String get releaseLoadMore {
+    return Intl.message(
+      '释放加载更多',
+      name: 'releaseLoadMore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `刷新`
+  String get refresh {
+    return Intl.message(
+      '刷新',
+      name: 'refresh',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `刷新完成`
+  String get refreshComplete {
+    return Intl.message(
+      '刷新完成',
+      name: 'refreshComplete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `刷新失败`
+  String get refreshFailed {
+    return Intl.message(
+      '刷新失败',
+      name: 'refreshFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `刷新中...`
+  String get refreshing {
+    return Intl.message(
+      '刷新中...',
+      name: 'refreshing',
       desc: '',
       args: [],
     );

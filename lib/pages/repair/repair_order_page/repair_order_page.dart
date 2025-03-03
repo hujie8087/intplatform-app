@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/model/repair_view_model.dart';
 import 'package:logistics_app/pages/repair/repair_order_page/repair_order_detail_page.dart';
@@ -38,10 +39,10 @@ class _RepairOrderPageState extends State<RepairOrderPage> {
 
   // 状态选项
   List<RepairItemModel> statusOptions = [
-    RepairItemModel(label: '待处理', value: 0, badgeCount: 0),
-    RepairItemModel(label: '已维修', value: 1, badgeCount: 0),
-    RepairItemModel(label: '待返修', value: 2, badgeCount: 0),
-    RepairItemModel(label: '已完结', value: 3, badgeCount: 0),
+    RepairItemModel(label: S.current.pending, value: 0, badgeCount: 0),
+    RepairItemModel(label: S.current.repaired, value: 1, badgeCount: 0),
+    RepairItemModel(label: S.current.pendingRepair, value: 2, badgeCount: 0),
+    RepairItemModel(label: S.current.completed, value: 3, badgeCount: 0),
   ];
 
   // 获取维修订单未完成数量
@@ -111,7 +112,8 @@ class _RepairOrderPageState extends State<RepairOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('维修订单管理', style: TextStyle(fontSize: 16.px)),
+        title: Text(S.current.repairOrderManagement,
+            style: TextStyle(fontSize: 16.px)),
         elevation: 0,
       ),
       body: Column(
@@ -220,7 +222,7 @@ class _RepairOrderPageState extends State<RepairOrderPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '订单编号: ${order.repairNo}',
+                  '${S.of(context).orderNo}: ${order.repairNo}',
                   style: TextStyle(
                     fontSize: 14.px,
                     fontWeight: FontWeight.w500,
@@ -252,23 +254,30 @@ class _RepairOrderPageState extends State<RepairOrderPage> {
             SizedBox(height: 12.px),
 
             // 维修信息
-            _buildInfoRow(label: '报修区域:', value: order.repairArea),
-            _buildInfoRow(label: '房间号:', value: order.roomNo),
-            _buildInfoRow(label: '联系人:', value: order.repairPerson),
-            _buildInfoRow(label: '联系电话:', value: order.tel),
-            _buildInfoRow(label: '报修时间:', value: order.createTime),
-            _buildInfoRow(label: '报修信息:', value: order.repairMessage),
+            _buildInfoRow(
+                label: S.of(context).repairArea, value: order.repairArea),
+            _buildInfoRow(
+                label: S.of(context).repairRoomNo, value: order.roomNo),
+            _buildInfoRow(
+                label: S.of(context).repairPerson, value: order.repairPerson),
+            _buildInfoRow(label: S.of(context).repairTel, value: order.tel),
+            _buildInfoRow(
+                label: S.of(context).createTime, value: order.createTime),
+            _buildInfoRow(
+                label: S.of(context).repairMessage, value: order.repairMessage),
             if (order.repairState == 2)
               _buildInfoRow(
-                  label: '返修信息:',
+                  label: S.of(context).repairFeedback,
                   value: order.ratingMessage,
                   labelColor: secondaryColor),
             if (order.repairState == 1) ...[
               SizedBox(height: 8.px),
               Divider(),
               SizedBox(height: 8.px),
-              _buildInfoRow(label: '处理时间:', value: order.updateTime),
-              _buildInfoRow(label: '处理结果:', value: order.repairNote),
+              _buildInfoRow(
+                  label: S.of(context).updateTime, value: order.updateTime),
+              _buildInfoRow(
+                  label: S.of(context).repairNote, value: order.repairNote),
             ],
             if (order.repairState == 0 || order.repairState == 2) ...[
               Container(
@@ -294,7 +303,7 @@ class _RepairOrderPageState extends State<RepairOrderPage> {
                       _getOrders();
                     }
                   },
-                  child: Text('处理'),
+                  child: Text(S.of(context).process),
                 ),
               ),
             ],

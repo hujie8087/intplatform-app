@@ -131,12 +131,12 @@ class _LoginFormState extends State<LoginForm> {
                     RouteUtils.push(context, ForgetPasswordPage());
                   },
                   child: Text(
-                    '忘记密码？',
+                    S.of(context).forgetPassword,
                   ),
                 )),
                 // 记住密码
                 Text(
-                  '记住密码',
+                  S.of(context).rememberPassword,
                   style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                 ),
                 Checkbox(

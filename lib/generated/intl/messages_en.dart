@@ -30,6 +30,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "acceptOrder": MessageLookupByLibrary.simpleMessage("Accept order"),
+        "acceptOrderFailed":
+            MessageLookupByLibrary.simpleMessage("Accept order failed"),
+        "acceptOrderSuccess":
+            MessageLookupByLibrary.simpleMessage("Accept order success"),
+        "acceptTime": MessageLookupByLibrary.simpleMessage("Accept time"),
+        "accommodationProcess":
+            MessageLookupByLibrary.simpleMessage("Accommodation process"),
         "actualPayment": MessageLookupByLibrary.simpleMessage("Actual payment"),
         "addAddress": MessageLookupByLibrary.simpleMessage("Add address"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
@@ -43,11 +51,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "appTitle":
             MessageLookupByLibrary.simpleMessage("IWIP Integrated Platform"),
         "appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
+        "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
+        "attention": MessageLookupByLibrary.simpleMessage("Attention"),
         "birthday": MessageLookupByLibrary.simpleMessage("Birthday"),
         "businessHours": MessageLookupByLibrary.simpleMessage("Business hours"),
+        "cameraPermissionDenied": MessageLookupByLibrary.simpleMessage(
+            "Camera permission is permanently denied, open the settings page"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancelDefault": MessageLookupByLibrary.simpleMessage(
             "Confirm to cancel the default address?"),
+        "cancelOrder": MessageLookupByLibrary.simpleMessage("Cancel order"),
+        "cancelOrderFailed":
+            MessageLookupByLibrary.simpleMessage("Cancel order failed"),
+        "cancelOrderSuccess":
+            MessageLookupByLibrary.simpleMessage("Cancel order success"),
         "cardBalance": MessageLookupByLibrary.simpleMessage("Card Balance"),
         "cardBill": MessageLookupByLibrary.simpleMessage("Card Bill"),
         "cardDelete": MessageLookupByLibrary.simpleMessage("Delete"),
@@ -89,15 +106,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "companyNews": MessageLookupByLibrary.simpleMessage("Company News"),
         "completed": MessageLookupByLibrary.simpleMessage("Completed"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "confirmDelivery":
+            MessageLookupByLibrary.simpleMessage("Confirm delivery"),
+        "confirmDeliveryContent": MessageLookupByLibrary.simpleMessage(
+            "Confirm delivery, the order will not be modified after confirmation, please confirm whether to receive the order?"),
         "confirmModify": MessageLookupByLibrary.simpleMessage("Confirm modify"),
         "confirmSubmit": MessageLookupByLibrary.simpleMessage("Confirm submit"),
         "confirmSubmitContent":
             MessageLookupByLibrary.simpleMessage("Confirm to submit order?"),
+        "contact": MessageLookupByLibrary.simpleMessage("Contact"),
         "contactPerson": MessageLookupByLibrary.simpleMessage("Contact person"),
         "contactPhone": MessageLookupByLibrary.simpleMessage("Contact Phone"),
         "contactPhoneNotEmpty": MessageLookupByLibrary.simpleMessage(
             "Contact phone cannot be empty"),
         "contactUs": MessageLookupByLibrary.simpleMessage("Contact us"),
+        "contentUpdating": MessageLookupByLibrary.simpleMessage(
+            "Content is updating, please wait..."),
+        "createTime": MessageLookupByLibrary.simpleMessage("Create time"),
         "defaultValue": MessageLookupByLibrary.simpleMessage("Default"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "deleteAddress": MessageLookupByLibrary.simpleMessage(
@@ -109,8 +134,30 @@ class MessageLookup extends MessageLookupByLibrary {
         "deleteRepairTips": MessageLookupByLibrary.simpleMessage(
             "Confirm to delete this repair order?"),
         "deleteSuccess": m0,
+        "deliver": MessageLookupByLibrary.simpleMessage("Deliver"),
+        "deliverFailed": MessageLookupByLibrary.simpleMessage("Deliver failed"),
+        "deliverFailedTips": MessageLookupByLibrary.simpleMessage(
+            "Confirm to cancel the delivery of this order?"),
+        "deliverSuccess":
+            MessageLookupByLibrary.simpleMessage("Deliver success"),
+        "deliverSuccessTips": MessageLookupByLibrary.simpleMessage(
+            "Your order has been delivered"),
+        "deliverTime": MessageLookupByLibrary.simpleMessage("Deliver time"),
+        "delivered": MessageLookupByLibrary.simpleMessage("Delivered"),
+        "delivering": MessageLookupByLibrary.simpleMessage("Delivering"),
         "delivery": MessageLookupByLibrary.simpleMessage("Delivery"),
+        "deliveryAddress": MessageLookupByLibrary.simpleMessage("Address"),
+        "deliveryException": MessageLookupByLibrary.simpleMessage("Exception"),
         "deliveryFee": MessageLookupByLibrary.simpleMessage("Delivery fee"),
+        "deliveryInfo":
+            MessageLookupByLibrary.simpleMessage("View delivery info"),
+        "deliveryName": MessageLookupByLibrary.simpleMessage("Name"),
+        "deliveryOrder": MessageLookupByLibrary.simpleMessage("Delivery order"),
+        "deliveryOrderDetail":
+            MessageLookupByLibrary.simpleMessage("Delivery order detail"),
+        "deliveryOrderNo":
+            MessageLookupByLibrary.simpleMessage("Delivery order number"),
+        "deliveryPhone": MessageLookupByLibrary.simpleMessage("Tel"),
         "deliveryTime": MessageLookupByLibrary.simpleMessage("Delivery time"),
         "dept": MessageLookupByLibrary.simpleMessage("Department"),
         "diningIn": MessageLookupByLibrary.simpleMessage("Dining In"),
@@ -133,13 +180,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "enterNewPasswordAgin": MessageLookupByLibrary.simpleMessage(
             "Please enter the new password again"),
         "evaluate": MessageLookupByLibrary.simpleMessage("Evaluate"),
+        "evaluated": MessageLookupByLibrary.simpleMessage("Evaluated"),
         "evaluation": MessageLookupByLibrary.simpleMessage("Evaluation"),
+        "exception": MessageLookupByLibrary.simpleMessage("Exception"),
         "exitManage": MessageLookupByLibrary.simpleMessage("Exit manage"),
         "expenditure": MessageLookupByLibrary.simpleMessage("Expenditure"),
         "feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
         "feedbackContent": MessageLookupByLibrary.simpleMessage("Content"),
         "feedbackTitle": MessageLookupByLibrary.simpleMessage("Title"),
+        "firstLoginTips": MessageLookupByLibrary.simpleMessage(
+            "For your financial security, please change your password as soon as you log in for the first time!"),
         "fixed": MessageLookupByLibrary.simpleMessage("Fixed"),
+        "forgetPassword":
+            MessageLookupByLibrary.simpleMessage("Forget password?"),
         "gender": MessageLookupByLibrary.simpleMessage("Gender"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("Goods info"),
         "goodsTotal": MessageLookupByLibrary.simpleMessage("Goods total"),
@@ -148,11 +201,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "iWantToEat": MessageLookupByLibrary.simpleMessage("I want to eat"),
         "id": MessageLookupByLibrary.simpleMessage("Indonesia"),
         "idCard": MessageLookupByLibrary.simpleMessage("ID Card"),
+        "idCardTips": MessageLookupByLibrary.simpleMessage(
+            "ID card number can be used to retrieve password, please bind it as soon as possible!"),
         "imageUploading":
             MessageLookupByLibrary.simpleMessage("Image uploading..."),
         "information": MessageLookupByLibrary.simpleMessage("Information"),
         "inputConfirmPassword": MessageLookupByLibrary.simpleMessage(
             "Please enter the new password again"),
+        "inputDifferentPassword": MessageLookupByLibrary.simpleMessage(
+            "The two passwords are different"),
         "inputIdCard": MessageLookupByLibrary.simpleMessage(
             "Please enter your ID card number"),
         "inputMessage": m1,
@@ -170,6 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "kTimeList": MessageLookupByLibrary.simpleMessage("K Time"),
         "livingAreaDataLoading":
             MessageLookupByLibrary.simpleMessage("Living Area Data Loading..."),
+        "loadFailed": MessageLookupByLibrary.simpleMessage("Load failed"),
         "loading": MessageLookupByLibrary.simpleMessage("Data loading..."),
         "loginBtn": MessageLookupByLibrary.simpleMessage("Login"),
         "loginFailed": MessageLookupByLibrary.simpleMessage("Login failed"),
@@ -191,6 +249,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "myAddress": MessageLookupByLibrary.simpleMessage("My Address"),
         "myFeedback": MessageLookupByLibrary.simpleMessage("My Feedback"),
         "myOrder": MessageLookupByLibrary.simpleMessage("My Order"),
+        "myProcess": MessageLookupByLibrary.simpleMessage("My Process"),
         "myRepair": MessageLookupByLibrary.simpleMessage("My Repair"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "needCameraPermission": MessageLookupByLibrary.simpleMessage(
@@ -206,16 +265,23 @@ class MessageLookup extends MessageLookupByLibrary {
             "New password cannot be empty"),
         "news": MessageLookupByLibrary.simpleMessage("Company News"),
         "noData": MessageLookupByLibrary.simpleMessage("No data"),
+        "noMoreData": MessageLookupByLibrary.simpleMessage("No more data"),
+        "noOrder": MessageLookupByLibrary.simpleMessage("No order"),
         "notice": MessageLookupByLibrary.simpleMessage("Notice"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "oldPassword": MessageLookupByLibrary.simpleMessage("Old Password"),
         "oldPasswordNotEmpty": MessageLookupByLibrary.simpleMessage(
             "Old password cannot be empty"),
+        "onlineApply": MessageLookupByLibrary.simpleMessage("Online apply"),
+        "onlineDelivery":
+            MessageLookupByLibrary.simpleMessage("Online delivery"),
         "onlineDining": MessageLookupByLibrary.simpleMessage("Online Dining"),
+        "operator": MessageLookupByLibrary.simpleMessage("Operator"),
         "order": MessageLookupByLibrary.simpleMessage("Order"),
         "orderDetail": MessageLookupByLibrary.simpleMessage("Order details"),
         "orderInfo": MessageLookupByLibrary.simpleMessage("Order info"),
-        "orderNo": MessageLookupByLibrary.simpleMessage("Order number"),
+        "orderNo": MessageLookupByLibrary.simpleMessage("Order No."),
+        "orderStatus": MessageLookupByLibrary.simpleMessage("Order Status"),
         "orderTime": MessageLookupByLibrary.simpleMessage("Order time"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
         "passwordChangeFailed":
@@ -238,6 +304,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "paySuccess": MessageLookupByLibrary.simpleMessage("Payment success"),
         "paymentQRCode": MessageLookupByLibrary.simpleMessage("QR Code"),
         "pending": MessageLookupByLibrary.simpleMessage("Pending"),
+        "pendingOrder": MessageLookupByLibrary.simpleMessage("Pending"),
+        "pendingRepair": MessageLookupByLibrary.simpleMessage("Pending Repair"),
         "personalInfo": MessageLookupByLibrary.simpleMessage("Personal info"),
         "phone": MessageLookupByLibrary.simpleMessage("Phone"),
         "photoAlbum": MessageLookupByLibrary.simpleMessage("Photo album"),
@@ -245,14 +313,33 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Pickup limit time"),
         "pickupTime": MessageLookupByLibrary.simpleMessage("Pickup time"),
         "pickupType": MessageLookupByLibrary.simpleMessage("Pickup type"),
+        "pleaseAcceptOrder": MessageLookupByLibrary.simpleMessage(
+            "Please accept the order first"),
+        "pleaseCancelOrder": MessageLookupByLibrary.simpleMessage(
+            "Please cancel the order first"),
         "pleaseFillIn": m2,
         "pleaseSelect": m3,
+        "process": MessageLookupByLibrary.simpleMessage("Process"),
+        "processDescription":
+            MessageLookupByLibrary.simpleMessage("Process description"),
         "promo": MessageLookupByLibrary.simpleMessage("Promotional Video"),
         "promoDetail": MessageLookupByLibrary.simpleMessage("Promo Detail"),
         "promoList": MessageLookupByLibrary.simpleMessage("Promo List"),
+        "pullUpLoadMore":
+            MessageLookupByLibrary.simpleMessage("Pull up to load more"),
         "read": MessageLookupByLibrary.simpleMessage("Read"),
+        "received": MessageLookupByLibrary.simpleMessage("Received"),
+        "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
+        "refreshComplete":
+            MessageLookupByLibrary.simpleMessage("Refresh complete"),
+        "refreshFailed": MessageLookupByLibrary.simpleMessage("Refresh failed"),
+        "refreshing": MessageLookupByLibrary.simpleMessage("Refreshing..."),
+        "releaseLoadMore":
+            MessageLookupByLibrary.simpleMessage("Release to load more"),
         "remaining": MessageLookupByLibrary.simpleMessage("Remaining"),
         "remark": MessageLookupByLibrary.simpleMessage("Remark"),
+        "rememberPassword":
+            MessageLookupByLibrary.simpleMessage("Remember password"),
         "repairAddress": MessageLookupByLibrary.simpleMessage("Repair Address"),
         "repairAddressNotEmpty": MessageLookupByLibrary.simpleMessage(
             "Repair address cannot be empty"),
@@ -260,27 +347,43 @@ class MessageLookup extends MessageLookupByLibrary {
         "repairContent": MessageLookupByLibrary.simpleMessage("Repair Content"),
         "repairContentNotEmpty": MessageLookupByLibrary.simpleMessage(
             "Repair content cannot be empty"),
+        "repairDescription": MessageLookupByLibrary.simpleMessage(
+            "Please fill in repair description"),
         "repairDetail": MessageLookupByLibrary.simpleMessage("Repair Details"),
         "repairDirection":
             MessageLookupByLibrary.simpleMessage("Repair Description"),
+        "repairFeedback": MessageLookupByLibrary.simpleMessage("Feedback"),
         "repairFeedbackTip": MessageLookupByLibrary.simpleMessage(
             "Confirm to submit repair feedback?"),
+        "repairImage": MessageLookupByLibrary.simpleMessage("Image"),
         "repairImages": MessageLookupByLibrary.simpleMessage("Repair Images"),
+        "repairMessage": MessageLookupByLibrary.simpleMessage("Message"),
+        "repairNote": MessageLookupByLibrary.simpleMessage("Note"),
         "repairOnline": MessageLookupByLibrary.simpleMessage("Repair Now"),
         "repairOrder": MessageLookupByLibrary.simpleMessage("Repair Order"),
+        "repairOrderManagement":
+            MessageLookupByLibrary.simpleMessage("Order Management"),
+        "repairOrderProcess":
+            MessageLookupByLibrary.simpleMessage("Repair order process"),
+        "repairOrderProcessed": MessageLookupByLibrary.simpleMessage(
+            "Your repair order has been processed"),
         "repairPerson": MessageLookupByLibrary.simpleMessage("Repair Person"),
         "repairPersonNotEmpty": MessageLookupByLibrary.simpleMessage(
             "Repair person cannot be empty"),
         "repairResult": MessageLookupByLibrary.simpleMessage("Repair Result"),
+        "repairRoomNo": MessageLookupByLibrary.simpleMessage("Room No"),
         "repairService": MessageLookupByLibrary.simpleMessage("Repair Service"),
         "repairServiceRate": MessageLookupByLibrary.simpleMessage(
             "Please rate the satisfaction of this repair!"),
+        "repairStatus": MessageLookupByLibrary.simpleMessage("Status"),
         "repairSubmitFailed":
             MessageLookupByLibrary.simpleMessage("Repair submission failed"),
         "repairSubmitSuccess": MessageLookupByLibrary.simpleMessage(
             "Repair submitted successfully"),
         "repairSubmitTime": MessageLookupByLibrary.simpleMessage("Repair Time"),
+        "repairTel": MessageLookupByLibrary.simpleMessage("Tel"),
         "repairTime": MessageLookupByLibrary.simpleMessage("Processing Time"),
+        "repairType": MessageLookupByLibrary.simpleMessage("Type"),
         "repaired": MessageLookupByLibrary.simpleMessage("Repaired"),
         "resetPassword": MessageLookupByLibrary.simpleMessage("Reset Password"),
         "restaurant": MessageLookupByLibrary.simpleMessage("Restaurant"),
@@ -301,10 +404,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "secret": MessageLookupByLibrary.simpleMessage("Secret"),
         "selectAddress":
             MessageLookupByLibrary.simpleMessage("Select delivery address"),
+        "selectRepairTime":
+            MessageLookupByLibrary.simpleMessage("Please select repair time"),
+        "selectRepairType":
+            MessageLookupByLibrary.simpleMessage("Please select repair type"),
         "serviceGuide": MessageLookupByLibrary.simpleMessage("Service Guide"),
         "setDefault": MessageLookupByLibrary.simpleMessage(
             "Confirm to set this address as default?"),
         "startDate": MessageLookupByLibrary.simpleMessage("Start Date"),
+        "startLocation": MessageLookupByLibrary.simpleMessage("Start location"),
+        "stopLocation": MessageLookupByLibrary.simpleMessage("Stop location"),
         "submit": MessageLookupByLibrary.simpleMessage("Submit"),
         "submitOrder": MessageLookupByLibrary.simpleMessage("Submit order"),
         "submitSuccess": MessageLookupByLibrary.simpleMessage("Submit success"),
@@ -327,12 +436,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "updateNow": MessageLookupByLibrary.simpleMessage("Update Now"),
         "updatePaymentPassword":
             MessageLookupByLibrary.simpleMessage("Update payment password"),
+        "updateTime": MessageLookupByLibrary.simpleMessage("Update time"),
         "uploadImages": MessageLookupByLibrary.simpleMessage("Upload Images"),
         "userFeedback": MessageLookupByLibrary.simpleMessage("User Feedback"),
         "userInfo": MessageLookupByLibrary.simpleMessage("User information"),
         "userName": MessageLookupByLibrary.simpleMessage("Account"),
         "usernamePlaceholder":
             MessageLookupByLibrary.simpleMessage("Enter your employee number"),
+        "viewOrder": MessageLookupByLibrary.simpleMessage("View order"),
+        "viewed": MessageLookupByLibrary.simpleMessage("Viewed"),
         "welcome": MessageLookupByLibrary.simpleMessage("Welcome to IWIP"),
         "woman": MessageLookupByLibrary.simpleMessage("Female"),
         "workNo": MessageLookupByLibrary.simpleMessage("Work Number"),

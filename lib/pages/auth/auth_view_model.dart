@@ -138,23 +138,23 @@ class AuthViewModel with ChangeNotifier {
   Future<void> forgetPassword(
       BuildContext context, Map<String, dynamic> params) async {
     if (params['userName']?.trim().isEmpty == true) {
-      ProgressHUD.showError(S.current.inputMessage(S.current.userName));
+      ProgressHUD.showError(S.of(context).inputMessage(S.of(context).userName));
       return;
     }
     if (params['card']?.trim().isEmpty == true) {
-      ProgressHUD.showError(S.current.inputIdCard);
+      ProgressHUD.showError(S.of(context).inputIdCard);
       return;
     }
     if (params['newPassword']?.trim().isEmpty == true) {
-      ProgressHUD.showError(S.current.inputNewPassword);
+      ProgressHUD.showError(S.of(context).inputNewPassword);
       return;
     }
     if (params['confirmPassword']?.trim().isEmpty == true) {
-      ProgressHUD.showError(S.current.inputConfirmPassword);
+      ProgressHUD.showError(S.of(context).inputConfirmPassword);
       return;
     }
     if (params['confirmPassword']?.trim() != params['newPassword']?.trim()) {
-      ProgressHUD.showError("输入的两次密码不同");
+      ProgressHUD.showError(S.of(context).inputDifferentPassword);
       return;
     }
     DataUtils.forgetPassword({

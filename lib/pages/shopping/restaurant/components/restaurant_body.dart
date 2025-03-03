@@ -383,7 +383,7 @@ class _RestaurantBodyState extends State<RestaurantBody>
                           width: 10.px,
                         ),
                         Text(
-                          S.of(context).monthlySales + ":" + '3000',
+                          S.of(context).monthlySales + ":" + '300',
                           style: TextStyle(fontSize: 12.px, color: Colors.grey),
                         ),
                         SizedBox(
@@ -445,8 +445,8 @@ class _RestaurantBodyState extends State<RestaurantBody>
                 if (restaurantDetail?.image != null)
                   Image.network(
                     APIs.foodPrefix + restaurantDetail!.image!,
-                    width: 72.px,
-                    height: 72.px,
+                    width: 60.px,
+                    height: 60.px,
                     fit: BoxFit.cover,
                   ),
               ],

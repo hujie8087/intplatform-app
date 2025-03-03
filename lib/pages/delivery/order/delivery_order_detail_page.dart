@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/delivery_order_detail_model.dart';
@@ -90,7 +91,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '配送订单详情',
+          S.of(context).deliveryOrderDetail,
           style: TextStyle(fontSize: 16.px),
         ),
       ),
@@ -394,7 +395,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                                   size: 14.px, color: primaryColor),
                               SizedBox(width: 4.px), // 控制图标和文字的间距
                               Text(
-                                '联系Ta',
+                                S.of(context).contact,
                                 style: TextStyle(
                                     color: primaryColor, fontSize: 12.px),
                               ),
@@ -424,7 +425,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                             ),
                             SizedBox(width: 4.px),
                             Text(
-                              '配送单号: ',
+                              S.of(context).deliveryOrderNo + ': ',
                               style: TextStyle(
                                 fontSize: 12.px,
                                 color: Colors.grey[600],
@@ -450,7 +451,8 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                             ),
                             SizedBox(width: 4.px),
                             Text(
-                              '配送地址：${_orderDetail?.orderDelivery?.deliveryAddress}',
+                              S.of(context).deliveryAddress +
+                                  ': ${_orderDetail?.orderDelivery?.deliveryAddress}',
                               style: TextStyle(
                                 fontSize: 12.px,
                                 color: Colors.grey[600],
@@ -518,7 +520,8 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                                       ),
                                       // 操作人
                                       Text(
-                                          '操作人：${statusNodes?[index].deliveryStaffMsg ?? ''}',
+                                          S.of(context).operator +
+                                              ': ${statusNodes?[index].deliveryStaffMsg ?? ''}',
                                           style: TextStyle(
                                             fontSize: 12.px,
                                             color: index == 0

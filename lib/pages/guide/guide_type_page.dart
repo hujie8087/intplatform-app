@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/guide_type_view_model.dart';
@@ -145,7 +146,7 @@ class _GuideTypePageState extends State<GuideTypePage> {
                         Html(
                           data: guideTypeDetail?.approvalStatus == 4
                               ? guideTypeDetail?.content
-                              : '内容待更新，敬请期待...',
+                              : S.of(context).contentUpdating,
                           style: {
                             'body': Style(
                               fontSize: FontSize(12.px),
@@ -200,7 +201,7 @@ class _GuideTypePageState extends State<GuideTypePage> {
                                 ),
                                 Container(
                                   height: 30.px,
-                                  child: Text('附件:',
+                                  child: Text(S.of(context).attachment,
                                       style: TextStyle(
                                           fontSize: 14.px,
                                           fontWeight: FontWeight.bold)),

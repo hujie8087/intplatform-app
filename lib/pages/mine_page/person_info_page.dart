@@ -188,7 +188,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
         // 身份证号
         _PersonInfoItem(
             S.of(context).idCard,
-            userInfo?.user?.card ?? '身份证号可用于找回密码，请尽快绑定！',
+            userInfo?.user?.card ?? S.of(context).idCardTips,
             Icons.credit_card, () {
           _controller.text = userInfo?.user?.card ?? '';
           DialogFactory.instance.showFieldDialog(

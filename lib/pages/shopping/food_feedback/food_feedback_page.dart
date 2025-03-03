@@ -78,7 +78,7 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('我想说')),
+      appBar: AppBar(title: Text(S.of(context).feedback)),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.px),
         child: Form(

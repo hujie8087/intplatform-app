@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/icon_api_widget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/apply_view_model.dart';
@@ -57,7 +58,7 @@ class _ApplyListPage extends State<ApplyListPage>
   }
 
   void _getApplyUrl(ApplyViewModel apply) async {
-    ProgressHUD.showLoadingText('数据加载中...');
+    ProgressHUD.showLoadingText(S.of(context).loading);
     DataUtils.getApplyUrl(
       {
         'id': apply.formId,
@@ -86,7 +87,7 @@ class _ApplyListPage extends State<ApplyListPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '在线申请',
+          S.of(context).onlineApply,
           style: TextStyle(fontSize: 16.px),
         ),
         centerTitle: false,

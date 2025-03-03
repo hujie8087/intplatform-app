@@ -51,8 +51,10 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
 
 // 状态选项
   final List<SwitchType> statusOptions = [
-    SwitchType('配送中', 1),
-    SwitchType('已送达', 2),
+    SwitchType(S.current.delivering, 1),
+    SwitchType(S.current.delivered, 2),
+    SwitchType(S.current.received, 3),
+    SwitchType(S.current.exception, 5)
   ];
 
   Future<void> _getUserInfo() async {
@@ -125,11 +127,11 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
       DataUtils.acceptOrder({
         'sourceNo': sourceNo,
       }, success: (data) {
-        ProgressHUD.showSuccess('接单成功');
+        ProgressHUD.showSuccess(S.current.acceptOrderSuccess);
         _loadOrders(true); // 重新加载订单列表
       });
     } catch (e) {
-      ProgressHUD.showError('接单失败${e.toString()}');
+      ProgressHUD.showError(S.current.acceptOrderFailed + ':' + e.toString());
       _loadOrders(true); // 重新加载订单列表
     }
   }
@@ -186,7 +188,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
         }
       }
     } else if (status.isPermanentlyDenied) {
-      ProgressHUD.showError('相机权限被永久拒绝，打开设置页面');
+      ProgressHUD.showError(S.current.cameraPermissionDenied);
       openAppSettings();
     } else {
       ProgressHUD.showError(S.current.needCameraPermission);
@@ -206,7 +208,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
       isTracking = false;
     } else {
       if (_orders.isEmpty) {
-        ProgressHUD.showError('请先接单');
+        ProgressHUD.showError(S.current.pleaseAcceptOrder);
         return;
       }
       locationService?.startTracking();
@@ -231,12 +233,12 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
         DataUtils.deliverOrder(
           parameters,
           success: (data) {
-            ProgressHUD.showSuccess('送达成功');
+            ProgressHUD.showSuccess(S.current.deliverSuccess);
             DataUtils.getUserInfoByUsername(_orders[0].nick, success: (data) {
               if (data['msg'] != null) {
                 DataUtils.sendOneMessage(
                   {
-                    'title': '您的订单已送达',
+                    'title': S.current.deliverSuccessTips,
                     'body': deliveryAddress,
                     'type': "1",
                     'payload': '',
@@ -256,7 +258,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
             _loadOrders(true);
           },
           fail: (code, msg) {
-            ProgressHUD.showError('送达失败');
+            ProgressHUD.showError(S.current.deliverFailed);
           },
         );
       }
@@ -278,7 +280,8 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('在线接单', style: TextStyle(fontSize: 16.px)),
+          title:
+              Text(S.current.onlineDelivery, style: TextStyle(fontSize: 16.px)),
           actions: [
             // 扫码
             IconButton(
@@ -292,7 +295,8 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
           backgroundColor: isTracking ? secondaryColor : primaryColor,
           onPressed: () => _handleLocationEvent(),
           icon: Icon(isTracking ? Icons.location_on : Icons.location_off),
-          label: Text(isTracking ? '停止定位' : '开始定位'),
+          label: Text(
+              isTracking ? S.current.stopLocation : S.current.startLocation),
           extendedPadding:
               EdgeInsets.symmetric(horizontal: 10.px, vertical: 2.px),
           shape:
@@ -320,7 +324,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 16.px,
+                        horizontal: 10.px,
                         vertical: 6.px,
                       ),
                       decoration: BoxDecoration(
@@ -351,7 +355,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                   ? const Center(child: CircularProgressIndicator())
                   : _orders.isEmpty
                       ? EmptyView(
-                          text: '暂无订单',
+                          text: S.current.noOrder,
                         )
                       : SmartRefreshWidget(
                           controller: _refreshController,
@@ -427,7 +431,7 @@ class OrderCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('订单号：${order.sourceNo}'),
+                Text(S.of(context).orderNo + ':' + order.sourceNo),
                 Text(
                   dictLabel,
                   style: TextStyle(
@@ -442,7 +446,7 @@ class OrderCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '姓名：',
+                  S.of(context).name + ':',
                   style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                 ),
                 Text(order.deliveryName),
@@ -452,7 +456,7 @@ class OrderCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '电话：',
+                  S.of(context).phone + ':',
                   style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                 ),
                 Text(order.deliveryTel),
@@ -462,7 +466,7 @@ class OrderCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '送货地址：',
+                  S.of(context).deliveryAddress + ':',
                   style: TextStyle(
                     fontSize: 12.px,
                     color: Colors.grey[600],
@@ -479,7 +483,7 @@ class OrderCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '下单时间：',
+                  S.of(context).deliveryTime + ':',
                   style: TextStyle(
                     fontSize: 12.px,
                     color: Colors.grey[600],
@@ -491,6 +495,24 @@ class OrderCard extends StatelessWidget {
                 ),
               ],
             ),
+            SizedBox(height: 4.px),
+            // 配送异常信息
+            if (order.deliveryStatus == 5)
+              Row(
+                children: [
+                  Text(
+                    S.of(context).exception + ':',
+                    style: TextStyle(
+                      fontSize: 12.px,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  Text(
+                    order.errorMsg ?? '',
+                    style: TextStyle(fontSize: 12.px, color: secondaryColor),
+                  ),
+                ],
+              ),
             SizedBox(height: 8.px),
             Divider(
               height: 1.px,
@@ -511,14 +533,15 @@ class OrderCard extends StatelessWidget {
                     onPressed: () {
                       DataUtils.cancelOrder(order.id.toString(),
                           success: (data) {
-                        ProgressHUD.showSuccess('取消订单成功');
+                        ProgressHUD.showSuccess(
+                            S.of(context).cancelOrderSuccess);
                         refresh();
                       }, fail: (code, msg) {
-                        ProgressHUD.showError('取消订单失败');
+                        ProgressHUD.showError(S.of(context).cancelOrderFailed);
                       });
                     },
                     child: Text(
-                      '取消订单',
+                      S.of(context).cancelOrder,
                       style: TextStyle(fontSize: 12.px),
                     ),
                   ),
@@ -536,7 +559,7 @@ class OrderCard extends StatelessWidget {
                     ),
                     onPressed: onAccept,
                     child: Text(
-                      '送达',
+                      S.of(context).deliver,
                       style: TextStyle(fontSize: 12.px),
                     ),
                   ),
@@ -557,9 +580,25 @@ class OrderCard extends StatelessWidget {
                                   orderNo: order.sourceNo)));
                     },
                     child: Text(
-                      '查看订单',
+                      S.of(context).viewOrder,
                       style: TextStyle(fontSize: 12.px),
                     ),
+                  ),
+                SizedBox(
+                  width: 10.px,
+                ),
+                if (order.deliveryStatus == 5)
+                  // 删除订单
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: secondaryColor,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 4.px, horizontal: 8.px),
+                      minimumSize: Size(42.px, 20.px),
+                    ),
+                    onPressed: onAccept,
+                    child: Text(S.of(context).process,
+                        style: TextStyle(fontSize: 12.px)),
                   ),
               ],
             ),

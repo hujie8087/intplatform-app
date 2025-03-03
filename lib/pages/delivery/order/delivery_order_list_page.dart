@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/base_list_model.dart';
@@ -176,7 +177,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                     isDense: true,
                     // 文字缩进
                     contentPadding: EdgeInsets.symmetric(horizontal: 15.px),
-                    hintText: '请输入订单号',
+                    hintText: S.of(context).orderNo,
                     hintStyle: TextStyle(fontSize: 12.px),
                     border: InputBorder.none,
                   ),
@@ -203,32 +204,32 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                 children: [
                   _buildTabItem(
                       icon: Icons.list_alt,
-                      text: '全部',
+                      text: S.of(context).all,
                       isSelected: selectedStatus == -1,
                       onTap: () {
                         _onTabSelected(-1);
                       }),
                   _buildTabItem(
                     icon: Icons.access_time,
-                    text: '待接单',
+                    text: S.of(context).pendingOrder,
                     isSelected: selectedStatus == 0,
                     onTap: () => _onTabSelected(0),
                   ),
                   _buildTabItem(
                     icon: Icons.delivery_dining,
-                    text: '配送中',
+                    text: S.of(context).delivering,
                     isSelected: selectedStatus == 1,
                     onTap: () => _onTabSelected(1),
                   ),
                   _buildTabItem(
                     icon: Icons.check_circle_outline,
-                    text: '已送达',
+                    text: S.of(context).delivered,
                     isSelected: selectedStatus == 2,
                     onTap: () => _onTabSelected(2),
                   ),
                   _buildTabItem(
                     icon: Icons.done_all,
-                    text: '已收货',
+                    text: S.of(context).received,
                     isSelected: selectedStatus == 3,
                     onTap: () => _onTabSelected(3),
                   ),
@@ -311,7 +312,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                                 .firstWhere(
                                     (element) =>
                                         element.dictValue ==
-                                        order.orderType.toString(),
+                                        order.code.toString(),
                                     orElse: () => DictModel())
                                 .dictLabel ??
                             '',
@@ -323,7 +324,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                     ),
                     SizedBox(width: 8.px),
                     Text(
-                      '订单号: ${order.orderNo}',
+                      S.of(context).orderNo + ': ${order.orderNo}',
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],
@@ -335,7 +336,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                 Divider(height: 1.px),
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 8.px,
+                    horizontal: 4.px,
                     vertical: 4.px,
                   ),
                   decoration: BoxDecoration(
@@ -347,7 +348,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                     _getStatusText(order.deliveryStatus.toString()),
                     style: TextStyle(
                       color: _getStatusColor(order.deliveryStatus),
-                      fontSize: 12.px,
+                      fontSize: 10.px,
                     ),
                   ),
                 ),
@@ -422,7 +423,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '下单时间: ${order.createTime}',
+                  S.of(context).createTime + ': ${order.createTime}',
                   style: TextStyle(
                     fontSize: 12.px,
                     color: Colors.grey[600],
@@ -436,7 +437,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '接单时间: ${order.acceptTime}',
+                    S.of(context).acceptTime + ': ${order.acceptTime}',
                     style: TextStyle(
                       fontSize: 12.px,
                       color: Colors.grey[600],
@@ -451,7 +452,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '送达时间: ${order.arrivalTime}',
+                    S.of(context).deliverTime + ': ${order.arrivalTime}',
                     style: TextStyle(
                       fontSize: 12.px,
                       color: Colors.grey[600],
@@ -459,6 +460,27 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                   ),
                 ],
               ),
+            if (order.deliveryStatus == 5)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    S.of(context).deliveryException + ':',
+                    style: TextStyle(
+                      fontSize: 12.px,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  Text(
+                    order.errorMsg ?? '',
+                    style: TextStyle(
+                      fontSize: 12.px,
+                      color: secondaryColor,
+                    ),
+                  ),
+                ],
+              ),
+
             if (order.deliveryStatus > 0)
               Container(
                   child: Column(
@@ -525,8 +547,9 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                                   // 弹出确认框
                                   DialogFactory.instance.showConfirmDialog(
                                     context: context,
-                                    title: '确认收货',
-                                    content: '确定收货吗？',
+                                    title: S.of(context).confirmDelivery,
+                                    content:
+                                        S.of(context).confirmDeliveryContent,
                                     confirmClick: () {
                                       _confirmDelivery(order);
                                     },
@@ -544,7 +567,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                                       color: primaryColor,
                                     ),
                                   ),
-                                  child: Text('确认收货',
+                                  child: Text(S.of(context).confirmDelivery,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 12.px)),
@@ -559,7 +582,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                                   // 弹出确认框
                                   DialogFactory.instance.showFieldDialog(
                                     context: context,
-                                    title: '异常反馈',
+                                    title: S.of(context).deliveryException,
                                     customContentWidget: Container(
                                       child: TextField(
                                         maxLines: 3,
@@ -569,7 +592,8 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                                           fontSize: 12.px,
                                         ),
                                         decoration: InputDecoration(
-                                          hintText: '请输入异常原因',
+                                          hintText:
+                                              S.of(context).deliveryException,
                                           hintStyle: TextStyle(
                                             fontSize: 12.px,
                                           ),
@@ -607,7 +631,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                                       color: secondaryColor,
                                     ),
                                   ),
-                                  child: Text('异常反馈',
+                                  child: Text(S.of(context).deliveryException,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 12.px)),
@@ -635,8 +659,8 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.px, vertical: 8.px),
-        margin: EdgeInsets.only(right: 8.px),
+        padding: EdgeInsets.symmetric(horizontal: 9.px, vertical: 8.px),
+        margin: EdgeInsets.only(right: 4.px),
         decoration: BoxDecoration(
           color: isSelected ? primaryColor : Colors.grey[100],
           borderRadius: BorderRadius.circular(10.px),
@@ -695,19 +719,19 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
   String _getStatusText(String? status) {
     switch (status) {
       case '0':
-        return '待接单';
+        return S.of(context).pendingOrder;
       case '1':
-        return '配送中';
+        return S.of(context).delivering;
       case '2':
-        return '已送达';
+        return S.of(context).delivered;
       case '3':
-        return '已收货';
+        return S.of(context).received;
       case '4':
-        return '已评价';
+        return S.of(context).evaluate;
       case '5':
-        return '异常订单';
+        return S.of(context).exception;
       default:
-        return '未知状态';
+        return S.of(context).unknownStatus;
     }
   }
 }

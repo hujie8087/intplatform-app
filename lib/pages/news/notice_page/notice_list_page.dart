@@ -216,7 +216,7 @@ class NoticeDataView extends StatelessWidget {
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 5.px, vertical: 2.px),
                                       child: Text(
-                                        '已查看',
+                                        S.of(context).viewed,
                                         style: TextStyle(
                                             color: Colors.grey,
                                             fontSize: 12.px),

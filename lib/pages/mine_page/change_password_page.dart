@@ -75,7 +75,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         padding: EdgeInsets.only(left: 24.px, right: 24.px),
                         margin: EdgeInsets.only(bottom: 14.px),
                         child: Text(
-                          '为了您的资金安全，首次登录请您尽快修改密码！',
+                          S.of(context).firstLoginTips,
                           style:
                               TextStyle(fontSize: 12.px, color: secondaryColor),
                           textAlign: TextAlign.left,

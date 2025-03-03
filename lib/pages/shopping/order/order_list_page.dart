@@ -303,7 +303,7 @@ class _OrderListPageState extends State<OrderListPage> {
                         );
                       },
                       child: Text(
-                        '查看配送信息',
+                        S.of(context).deliveryInfo,
                         style: TextStyle(color: primaryColor, fontSize: 10.px),
                       ),
                     ),

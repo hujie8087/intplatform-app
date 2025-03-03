@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -84,7 +85,8 @@ class _ProcessListPageState extends State<ProcessListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('住宿流程', style: TextStyle(fontSize: 16.px)),
+        title: Text(S.of(context).accommodationProcess,
+            style: TextStyle(fontSize: 16.px)),
         centerTitle: true,
       ),
       body: isLoading
