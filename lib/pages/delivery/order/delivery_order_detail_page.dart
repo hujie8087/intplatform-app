@@ -3,11 +3,13 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/delivery_order_detail_model.dart';
 import 'package:logistics_app/http/model/delivery_station_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -410,6 +412,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                       color: Colors.white,
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -531,6 +534,37 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                               ),
                           ],
                         ),
+                        // 送达照片
+                        if (_orderDetail?.orderDelivery?.deliveryStatus == 2 ||
+                            _orderDetail?.orderDelivery?.deliveryStatus == 3)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 6.px),
+                              Text(
+                                '送达照片',
+                                style: TextStyle(
+                                  fontSize: 14.px,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              SizedBox(height: 6.px),
+                              Container(
+                                height: 100.px,
+                                width: 100.px,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.px),
+                                ),
+                                child: PhotoView(
+                                  imageProvider: NetworkImage(APIs.imagePrefix +
+                                      (_orderDetail?.orderDelivery?.msg ?? '')),
+                                  backgroundDecoration:
+                                      const BoxDecoration(color: Colors.black),
+                                ),
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   )

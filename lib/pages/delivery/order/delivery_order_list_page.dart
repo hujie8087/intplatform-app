@@ -55,6 +55,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
   TextEditingController searchController = TextEditingController();
   List<DictModel> statusList = [];
   final _refreshController = RefreshController();
+  final _errorMsgController = TextEditingController();
 
   @override
   void initState() {
@@ -130,6 +131,21 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
     DataUtils.confirmDelivery(order.id, success: (data) {
       _loadOrders(isRefresh: true);
     });
+  }
+
+  // 异常反馈
+  Future<void> _errorDelivery(DeliveryOrderModel order, String errorMsg) async {
+    print(errorMsg);
+    DataUtils.errorDelivery(
+      {
+        'id': order.id,
+        'errorMsg': errorMsg,
+        'deliveryStatus': 5,
+      },
+      success: (data) {
+        _loadOrders(isRefresh: true);
+      },
+    );
   }
 
   @override
@@ -414,6 +430,35 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                 ),
               ],
             ),
+            // 接单时间
+            if (order.deliveryStatus > 0)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '接单时间: ${order.acceptTime}',
+                    style: TextStyle(
+                      fontSize: 12.px,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+
+            // 送达时间
+            if (order.deliveryStatus > 1)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '送达时间: ${order.arrivalTime}',
+                    style: TextStyle(
+                      fontSize: 12.px,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
             if (order.deliveryStatus > 0)
               Container(
                   child: Column(
@@ -474,35 +519,101 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                           SizedBox(width: 8.px),
                           // 确认收货
                           if (order.deliveryStatus == 2)
-                            GestureDetector(
-                              onTap: () {
-                                // 弹出确认框
-                                DialogFactory.instance.showConfirmDialog(
-                                  context: context,
-                                  title: '确认收货',
-                                  content: '确定收货吗？',
-                                  confirmClick: () {
-                                    _confirmDelivery(order);
-                                  },
-                                );
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8.px,
-                                  vertical: 4.px,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(10.px),
-                                  border: Border.all(
-                                    color: primaryColor,
+                            Row(children: [
+                              GestureDetector(
+                                onTap: () {
+                                  // 弹出确认框
+                                  DialogFactory.instance.showConfirmDialog(
+                                    context: context,
+                                    title: '确认收货',
+                                    content: '确定收货吗？',
+                                    confirmClick: () {
+                                      _confirmDelivery(order);
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.px,
+                                    vertical: 4.px,
                                   ),
+                                  decoration: BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius: BorderRadius.circular(10.px),
+                                    border: Border.all(
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                  child: Text('确认收货',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.px)),
                                 ),
-                                child: Text('确认收货',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 12.px)),
                               ),
-                            ),
+                              SizedBox(
+                                width: 8.px,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  _errorMsgController.text = '';
+                                  // 弹出确认框
+                                  DialogFactory.instance.showFieldDialog(
+                                    context: context,
+                                    title: '异常反馈',
+                                    customContentWidget: Container(
+                                      child: TextField(
+                                        maxLines: 3,
+                                        controller: _errorMsgController,
+                                        keyboardType: TextInputType.text,
+                                        style: TextStyle(
+                                          fontSize: 12.px,
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: '请输入异常原因',
+                                          hintStyle: TextStyle(
+                                            fontSize: 12.px,
+                                          ),
+                                          // 边距
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 8.px,
+                                            vertical: 4.px,
+                                          ),
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    confirmClick: () {
+                                      if (_errorMsgController.text == '') {
+                                        return;
+                                      }
+                                      _errorDelivery(
+                                          order, _errorMsgController.text);
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.px,
+                                    vertical: 4.px,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: secondaryColor,
+                                    borderRadius: BorderRadius.circular(10.px),
+                                    border: Border.all(
+                                      color: secondaryColor,
+                                    ),
+                                  ),
+                                  child: Text('异常反馈',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.px)),
+                                ),
+                              ),
+                            ])
                         ],
                       ),
                     ],
@@ -573,6 +684,8 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
         return secondaryColor; // 已收货
       case 4:
         return primaryColor; // 已完成
+      case 5:
+        return Colors.red; // 异常订单
       default:
         return Colors.grey;
     }
@@ -591,6 +704,8 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
         return '已收货';
       case '4':
         return '已评价';
+      case '5':
+        return '异常订单';
       default:
         return '未知状态';
     }

@@ -351,6 +351,15 @@ class DataUtils {
         success: success, fail: fail);
   }
 
+  // 收货异常
+  static void errorDelivery(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put('/delivery/order', parameters, success: success, fail: fail);
+  }
+
   // 发送消息通知
   static void sendOneMessage(
     parameters, {
