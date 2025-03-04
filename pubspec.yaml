@@ -15,7 +15,7 @@ description: IWIP后勤综合服务平台
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.4+1
+version: 1.0.5+1
 
 environment:
   sdk: '>=2.17.5 <3.0.0'
@@ -25,7 +25,7 @@ dependencies:
   badges: ^3.1.2
   cached_network_image: ^3.4.1
   chewie: ^1.5.0
-  connectivity_plus: ^5.0.2
+  connectivity_plus: ^6.1.2
   cookie_jar: ^4.0.8
   device_info_plus: ^10.1.2
   dio: ^5.3.4
@@ -54,11 +54,11 @@ dependencies:
   flutter_screenutil: ^5.9.0-beta
   flutter_smart_dialog: ^4.9.4
   flutter_staggered_grid_view: ^0.7.0
-  flutter_sticky_header: ^0.6.5
+  flutter_sticky_header: ^0.7.0
   flutter_svg: ^2.0.10+1
   flutter_swiper_view: ^1.1.8
   flutter_update_dialog: 2.0.0
-  flutter_xupdate: ^2.0.0
+  flutter_xupdate: ^3.0.0
   font_awesome_flutter: ^10.1.0
   geolocator: ^13.0.2
   get: ^4.6.5
@@ -69,7 +69,6 @@ dependencies:
   oktoast: ^3.3.1
   open_filex: ^4.6.0
   overlay_support: ^2.1.0
-  package_info_plus: ^8.0.0
   path: ^1.9.0
   permission_handler: ^10.2.0
   photo_view: ^0.15.0
@@ -80,6 +79,7 @@ dependencies:
   qr_flutter: ^4.1.0
   recase: ^4.1.0
   restart_app: ^1.2.1
+  package_info_plus: ^8.3.0
   saver_gallery: ^3.0.1
   shared_preferences: ^2.0.15
   smooth_star_rating_null_safety: ^1.0.4+2
@@ -95,6 +95,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+dependency_overrides:
+  package_info_plus: ^8.3.0
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter.

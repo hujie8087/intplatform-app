@@ -81,10 +81,10 @@ class DownloadUtils {
           "plpl_${imgType}_${DateTime.now().toString().replaceAll(RegExp(r'[- :]'), '').split('.').first}";
       final SaveResult result = await SaverGallery.saveImage(
         Uint8List.fromList(response.data),
-        name: '$picName.$imgSuffix',
+        fileName: '$picName.$imgSuffix',
         // 保存到 PiliPala文件夹
         androidRelativePath: "Pictures/PiliPala",
-        androidExistNotSave: false,
+        skipIfExists: false,
       );
       SmartDialog.dismiss();
       if (result.isSuccess) {
