@@ -15,8 +15,6 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!-- 相机权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
@@ -30,10 +28,11 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     <!-- 定位权限 -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 扫码权限 -->
+    <uses-permission android:name="com.honeywell.decode.permission.DECODE"/>
     <application
         android:label="IWIP后勤综合服务"
         android:name="${applicationName}"
@@ -74,6 +73,10 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <meta-data
+        android:name="com.google.android.gms.location.fused"
+        android:value="true"/>
+        
             <provider
                 android:name="androidx.core.content.FileProvider"
                 android:authorities="${applicationId}.fileprovider"
@@ -83,5 +86,7 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/provider_paths"/>
             </provider>
+            <receiver android:name="com.google.android.gms.location.LocationReceiver"
+    android:exported="false"/>
     </application>
 </manifest>

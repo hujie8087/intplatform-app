@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
@@ -48,7 +51,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
   bool isTracking = false;
   late RefreshController _refreshController;
   UserInfoModel? userInfo;
-
+  static const platform = MethodChannel('com.iwip.intplatform');
   // 状态选项
   final List<SwitchType> statusOptions = [
     SwitchType(S.current.delivering, 1),
@@ -62,6 +65,16 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
     _refreshController = RefreshController();
     super.initState();
     _fetchOrderStatus();
+    if (Platform.isAndroid) {
+      platform.setMethodCallHandler((call) async {
+        print(call.method);
+        if (call.method == "onScanResult") {
+          setState(() {
+            _acceptOrder(call.arguments);
+          });
+        }
+      });
+    }
   }
 
   @override
