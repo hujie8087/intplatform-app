@@ -10,6 +10,7 @@ import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/home_page/message_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
+import 'package:logistics_app/pages/mine_page/my_address_page/my_address_page.dart';
 import 'package:logistics_app/pages/news/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/news/notice_page/notice_detail_page.dart';
 import 'package:logistics_app/pages/news/notice_page/notice_list_page.dart';
@@ -18,7 +19,6 @@ import 'package:logistics_app/pages/repair/my_repair_page/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/pages/shopping/order/order_list_page.dart';
 import 'package:logistics_app/pages/shopping/payment/payment_qrcode_page.dart';
-import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -308,10 +308,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           Icons.phone,
                           () => RouteUtils.push(context, ContactUsPage())),
                       _FunctionAreaItem(
-                          S.of(context).onlineDining,
+                          S.of(context).addressManagement,
                           true,
                           Icons.fastfood,
-                          () => RouteUtils.push(context, ShoppingScreenPage())),
+                          () => RouteUtils.push(context, MyAddressPage())),
                       // 我的订单
                       _FunctionAreaItem(
                           S.of(context).myOrder,

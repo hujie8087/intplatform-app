@@ -152,8 +152,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
     DataUtils.getDictDataList(
       'delivery_staff_type',
       success: (data) {
-        statusList =
-            BaseListModel<DictModel>.fromJson(
+        statusList = BaseListModel<DictModel>.fromJson(
               data,
               (json) => DictModel.fromJson(json),
             ).data ??
@@ -169,7 +168,15 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
   // 扫码按钮点击事件
   Future<void> _scanCode() async {
     var status = await Permission.camera.status;
-    if (status.isGranted) {
+    if (!status.isGranted) {
+      status = await Permission.camera.request();
+      if (status.isDenied) {
+        print("相机权限被拒绝");
+      } else if (status.isPermanentlyDenied) {
+        print("相机权限被永久拒绝，请前往设置开启");
+        openAppSettings(); // 引导用户去手动开启权限
+      }
+    } else {
       final result = await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => QRScannerPage()),
@@ -179,28 +186,6 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
         // 处理扫码结果
         _acceptOrder(result);
       }
-    } else if (status.isDenied) {
-      // 检查相机权限
-      var requestStatus = await Permission.camera.request();
-      if (requestStatus.isGranted) {
-        final result = await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => QRScannerPage()),
-        );
-
-        if (result != null) {
-          // 处理扫码结果
-          _acceptOrder(result);
-        } else {
-          ProgressHUD.showError(S.current.needCameraPermission);
-        }
-      }
-    } else if (status.isPermanentlyDenied) {
-      ProgressHUD.showError(S.current.cameraPermissionDenied);
-      openAppSettings();
-    } else {
-      ProgressHUD.showError(S.current.needCameraPermission);
-      return;
     }
   }
 
@@ -320,77 +305,72 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                 padding: EdgeInsets.symmetric(vertical: 12.px),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children:
-                      statusOptions.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        SwitchType item = entry.value;
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              currentIndex = index;
-                              status = item.value;
-                              _loadOrders(true);
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10.px,
-                              vertical: 6.px,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  currentIndex == index
-                                      ? primaryColor.withOpacity(0.1)
-                                      : Colors.transparent,
-                              borderRadius: BorderRadius.circular(20.px),
-                            ),
-                            child: Text(
-                              item.label,
-                              style: TextStyle(
-                                fontSize: 14.px,
-                                color:
-                                    currentIndex == index
-                                        ? primaryColor
-                                        : Colors.grey[600],
-                                fontWeight:
-                                    currentIndex == index
-                                        ? FontWeight.w500
-                                        : FontWeight.normal,
-                              ),
-                            ),
+                  children: statusOptions.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    SwitchType item = entry.value;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          currentIndex = index;
+                          status = item.value;
+                          _loadOrders(true);
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10.px,
+                          vertical: 6.px,
+                        ),
+                        decoration: BoxDecoration(
+                          color: currentIndex == index
+                              ? primaryColor.withOpacity(0.1)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(20.px),
+                        ),
+                        child: Text(
+                          item.label,
+                          style: TextStyle(
+                            fontSize: 14.px,
+                            color: currentIndex == index
+                                ? primaryColor
+                                : Colors.grey[600],
+                            fontWeight: currentIndex == index
+                                ? FontWeight.w500
+                                : FontWeight.normal,
                           ),
-                        );
-                      }).toList(),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
               Expanded(
-                child:
-                    _isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : _orders.isEmpty
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : _orders.isEmpty
                         ? EmptyView(text: S.current.noOrder)
                         : SmartRefreshWidget(
-                          controller: _refreshController,
-                          enablePullDown: true,
-                          enablePullUp: true,
-                          onRefresh: () async {
-                            await _loadOrders(true);
-                          },
-                          onLoading: () async {
-                            await _loadOrders(false);
-                          },
-                          child: ListView.builder(
-                            itemCount: _orders.length,
-                            itemBuilder: (context, index) {
-                              return OrderCard(
-                                order: _orders[index],
-                                onAccept: () => _uploadImage(_orders[index]),
-                                refresh: () => _loadOrders(true),
-                                statusList: statusList,
-                              );
+                            controller: _refreshController,
+                            enablePullDown: true,
+                            enablePullUp: true,
+                            onRefresh: () async {
+                              await _loadOrders(true);
                             },
+                            onLoading: () async {
+                              await _loadOrders(false);
+                            },
+                            child: ListView.builder(
+                              itemCount: _orders.length,
+                              itemBuilder: (context, index) {
+                                return OrderCard(
+                                  order: _orders[index],
+                                  onAccept: () => _uploadImage(_orders[index]),
+                                  refresh: () => _loadOrders(true),
+                                  statusList: statusList,
+                                );
+                              },
+                            ),
                           ),
-                        ),
               ),
             ],
           ),
@@ -417,17 +397,15 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String dictLabel =
-        statusList.isNotEmpty
-            ? statusList
-                    .firstWhere(
-                      (element) =>
-                          element.dictValue == order.orderType.toString(),
-                      orElse: () => DictModel(),
-                    )
-                    .dictLabel ??
-                ''
-            : '';
+    String dictLabel = statusList.isNotEmpty
+        ? statusList
+                .firstWhere(
+                  (element) => element.dictValue == order.orderType.toString(),
+                  orElse: () => DictModel(),
+                )
+                .dictLabel ??
+            ''
+        : '';
     return Card(
       margin: const EdgeInsets.all(8.0),
       // 圆角
@@ -583,10 +561,9 @@ class OrderCard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder:
-                              (context) => DeliveryOrderDetailPage(
-                                orderNo: order.sourceNo,
-                              ),
+                          builder: (context) => DeliveryOrderDetailPage(
+                            orderNo: order.sourceNo,
+                          ),
                         ),
                       );
                     },
