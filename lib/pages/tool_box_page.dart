@@ -189,23 +189,6 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     );
   }
 
-  // 获取服务指南
-  Future<void> getGuideList() async {
-    ToolUtils.getGuideTypeList<GuideTypeViewModel>(
-      {'pageNum': 1, 'pageSize': 1000},
-      success: (res) {
-        RowsModel<GuideTypeViewModel> rowsModel = RowsModel.fromJson(
-            res, (json) => GuideTypeViewModel.fromJson(json));
-        setState(() {
-          guideTypeList = rowsModel.rows ?? [];
-        });
-      },
-      fail: (code, msg) {
-        ProgressHUD.showError(msg);
-      },
-    );
-  }
-
   // 设置badgeContent数量
   int setBadgeContent(String permission) {
     int badgeContent = 0;
@@ -441,7 +424,6 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getGuideList();
     _fetchData();
   }
 
