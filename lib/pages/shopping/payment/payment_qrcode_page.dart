@@ -15,9 +15,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:logistics_app/common_ui/password_input.dart';
 
 class PaymentQRCodePage extends StatefulWidget {
-  const PaymentQRCodePage({
-    Key? key,
-  }) : super(key: key);
+  const PaymentQRCodePage({Key? key}) : super(key: key);
 
   @override
   _PaymentQRCodePageState createState() => _PaymentQRCodePageState();
@@ -47,9 +45,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
       userInfo = UserInfoModel.fromJson(userInfoData);
     }
     ShoppingUtils.getPayQrCode(
-      {
-        'uniqueId': userInfo?.user?.userName,
-      },
+      {'uniqueId': userInfo?.user?.userName},
       success: (data) {
         _qrCodeData = QrCodeModel.fromJson(data['data']);
         setState(() {
@@ -72,13 +68,11 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
   // 扫码按钮点击事件
   Future<void> _scanQRCode() async {
     var status = await Permission.camera.status;
-    print(status);
-    if (status.isDenied) {
+    print('1111${status}');
+    if (status == PermissionStatus.granted) {
       final result = await Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => QRScannerPage(),
-        ),
+        MaterialPageRoute(builder: (context) => QRScannerPage()),
       );
 
       if (result != null) {
@@ -110,21 +104,21 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                       alignment: Alignment.center,
                       margin: EdgeInsets.symmetric(horizontal: 2.px),
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey[300]!,
-                          width: 1,
-                        ),
+                        border: Border.all(color: Colors.grey[300]!, width: 1),
                       ),
                       child: TextField(
                         controller: TextEditingController(
-                          text: _passwordController.text.length > index
-                              ? _passwordController.text[index]
-                              : '',
+                          text:
+                              _passwordController.text.length > index
+                                  ? _passwordController.text[index]
+                                  : '',
                         ),
                         focusNode: focusNodes[index],
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 18.px, fontWeight: FontWeight.bold),
+                          fontSize: 18.px,
+                          fontWeight: FontWeight.bold,
+                        ),
                         keyboardType: TextInputType.number,
                         // 加密
                         obscureText: true,
@@ -174,46 +168,52 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                       return;
                     }
                     // 验证密码
-                    ShoppingUtils.verifyPayPassword({
-                      'oriPassword': password,
-                      'uniqueId': userInfo?.user?.userName,
-                      'pwdType': '1'
-                    }, success: (msg) {
-                      ShoppingUtils.parsePayQrCode(
-                        {'qrCode': result},
-                        success: (data) {
-                          ParseQrCodeModel parseQrCodeData =
-                              ParseQrCodeModel.fromJson(data['data']);
-                          ShoppingUtils.processPaymentQRCode(
-                            //交易类型 1:充值消费 3:充值 5:消费
-                            {
-                              'sign': parseQrCodeData.sign,
-                              'uniqueId': userInfo?.user?.userName,
-                              'otpType': '5',
-                              'queryType': '2',
-                              'eWalletNum': ' 1',
-                              'dealerNum': parseQrCodeData.dealerNum,
-                              'orderNum': parseQrCodeData.recId,
-                              'staNum': parseQrCodeData.staNum,
-                              'password': password,
-                              'type': parseQrCodeData.type,
-                              'monDeal': parseQrCodeData.amount,
-                            },
-                            success: (data) {
-                              // showToast('支付成功');
-                              ProgressHUD.showSuccess(S.of(context).paySuccess);
-                              // Navigator.pop(context, true); // 返回上一页并传递支付成功状态
-                            },
-                            fail: (code, msg) {
-                              ProgressHUD.showError(
-                                  '${S.of(context).payFail}:$msg');
-                            },
-                          );
-                        },
-                      );
-                      // 清楚密码
-                      _passwordController.clear();
-                    });
+                    ShoppingUtils.verifyPayPassword(
+                      {
+                        'oriPassword': password,
+                        'uniqueId': userInfo?.user?.userName,
+                        'pwdType': '1',
+                      },
+                      success: (msg) {
+                        ShoppingUtils.parsePayQrCode(
+                          {'qrCode': result},
+                          success: (data) {
+                            ParseQrCodeModel parseQrCodeData =
+                                ParseQrCodeModel.fromJson(data['data']);
+                            ShoppingUtils.processPaymentQRCode(
+                              //交易类型 1:充值消费 3:充值 5:消费
+                              {
+                                'sign': parseQrCodeData.sign,
+                                'uniqueId': userInfo?.user?.userName,
+                                'otpType': '5',
+                                'queryType': '2',
+                                'eWalletNum': ' 1',
+                                'dealerNum': parseQrCodeData.dealerNum,
+                                'orderNum': parseQrCodeData.recId,
+                                'staNum': parseQrCodeData.staNum,
+                                'password': password,
+                                'type': parseQrCodeData.type,
+                                'monDeal': parseQrCodeData.amount,
+                              },
+                              success: (data) {
+                                // showToast('支付成功');
+                                ProgressHUD.showSuccess(
+                                  S.of(context).paySuccess,
+                                );
+                                // Navigator.pop(context, true); // 返回上一页并传递支付成功状态
+                              },
+                              fail: (code, msg) {
+                                ProgressHUD.showError(
+                                  '${S.of(context).payFail}:$msg',
+                                );
+                              },
+                            );
+                          },
+                        );
+                        // 清楚密码
+                        _passwordController.clear();
+                      },
+                    );
 
                     Navigator.of(context).pop(); // 关闭弹窗
                   },
@@ -231,9 +231,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
       if (requestStatus.isGranted) {
         final result = await Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => QRScannerPage(),
-          ),
+          MaterialPageRoute(builder: (context) => QRScannerPage()),
         );
 
         if (result != null) {
@@ -262,44 +260,50 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                       return;
                     }
                     // 验证密码
-                    ShoppingUtils.verifyPayPassword({
-                      'oriPassword': password,
-                      'uniqueId': userInfo?.user?.userName,
-                      'pwdType': '1'
-                    }, success: (data) {
-                      ShoppingUtils.parsePayQrCode(
-                        {'qrCode': result},
-                        success: (data) {
-                          ParseQrCodeModel parseQrCodeData =
-                              ParseQrCodeModel.fromJson(data['data']);
-                          ShoppingUtils.processPaymentQRCode(
-                            //交易类型 1:充值消费 3:充值 5:消费
-                            {
-                              'sign': parseQrCodeData.sign,
-                              'uniqueId': userInfo?.user?.userName,
-                              'otpType': '5',
-                              'queryType': '2',
-                              'eWalletNum': ' 1',
-                              'dealerNum': parseQrCodeData.dealerNum,
-                              'orderNum': parseQrCodeData.recId,
-                              'staNum': parseQrCodeData.staNum,
-                              'password': password,
-                              'type': parseQrCodeData.type,
-                              'monDeal': parseQrCodeData.amount,
-                            },
-                            success: (data) {
-                              // showToast('支付成功');
-                              ProgressHUD.showSuccess(S.of(context).paySuccess);
-                              // Navigator.pop(context, true); // 返回上一页并传递支付成功状态
-                            },
-                            fail: (code, msg) {
-                              ProgressHUD.showError(
-                                  '${S.of(context).payFail}:$msg');
-                            },
-                          );
-                        },
-                      );
-                    });
+                    ShoppingUtils.verifyPayPassword(
+                      {
+                        'oriPassword': password,
+                        'uniqueId': userInfo?.user?.userName,
+                        'pwdType': '1',
+                      },
+                      success: (data) {
+                        ShoppingUtils.parsePayQrCode(
+                          {'qrCode': result},
+                          success: (data) {
+                            ParseQrCodeModel parseQrCodeData =
+                                ParseQrCodeModel.fromJson(data['data']);
+                            ShoppingUtils.processPaymentQRCode(
+                              //交易类型 1:充值消费 3:充值 5:消费
+                              {
+                                'sign': parseQrCodeData.sign,
+                                'uniqueId': userInfo?.user?.userName,
+                                'otpType': '5',
+                                'queryType': '2',
+                                'eWalletNum': ' 1',
+                                'dealerNum': parseQrCodeData.dealerNum,
+                                'orderNum': parseQrCodeData.recId,
+                                'staNum': parseQrCodeData.staNum,
+                                'password': password,
+                                'type': parseQrCodeData.type,
+                                'monDeal': parseQrCodeData.amount,
+                              },
+                              success: (data) {
+                                // showToast('支付成功');
+                                ProgressHUD.showSuccess(
+                                  S.of(context).paySuccess,
+                                );
+                                // Navigator.pop(context, true); // 返回上一页并传递支付成功状态
+                              },
+                              fail: (code, msg) {
+                                ProgressHUD.showError(
+                                  '${S.of(context).payFail}:$msg',
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    );
                   },
                 ),
 
@@ -332,24 +336,24 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(S.of(context).paymentQRCode,
-              style: TextStyle(fontSize: 16.px)),
-          centerTitle: true,
-          actions: [
-            // 扫码，打开摄像头
-            IconButton(
-              onPressed: _scanQRCode,
-              icon: Icon(Icons.qr_code_scanner),
-            ),
-          ],
+      appBar: AppBar(
+        title: Text(
+          S.of(context).paymentQRCode,
+          style: TextStyle(fontSize: 16.px),
         ),
-        body: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
+        centerTitle: true,
+        actions: [
+          // 扫码，打开摄像头
+          IconButton(onPressed: _scanQRCode, icon: Icon(Icons.qr_code_scanner)),
+        ],
+      ),
+      body:
+          _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
                 child:
-                    // 二维码区域
-                    Center(
+                // 二维码区域
+                Center(
                   child: Container(
                     margin: EdgeInsets.all(16.px),
                     padding: EdgeInsets.all(16.px),
@@ -372,7 +376,9 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                         // 倒计时
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 15.px, vertical: 5.px),
+                            horizontal: 15.px,
+                            vertical: 5.px,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.grey[100],
                             borderRadius: BorderRadius.circular(20.px),
@@ -408,6 +414,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                     ),
                   ),
                 ),
-              ));
+              ),
+    );
   }
 }

@@ -1,80 +1,162 @@
-import 'package:flutter_xupdate/flutter_xupdate.dart';
-import 'package:logistics_app/http/model/app_info.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class CheckUpdate {
-  // 将自定义的json内容解析为UpdateEntity实体类
-  UpdateEntity customParseJson(String json) {
-    AppInfo appInfo = AppInfo.fromJson(json);
-    return UpdateEntity(
-        isForce: appInfo.isForce, // 是否强制更新
-        hasUpdate: appInfo.hasUpdate, // 是否需要更新  默认true， 手动自行判断
-        isIgnorable: appInfo.isIgnorable, // 是否显示 “忽略该版本”
-        versionCode: appInfo.versionCode, // 新版本号
-        versionName: appInfo.versionName, // 新版名称
-        updateContent: appInfo.updateLog, // 新版更新日志
-        downloadUrl: appInfo.apkUrl, // 新版本下载链接
-        apkSize: appInfo.apkSize); // 新版本大小
-  }
+class UpdateDialog extends StatefulWidget {
+  final String version; // 新版本号
+  final String content; // 更新内容
+  final bool forceUpdate; // 是否强制更新
+  final Function? onConfirm; // 确认更新回调
+  final Function? onCancel; // 取消更新回调
+  final double progress; // 下载进度
 
-  // 自定义JSON更新
-  checkUpdateByUpdateEntity(Map jsonData) async {
-    var versionCode = jsonData["versionCode"].replaceAll('.', '');
-    var updateText = jsonData["updateContent"].split('。');
-    var updateContent = '';
-    updateText.forEach((t) {
-      updateContent += '\r\n$t';
-    });
+  const UpdateDialog({
+    Key? key,
+    required this.version,
+    required this.content,
+    this.forceUpdate = false,
+    this.onConfirm,
+    this.onCancel,
+    this.progress = 0.0,
+  }) : super(key: key);
 
-    UpdateEntity updateEntity = new UpdateEntity(
-        isForce: jsonData["isForce"] == 1,
-        hasUpdate: true,
-        isIgnorable: false,
-        versionCode: int.parse(versionCode),
-        versionName: jsonData["versionName"],
-        updateContent: updateContent,
-        downloadUrl: jsonData["downloadUrl"],
-        apkSize: jsonData["apkSize"]);
-    FlutterXUpdate.updateByInfo(updateEntity: updateEntity);
-  }
+  @override
+  State<UpdateDialog> createState() => _UpdateDialogState();
+}
 
-  // 初始化插件
-  Future<dynamic> initXUpdate() async {
-    FlutterXUpdate.init(
-            //是否输出日志
-            debug: true,
-            //是否使用post请求
-            isPost: true,
-            //post请求是否是上传json
-            isPostJson: true,
-            //是否开启自动模式
-            isWifiOnly: false,
+class _UpdateDialogState extends State<UpdateDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async => !widget.forceUpdate,
+      child: Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: Container(
+          width: 280,
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // 标题
+              Text(
+                '发现新版本 v${widget.version}',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
 
-            ///是否开启自动模式
-            isAutoMode: false,
-            //需要设置的公共参数
-            supportSilentInstall: false,
-            //在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
-            enableRetry: false)
-        .then((value) {
-      print("初始化成功: $value");
-    }).catchError((error) {
-      print(error);
-    });
+              // 更新内容
+              Container(
+                constraints: const BoxConstraints(maxHeight: 200),
+                child: SingleChildScrollView(
+                  child: Text(
+                    widget.content,
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
 
-    FlutterXUpdate.setUpdateHandler(
-      onUpdateError: (Map<String, dynamic>? message) async {
-        print("初始化成功: $message");
-        return; // 返回 void
-      },
-      onUpdateParse: (String? json) async {
-        // 这里是自定义 json 解析
-        if (json != null) {
-          return customParseJson(json);
-        } else {
-          // 处理 json 为空的情况
-          return Future.error('JSON is null');
-        }
-      },
+              // 进度条
+              if (widget.progress > 0)
+                Column(
+                  children: [
+                    LinearProgressIndicator(
+                      value: widget.progress,
+                      backgroundColor: Colors.grey[200],
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Colors.blue,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text('${(widget.progress * 100).toStringAsFixed(1)}%'),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+
+              // 按钮区域
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (!widget.forceUpdate) ...[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        widget.onCancel?.call();
+                      },
+                      child: const Text('暂不更新'),
+                    ),
+                    const SizedBox(width: 16),
+                  ],
+                  ElevatedButton(
+                    onPressed:
+                        widget.progress > 0
+                            ? null
+                            : () => widget.onConfirm?.call(),
+                    child: const Text('立即更新'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
+}
+
+Future<void> downloadApk(String apkUrl) async {
+  try {
+    // 获取存储路径
+    Directory? dir = await getExternalStorageDirectory();
+    String savePath = '${dir?.path}/update.apk';
+
+    // 开始下载
+    await Dio().download(
+      apkUrl,
+      savePath,
+      onReceiveProgress: (count, total) {
+        double progress = count / total * 100;
+        print('下载进度: ${progress.toStringAsFixed(1)}%');
+      },
+    );
+
+    print("下载完成: $savePath");
+
+    // 下载完成后打开 APK
+    launchUrl(Uri.parse(savePath));
+  } catch (e) {
+    print("下载失败: $e");
+  }
+}
+
+// 使用示例
+void showUpdateDialog(
+  BuildContext context,
+  String version,
+  String content,
+  String apkUrl,
+) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder:
+        (context) => UpdateDialog(
+          version: version,
+          content: content,
+          forceUpdate: true,
+          onConfirm: () {
+            // 处理更新逻辑
+            print('开始更新');
+            downloadApk(apkUrl);
+          },
+          onCancel: () {
+            print('取消更新');
+          },
+        ),
+  );
 }

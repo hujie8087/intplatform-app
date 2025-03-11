@@ -77,6 +77,7 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
   RestaurantModel? restaurantDetail;
   UserInfoModel? userInfo;
   RepairDataModel model = RepairDataModel();
+  bool _isLoading = false;
 
   Future _fetchData() async {
     DataUtils.getDetailById(
@@ -100,12 +101,18 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
   DeliveryTimeModel? selectedCanteenPickupType;
   // 获取餐厅配送方式
   Future _getCanteenPickupType() async {
-    ShoppingUtils.getCanteenPickupType(widget.restaurantId, success: (data) {
-      canteenPickupOptions = RowsModel<DeliveryTimeModel>.fromJson(
-              data, (json) => DeliveryTimeModel.fromJson(json)).rows ??
-          [];
-      setState(() {});
-    });
+    ShoppingUtils.getCanteenPickupType(
+      widget.restaurantId,
+      success: (data) {
+        canteenPickupOptions =
+            RowsModel<DeliveryTimeModel>.fromJson(
+              data,
+              (json) => DeliveryTimeModel.fromJson(json),
+            ).rows ??
+            [];
+        setState(() {});
+      },
+    );
   }
 
   // 配送时间选择
@@ -113,29 +120,39 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
   DeliveryTimeModel? selectedDeliveryTime;
   // 获取配送时间列表
   Future _getDeliveryTime() async {
-    ShoppingUtils.getRestaurantDeliveryTime(widget.restaurantId,
-        success: (data) {
-      deliveryTimeOptions = BaseListModel<DeliveryTimeModel>.fromJson(
-              data, (json) => DeliveryTimeModel.fromJson(json)).data ??
-          [];
-      setState(() {});
-    });
+    ShoppingUtils.getRestaurantDeliveryTime(
+      widget.restaurantId,
+      success: (data) {
+        deliveryTimeOptions =
+            BaseListModel<DeliveryTimeModel>.fromJson(
+              data,
+              (json) => DeliveryTimeModel.fromJson(json),
+            ).data ??
+            [];
+        setState(() {});
+      },
+    );
   }
 
   List<DeliveryFeeModel> deliveryFeeOptions = [];
   DeliveryFeeModel? selectedDeliveryFee;
   // 获取配送费用
   Future _getDeliveryFee() async {
-    ShoppingUtils.getRestaurantDeliveryFee(widget.restaurantId,
-        success: (data) {
-      deliveryFeeOptions = BaseListModel<DeliveryFeeModel>.fromJson(
-              data, (json) => DeliveryFeeModel.fromJson(json)).data ??
-          [];
-      setState(() {});
-    });
+    ShoppingUtils.getRestaurantDeliveryFee(
+      widget.restaurantId,
+      success: (data) {
+        deliveryFeeOptions =
+            BaseListModel<DeliveryFeeModel>.fromJson(
+              data,
+              (json) => DeliveryFeeModel.fromJson(json),
+            ).data ??
+            [];
+        setState(() {});
+      },
+    );
   }
 
-// 第一个页面
+  // 第一个页面
   void _navigateToSecondPage() async {
     final result = await Navigator.push(
       context,
@@ -161,8 +178,10 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        title:
-            Text(S.of(context).submitOrder, style: TextStyle(fontSize: 16.px)),
+        title: Text(
+          S.of(context).submitOrder,
+          style: TextStyle(fontSize: 16.px),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -192,8 +211,8 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                           width: 54.px,
                           height: 54.px,
                           fit: BoxFit.cover,
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+                          errorWidget:
+                              (context, url, error) => Icon(Icons.error),
                         ),
                       ),
                       SizedBox(width: 8.px),
@@ -270,12 +289,17 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                   SizedBox(height: 6.px),
                   Row(
                     // 根据restaurantDetail.pickupTypeIds匹配 选择取餐方式
-                    children: canteenPickupOptions
-                        .where((e) =>
-                            restaurantDetail?.pickupTypeIds?.contains(e.id) ??
-                            false)
-                        .map((e) => _buildPickupTypeButton(e.id ?? 1))
-                        .toList(),
+                    children:
+                        canteenPickupOptions
+                            .where(
+                              (e) =>
+                                  restaurantDetail?.pickupTypeIds?.contains(
+                                    e.id,
+                                  ) ??
+                                  false,
+                            )
+                            .map((e) => _buildPickupTypeButton(e.id ?? 1))
+                            .toList(),
                   ),
                 ],
               ),
@@ -303,39 +327,42 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                     SizedBox(height: 6.px),
                     InkWell(
                       borderRadius: BorderRadius.all(Radius.circular(6.px)),
-                      onTap: () => {
-                        Picker.showModalSheet(
-                          context,
-                          child: ChangeNotifierProvider.value(
-                            value: model,
-                            child: MyAddressView(
-                              addressList: model.addressList,
-                              defaultAddress: model.defaultAddress,
-                              onAddressSelected: (address) {
-                                Navigator.pop(context, address);
-                              },
-                              onAddAddress: () => _navigateToSecondPage(),
-                              areaIds: restaurantDetail?.newDeliveryIds,
-                            ),
-                          ),
-                        ).then((value) {
-                          if (value != null) {
-                            model.defaultAddress = value;
-                            _phoneController.text =
-                                model.defaultAddress?.tel ?? '';
-                            setState(() {});
-                          }
-                        })
-                      },
+                      onTap:
+                          () => {
+                            Picker.showModalSheet(
+                              context,
+                              child: ChangeNotifierProvider.value(
+                                value: model,
+                                child: MyAddressView(
+                                  addressList: model.addressList,
+                                  defaultAddress: model.defaultAddress,
+                                  onAddressSelected: (address) {
+                                    Navigator.pop(context, address);
+                                  },
+                                  onAddAddress: () => _navigateToSecondPage(),
+                                  areaIds: restaurantDetail?.newDeliveryIds,
+                                ),
+                              ),
+                            ).then((value) {
+                              if (value != null) {
+                                model.defaultAddress = value;
+                                _phoneController.text =
+                                    model.defaultAddress?.tel ?? '';
+                                setState(() {});
+                              }
+                            }),
+                          },
                       child: Ink(
-                          padding: EdgeInsets.all(6.px),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(6.px)), // 确保边框效果
-                          ),
-                          child: model.defaultAddress != null
-                              ? Column(
+                        padding: EdgeInsets.all(6.px),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(6.px),
+                          ), // 确保边框效果
+                        ),
+                        child:
+                            model.defaultAddress != null
+                                ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
@@ -348,38 +375,39 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                model.defaultAddress
+                                                model
+                                                        .defaultAddress
                                                         ?.detailedAddress ??
                                                     '',
                                                 style: TextStyle(
-                                                    fontSize: 12.px,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                  fontSize: 12.px,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                              SizedBox(
-                                                height: 5.px,
-                                              ),
+                                              SizedBox(height: 5.px),
                                               Row(
                                                 children: [
                                                   Text(
-                                                      model.defaultAddress
-                                                              ?.name ??
-                                                          '',
-                                                      style: TextStyle(
-                                                          fontSize: 10.px,
-                                                          color: Colors.grey)),
-                                                  SizedBox(
-                                                    width: 6.px,
+                                                    model
+                                                            .defaultAddress
+                                                            ?.name ??
+                                                        '',
+                                                    style: TextStyle(
+                                                      fontSize: 10.px,
+                                                      color: Colors.grey,
+                                                    ),
                                                   ),
+                                                  SizedBox(width: 6.px),
                                                   Text(
-                                                      model.defaultAddress
-                                                              ?.tel ??
-                                                          '',
-                                                      style: TextStyle(
-                                                          fontSize: 10.px,
-                                                          color: Colors.grey))
+                                                    model.defaultAddress?.tel ??
+                                                        '',
+                                                    style: TextStyle(
+                                                      fontSize: 10.px,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
                                                 ],
-                                              )
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -387,24 +415,30 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                                           Icons.edit,
                                           color: primaryColor,
                                           size: 16.px,
-                                        )
+                                        ),
                                       ],
                                     ),
                                     if (restaurantDetail?.newDeliveryIds !=
                                             null &&
                                         model.defaultAddress != null &&
                                         !(restaurantDetail!.newDeliveryIds
-                                                ?.contains(model.defaultAddress
-                                                        ?.areaId ??
-                                                    0) ??
+                                                ?.contains(
+                                                  model
+                                                          .defaultAddress
+                                                          ?.areaId ??
+                                                      0,
+                                                ) ??
                                             false))
-                                      Text(S.of(context).addressOutOfRange,
-                                          style: TextStyle(
-                                              fontSize: 10.px,
-                                              color: Colors.red))
+                                      Text(
+                                        S.of(context).addressOutOfRange,
+                                        style: TextStyle(
+                                          fontSize: 10.px,
+                                          color: Colors.red,
+                                        ),
+                                      ),
                                   ],
                                 )
-                              : Row(
+                                : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
@@ -415,9 +449,10 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                                       Icons.keyboard_arrow_right,
                                       color: primaryColor,
                                       size: 14.px,
-                                    )
+                                    ),
                                   ],
-                                )),
+                                ),
+                      ),
                     ),
                     SizedBox(height: 6.px),
                     // 配送时间选择
@@ -442,11 +477,12 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                             child: Row(
                               children: [
                                 Expanded(
-                                    child: Text(
-                                  selectedDeliveryTime?.name ?? '',
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(fontSize: 12.px),
-                                )),
+                                  child: Text(
+                                    selectedDeliveryTime?.name ?? '',
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(fontSize: 12.px),
+                                  ),
+                                ),
                                 Icon(
                                   Icons.keyboard_arrow_down,
                                   color: primaryColor,
@@ -454,7 +490,7 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                               ],
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     SizedBox(height: 6.px),
@@ -467,9 +503,10 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                           style: TextStyle(fontSize: 12.px),
                         ),
                         Text(
-                            selectedDeliveryFee?.price?.toStringAsFixed(2) ??
-                                '0.00',
-                            style: TextStyle(fontSize: 12.px)),
+                          selectedDeliveryFee?.price?.toStringAsFixed(2) ??
+                              '0.00',
+                          style: TextStyle(fontSize: 12.px),
+                        ),
                       ],
                     ),
                   ],
@@ -509,7 +546,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                                 .of(context)
                                 .pleaseFillIn(S.of(context).employeeNumber),
                         style: TextStyle(
-                            fontSize: 12.px, fontWeight: FontWeight.bold),
+                          fontSize: 12.px,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -526,7 +565,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                         userInfo?.user?.nickName ??
                             S.of(context).pleaseFillIn(S.of(context).name),
                         style: TextStyle(
-                            fontSize: 12.px, fontWeight: FontWeight.bold),
+                          fontSize: 12.px,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -541,32 +582,39 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                       ),
                       SizedBox(width: 6.px),
                       Expanded(
-                          child: TextFormField(
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
-                        // 限制输入非数字
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        maxLines: 1,
-                        style: TextStyle(
+                        child: TextFormField(
+                          controller: _phoneController,
+                          keyboardType: TextInputType.phone,
+                          // 限制输入非数字
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          maxLines: 1,
+                          style: TextStyle(
                             fontSize: 12.px,
                             color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.right,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          hintText:
-                              S.of(context).pleaseFillIn(S.of(context).phone),
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              fontSize: 12.px, fontWeight: FontWeight.normal),
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.right,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            hintText: S
+                                .of(context)
+                                .pleaseFillIn(S.of(context).phone),
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 0,
+                              horizontal: 0,
+                            ),
+                            border: InputBorder.none,
+                            hintStyle: TextStyle(
+                              fontSize: 12.px,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
                         ),
-                      )),
+                      ),
                     ],
                   ),
                   SizedBox(height: 10.px),
@@ -581,7 +629,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                       Text(
                         '${restaurantDetail?.startTime} ~ ${restaurantDetail?.endTime}',
                         style: TextStyle(
-                            fontSize: 12.px, fontWeight: FontWeight.bold),
+                          fontSize: 12.px,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -614,9 +664,12 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                     decoration: InputDecoration(
                       // 设置行高
                       contentPadding: EdgeInsets.symmetric(
-                          vertical: 6.px, horizontal: 6.px),
-                      hintText:
-                          S.of(context).pleaseFillIn(S.of(context).remark),
+                        vertical: 6.px,
+                        horizontal: 6.px,
+                      ),
+                      hintText: S
+                          .of(context)
+                          .pleaseFillIn(S.of(context).remark),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6.px),
                         borderSide: BorderSide(color: Colors.grey),
@@ -639,15 +692,17 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
     );
   }
 
-// 选择配送时间
+  // 选择配送时间
   Future _buildDeliveryTimePicker(BuildContext context) {
     return Picker.showModalSheet(
       context,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(S.of(context).pleaseSelect(S.of(context).deliveryTime),
-              style: TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold)),
+          Text(
+            S.of(context).pleaseSelect(S.of(context).deliveryTime),
+            style: TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold),
+          ),
           SizedBox(height: 6.px),
           Container(
             constraints: BoxConstraints(
@@ -674,13 +729,13 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                             ),
                           ),
                         ),
-                        DividerWidget()
+                        DividerWidget(),
                       ],
                     ),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     ).then((value) {
@@ -705,10 +760,15 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
           _phoneController.text = model.defaultAddress?.tel ?? '';
           if (selectedDeliveryFee == null) {
             // 根据订单总价，从deliveryFeeOptions中选择配送费
-            selectedDeliveryFee = deliveryFeeOptions.firstWhere((element) =>
-                Utils.evaluateExpression(element.billingConditions?.replaceAll(
-                        'price', widget.totalPrice.toInt().toString()) ??
-                    ''));
+            selectedDeliveryFee = deliveryFeeOptions.firstWhere(
+              (element) => Utils.evaluateExpression(
+                element.billingConditions?.replaceAll(
+                      'price',
+                      widget.totalPrice.toInt().toString(),
+                    ) ??
+                    '',
+              ),
+            );
           }
           if (selectedDeliveryTime == null) {
             // 根据订单总价，从deliveryTimeOptions中选择配送时间
@@ -718,9 +778,7 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
         setState(() {});
       },
       child: Container(
-        margin: EdgeInsets.only(
-          right: 8.px,
-        ),
+        margin: EdgeInsets.only(right: 8.px),
         padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 2.px),
         decoration: BoxDecoration(
           color: isSelected ? primaryColor : Colors.white,
@@ -743,17 +801,16 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8.px),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey[200]!),
-        ),
+        border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
       ),
       child: Row(
         children: [
           if (item.image.isNotEmpty)
             CachedNetworkImage(
-              imageUrl: item.image.indexOf('food') != -1
-                  ? APIs.foodPrefix + item.image
-                  : APIs.imagePrefix + item.image,
+              imageUrl:
+                  item.image.indexOf('food') != -1
+                      ? APIs.foodPrefix + item.image
+                      : APIs.imagePrefix + item.image,
               width: 54.px,
               height: 54.px,
               fit: BoxFit.cover,
@@ -774,20 +831,14 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                 SizedBox(height: 5.px),
                 Text(
                   '${item.price}',
-                  style: TextStyle(
-                    color: secondaryColor,
-                    fontSize: 14.px,
-                  ),
+                  style: TextStyle(color: secondaryColor, fontSize: 14.px),
                 ),
               ],
             ),
           ),
           Text(
             'x${item.num}',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 12.px,
-            ),
+            style: TextStyle(color: Colors.grey, fontSize: 12.px),
           ),
         ],
       ),
@@ -813,32 +864,32 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-              child: Row(children: [
-            Text(
-              S.of(context).total + ':',
-              style: TextStyle(fontSize: 14.px),
-            ),
-            Text(
-              '${(widget.totalPrice + (selectedDeliveryFee?.price ?? 0)).toStringAsFixed(2)}',
-              style: TextStyle(
-                color: secondaryColor,
-                fontSize: 18.px,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(width: 8.px),
-            if (selectedPickupType == 3)
-              Text(
-                S.of(context).deliveryFee +
-                    ':${selectedDeliveryFee?.price?.toStringAsFixed(2) ?? '0.00'}',
-                style: TextStyle(
-                  color: secondaryColor,
-                  fontSize: 10.px,
+            child: Row(
+              children: [
+                Text(
+                  S.of(context).total + ':',
+                  style: TextStyle(fontSize: 14.px),
                 ),
-              ),
-          ])),
+                Text(
+                  '${(widget.totalPrice + (selectedDeliveryFee?.price ?? 0)).toStringAsFixed(2)}',
+                  style: TextStyle(
+                    color: secondaryColor,
+                    fontSize: 18.px,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(width: 8.px),
+                if (selectedPickupType == 3)
+                  Text(
+                    S.of(context).deliveryFee +
+                        ':${selectedDeliveryFee?.price?.toStringAsFixed(2) ?? '0.00'}',
+                    style: TextStyle(color: secondaryColor, fontSize: 10.px),
+                  ),
+              ],
+            ),
+          ),
           ElevatedButton(
-            onPressed: _submitOrder,
+            onPressed: _isLoading ? null : _submitOrder,
             style: ElevatedButton.styleFrom(
               backgroundColor: primaryColor,
               padding: EdgeInsets.symmetric(horizontal: 24.px, vertical: 8.px),
@@ -846,7 +897,17 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                 borderRadius: BorderRadius.circular(20.px),
               ),
             ),
-            child: Text(S.of(context).submitOrder),
+            child:
+                _isLoading
+                    ? SizedBox(
+                      width: 20.px,
+                      height: 20.px,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 2.5,
+                      ),
+                    )
+                    : Text(S.of(context).submitOrder),
           ),
         ],
       ),
@@ -864,13 +925,15 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
       // 检查地址
       if (model.defaultAddress == null) {
         ProgressHUD.showError(
-            S.of(context).pleaseSelect(S.of(context).address));
+          S.of(context).pleaseSelect(S.of(context).address),
+        );
         return;
       }
       // 检查地址是否在配送范围内
       if (restaurantDetail?.newDeliveryIds != null &&
-          !restaurantDetail!.newDeliveryIds!
-              .contains(model.defaultAddress?.areaId ?? 0)) {
+          !restaurantDetail!.newDeliveryIds!.contains(
+            model.defaultAddress?.areaId ?? 0,
+          )) {
         ProgressHUD.showError(S.of(context).addressOutOfRange);
         return;
       }
@@ -901,18 +964,33 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
           parameters['deliveryArea'] = selectedDeliveryTime?.name;
           parameters['address'] = model.defaultAddress?.detailedAddress;
         }
-        // 提交订单
-        ShoppingUtils.submitOrder(parameters, success: (value) {
-          ProgressHUD.showSuccess(S.of(context).submitSuccess);
-          Navigator.pop(context); // 关闭对话框
-          // 清空当前餐厅的购物车
-          context.read<FoodViewModel>().clearCart(restaurantDetail?.id ?? 0);
-          // 跳转至订单列表页
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => OrderListPage()));
-        }, fail: (code, msg) {
-          ProgressHUD.showError(msg);
+        setState(() {
+          _isLoading = true;
         });
+        // 提交订单
+        ShoppingUtils.submitOrder(
+          parameters,
+          success: (value) {
+            setState(() {
+              _isLoading = false;
+            });
+            ProgressHUD.showSuccess(S.of(context).submitSuccess);
+            Navigator.pop(context); // 关闭对话框
+            // 清空当前餐厅的购物车
+            context.read<FoodViewModel>().clearCart(restaurantDetail?.id ?? 0);
+            // 跳转至订单列表页
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => OrderListPage()),
+            );
+          },
+          fail: (code, msg) {
+            setState(() {
+              _isLoading = false;
+            });
+            ProgressHUD.showError(msg);
+          },
+        );
       },
     );
   }

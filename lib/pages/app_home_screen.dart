@@ -1,9 +1,9 @@
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_update_dialog/update_dialog.dart';
-import 'package:flutter_xupdate/flutter_xupdate.dart';
+// import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:logistics_app/common_ui/navigation/navigation_bar_item.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
@@ -22,6 +22,10 @@ import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 
 // 在文件顶部定义全局 key
 final GlobalKey<_AppHomeScreenState> appHomeScreenKey =
@@ -39,6 +43,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   AnimationController? animationController;
   final GlobalKey<NavigationBarItemState> navigationKey =
       GlobalKey<NavigationBarItemState>();
+  double _progress = -1;
+  UpdateDialog? _updateDialog;
 
   List<TabIconData> _tabIconsList = [];
 
@@ -79,9 +85,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     });
   }
 
-  Widget tabBody = Container(
-    color: Colors.white,
-  );
+  Widget tabBody = Container(color: Colors.white);
 
   Future<bool> isLogin() async {
     // 判断是否登录
@@ -96,9 +100,13 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
           await SpUtils.saveModel('userInfo', userInfo);
           SpUtils.saveString(
-              Constants.SP_USER_NAME, userInfo.user?.nickName ?? '');
+            Constants.SP_USER_NAME,
+            userInfo.user?.nickName ?? '',
+          );
           SpUtils.saveString(
-              Constants.SP_USER_DEPT, userInfo.user?.dept?.deptName ?? '');
+            Constants.SP_USER_DEPT,
+            userInfo.user?.dept?.deptName ?? '',
+          );
           return true;
         },
         fail: (code, msg) {
@@ -134,30 +142,50 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           //如果当前版本小于线上版本，需要更新
           if (oldVersion == newVersion) {
             SpUtils.saveString(
-                Constants.SP_NEW_APP_VERSION, updateModel.versionName);
+              Constants.SP_NEW_APP_VERSION,
+              updateModel.versionName,
+            );
           } else {
             SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
           }
           if (oldVersion < newVersion) {
             if (Platform.isAndroid) {
-              checkUpdateFlutterXUpdate(updateModel, downloadUrlPre);
+              // checkUpdateFlutterXUpdate(updateModel, downloadUrlPre);
+              // downloadApk(downloadUrlPre + updateModel.apkUrl);
+              _updateDialog = UpdateDialog.showUpdate(
+                context,
+                title: '发现新版本 v${newVersion}',
+                updateContent: updateModel.updateLog ?? '',
+                themeColor: Color.fromRGBO(255, 101, 50, 1),
+                updateButtonText: S.of(context).updateNow,
+                topImage: Image.asset('assets/images/bg_update_top.png'),
+                isForce: true,
+                onUpdate: () async {
+                  downloadApk(downloadUrlPre + updateModel.apkUrl);
+                },
+                progress: _progress,
+              );
             } else {
-              UpdateDialog.showUpdate(context,
-                  title: S.of(context).updateAppStore,
-                  updateContent: updateModel.updateLog ?? '',
-                  themeColor: Color.fromRGBO(255, 101, 50, 1),
-                  updateButtonText: S.of(context).updateNow,
-                  topImage: Image.asset('assets/images/bg_update_top.png'),
-                  isForce: true, onUpdate: () async {
-                final url =
-                    Uri.parse('https://apps.apple.com/app/id6667111068');
-                // 替换为你的应用在 App Store 的链接
-                if (await canLaunchUrl(url)) {
-                  await launchUrl(url);
-                } else {
-                  throw 'Could not launch $url';
-                }
-              });
+              UpdateDialog.showUpdate(
+                context,
+                title: S.of(context).updateAppStore,
+                updateContent: updateModel.updateLog ?? '',
+                themeColor: Color.fromRGBO(255, 101, 50, 1),
+                updateButtonText: S.of(context).updateNow,
+                topImage: Image.asset('assets/images/bg_update_top.png'),
+                isForce: true,
+                onUpdate: () async {
+                  final url = Uri.parse(
+                    'https://apps.apple.com/app/id6667111068',
+                  );
+                  // 替换为你的应用在 App Store 的链接
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url);
+                  } else {
+                    throw 'Could not launch $url';
+                  }
+                },
+              );
             }
           }
         } catch (e) {
@@ -167,31 +195,53 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     );
   }
 
-  void checkUpdateFlutterXUpdate(
-      UpdateInfoData updateModel, String downloadUrlPre) {
-    FlutterXUpdate.updateByInfo(
-      updateEntity: UpdateEntity(
-        isForce: true,
-        hasUpdate: true,
-        isIgnorable: false,
-        versionCode: int.parse(updateModel.versionCode),
-        versionName: updateModel.versionName,
-        updateContent: updateModel.updateLog,
-        downloadUrl: downloadUrlPre + updateModel.apkUrl,
-        // downloadUrl:
-        //     'https://web.iwipwedabay.com/static/intplatform/APK/IWIP-intplatform.apk',
-        // downloadUrl:
-        //     'http://192.168.91.52/static/food/upgrade/apk/food_app_v1.6.6.apk',
-        // apkSize: 32092,
-        apkSize: updateModel.apkSize,
-        apkMd5: '',
-      ),
-      themeColor: '#ff6532',
-      topImageRes: 'bg_update_top',
-      buttonTextColor: '#ffffff',
-      overrideGlobalRetryStrategy: true,
-      enableRetry: false,
-    );
+  Future<void> downloadApk(String apkUrl) async {
+    try {
+      // 获取存储路径
+      Directory? dir = await getExternalStorageDirectory();
+      String savePath = '${dir?.path}/update.apk';
+
+      // 开始下载
+      await Dio().download(
+        apkUrl,
+        savePath,
+        onReceiveProgress: (count, total) {
+          double progress = count / total * 100;
+          print('下载进度: ${progress.toStringAsFixed(1)}%');
+          setState(() {
+            _progress = progress;
+            _updateDialog?.update(count / total);
+          });
+        },
+      );
+
+      print("下载完成: $savePath");
+
+      // 下载完成后打开 APK
+      installApk(savePath);
+    } catch (e) {
+      print("下载失败: $e");
+    }
+  }
+
+  void installApk(String apkPath) async {
+    try {
+      final Uri contentUri = Uri.parse('content://${apkPath}');
+
+      final intent = AndroidIntent(
+        action: 'action_view',
+        data: contentUri.toString(),
+        type: 'application/vnd.android.package-archive',
+        flags: [
+          Flag.FLAG_ACTIVITY_NEW_TASK,
+          Flag.FLAG_GRANT_READ_URI_PERMISSION,
+        ],
+      );
+
+      await intent.launch();
+    } on PlatformException catch (e) {
+      debugPrint("Error launching intent: ${e.message}");
+    }
   }
 
   @override
@@ -203,7 +253,9 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     _tabIconsList[1].isSelected = true;
 
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 600), vsync: this);
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
     super.initState();
     _handleTabChanged(1);
     // tabBody = HomePage(
@@ -238,8 +290,9 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           });
           break;
       }
-      navigationKey.currentState
-          ?.setRemoveAllSelection(_tabIconsList[newValue]);
+      navigationKey.currentState?.setRemoveAllSelection(
+        _tabIconsList[newValue],
+      );
     });
   }
 
@@ -252,31 +305,27 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          // 禁用返回行为
-          return false;
-        },
-        child: Container(
-          color: Colors.white,
-          child: Scaffold(
-            backgroundColor: backgroundColor,
-            body: FutureBuilder<bool>(
-              future: getData(),
-              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                if (!snapshot.hasData) {
-                  return const SizedBox();
-                } else {
-                  return Stack(
-                    children: <Widget>[
-                      tabBody,
-                      bottomBar(),
-                    ],
-                  );
-                }
-              },
-            ),
+      onWillPop: () async {
+        // 禁用返回行为
+        return false;
+      },
+      child: Container(
+        color: Colors.white,
+        child: Scaffold(
+          backgroundColor: backgroundColor,
+          body: FutureBuilder<bool>(
+            future: getData(),
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              if (!snapshot.hasData) {
+                return const SizedBox();
+              } else {
+                return Stack(children: <Widget>[tabBody, bottomBar()]);
+              }
+            },
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Future<bool> getData() async {
@@ -287,9 +336,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   Widget bottomBar() {
     return Column(
       children: <Widget>[
-        const Expanded(
-          child: SizedBox(),
-        ),
+        const Expanded(child: SizedBox()),
         NavigationBarItem(
           key: navigationKey,
           tabIconsList: _tabIconsList,

@@ -1,0 +1,2 @@
+D:/IWIPproject/intplatform/intplatform-app/android/app/.cxx/RelWithDebInfo/2e43563k/x86_64/CMakeFiles/edit_cache.dir
+D:/IWIPproject/intplatform/intplatform-app/android/app/.cxx/RelWithDebInfo/2e43563k/x86_64/CMakeFiles/rebuild_cache.dir

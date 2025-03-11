@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRScannerPage extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class QRScannerPage extends StatefulWidget {
 
 class _QRScannerPageState extends State<QRScannerPage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController? controller;
+  MobileScannerController? controller;
   bool isScanning = true;
 
   @override
@@ -23,29 +23,29 @@ class _QRScannerPageState extends State<QRScannerPage> {
           IconButton(
             icon: Icon(Icons.flip_camera_ios),
             onPressed: () async {
-              await controller?.flipCamera();
+              await controller?.switchCamera();
             },
           ),
           IconButton(
             icon: Icon(Icons.flash_on),
             onPressed: () async {
-              await controller?.toggleFlash();
+              // await controller?.toggleFlash();
             },
           ),
         ],
       ),
       body: Stack(
         children: [
-          QRView(
-            key: qrKey,
-            onQRViewCreated: _onQRViewCreated,
-            overlay: QrScannerOverlayShape(
-              borderColor: Colors.green,
-              borderRadius: 12.px,
-              borderLength: 30.px,
-              borderWidth: 2,
-              cutOutSize: 250.px,
-            ),
+          MobileScanner(
+            onDetect: (capture) {
+              if (capture.barcodes.first.displayValue != null && isScanning) {
+                isScanning = false;
+                Navigator.pop(context, capture.barcodes.first.displayValue);
+              }
+            },
+            onDetectError: (error, stackTrace) {
+              print('error----2222');
+            },
           ),
           // 提示文本
           Positioned(
@@ -73,16 +73,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
     );
   }
 
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      if (isScanning && scanData.code != null) {
-        isScanning = false; // 防止重复扫描
-        Navigator.pop(context, scanData.code); // 返回扫描结果
-      }
-    });
-  }
-
   @override
   void dispose() {
     controller?.dispose();
@@ -93,10 +83,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
   void reassemble() {
     super.reassemble();
     if (controller != null) {
-      // 在 Android 上需要暂停相机
-      controller!.pauseCamera();
-      // 在 iOS 上需要恢复相机
-      controller!.resumeCamera();
+      controller?.start();
     }
   }
 }
