@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -15,10 +16,7 @@ import 'package:logistics_app/utils/screen_adapter_helper.dart';
 class OrderDetailPage extends StatefulWidget {
   final String orderId;
 
-  const OrderDetailPage({
-    Key? key,
-    required this.orderId,
-  }) : super(key: key);
+  const OrderDetailPage({Key? key, required this.orderId}) : super(key: key);
 
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
@@ -34,8 +32,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   void initState() {
     super.initState();
     _fetchAllPickupType();
-    _fetchOrderStatus();
-    _fetchOrderDetail();
   }
 
   // 获取所有配送方式
@@ -44,10 +40,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       null,
       success: (data) {
         pickupTypeList =
-            RowsModel.fromJson(data, (json) => PickupTypeModel.fromJson(json))
-                    .rows ??
-                [];
-        setState(() {});
+            RowsModel.fromJson(
+              data,
+              (json) => PickupTypeModel.fromJson(json),
+            ).rows ??
+            [];
+        setState(() {
+          _fetchOrderStatus();
+        });
       },
     );
   }
@@ -57,10 +57,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     DataUtils.getDictDataList(
       'order_type_status',
       success: (data) {
-        statusList = BaseListModel<DictModel>.fromJson(
-                data, (json) => DictModel.fromJson(json)).data ??
+        statusList =
+            BaseListModel<DictModel>.fromJson(
+              data,
+              (json) => DictModel.fromJson(json),
+            ).data ??
             [];
-        setState(() {});
+        setState(() {
+          _fetchOrderDetail();
+        });
       },
     );
   }
@@ -73,6 +78,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       APIs.getOrderDetail + '/' + widget.orderId,
       success: (data) {
         _orderDetail = OrderModel.fromJson(data['data']);
+        setState(() {
+          _isLoading = false;
+        });
+      },
+      fail: (code, msg) {
+        ProgressHUD.showError(msg);
         setState(() {
           _isLoading = false;
         });
@@ -98,25 +109,26 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           ),
         ],
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  // 订单状态
-                  _buildOrderStatus(),
-                  SizedBox(height: 8.px),
-                  // 订单信息
-                  _buildOrderInfo(),
-                  SizedBox(height: 8.px),
-                  // 商品信息
-                  _buildProductInfo(),
-                  SizedBox(height: 8.px),
-                  // 订单金额
-                  _buildOrderAmount(),
-                ],
+      body:
+          _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // 订单状态
+                    _buildOrderStatus(),
+                    SizedBox(height: 8.px),
+                    // 订单信息
+                    _buildOrderInfo(),
+                    SizedBox(height: 8.px),
+                    // 商品信息
+                    _buildProductInfo(),
+                    SizedBox(height: 8.px),
+                    // 订单金额
+                    _buildOrderAmount(),
+                  ],
+                ),
               ),
-            ),
     );
   }
 
@@ -126,20 +138,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       color: primaryColor,
       child: Row(
         children: [
-          Icon(
-            Icons.check_circle_outline,
-            color: Colors.white,
-            size: 24.px,
-          ),
+          Icon(Icons.check_circle_outline, color: Colors.white, size: 24.px),
           SizedBox(width: 8.px),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                statusList.length > 0
+                statusList.length > 0 && _orderDetail != null
                     ? statusList
-                            .firstWhere((e) =>
-                                e.dictValue == _orderDetail?.status.toString())
+                            .firstWhere(
+                              (e) =>
+                                  e.dictValue ==
+                                  _orderDetail?.status.toString(),
+                            )
                             .dictLabel ??
                         ''
                     : '',
@@ -173,30 +184,37 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         children: [
           Text(
             S.of(context).orderInfo,
-            style: TextStyle(
-              fontSize: 14.px,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 14.px, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8.px),
           // 姓名
           _buildInfoItem(S.of(context).name, _orderDetail?.name ?? ''),
           _buildInfoItem(
-              S.of(context).employeeNumber, _orderDetail?.nick ?? ''),
+            S.of(context).employeeNumber,
+            _orderDetail?.nick ?? '',
+          ),
           _buildInfoItem(S.of(context).phone, _orderDetail?.tel ?? ''),
           _buildInfoItem(
-              S.of(context).pickupType,
-              pickupTypeList.length > 0
-                  ? pickupTypeList
-                          .firstWhere((e) => e.id == _orderDetail?.pickupType)
-                          .name ??
-                      ''
-                  : ''),
-          _buildInfoItem(S.of(context).orderTime,
-              _orderDetail?.createTime?.replaceAll('T', ' ') ?? ''),
+            S.of(context).pickupType,
+            pickupTypeList.length > 0 && pickupTypeList.isNotEmpty
+                ? pickupTypeList
+                        .firstWhere(
+                          (e) => e.id == _orderDetail?.pickupType,
+                          orElse: () => PickupTypeModel(id: 0, name: '未知类型'),
+                        )
+                        .name ??
+                    ''
+                : '',
+          ),
+          _buildInfoItem(
+            S.of(context).orderTime,
+            _orderDetail?.createTime?.replaceAll('T', ' ') ?? '',
+          ),
           if (_orderDetail?.pickupType == 3)
             _buildInfoItem(
-                S.of(context).pickupTime, _orderDetail?.deliveryArea ?? ''),
+              S.of(context).pickupTime,
+              _orderDetail?.deliveryArea ?? '',
+            ),
           if (_orderDetail?.pickupType == 3)
             _buildInfoItem(S.of(context).address, _orderDetail?.address ?? ''),
 
@@ -214,18 +232,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         children: [
           Text(
             label,
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 12.px,
-            ),
+            style: TextStyle(color: Colors.grey[600], fontSize: 12.px),
           ),
           SizedBox(width: 8.px),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(
-                fontSize: 12.px,
-              ),
+              style: TextStyle(fontSize: 12.px),
               textAlign: TextAlign.right,
             ),
           ),
@@ -243,14 +256,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         children: [
           Text(
             S.of(context).goodsInfo,
-            style: TextStyle(
-              fontSize: 14.px,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 14.px, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 8.px),
-          ...(_orderDetail?.orderDetailsList ?? [])
-              .map((detail) => _buildProductItem(detail))
+          ...(_orderDetail?.orderDetailsList ?? []).map(
+            (detail) => _buildProductItem(detail),
+          ),
         ],
       ),
     );
@@ -260,18 +271,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 8.px),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey[200]!),
-        ),
+        border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
       ),
       child: Row(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: CachedNetworkImage(
-              imageUrl: detail.image?.indexOf('food') != -1
-                  ? APIs.foodPrefix + detail.image!
-                  : APIs.imagePrefix + detail.image!,
+              imageUrl:
+                  detail.image?.indexOf('food') != -1
+                      ? APIs.foodPrefix + detail.image!
+                      : APIs.imagePrefix + detail.image!,
               width: 60.px,
               height: 60.px,
               fit: BoxFit.cover,
@@ -330,23 +340,20 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             children: [
               Text(
                 S.of(context).goodsTotal,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12.px,
-                ),
+                style: TextStyle(color: Colors.grey[600], fontSize: 12.px),
               ),
               Text(
                 '${_orderDetail?.totalPrice?.toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: 12.px,
-                ),
+                style: TextStyle(fontSize: 12.px),
               ),
             ],
           ),
           // 配送费用
           if (_orderDetail?.pickupType == 3)
             _buildInfoItem(
-                S.of(context).deliveryFee, '${_orderDetail?.postPrice}'),
+              S.of(context).deliveryFee,
+              '${_orderDetail?.postPrice}',
+            ),
 
           SizedBox(height: 8.px),
           Row(
@@ -354,10 +361,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             children: [
               Text(
                 S.of(context).actualPayment,
-                style: TextStyle(
-                  fontSize: 14.px,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 14.px, fontWeight: FontWeight.bold),
               ),
               Text(
                 '${_orderDetail?.totalPrice?.toStringAsFixed(2)}',

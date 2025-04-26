@@ -34,10 +34,7 @@ class HttpUtils {
     if (!LogUtils.inProduction && isOpenAllLog) {
       interceptors.add(LoggingInterceptor()); // 调试打开
     }
-    configDio(
-      baseUrl: APIs.apiPrefix,
-      interceptors: interceptors,
-    );
+    configDio(baseUrl: APIs.apiPrefix, interceptors: interceptors);
   }
 
   static setBaseUrl(String baseUrl) {
@@ -52,8 +49,14 @@ class HttpUtils {
     Success? success,
     Fail? fail,
   }) {
-    request(Method.get, url, params,
-        loadingText: loadingText, success: success, fail: fail);
+    request(
+      Method.get,
+      url,
+      params,
+      loadingText: loadingText,
+      success: success,
+      fail: fail,
+    );
   }
 
   /// post 请求
@@ -64,8 +67,14 @@ class HttpUtils {
     Success? success,
     Fail? fail,
   }) {
-    request(Method.post, url, params,
-        loadingText: loadingText, success: success, fail: fail);
+    request(
+      Method.post,
+      url,
+      params,
+      loadingText: loadingText,
+      success: success,
+      fail: fail,
+    );
   }
 
   /// put 请求
@@ -76,8 +85,14 @@ class HttpUtils {
     Success? success,
     Fail? fail,
   }) {
-    request(Method.put, url, params,
-        loadingText: loadingText, success: success, fail: fail);
+    request(
+      Method.put,
+      url,
+      params,
+      loadingText: loadingText,
+      success: success,
+      fail: fail,
+    );
   }
 
   /// patch 请求
@@ -88,8 +103,14 @@ class HttpUtils {
     Success? success,
     Fail? fail,
   }) {
-    request(Method.patch, url, params,
-        loadingText: loadingText, success: success, fail: fail);
+    request(
+      Method.patch,
+      url,
+      params,
+      loadingText: loadingText,
+      success: success,
+      fail: fail,
+    );
   }
 
   /// delete 请求
@@ -101,8 +122,14 @@ class HttpUtils {
     Success? success,
     Fail? fail,
   }) {
-    request(Method.delete, url, params,
-        loadingText: loadingText, success: success, fail: fail);
+    request(
+      Method.delete,
+      url,
+      params,
+      loadingText: loadingText,
+      success: success,
+      fail: fail,
+    );
   }
 
   // 上传图片
@@ -116,8 +143,14 @@ class HttpUtils {
     if (loadingText != null && loadingText.isNotEmpty) {
       ProgressHUD.showLoadingText(loadingText);
     }
-    request(Method.post, url, formData,
-        loadingText: loadingText, success: success, fail: fail);
+    request(
+      Method.post,
+      url,
+      formData,
+      loadingText: loadingText,
+      success: success,
+      fail: fail,
+    );
   }
 
   /// _request 请求
@@ -153,35 +186,42 @@ class HttpUtils {
       ProgressHUD.showLoadingText(loadingText);
     }
 
-    DioUtils.instance.request(method, url,
-        data: data, queryParameters: queryParameters, onSuccess: (result) {
-      if (!LogUtils.inProduction && isOpenLog) {
-        print('---------- HttpUtils response ----------');
-        print(result);
-      }
-      if (result['code'] == ExceptionHandle.success || result['code'] == '1') {
-        // ProgressHUD.hide();
-        success?.call(result);
-      } else if ((result['code'] == ExceptionHandle.unauthorized)) {
-        ProgressHUD.showText('请登录您的帐号');
+    DioUtils.instance.request(
+      method,
+      url,
+      data: data,
+      queryParameters: queryParameters,
+      onSuccess: (result) {
+        if (!LogUtils.inProduction && isOpenLog) {
+          print('---------- HttpUtils response ----------');
+          print(result);
+        }
+        if (result['code'] == ExceptionHandle.success ||
+            result['code'] == '1') {
+          // ProgressHUD.hide();
+          success?.call(result);
+        } else if ((result['code'] == ExceptionHandle.unauthorized)) {
+          ProgressHUD.showText('请登录您的帐号');
 
-        SpUtils.remove(Constants.SP_USER_NAME);
-        SpUtils.remove(Constants.SP_USER_DEPT);
-        SpUtils.remove(Constants.SP_TOKEN);
-        RouteUtils.navigateToLogin();
-      } else if ((result['status'] == ExceptionHandle.not_found)) {
-        ProgressHUD.showText('无法连接服务器');
-      } else {
-        // 其他状态，弹出错误提示信息
-        ProgressHUD.showText(result['msg']);
-        fail?.call(result['code'], result['msg']);
-      }
-    }, onError: (code, msg) {
-      if (loadingText != null && loadingText.isNotEmpty) {
-        ProgressHUD.hide();
-      }
-      ProgressHUD.showError(msg);
-      fail?.call(code, msg);
-    });
+          SpUtils.remove(Constants.SP_USER_NAME);
+          SpUtils.remove(Constants.SP_USER_DEPT);
+          SpUtils.remove(Constants.SP_TOKEN);
+          RouteUtils.navigateToLogin();
+        } else if ((result['status'] == ExceptionHandle.not_found)) {
+          ProgressHUD.showText('无法连接服务器');
+        } else {
+          // 其他状态，弹出错误提示信息
+          ProgressHUD.showText(result['msg']);
+          fail?.call(result['code'], result['msg']);
+        }
+      },
+      onError: (code, msg) {
+        if (loadingText != null && loadingText.isNotEmpty) {
+          ProgressHUD.hide();
+        }
+        ProgressHUD.showError(msg);
+        fail?.call(code, msg);
+      },
+    );
   }
 }

@@ -39,4 +39,7 @@ class Constants {
 
   // 用户登录状态
   static const String SP_IS_LOGIN = 'SP_IS_LOGIN';
+
+  // 用户人脸照片
+  static const String FACE_PHOTO = 'FACE_PHOTO';
 }

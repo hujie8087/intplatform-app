@@ -37,38 +37,58 @@ class FoodViewModel with ChangeNotifier {
 
   // 获取餐厅列表
   Future getRestaurantList(pageNum, pageSize) async {
-    var params = {
-      'pageNum': pageNum,
-      'pageSize': pageSize,
-    };
-    DataUtils.getPageList(APIs.getRestaurantList, params, success: (data) {
-      RowsModel rowsModel = RowsModel.fromJson(
-          data, (json) => RestaurantViewModel.fromJson(json));
-      if (rowsModel.rows != null) {
-        var myAddressList = data['rows'] as List;
-        List<RestaurantModel> rows =
-            myAddressList.map((i) => RestaurantModel.fromJson(i)).toList();
-        list = rows;
-      }
+    var params = {'pageNum': pageNum, 'pageSize': pageSize};
+    DataUtils.getPageList(
+      APIs.getRestaurantList,
+      params,
+      success: (data) {
+        RowsModel rowsModel = RowsModel.fromJson(
+          data,
+          (json) => RestaurantViewModel.fromJson(json),
+        );
+        if (rowsModel.rows != null) {
+          var myAddressList = data['rows'] as List;
+          List<RestaurantModel> rows =
+              myAddressList.map((i) => RestaurantModel.fromJson(i)).toList();
+          list = rows;
+        }
+        notifyListeners();
+      },
+    );
+  }
+
+  // 更新购物车中商品的数量
+  void updateQuantity(FoodModel food, int quantity) {
+    var existingItemIndex = cartItems.indexWhere((item) => item.id == food.id);
+    if (existingItemIndex != -1) {
+      cartItems[existingItemIndex].num = quantity;
+      calculateTotal();
+      saveCartToStorage();
       notifyListeners();
-    });
+    }
   }
 
   // 获取餐厅取餐类型
   Future getRestaurantPickTypeList() async {
-    DataUtils.getPageList(APIs.getRestaurantPickTypeList, null,
-        success: (data) {
-      RowsModel rowsModel = RowsModel.fromJson(
-          data, (json) => RestaurantPickupViewModel.fromJson(json));
-      if (rowsModel.rows != null) {
-        var myAddressList = data['rows'] as List;
-        List<RestaurantPickupViewModel> rows = myAddressList
-            .map((i) => RestaurantPickupViewModel.fromJson(i))
-            .toList();
-        pickupTypes = rows;
-      }
-      notifyListeners();
-    });
+    DataUtils.getPageList(
+      APIs.getRestaurantPickTypeList,
+      null,
+      success: (data) {
+        RowsModel rowsModel = RowsModel.fromJson(
+          data,
+          (json) => RestaurantPickupViewModel.fromJson(json),
+        );
+        if (rowsModel.rows != null) {
+          var myAddressList = data['rows'] as List;
+          List<RestaurantPickupViewModel> rows =
+              myAddressList
+                  .map((i) => RestaurantPickupViewModel.fromJson(i))
+                  .toList();
+          pickupTypes = rows;
+        }
+        notifyListeners();
+      },
+    );
   }
 
   // 初始化购物车数据
@@ -130,8 +150,10 @@ class FoodViewModel with ChangeNotifier {
 
   // 计算总价
   void calculateTotal() {
-    totalPrice =
-        cartItems.fold(0, (sum, item) => sum + (item.price * (item.num)));
+    totalPrice = cartItems.fold(
+      0,
+      (sum, item) => sum + (item.price * (item.num)),
+    );
     notifyListeners();
   }
 
@@ -162,12 +184,15 @@ class FoodViewModel with ChangeNotifier {
 
   // 获取热门菜品
   Future getHotFoodList() async {
-    ShoppingUtils.getHotFoodList(success: (data) {
-      hotFoodList = data['rows']
-          .map((i) => FoodModel.fromJson(i))
-          .toList()
-          .cast<FoodModel>();
-      notifyListeners();
-    });
+    ShoppingUtils.getHotFoodList(
+      success: (data) {
+        hotFoodList =
+            data['rows']
+                .map((i) => FoodModel.fromJson(i))
+                .toList()
+                .cast<FoodModel>();
+        notifyListeners();
+      },
+    );
   }
 }

@@ -25,13 +25,16 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   }
 
   Future<void> getNoticeDetail() async {
-    DataUtils.getDetailById('/system/notice/' + widget.noticeId,
-        success: (data) {
-      noticeModel = NoticeModel.fromJson(data['data']);
-      setState(() {});
-    }, fail: (error, message) {
-      ProgressHUD.showError(message);
-    });
+    DataUtils.getDetailById(
+      '/system/notice/' + widget.noticeId,
+      success: (data) {
+        noticeModel = NoticeModel.fromJson(data['data']);
+        setState(() {});
+      },
+      fail: (error, message) {
+        ProgressHUD.showError(message);
+      },
+    );
   }
 
   @override
@@ -44,50 +47,39 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           textAlign: TextAlign.left,
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(15.px),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              noticeModel?.noticeTitle ?? '',
-              style: TextStyle(fontSize: 16.px, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 10.px,
-            ),
-            Row(
-              children: [
-                Text(
-                  noticeModel?.createDept ?? '',
-                  style: TextStyle(color: primaryColor, fontSize: 12.px),
-                ),
-                SizedBox(
-                  width: 10.px,
-                ),
-                Text(
-                  noticeModel?.createTime ?? '',
-                  style: TextStyle(color: Colors.grey, fontSize: 12.px),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10.px,
-            ),
-            Image.asset(
-              'assets/images/bg_video.gif',
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(
-              height: 10.px,
-            ),
-            Container(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(15.px),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                noticeModel?.noticeTitle ?? '',
+                style: TextStyle(fontSize: 16.px, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10.px),
+              Row(
+                children: [
+                  Text(
+                    noticeModel?.createDept ?? '',
+                    style: TextStyle(color: primaryColor, fontSize: 12.px),
+                  ),
+                  SizedBox(width: 10.px),
+                  Text(
+                    noticeModel?.createTime ?? '',
+                    style: TextStyle(color: Colors.grey, fontSize: 12.px),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.px),
+              Container(
                 child: Html(
-              data: noticeModel?.noticeContent ?? '',
-              style: {'body': Style(fontSize: FontSize(12.px))},
-            ))
-          ],
+                  data: noticeModel?.noticeContent ?? '',
+                  style: {'body': Style(fontSize: FontSize(12.px))},
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

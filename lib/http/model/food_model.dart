@@ -5,6 +5,7 @@ class FoodModel {
   double price;
   int stock;
   int num; // 购物车中的数量
+  int count; // 点赞数量
 
   FoodModel({
     this.id,
@@ -13,6 +14,7 @@ class FoodModel {
     required this.price,
     required this.stock,
     required this.num,
+    required this.count,
   });
 
   factory FoodModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class FoodModel {
       price: (json['price'] ?? 0.0).toDouble(),
       stock: json['stock'] ?? 0,
       num: json['num'] ?? 0,
+      count: json['count'] ?? 0,
     );
   }
 
@@ -34,6 +37,7 @@ class FoodModel {
       'price': price,
       'stock': stock,
       'num': num,
+      'count': count,
     };
   }
 }

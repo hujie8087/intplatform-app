@@ -52,13 +52,15 @@ class _OrderListPageState extends State<OrderListPage> {
     DataUtils.getDictDataList(
       'order_type_status',
       success: (data) {
-        BaseListModel<DictModel> response =
-            BaseListModel.fromJson(data, (json) => DictModel.fromJson(json));
+        BaseListModel<DictModel> response = BaseListModel.fromJson(
+          data,
+          (json) => DictModel.fromJson(json),
+        );
 
         setState(() {
           statusList = [
             DictModel(dictLabel: S.of(context).all, dictValue: ''),
-            ...response.data ?? []
+            ...response.data ?? [],
           ];
           _getOrders();
         });
@@ -67,32 +69,34 @@ class _OrderListPageState extends State<OrderListPage> {
   }
 
   Future<void> _getOrders() async {
-    var params = {
-      'pageNum': pageNum,
-      'pageSize': pageSize,
-      'status': status,
-    };
-    DataUtils.getPageList(APIs.getOrderList, params, success: (data) {
-      setState(() {
-        List<OrderModel> newOrders = (data['rows'] as List)
-            .map((order) => OrderModel.fromJson(order))
-            .toList();
-        if (pageNum == 1) {
-          orders = newOrders;
-        } else {
-          orders.addAll(newOrders);
-        }
-        hasMore = orders.length < data['total'];
-        _refreshController.refreshCompleted();
-        _refreshController.loadComplete();
-        isLoading = false;
-      });
-    }, fail: (code, msg) {
-      setState(() {});
-      _refreshController.refreshFailed();
-      // 处理错误
-      print('Error fetching orders: $msg');
-    });
+    var params = {'pageNum': pageNum, 'pageSize': pageSize, 'status': status};
+    DataUtils.getPageList(
+      APIs.getOrderList,
+      params,
+      success: (data) {
+        setState(() {
+          List<OrderModel> newOrders =
+              (data['rows'] as List)
+                  .map((order) => OrderModel.fromJson(order))
+                  .toList();
+          if (pageNum == 1) {
+            orders = newOrders;
+          } else {
+            orders.addAll(newOrders);
+          }
+          hasMore = orders.length < data['total'];
+          _refreshController.refreshCompleted();
+          _refreshController.loadComplete();
+          isLoading = false;
+        });
+      },
+      fail: (code, msg) {
+        setState(() {});
+        _refreshController.refreshFailed();
+        // 处理错误
+        print('Error fetching orders: $msg');
+      },
+    );
   }
 
   @override
@@ -112,7 +116,9 @@ class _OrderListPageState extends State<OrderListPage> {
                     hintText: S.of(context).searchMyOrder,
                     isDense: true, // 使整个输入框更加紧凑
                     contentPadding: EdgeInsets.symmetric(
-                        vertical: 6.px, horizontal: 10.px), // 减小内边距
+                      vertical: 6.px,
+                      horizontal: 10.px,
+                    ), // 减小内边距
                     filled: true,
                     fillColor: Colors.grey[200],
                     prefixIcon: Icon(
@@ -122,8 +128,9 @@ class _OrderListPageState extends State<OrderListPage> {
                     ),
                     border: OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius:
-                          BorderRadius.all(Radius.circular(16.px)), // 减小圆角半径
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(16.px),
+                      ), // 减小圆角半径
                     ),
                   ),
                   style: TextStyle(fontSize: 12.px), // 减小字体大小
@@ -143,14 +150,19 @@ class _OrderListPageState extends State<OrderListPage> {
             icon: Icon(Icons.filter_list),
             // 焦点设置
             initialValue: status,
-            itemBuilder: (context) => statusList
-                .map((e) => PopupMenuItem<String>(
-                    child: Text(
-                      e.dictLabel ?? '',
-                      style: TextStyle(fontSize: 12.px),
-                    ),
-                    value: e.dictValue))
-                .toList(),
+            itemBuilder:
+                (context) =>
+                    statusList
+                        .map(
+                          (e) => PopupMenuItem<String>(
+                            child: Text(
+                              e.dictLabel ?? '',
+                              style: TextStyle(fontSize: 12.px),
+                            ),
+                            value: e.dictValue,
+                          ),
+                        )
+                        .toList(),
             onSelected: (value) {
               pageNum = 1;
               status = value;
@@ -159,35 +171,36 @@ class _OrderListPageState extends State<OrderListPage> {
           ),
         ],
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : orders.isEmpty
+      body:
+          isLoading
+              ? Center(child: CircularProgressIndicator())
+              : orders.isEmpty
               ? EmptyView()
               : SmartRefreshWidget(
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  onRefresh: () {
-                    pageNum = 1;
+                enablePullDown: true,
+                enablePullUp: true,
+                onRefresh: () {
+                  pageNum = 1;
+                  _getOrders();
+                },
+                controller: _refreshController,
+                onLoading: () {
+                  if (hasMore) {
+                    pageNum++;
                     _getOrders();
+                  } else {
+                    _refreshController.loadNoData();
+                  }
+                },
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: orders.length,
+                  itemBuilder: (context, index) {
+                    final order = orders[index];
+                    return _buildOrderItem(order);
                   },
-                  controller: _refreshController,
-                  onLoading: () {
-                    if (hasMore) {
-                      pageNum++;
-                      _getOrders();
-                    } else {
-                      _refreshController.loadNoData();
-                    }
-                  },
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    itemCount: orders.length,
-                    itemBuilder: (context, index) {
-                      final order = orders[index];
-                      return _buildOrderItem(order);
-                    },
-                  ),
                 ),
+              ),
     );
   }
 
@@ -197,9 +210,7 @@ class _OrderListPageState extends State<OrderListPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OrderDetailPage(
-              orderId: order.id.toString(),
-            ),
+            builder: (context) => OrderDetailPage(orderId: order.no.toString()),
           ),
         );
       },
@@ -223,7 +234,9 @@ class _OrderListPageState extends State<OrderListPage> {
                         Text(
                           order.canteenName ?? '',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 14.px),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.px,
+                          ),
                         ),
                         Icon(Icons.chevron_right),
                       ],
@@ -232,44 +245,50 @@ class _OrderListPageState extends State<OrderListPage> {
                   Text(
                     statusList
                             .firstWhere(
-                                (e) => e.dictValue == order.status.toString())
+                              (e) => e.dictValue == order.status.toString(),
+                            )
                             .dictLabel ??
                         '',
                     style: TextStyle(
-                        color: order.status == 4 || order.status == 2
-                            ? secondaryColor
-                            : Colors.grey,
-                        fontSize: 14.px),
+                      color:
+                          order.status == 4 || order.status == 2
+                              ? secondaryColor
+                              : Colors.grey,
+                      fontSize: 14.px,
+                    ),
                   ),
                 ],
               ),
               SizedBox(height: 8.px),
               Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 5.px,
-                ),
+                padding: EdgeInsets.symmetric(vertical: 5.px),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     OrderDetail(order: order),
                     Column(
                       children: [
-                        Text(order.totalPrice.toString(),
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16.px,
-                                fontWeight: FontWeight.bold)),
+                        Text(
+                          order.totalPrice.toString(),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16.px,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         if (order.orderDetailsList != null)
                           Text(
                             '${S.of(context).total} ${order.orderDetailsList!.fold<int>(0, (sum, detail) {
                               final num = detail.num;
                               return sum + (num ?? 0);
                             })} ${S.of(context).items}',
-                            style:
-                                TextStyle(color: Colors.grey, fontSize: 10.px),
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 10.px,
+                            ),
                           ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -284,7 +303,9 @@ class _OrderListPageState extends State<OrderListPage> {
                         minimumSize: Size.zero,
                         side: BorderSide(color: primaryColor),
                         padding: EdgeInsets.symmetric(
-                            vertical: 5.px, horizontal: 8.px),
+                          vertical: 5.px,
+                          horizontal: 8.px,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.px),
                         ),
@@ -296,9 +317,10 @@ class _OrderListPageState extends State<OrderListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => DeliveryOrderDetailPage(
-                              orderNo: order.no.toString(),
-                            ),
+                            builder:
+                                (context) => DeliveryOrderDetailPage(
+                                  orderNo: order.no.toString(),
+                                ),
                           ),
                         );
                       },
@@ -364,7 +386,7 @@ class _OrderListPageState extends State<OrderListPage> {
                   //   ),
                   // ),
                 ],
-              )
+              ),
             ],
           ),
         ),

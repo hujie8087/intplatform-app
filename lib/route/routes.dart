@@ -1,9 +1,9 @@
-import 'package:logistics_app/http/model/guide_type_view_model.dart';
 import 'package:logistics_app/pages/accommodation_page/apply_list_page.dart';
 import 'package:logistics_app/pages/accommodation_page/process_list_page.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/delivery/online/delivery_online_list_page.dart';
 import 'package:logistics_app/pages/delivery/order/delivery_order_list_page.dart';
+import 'package:logistics_app/pages/delivery/store/shop_workbench_page.dart';
 import 'package:logistics_app/pages/film_page/film_download_page.dart';
 import 'package:logistics_app/pages/film_page/film_screen_page.dart';
 import 'package:logistics_app/pages/film_page/film_view_page.dart';
@@ -31,8 +31,10 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/pages/shopping/card_bill_page.dart';
 import 'package:logistics_app/pages/shopping/card_info_page.dart';
 import 'package:logistics_app/pages/shopping/food_feedback/food_feedback_page.dart';
+import 'package:logistics_app/pages/shopping/food_recommend_page.dart';
 import 'package:logistics_app/pages/shopping/food_suggestion/food_suggestion_page.dart';
 import 'package:logistics_app/pages/shopping/order/order_list_page.dart';
+import 'package:logistics_app/pages/shopping/payment/face_collection_page.dart';
 import 'package:logistics_app/pages/shopping/payment/modify_payment_password_page.dart';
 import 'package:logistics_app/pages/shopping/payment/payment_qrcode_page.dart';
 import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
@@ -73,21 +75,21 @@ class Routes {
       RoutePath.PaymentQRCodePage: (context) => PaymentQRCodePage(),
       RoutePath.CardInfoPage: (context) => CardInfoPage(),
       RoutePath.CardBillPage: (context) => CardBillPage(),
-      RoutePath.ModifyPaymentPasswordPage: (context) =>
-          ModifyPaymentPasswordPage(),
+      RoutePath.ModifyPaymentPasswordPage:
+          (context) => ModifyPaymentPasswordPage(),
       RoutePath.DeliveryOrderListPage: (context) => DeliveryOrderListPage(),
       RoutePath.DeliveryOnlineListPage: (context) => DeliveryOnlineListPage(),
       RoutePath.MyAddressPage: (context) => MyAddressPage(),
       RoutePath.FoodFeedbackPage: (context) => FoodFeedbackPage(),
+      RoutePath.ShopWorkbenchPage: (context) => ShopWorkbenchPage(),
+      RoutePath.FaceCollectionPage: (context) => FaceCollectionPage(),
+      RoutePath.FoodRecommendPage: (context) => FoodRecommendPage(),
     };
 
     final builder = routeBuilders[settings.name];
 
     if (builder != null) {
-      return MaterialPageRoute(
-        builder: builder,
-        settings: settings,
-      );
+      return MaterialPageRoute(builder: builder, settings: settings);
     } else {
       return MaterialPageRoute(
         builder: (context) => LoginPage(),
@@ -182,9 +184,15 @@ class RoutePath {
   // 修改支付密码
   static const String ModifyPaymentPasswordPage =
       'modify_payment_password_page';
+  // 人脸采集
+  static const String FaceCollectionPage = 'face_collection_page';
 
   // 配送订单查询
   static const String DeliveryOrderListPage = 'delivery_order_list_page';
   // 配送在线接单
   static const String DeliveryOnlineListPage = 'delivery_online_list_page';
+  // 商铺工作台
+  static const String ShopWorkbenchPage = 'shop_workbench_page';
+  // 美食推荐
+  static const String FoodRecommendPage = 'food_recommend_page';
 }

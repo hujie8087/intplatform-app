@@ -36,14 +36,15 @@ class MenuItemModel {
   final GestureTapCallback? onTap;
   final int? badgeContent;
 
-  const MenuItemModel(
-      {this.cname,
-      this.yname,
-      this.uname,
-      this.icon,
-      this.showBadge = false,
-      this.onTap,
-      this.badgeContent});
+  const MenuItemModel({
+    this.cname,
+    this.yname,
+    this.uname,
+    this.icon,
+    this.showBadge = false,
+    this.onTap,
+    this.badgeContent,
+  });
   factory MenuItemModel.fromJson(Map<String, dynamic> json) {
     return MenuItemModel(
       cname: json['cname'],
@@ -74,16 +75,22 @@ class AppMenuListModel {
   final String? uname;
   final List<MenuItemModel>? menuItemList;
   final IconData? icon;
-  const AppMenuListModel(
-      {this.cname, this.yname, this.uname, this.menuItemList, this.icon});
+  const AppMenuListModel({
+    this.cname,
+    this.yname,
+    this.uname,
+    this.menuItemList,
+    this.icon,
+  });
   factory AppMenuListModel.fromJson(Map<String, dynamic> json) {
     return AppMenuListModel(
       cname: json['cname'],
       yname: json['yname'],
       uname: json['uname'],
-      menuItemList: json['menuItemList']
-          ?.map((item) => MenuItemModel.fromJson(item))
-          .toList(),
+      menuItemList:
+          json['menuItemList']
+              ?.map((item) => MenuItemModel.fromJson(item))
+              .toList(),
       icon: json['icon'],
     );
   }
@@ -114,41 +121,13 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   UserInfoModel? userInfoData;
   String token = '';
   List<Map<String, dynamic>> publicIconMap = [
-    {
-      'id': 1,
-      'title': '缝纫店',
-      'icon': Icons.local_laundry_service,
-    },
-    {
-      'id': 2,
-      'title': '超市',
-      'icon': Icons.shopping_bag,
-    },
-    {
-      'id': 3,
-      'title': '配钥匙',
-      'icon': Icons.key,
-    },
-    {
-      'id': 4,
-      'title': '理发店',
-      'icon': Icons.content_cut,
-    },
-    {
-      'id': 5,
-      'title': '消费卡',
-      'icon': Icons.credit_card,
-    },
-    {
-      'id': 6,
-      'title': '健身房',
-      'icon': Icons.fitness_center,
-    },
-    {
-      'id': 7,
-      'title': '体育馆',
-      'icon': Icons.sports_soccer,
-    },
+    {'id': 1, 'title': '缝纫店', 'icon': Icons.local_laundry_service},
+    {'id': 2, 'title': '超市', 'icon': Icons.shopping_bag},
+    {'id': 3, 'title': '配钥匙', 'icon': Icons.key},
+    {'id': 4, 'title': '理发店', 'icon': Icons.content_cut},
+    {'id': 5, 'title': '消费卡', 'icon': Icons.credit_card},
+    {'id': 6, 'title': '健身房', 'icon': Icons.fitness_center},
+    {'id': 7, 'title': '体育馆', 'icon': Icons.sports_soccer},
   ];
   // 获取当前语言版本
 
@@ -159,10 +138,13 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     RepairUtils.getRepairUnfinishedCount(
       success: (data) {
         setState(() {
-          repairUnfinishedCount = data['data']['waitRepairCount'] +
+          repairUnfinishedCount =
+              data['data']['waitRepairCount'] +
               data['data']['againRepairCount'];
           SpUtils.saveInt(
-              Constants.SP_REPAIR_UNFINISHED_COUNT, repairUnfinishedCount);
+            Constants.SP_REPAIR_UNFINISHED_COUNT,
+            repairUnfinishedCount,
+          );
         });
         if (appMenuList.isEmpty) {
           getAppMenu();
@@ -212,8 +194,10 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   Future<void> getAppMenu() async {
     ToolUtils.getAppMenu<AppMenuModel>(
       success: (data) {
-        BaseListModel<AppMenuModel> response =
-            BaseListModel.fromJson(data, (json) => AppMenuModel.fromJson(json));
+        BaseListModel<AppMenuModel> response = BaseListModel.fromJson(
+          data,
+          (json) => AppMenuModel.fromJson(json),
+        );
         appMenuListFilter = response.data ?? [];
         setState(() {
           filterAppMenu();
@@ -227,113 +211,128 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     token = await SpUtils.getString(Constants.SP_TOKEN) ?? '';
     // 未登录，过滤需要登录的菜单
     if (token == '' || token.isEmpty) {
-      appMenuListFilter = appMenuListFilter
-          .map(
-            (menu) {
-              return AppMenuModel(
-                remark: menu.remark,
-                id: menu.id,
-                cname: menu.cname,
-                yname: menu.yname,
-                uname: menu.uname,
-                sort: menu.sort,
-                status: menu.status,
-                icon: menu.icon,
-                permissions: menu.permissions,
-                isLogin: menu.isLogin,
-                iconArticles: menu.iconArticles?.where((article) {
-                  if (article.status == 1 || article.isLogin == 1) {
-                    return false;
-                  }
-                  return true;
-                }) // 过滤 `iconArticles`
-                    .toList(),
-              );
-            },
-          )
-          .where((menu) => menu.isLogin == 0)
-          .toList();
+      appMenuListFilter =
+          appMenuListFilter
+              .map((menu) {
+                return AppMenuModel(
+                  remark: menu.remark,
+                  id: menu.id,
+                  cname: menu.cname,
+                  yname: menu.yname,
+                  uname: menu.uname,
+                  sort: menu.sort,
+                  status: menu.status,
+                  icon: menu.icon,
+                  permissions: menu.permissions,
+                  isLogin: menu.isLogin,
+                  iconArticles:
+                      menu.iconArticles?.where((article) {
+                        if (article.status == 1 || article.isLogin == 1) {
+                          return false;
+                        }
+                        return true;
+                      }) // 过滤 `iconArticles`
+                      .toList(),
+                );
+              })
+              .where((menu) => menu.isLogin == 0)
+              .toList();
     } else {
       // 已登录，过滤需要权限的菜单
-      appMenuListFilter = appMenuListFilter.map(
-        (menu) {
-          return AppMenuModel(
-            remark: menu.remark,
-            id: menu.id,
-            cname: menu.cname,
-            yname: menu.yname,
-            uname: menu.uname,
-            sort: menu.sort,
-            status: menu.status,
-            icon: menu.icon,
-            permissions: menu.permissions,
-            isLogin: menu.isLogin,
-            iconArticles: menu.iconArticles?.where((article) {
-              if (article.status == 1) {
-                return false;
-              } else if (article.permissions != null) {
-                return permission!.contains(article.permissions);
-              }
-              return true;
-            }) // 过滤 `iconArticles`
-                .toList(),
-          );
-        },
-      ).toList();
-    }
-    appMenuList = appMenuListFilter
-        .map((e) => AppMenuListModel(
-              cname: e.cname,
-              yname: e.yname,
-              uname: e.uname,
-              icon: iconMap[e.icon] as IconData,
-              menuItemList: e.iconArticles
-                  ?.map((article) => MenuItemModel(
-                        cname: article.cname,
-                        yname: article.yname,
-                        uname: article.uname,
-                        icon: iconMap[article.icon] as IconData,
-                        showBadge: article.isMic == 1,
-                        badgeContent:
-                            setBadgeContent(article.permissions ?? ''),
-                        onTap: () {
-                          switch (article.router) {
-                            case 'apply_url':
-                              _getApplyUrl();
-                              break;
-                            case 'refresh_address_data':
-                              refreshAddressData();
-                              break;
-                            case 'guide_type_page':
-                              RouteUtils.push(
-                                  context,
-                                  GuideTypePage(
-                                      id: int.parse(article.remark!)));
-                              break;
-                            case 'guide_list_page':
-                              RouteUtils.push(
-                                  context,
-                                  GuideListPage(
-                                      guideTypeId: int.parse(article.remark!)));
-                              break;
-                            default:
-                              RouteUtils.pushNamed(context, article.router!);
-                          }
-                        },
-                      ))
+      appMenuListFilter =
+          appMenuListFilter.map((menu) {
+            return AppMenuModel(
+              remark: menu.remark,
+              id: menu.id,
+              cname: menu.cname,
+              yname: menu.yname,
+              uname: menu.uname,
+              sort: menu.sort,
+              status: menu.status,
+              icon: menu.icon,
+              permissions: menu.permissions,
+              isLogin: menu.isLogin,
+              iconArticles:
+                  menu.iconArticles?.where((article) {
+                    if (article.status == 1) {
+                      return false;
+                    } else if (article.permissions != null) {
+                      return permission!.contains(article.permissions);
+                    }
+                    return true;
+                  }) // 过滤 `iconArticles`
                   .toList(),
-            ))
-        .where((menu) => menu.menuItemList!.length > 0)
-        .toList();
+            );
+          }).toList();
+    }
+    appMenuList =
+        appMenuListFilter
+            .map(
+              (e) => AppMenuListModel(
+                cname: e.cname,
+                yname: e.yname,
+                uname: e.uname,
+                icon: iconMap[e.icon] as IconData,
+                menuItemList:
+                    e.iconArticles
+                        ?.map(
+                          (article) => MenuItemModel(
+                            cname: article.cname,
+                            yname: article.yname,
+                            uname: article.uname,
+                            icon: iconMap[article.icon] as IconData,
+                            showBadge: article.isMic == 1,
+                            badgeContent: setBadgeContent(
+                              article.permissions ?? '',
+                            ),
+                            onTap: () {
+                              switch (article.router) {
+                                case 'apply_url':
+                                  _getApplyUrl();
+                                  break;
+                                case 'refresh_address_data':
+                                  refreshAddressData();
+                                  break;
+                                case 'guide_type_page':
+                                  RouteUtils.push(
+                                    context,
+                                    GuideTypePage(
+                                      id: int.parse(article.remark!),
+                                    ),
+                                  );
+                                  break;
+                                case 'guide_list_page':
+                                  RouteUtils.push(
+                                    context,
+                                    GuideListPage(
+                                      guideTypeId: int.parse(article.remark!),
+                                    ),
+                                  );
+                                  break;
+                                default:
+                                  RouteUtils.pushNamed(
+                                    context,
+                                    article.router!,
+                                  );
+                              }
+                            },
+                          ),
+                        )
+                        .toList(),
+              ),
+            )
+            .where((menu) => menu.menuItemList!.length > 0)
+            .toList();
   }
 
   Future<void> _fetchData() async {
     languageCode = await SpUtils.getString('locale') ?? 'zh';
     final userInfoDataModel = await SpUtils.getModel('userInfo');
     token = await SpUtils.getString(Constants.SP_TOKEN) ?? '';
-    userInfoData = userInfoDataModel != null
-        ? UserInfoModel.fromJson(userInfoDataModel)
-        : null;
+    userInfoData =
+        userInfoDataModel != null
+            ? UserInfoModel.fromJson(userInfoDataModel)
+            : null;
     if (userInfoData != null && token != '') {
       permission = userInfoData?.permissions;
       if (permission != null &&
@@ -358,7 +357,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     getAddressData();
   }
 
-// 获取区域楼栋数据
+  // 获取区域楼栋数据
   void getAddressData() async {
     int? buildingVersion = await SpUtils.getInt('buildingVersion');
     int newBuildingVersion = 0;
@@ -385,32 +384,30 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   void _getApplyUrl() async {
     ProgressHUD.showLoadingText('数据加载中...');
     DataUtils.getApplyList(
-      {
-        'status': '2',
-        'type': '1',
-        'pageNum': 1,
-        'pageSize': 100,
-      },
+      {'status': '2', 'type': '1', 'pageNum': 1, 'pageSize': 100},
       success: (data) {
-        RowsModel<ApplyViewModel> response =
-            RowsModel.fromJson(data, (json) => ApplyViewModel.fromJson(json));
+        RowsModel<ApplyViewModel> response = RowsModel.fromJson(
+          data,
+          (json) => ApplyViewModel.fromJson(json),
+        );
         List<ApplyViewModel> applyList = response.rows ?? [];
         if (applyList.isNotEmpty) {
           DataUtils.getApplyUrl(
-            {
-              'id': applyList[0].formId,
-            },
+            {'id': applyList[0].formId},
             success: (data) {
               ProgressHUD.hide();
               String applyUrl = data['data']['url'];
               if (applyUrl.isNotEmpty) {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ApplyDetailPage(
-                              url: applyUrl,
-                              title: S.of(context).myProcess,
-                            )));
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => ApplyDetailPage(
+                          url: applyUrl,
+                          title: S.of(context).myProcess,
+                        ),
+                  ),
+                );
               }
               setState(() {});
             },
@@ -480,60 +477,65 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
           children: <Widget>[
             Container(
               padding: EdgeInsets.only(
-                  top: 8.px, bottom: 20.px, left: 8.px, right: 8.px),
+                top: 8.px,
+                bottom: 20.px,
+                left: 8.px,
+                right: 8.px,
+              ),
               child: SingleChildScrollView(
                 child: Column(
                   children: List.generate(
                     appMenuList.length,
                     (index) => Container(
-                        padding: EdgeInsets.all(8.px),
-                        margin: EdgeInsets.only(
-                            bottom:
-                                index == appMenuList.length - 1 ? 25.px : 8.px),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8.px)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  appMenuList[index].icon as IconData,
-                                  color: primaryColor,
-                                  size: 18.px,
+                      padding: EdgeInsets.all(8.px),
+                      margin: EdgeInsets.only(
+                        bottom: index == appMenuList.length - 1 ? 25.px : 8.px,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.px),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                appMenuList[index].icon as IconData,
+                                color: primaryColor,
+                                size: 18.px,
+                              ),
+                              SizedBox(width: 4.px),
+                              Text(
+                                languageCode == 'zh'
+                                    ? appMenuList[index].cname ?? ''
+                                    : languageCode == 'en'
+                                    ? appMenuList[index].uname ?? ''
+                                    : appMenuList[index].yname ?? '',
+                                style: TextStyle(
+                                  fontSize: 14.px,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                SizedBox(
-                                  width: 4.px,
-                                ),
-                                Text(
-                                  languageCode == 'zh'
-                                      ? appMenuList[index].cname ?? ''
-                                      : languageCode == 'en'
-                                          ? appMenuList[index].uname ?? ''
-                                          : appMenuList[index].yname ?? '',
-                                  style: TextStyle(
-                                      fontSize: 14.px,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 8.px,
-                            ),
-                            OptionGridView(
-                              itemCount:
-                                  appMenuList[index].menuItemList?.length ?? 0,
-                              rowCount: 5,
-                              mainAxisSpacing: 8.px,
-                              crossAxisSpacing: 8.px,
-                              itemBuilder: (context, idx) {
-                                return _FunctionAreaItem(
-                                    appMenuList[index].menuItemList![idx], idx);
-                              },
-                            ),
-                          ],
-                        )),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8.px),
+                          OptionGridView(
+                            itemCount:
+                                appMenuList[index].menuItemList?.length ?? 0,
+                            rowCount: 5,
+                            mainAxisSpacing: 8.px,
+                            crossAxisSpacing: 8.px,
+                            itemBuilder: (context, idx) {
+                              return _FunctionAreaItem(
+                                appMenuList[index].menuItemList![idx],
+                                idx,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -551,21 +553,24 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
         child: Column(
           children: [
             badges.Badge(
-              badgeContent: meneItem.badgeContent != null
-                  ? Text(
-                      meneItem.badgeContent.toString(),
-                      style: TextStyle(color: Colors.white, fontSize: 10.px),
-                    )
-                  : null,
+              badgeContent:
+                  meneItem.badgeContent != null
+                      ? Text(
+                        meneItem.badgeContent.toString(),
+                        style: TextStyle(color: Colors.white, fontSize: 10.px),
+                      )
+                      : null,
               showBadge: meneItem.showBadge && meneItem.badgeContent != 0,
               child: Container(
                 width: 36.px,
                 height: 36.px,
                 decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: index % 2 == 0
-                        ? primaryColor.withOpacity(0.1)
-                        : secondaryColor.withOpacity(0.1)),
+                  shape: BoxShape.circle,
+                  color:
+                      index % 2 == 0
+                          ? primaryColor.withOpacity(0.1)
+                          : secondaryColor.withOpacity(0.1),
+                ),
                 child: Icon(
                   meneItem.icon,
                   color: index % 2 == 0 ? primaryColor : secondaryColor,
@@ -573,15 +578,13 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
                 ),
               ),
             ),
-            SizedBox(
-              height: 4.px,
-            ),
+            SizedBox(height: 4.px),
             Text(
               languageCode == 'zh'
                   ? meneItem.cname ?? ''
                   : languageCode == 'en'
-                      ? meneItem.yname ?? ''
-                      : meneItem.uname ?? '',
+                  ? meneItem.yname ?? ''
+                  : meneItem.uname ?? '',
               maxLines: 2,
               style: TextStyle(fontSize: 12.px),
               textAlign: TextAlign.center,

@@ -14,35 +14,30 @@ import 'package:logistics_app/http/model/delivery_order_model.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
-import 'package:logistics_app/pages/delivery/order/delivery_order_detail_page.dart';
-import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
+import 'package:logistics_app/pages/shopping/order/order_detail_page.dart';
 import 'package:logistics_app/pages/shopping/payment/qr_scanner_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/date_utils.dart';
-import 'package:logistics_app/utils/hj_bottom_sheet.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
-import 'location_service_model.dart';
-
-class DeliveryOnlineListPage extends StatefulWidget {
-  const DeliveryOnlineListPage({Key? key}) : super(key: key);
+class ShopWorkbenchPage extends StatefulWidget {
+  const ShopWorkbenchPage({Key? key}) : super(key: key);
 
   @override
-  State<DeliveryOnlineListPage> createState() => _DeliveryOnlineListPageState();
+  State<ShopWorkbenchPage> createState() => _ShopWorkbenchPageState();
 }
 
-class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
-  LocationServiceModel? locationService;
+class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
   // 订单列表数据
   List<DeliveryOrderModel> _orders = [];
   bool _isLoading = false;
   List<DictModel> statusList = [];
   int currentIndex = 0;
-  int status = 0;
+  int status = 99;
   // 选择的图片
   List<AssetEntity> selectedAssets = [];
   String fileUrl = '';
@@ -56,11 +51,12 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
   static const platform = MethodChannel('com.iwip.intplatform');
   // 状态选项
   final List<SwitchType> statusOptions = [
+    SwitchType(S.current.toBePacked, 99),
     SwitchType(S.current.toBeDelivered, 0),
     SwitchType(S.current.delivering, 1),
     SwitchType(S.current.delivered, 2),
-    SwitchType(S.current.exception, 5),
   ];
+
   // 时间选择选项，默认是今天
   int _selectedDate = 0;
   // 时间选择选项，今天，一周，一个月，三个月，一年
@@ -91,8 +87,8 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
       'endTime': DateTime.now().endOfYear,
     },
   ];
-  String _orderName = '';
-  String _orderNo = '';
+  String? _orderName = null;
+  String? _orderNo = null;
 
   @override
   void initState() {
@@ -104,7 +100,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
         print(call.method);
         if (call.method == "onScanResult") {
           setState(() {
-            _acceptOrder(call.arguments);
+            _fetchOrderDetail(call.arguments);
           });
         }
       });
@@ -118,21 +114,18 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
   }
 
   // 获取订单详情
-  Future<void> getOrderDetail(String sourceNo) async {
+  // 获取订单详情
+  Future<void> _fetchOrderDetail(String sourceNo) async {
     DataUtils.getDeliveryOrderDetail(
       {'orderNo': sourceNo},
       success: (data) {
         DeliveryOrderDetailModel _orderDetail =
             DeliveryOrderDetailModel.fromJson(data['data']);
         setState(() {
-          if (_orderDetail.orderDelivery?.deliveryStatus == 0) {
-            _acceptOrder(sourceNo);
-          } else if (_orderDetail.orderDelivery?.deliveryStatus == 1) {
-            _uploadImage(
-              id: _orderDetail.orderDelivery?.id,
-              deliveryAddress: _orderDetail.orderDelivery?.deliveryAddress,
-              nick: _orderDetail.orderDelivery?.nick,
-            );
+          if (_orderDetail.orderDelivery?.deliveryStatus == 99) {
+            _packOrder(_orderDetail.orderDelivery?.sourceNo ?? '');
+          } else {
+            ProgressHUD.showError(S.current.orderCompleted);
           }
         });
       },
@@ -185,24 +178,25 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
           }
           _refreshController.refreshCompleted();
           _isLoading = false;
-          if (_orders.isNotEmpty) {
-            locationService = LocationServiceModel(
-              deliveryNo: _orders[0].deliveryNo ?? '',
-            );
-          }
+        });
+      },
+      fail: (code, msg) {
+        ProgressHUD.showError(msg);
+        setState(() {
+          _isLoading = false;
         });
       },
     );
   }
 
-  // 接单处理
-  Future<void> _acceptOrder(String sourceNo) async {
+  // 打包处理
+  Future<void> _packOrder(String id) async {
     try {
       // TODO: 调用接单API
-      DataUtils.acceptOrder(
-        {'sourceNo': sourceNo},
+      DataUtils.packOrder(
+        id,
         success: (data) {
-          ProgressHUD.showSuccess(S.current.acceptOrderSuccess);
+          ProgressHUD.showSuccess(S.current.packOrderSuccess);
           _loadOrders(true); // 重新加载订单列表
         },
       );
@@ -252,79 +246,11 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
 
       if (result != null) {
         // 处理扫码结果
-        getOrderDetail(result);
+        _fetchOrderDetail(result);
       }
     }
   }
 
-  // 处理定位事件
-  void _handleLocationEvent() {
-    if (isTracking) {
-      // if (_orders.isNotEmpty) {
-      //   ProgressHUD.showError('请先完成所有订单或取消订单');
-      //   return;
-      // }
-      locationService?.stopTracking();
-      SpUtils.saveBool('isTracking', false);
-      isTracking = false;
-    } else {
-      if (_orders.isEmpty) {
-        ProgressHUD.showError(S.current.pleaseAcceptOrder);
-        return;
-      }
-      locationService?.startTracking();
-      SpUtils.saveBool('isTracking', true);
-      isTracking = true;
-    }
-    setState(() {});
-  }
-
-  // 上传图片
-  Future<void> _uploadImage({id, deliveryAddress, nick}) async {
-    final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
-    if (result != null) {
-      final fileUrl = await uploadImages(result);
-      if (fileUrl.isNotEmpty) {
-        final parameters = {'id': id.toString(), 'msg': fileUrl[0]};
-        DataUtils.deliverOrder(
-          parameters,
-          success: (data) {
-            ProgressHUD.showSuccess(S.current.deliverSuccess);
-            DataUtils.getUserInfoByUsername(
-              nick,
-              success: (data) {
-                if (data['msg'] != null) {
-                  DataUtils.sendOneMessage(
-                    {
-                      'title': S.current.deliverSuccessTips,
-                      'body': deliveryAddress,
-                      'type': "1",
-                      'payload': '',
-                      'userName': nick,
-                      'equipmentToken': data['msg'],
-                    },
-                    success: (data) {
-                      // ProgressHUD.showSuccess('提交成功');
-                      Navigator.pop(context, true);
-                    },
-                    fail: (code, msg) {
-                      ProgressHUD.showError(msg);
-                    },
-                  );
-                }
-              },
-            );
-            _loadOrders(true);
-          },
-          fail: (code, msg) {
-            ProgressHUD.showError(S.current.deliverFailed);
-          },
-        );
-      }
-    }
-  }
-
-  // 筛选
   Future<void> _filter() {
     return showGeneralDialog(
       context: context,
@@ -376,7 +302,6 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                                   int index = entry.key;
                                   Map<String, String> option = entry.value;
                                   bool isSelected = _tempSelectedDate == index;
-
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 4,
@@ -560,10 +485,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          S.current.onlineDelivery,
-          style: TextStyle(fontSize: 16.px),
-        ),
+        title: Text(S.current.shopWorkbench, style: TextStyle(fontSize: 16.px)),
         actions: [
           // 筛选,带图标和文字
           IconButton(
@@ -577,27 +499,6 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
           ),
         ],
       ),
-      // 浮动按钮，根据配送状态显示
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: isTracking ? secondaryColor : primaryColor,
-        onPressed: () => _handleLocationEvent(),
-        icon: Icon(
-          isTracking ? Icons.location_on : Icons.location_off,
-          color: Colors.white,
-        ),
-        label: Text(
-          isTracking ? S.current.stopLocation : S.current.startLocation,
-          style: TextStyle(color: Colors.white),
-        ),
-        extendedPadding: EdgeInsets.symmetric(
-          horizontal: 10.px,
-          vertical: 2.px,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Stack(
         children: [
           Column(
@@ -611,7 +512,6 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                   children:
                       statusOptions.asMap().entries.map((entry) {
                         int index = entry.key;
-                        print("entry.key${entry.key}");
                         SwitchType item = entry.value;
                         return GestureDetector(
                           onTap: () {
@@ -674,18 +574,11 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                               return OrderCard(
                                 order: _orders[index],
                                 onAccept:
-                                    () => _uploadImage(
-                                      id: _orders[index].id,
-                                      deliveryAddress:
-                                          _orders[index].deliveryAddress,
-                                      nick: _orders[index].nick,
+                                    () => _fetchOrderDetail(
+                                      _orders[index].sourceNo.toString(),
                                     ),
                                 refresh: () => _loadOrders(true),
                                 statusList: statusList,
-                                acceptOrder:
-                                    () => _acceptOrder(
-                                      _orders[index].sourceNo.toString(),
-                                    ),
                               );
                             },
                           ),
@@ -704,7 +597,6 @@ class OrderCard extends StatelessWidget {
   final DeliveryOrderModel order;
   final VoidCallback onAccept;
   final VoidCallback refresh;
-  final VoidCallback acceptOrder;
   final List<DictModel> statusList;
 
   const OrderCard({
@@ -713,7 +605,6 @@ class OrderCard extends StatelessWidget {
     required this.onAccept,
     required this.statusList,
     required this.refresh,
-    required this.acceptOrder,
   }) : super(key: key);
 
   @override
@@ -799,28 +690,13 @@ class OrderCard extends StatelessWidget {
                 Text(order.deliveryTime, style: TextStyle(fontSize: 12.px)),
               ],
             ),
-            SizedBox(height: 4.px),
-            // 配送异常信息
-            if (order.deliveryStatus == 5)
-              Row(
-                children: [
-                  Text(
-                    S.of(context).exception + ':',
-                    style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
-                  ),
-                  Text(
-                    order.errorMsg ?? '',
-                    style: TextStyle(fontSize: 12.px, color: secondaryColor),
-                  ),
-                ],
-              ),
             SizedBox(height: 8.px),
             Divider(height: 1.px, color: Colors.grey),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (order.deliveryStatus == 1)
-                  // 取消订单
+                // 如果订单状态为99，则显示接单按钮
+                if (order.deliveryStatus == 99)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondaryColor,
@@ -831,88 +707,37 @@ class OrderCard extends StatelessWidget {
                       minimumSize: Size(42.px, 20.px),
                     ),
                     onPressed: () {
-                      DataUtils.cancelOrder(
-                        order.id.toString(),
-                        success: (data) {
-                          ProgressHUD.showSuccess(
-                            S.of(context).cancelOrderSuccess,
-                          );
-                          refresh();
-                        },
-                        fail: (code, msg) {
-                          ProgressHUD.showError(
-                            S.of(context).cancelOrderFailed,
-                          );
-                        },
-                      );
+                      onAccept();
                     },
-                    child: Text(
-                      S.of(context).cancelOrder,
-                      style: TextStyle(fontSize: 12.px, color: Colors.white),
-                    ),
+                    child: Text('打包', style: TextStyle(fontSize: 12.px)),
                   ),
-                SizedBox(width: 10.px),
-                if (order.deliveryStatus == 1)
-                  // 送达
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.px,
-                        horizontal: 8.px,
+                SizedBox(width: 8.px),
+                // 查看订单
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    padding: EdgeInsets.symmetric(
+                      vertical: 4.px,
+                      horizontal: 8.px,
+                    ),
+                    minimumSize: Size(42.px, 20.px),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => OrderDetailPage(
+                              orderId: order.sourceNo.toString(),
+                            ),
                       ),
-                      minimumSize: Size(42.px, 20.px),
-                    ),
-                    onPressed: onAccept,
-                    child: Text(
-                      S.of(context).deliver,
-                      style: TextStyle(fontSize: 12.px, color: Colors.white),
-                    ),
+                    );
+                  },
+                  child: Text(
+                    S.of(context).viewOrder,
+                    style: TextStyle(fontSize: 12.px),
                   ),
-                if (order.deliveryStatus > 1)
-                  // 查看订单
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.px,
-                        horizontal: 8.px,
-                      ),
-                      minimumSize: Size(42.px, 20.px),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => DeliveryOrderDetailPage(
-                                orderNo: order.sourceNo,
-                              ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      S.of(context).viewOrder,
-                      style: TextStyle(fontSize: 12.px),
-                    ),
-                  ),
-                // 接单
-                if (order.deliveryStatus == 0)
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: secondaryColor,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.px,
-                        horizontal: 8.px,
-                      ),
-                      minimumSize: Size(42.px, 20.px),
-                    ),
-                    onPressed: acceptOrder,
-                    child: Text(
-                      S.current.acceptOrder,
-                      style: TextStyle(fontSize: 12.px),
-                    ),
-                  ),
+                ),
               ],
             ),
           ],

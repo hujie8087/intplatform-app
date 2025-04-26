@@ -56,41 +56,44 @@ class User {
   bool? vip;
   bool? admin;
   int? isLogin;
+  String? facePhoto;
 
-  User(
-      {this.createBy,
-      this.createTime,
-      this.updateBy,
-      this.updateTime,
-      this.remark,
-      this.startQueryTime,
-      this.endQueryTime,
-      this.userId,
-      this.deptId,
-      this.canteenId,
-      this.userName,
-      this.mobilePhoneId,
-      this.nickName,
-      this.userType,
-      this.email,
-      this.phonenumber,
-      this.sex,
-      this.avatar,
-      this.password,
-      this.status,
-      this.delFlag,
-      this.loginIp,
-      this.loginDate,
-      this.dept,
-      this.roles,
-      this.roleIds,
-      this.postIds,
-      this.roleId,
-      this.card,
-      this.money,
-      this.vip,
-      this.admin,
-      this.isLogin});
+  User({
+    this.createBy,
+    this.createTime,
+    this.updateBy,
+    this.updateTime,
+    this.remark,
+    this.startQueryTime,
+    this.endQueryTime,
+    this.userId,
+    this.deptId,
+    this.canteenId,
+    this.userName,
+    this.mobilePhoneId,
+    this.nickName,
+    this.userType,
+    this.email,
+    this.phonenumber,
+    this.sex,
+    this.avatar,
+    this.password,
+    this.status,
+    this.delFlag,
+    this.loginIp,
+    this.loginDate,
+    this.dept,
+    this.roles,
+    this.roleIds,
+    this.postIds,
+    this.roleId,
+    this.card,
+    this.money,
+    this.vip,
+    this.admin,
+    this.isLogin,
+    this.facePhoto,
+  });
 
   User.fromJson(Map<String, dynamic> json) {
     createBy = json['createBy'];
@@ -131,6 +134,7 @@ class User {
     vip = json['vip'];
     admin = json['admin'];
     isLogin = json['isLogin'];
+    facePhoto = json['facePhoto'];
   }
 
   Map<String, dynamic> toJson() {
@@ -172,6 +176,7 @@ class User {
     data['vip'] = this.vip;
     data['admin'] = this.admin;
     data['isLogin'] = this.isLogin;
+    data['facePhoto'] = this.facePhoto;
     return data;
   }
 }
@@ -199,28 +204,29 @@ class Dept {
   String? companyidOA;
   String? deptType;
 
-  Dept(
-      {this.createBy,
-      this.createTime,
-      this.updateBy,
-      this.updateTime,
-      this.remark,
-      this.startQueryTime,
-      this.endQueryTime,
-      this.deptId,
-      this.parentId,
-      this.ancestors,
-      this.deptName,
-      this.orderNum,
-      this.leader,
-      this.phone,
-      this.email,
-      this.status,
-      this.delFlag,
-      this.parentName,
-      this.originDeptId,
-      this.companyidOA,
-      this.deptType});
+  Dept({
+    this.createBy,
+    this.createTime,
+    this.updateBy,
+    this.updateTime,
+    this.remark,
+    this.startQueryTime,
+    this.endQueryTime,
+    this.deptId,
+    this.parentId,
+    this.ancestors,
+    this.deptName,
+    this.orderNum,
+    this.leader,
+    this.phone,
+    this.email,
+    this.status,
+    this.delFlag,
+    this.parentName,
+    this.originDeptId,
+    this.companyidOA,
+    this.deptType,
+  });
 
   Dept.fromJson(Map<String, dynamic> json) {
     createBy = json['createBy'];
@@ -297,29 +303,30 @@ class Roles {
   List<String>? permissions;
   bool? admin;
 
-  Roles(
-      {this.createBy,
-      this.createTime,
-      this.updateBy,
-      this.updateTime,
-      this.remark,
-      this.startQueryTime,
-      this.endQueryTime,
-      this.roleId,
-      this.roleName,
-      this.roleKey,
-      this.roleSort,
-      this.repairAreaId,
-      this.dataScope,
-      this.menuCheckStrictly,
-      this.deptCheckStrictly,
-      this.status,
-      this.delFlag,
-      this.flag,
-      this.menuIds,
-      this.deptIds,
-      this.permissions,
-      this.admin});
+  Roles({
+    this.createBy,
+    this.createTime,
+    this.updateBy,
+    this.updateTime,
+    this.remark,
+    this.startQueryTime,
+    this.endQueryTime,
+    this.roleId,
+    this.roleName,
+    this.roleKey,
+    this.roleSort,
+    this.repairAreaId,
+    this.dataScope,
+    this.menuCheckStrictly,
+    this.deptCheckStrictly,
+    this.status,
+    this.delFlag,
+    this.flag,
+    this.menuIds,
+    this.deptIds,
+    this.permissions,
+    this.admin,
+  });
 
   Roles.fromJson(Map<String, dynamic> json) {
     createBy = json['createBy'];
