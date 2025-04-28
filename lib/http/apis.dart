@@ -15,21 +15,21 @@ class APIs {
   // static const String imagePrefixWifi =
   //     'http://192.168.90.30/static/intplatform'; // 图片内网地址
 
-  // static const String apiPrefix =
-  //     'https://api.iwipwedabay.com/api/intplatform/app';
-  // static const String imagePrefix =
-  //     'https://web.iwipwedabay.com/static/intplatform';
+  static const String apiPrefix =
+      'https://api.iwipwedabay.com/api/intplatform/app';
+  static const String imagePrefix =
+      'https://web.iwipwedabay.com/static/intplatform';
   // 餐饮图片资源前缀
   static const String foodPrefix = 'https://web.iwipwedabay.com/static/';
 
   // 测试环境
   // static const String apiPrefix = 'http://192.168.91.50:10200'; // 外网
   // static const String apiPrefixWifi = 'http://192.168.91.50:10200'; // 内网
-  static const String imagePrefix =
-      'http://192.168.91.50:9000/intplatform'; // 图片外网地址
+  // static const String imagePrefix =
+  //     'http://192.168.91.50:9000/intplatform'; // 图片外网地址
 
   // 韩栋本地环境
-  static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
+  // static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
 
   // 阿泽本地环境
   // static const String apiPrefix = 'http://10.40.11.26:10200'; // 外网

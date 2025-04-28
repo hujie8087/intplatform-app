@@ -611,7 +611,6 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                   children:
                       statusOptions.asMap().entries.map((entry) {
                         int index = entry.key;
-                        print("entry.key${entry.key}");
                         SwitchType item = entry.value;
                         return GestureDetector(
                           onTap: () {

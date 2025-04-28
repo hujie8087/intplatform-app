@@ -11,8 +11,8 @@ import 'package:logistics_app/http/model/guide_type_view_model.dart';
 import 'package:logistics_app/pages/news/monthly_page/monthly_detail_page.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:path/path.dart' as path;
-import 'package:photo_view/photo_view.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class FileModel {
@@ -220,7 +220,7 @@ class _GuideTypePageState extends State<GuideTypePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    height: 60.px,
+                                    height: 200.px,
                                     child: ListView.builder(
                                       itemCount: fileList.length,
                                       itemBuilder: (context, index) {
