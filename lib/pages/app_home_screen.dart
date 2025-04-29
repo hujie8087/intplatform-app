@@ -24,8 +24,6 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 
 // 在文件顶部定义全局 key
 final GlobalKey<_AppHomeScreenState> appHomeScreenKey =
@@ -226,19 +224,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
 
   void installApk(String apkPath) async {
     try {
-      final Uri contentUri = Uri.parse('content://${apkPath}');
-
-      final intent = AndroidIntent(
-        action: 'action_view',
-        data: contentUri.toString(),
-        type: 'application/vnd.android.package-archive',
-        flags: [
-          Flag.FLAG_ACTIVITY_NEW_TASK,
-          Flag.FLAG_GRANT_READ_URI_PERMISSION,
-        ],
-      );
-
-      await intent.launch();
+      await InstallApkUtils.installApk(apkPath);
     } on PlatformException catch (e) {
       debugPrint("Error launching intent: ${e.message}");
     }
@@ -346,5 +332,17 @@ class _AppHomeScreenState extends State<AppHomeScreen>
         ),
       ],
     );
+  }
+}
+
+class InstallApkUtils {
+  static const MethodChannel _channel = MethodChannel('com.iwip.intplatform');
+
+  static Future<void> installApk(String apkPath) async {
+    try {
+      await _channel.invokeMethod('installApk', {'apkPath': apkPath});
+    } on PlatformException catch (e) {
+      print('安装 APK 失败: ${e.message}');
+    }
   }
 }

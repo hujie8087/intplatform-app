@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:android_intent_plus/android_intent.dart';
-import 'package:android_intent_plus/flag.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +16,7 @@ import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/app_check_update_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
@@ -265,19 +264,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
 
   void installApk(String apkPath) async {
     try {
-      final Uri contentUri = Uri.parse('content://${apkPath}');
-
-      final intent = AndroidIntent(
-        action: 'action_view',
-        data: contentUri.toString(),
-        type: 'application/vnd.android.package-archive',
-        flags: [
-          Flag.FLAG_ACTIVITY_NEW_TASK,
-          Flag.FLAG_GRANT_READ_URI_PERMISSION,
-        ],
-      );
-
-      await intent.launch();
+      await InstallApkUtils.installApk(apkPath);
     } on PlatformException catch (e) {
       debugPrint("Error launching intent: ${e.message}");
     }
