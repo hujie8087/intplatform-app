@@ -125,7 +125,8 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
         DeliveryOrderDetailModel _orderDetail =
             DeliveryOrderDetailModel.fromJson(data['data']);
         setState(() {
-          if (_orderDetail.orderDelivery?.deliveryStatus == 0) {
+          if (_orderDetail.orderDelivery?.deliveryStatus == 0 ||
+              _orderDetail.orderDelivery?.deliveryStatus == 99) {
             _acceptOrder(sourceNo);
           } else if (_orderDetail.orderDelivery?.deliveryStatus == 1) {
             _uploadImage(
