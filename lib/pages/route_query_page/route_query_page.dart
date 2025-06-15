@@ -417,7 +417,7 @@ class BusLineView extends StatelessWidget {
                                                           char,
                                                           style: TextStyle(
                                                             fontSize: 12.px,
-                                                            height: 1.2,
+                                                            height: 1,
                                                           ),
                                                         ),
                                                       )
@@ -441,6 +441,9 @@ class BusLineView extends StatelessWidget {
                                                 style: TextStyle(
                                                   fontSize: 10.px,
                                                 ),
+                                                softWrap: false,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
                                               ),
                                             ),
                                           ),
