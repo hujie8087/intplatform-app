@@ -92,8 +92,6 @@ class _RouteQueryDetailState extends State<RouteQueryDetail>
           backgroundColor: Colors.white,
         ),
         body: SingleChildScrollView(
-          // 禁止滚动
-          physics: NeverScrollableScrollPhysics(),
           child: Container(
             height: MediaQuery.of(context).size.height,
             child: Column(

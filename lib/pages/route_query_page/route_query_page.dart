@@ -395,7 +395,7 @@ class BusLineView extends StatelessWidget {
                                   ) {
                                     // 生成固定数量的项目
                                     return SizedBox(
-                                      width: 30.px, // 固定宽度，避免旋转后溢出
+                                      width: 20.px, // 固定宽度，避免旋转后溢出
                                       child: Stack(
                                         alignment: Alignment.topLeft,
                                         // 超出不隐藏
@@ -416,7 +416,7 @@ class BusLineView extends StatelessWidget {
                                                         (char) => Text(
                                                           char,
                                                           style: TextStyle(
-                                                            fontSize: 12.px,
+                                                            fontSize: 10.px,
                                                             height: 1,
                                                           ),
                                                         ),
@@ -439,7 +439,7 @@ class BusLineView extends StatelessWidget {
                                                 busSite[index].indonesianName ??
                                                     '',
                                                 style: TextStyle(
-                                                  fontSize: 10.px,
+                                                  fontSize: 8.px,
                                                 ),
                                                 softWrap: false,
                                                 overflow: TextOverflow.ellipsis,

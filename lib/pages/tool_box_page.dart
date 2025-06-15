@@ -417,6 +417,11 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     );
   }
 
+  // 缝纫店图标
+  IconData sewingIcon = Icons.local_laundry_service;
+  // 超市图标
+  IconData supermarketIcon = Icons.shopping_cart;
+
   @override
   void initState() {
     // TODO: implement initState
