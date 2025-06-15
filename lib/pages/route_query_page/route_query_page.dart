@@ -31,52 +31,6 @@ class _RouteQueryPage extends State<RouteQueryPage>
   int pageSize = 10;
   late RefreshController _refreshController;
 
-  Future<void> getBusLineList(bool isRefresh) async {
-    if (isRefresh) {
-      busLineList = [];
-      pageNum = 1;
-    } else {
-      pageNum++;
-    }
-    var params = {'pageNum': pageNum, 'pageSize': pageSize};
-    Loading.showLoading();
-    DataUtils.getPageList(
-      '/other/line/list',
-      params,
-      success: (data) {
-        RowsModel rowsModel = RowsModel.fromJson(
-          data,
-          (json) => BusLineModel.fromJson(json),
-        );
-        if (rowsModel.rows != null) {
-          var foundList = data['rows'] as List;
-          List<BusLineModel> rows =
-              foundList.map((i) => BusLineModel.fromJson(i)).toList();
-          if (busLineList.isEmpty) {
-            setState(() {
-              busLineList = rows;
-            });
-          } else {
-            setState(() {
-              busLineList.addAll(rows);
-            });
-          }
-          setState(() {
-            if (rowsModel.total == busLineList.length) {
-              _refreshController.loadNoData();
-            } else {
-              _refreshController.loadComplete();
-            }
-          });
-        }
-        Loading.dismissAll();
-      },
-      fail: (code, msg) {
-        Loading.dismissAll();
-      },
-    );
-  }
-
   @override
   void initState() {
     _refreshController = RefreshController();
@@ -85,6 +39,7 @@ class _RouteQueryPage extends State<RouteQueryPage>
       vsync: this,
     );
     super.initState();
+    // 初始化时加载数据
     getBusLineList(true);
   }
 
@@ -148,12 +103,12 @@ class _RouteQueryPage extends State<RouteQueryPage>
         },
         body: SafeArea(
           top: false, // 因为SliverAppBar已经提供了安全区域，所以这里不需要顶部安全区域
-          child:
-              busLineList.length == 0
-                  ? EmptyView()
-                  : Container(
-                    margin: EdgeInsets.only(top: 15.px),
-                    child: SmartRefreshWidget(
+          child: Container(
+            margin: EdgeInsets.only(top: 15.px),
+            child:
+                busLineList.length == 0
+                    ? EmptyView()
+                    : SmartRefreshWidget(
                       enablePullDown: true,
                       enablePullUp: true,
                       onRefresh: () {
@@ -170,18 +125,26 @@ class _RouteQueryPage extends State<RouteQueryPage>
                       controller: _refreshController,
                       child: BusLineListView(),
                     ),
-                  ),
+          ),
         ),
       ),
     );
   }
 
   Widget BusLineListView() {
+    if (busLineList.isEmpty) {
+      return EmptyView();
+    }
+
     return ListView.builder(
       shrinkWrap: true,
       itemCount: busLineList.length,
       padding: EdgeInsets.all(0),
       itemBuilder: (context, index) {
+        if (index >= busLineList.length) {
+          return SizedBox.shrink();
+        }
+
         final int count = busLineList.length;
         final Animation<double> animation = Tween<double>(
           begin: 0.0,
@@ -196,18 +159,79 @@ class _RouteQueryPage extends State<RouteQueryPage>
             ),
           ),
         );
-        animationController?.forward();
+
         return BusLineView(
           animation: animation,
           animationController: animationController,
           listData: busLineList[index],
-          callBack: () {
+          callBack: (busSite) {
             RouteUtils.push(
               context,
-              RouteQueryDetail(listData: busLineList[index]),
+              RouteQueryDetail(listData: busLineList[index], busSite: busSite),
             );
           },
         );
+      },
+    );
+  }
+
+  Future<void> getBusLineList(bool isRefresh) async {
+    if (isRefresh) {
+      setState(() {
+        busLineList = [];
+        pageNum = 1;
+      });
+      // 重置动画控制器
+      if (animationController?.isAnimating ?? false) {
+        animationController?.stop();
+      }
+      animationController?.reset();
+    } else {
+      pageNum++;
+    }
+
+    var params = {'pageNum': pageNum, 'pageSize': pageSize};
+    Loading.showLoading();
+    DataUtils.getPageList(
+      '/other/line/list',
+      params,
+      success: (data) {
+        RowsModel rowsModel = RowsModel.fromJson(
+          data,
+          (json) => BusLineModel.fromJson(json),
+        );
+        if (rowsModel.rows != null) {
+          var foundList = data['rows'] as List;
+          List<BusLineModel> rows =
+              foundList.map((i) => BusLineModel.fromJson(i)).toList();
+          setState(() {
+            if (busLineList.isEmpty) {
+              busLineList = rows;
+            } else {
+              busLineList.addAll(rows);
+            }
+
+            if (rowsModel.total == busLineList.length) {
+              _refreshController.loadNoData();
+            } else {
+              _refreshController.loadComplete();
+            }
+          });
+
+          // 在数据加载完成后启动动画
+          if (busLineList.isNotEmpty) {
+            // 使用 Future.microtask 确保在下一帧执行动画
+            Future.microtask(() {
+              if (mounted) {
+                animationController?.forward();
+              }
+            });
+          }
+        }
+        Loading.dismissAll();
+      },
+      fail: (code, msg) {
+        Loading.dismissAll();
       },
     );
   }
@@ -223,18 +247,12 @@ class BusLineView extends StatelessWidget {
   }) : super(key: key);
 
   final BusLineModel? listData;
-  final VoidCallback? callBack;
+  final Function(List<CarSiteList>)? callBack;
   final AnimationController? animationController;
   final Animation<double>? animation;
 
   @override
   Widget build(BuildContext context) {
-    String lastItem =
-        listData!.carSiteList!.isNotEmpty
-            ? listData!.carSiteList![listData!.carSiteList!.length - 1].name ??
-                ''
-            : '';
-
     // 复制一份新的 list，避免直接在原 list 上操作
     List<CarSiteList> busSite = List.from(listData!.carSiteList ?? []);
 
@@ -248,6 +266,7 @@ class BusLineView extends StatelessWidget {
       busSite.add(listData!.carSiteList!.first);
     }
 
+    String lastItem = busSite.isNotEmpty ? busSite.last.name ?? '' : '';
     return AnimatedBuilder(
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -293,7 +312,7 @@ class BusLineView extends StatelessWidget {
                                       listData!.lineName ?? '',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 18,
+                                        fontSize: 14.px,
                                       ),
                                       textAlign: TextAlign.left,
                                     ),
@@ -307,13 +326,14 @@ class BusLineView extends StatelessWidget {
                                                 '',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 18,
+                                              fontSize: 14.px,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           SizedBox(width: 5),
                                           Icon(
-                                            Icons.swap_horiz,
+                                            // 单箭头
+                                            Icons.arrow_forward_rounded,
                                             color: Colors.red,
                                             size: 20,
                                           ),
@@ -322,7 +342,7 @@ class BusLineView extends StatelessWidget {
                                             lastItem,
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 18,
+                                              fontSize: 14.px,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -464,7 +484,7 @@ class BusLineView extends StatelessWidget {
                           borderRadius: const BorderRadius.all(
                             Radius.circular(4.0),
                           ),
-                          onTap: callBack,
+                          onTap: () => callBack?.call(busSite),
                         ),
                       ),
                     ],

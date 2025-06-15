@@ -7,9 +7,11 @@ import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:photo_view/photo_view.dart';
 
 class RouteQueryDetail extends StatefulWidget {
-  const RouteQueryDetail({Key? key, this.listData}) : super(key: key);
+  const RouteQueryDetail({Key? key, this.listData, this.busSite})
+    : super(key: key);
 
   final BusLineModel? listData;
+  final List<CarSiteList>? busSite;
 
   @override
   _RouteQueryDetailState createState() => _RouteQueryDetailState();
@@ -45,12 +47,12 @@ class _RouteQueryDetailState extends State<RouteQueryDetail>
     animationController?.forward();
     super.initState();
     setState(() {
-      startStation = widget.listData!.carSiteList![0];
-      endStation =
-          widget.listData!.carSiteList![widget.listData!.carSiteList!.length -
-              1];
-      title =
-          '${widget.listData!.lineName} ${startStation!.name}~${endStation!.name}';
+      if (widget.busSite!.isNotEmpty) {
+        startStation = widget.busSite!.first;
+        endStation = widget.busSite!.last;
+        title =
+            '${widget.listData!.lineName} ${startStation!.name}~${endStation!.name}';
+      }
     });
   }
 
@@ -94,6 +96,7 @@ class _RouteQueryDetailState extends State<RouteQueryDetail>
         body: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height,
+            padding: EdgeInsets.only(bottom: 20.px),
             child: Column(
               children: [
                 BusLineView(
