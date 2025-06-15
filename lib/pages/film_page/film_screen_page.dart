@@ -38,14 +38,14 @@ class _FilmScreenPage extends State<FilmScreenPage>
   @override
   void initState() {
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: widget.animationController!,
-            curve: Interval(0, 0.3, curve: Curves.fastOutSlowIn)));
+      CurvedAnimation(
+        parent: widget.animationController!,
+        curve: Interval(0, 0.3, curve: Curves.fastOutSlowIn),
+      ),
+    );
     widget.animationController!.forward();
     super.initState();
-    _pageController = PageController(
-      initialPage: 0,
-    );
+    _pageController = PageController(initialPage: 0);
     tabController = TabController(length: buttonLabels.length, vsync: this);
     _pageController.addListener(() {
       setState(() {
@@ -76,9 +76,7 @@ class _FilmScreenPage extends State<FilmScreenPage>
                   TabBarView(
                     controller: tabController,
                     children: <Widget>[
-                      Container(
-                        child: FilmHomePage(),
-                      ),
+                      Container(child: FilmHomePage()),
                       Container(
                         color: Colors.green,
                         child: Center(
@@ -155,7 +153,10 @@ class _FilmScreenPage extends State<FilmScreenPage>
               opacity: topBarAnimation!,
               child: Transform(
                 transform: Matrix4.translationValues(
-                    0.0, 50 * (1.0 - topBarAnimation!.value), 0.0),
+                  0.0,
+                  50 * (1.0 - topBarAnimation!.value),
+                  0.0,
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppTheme.white.withOpacity(topBarOpacity),
@@ -166,28 +167,33 @@ class _FilmScreenPage extends State<FilmScreenPage>
                       Row(
                         children: <Widget>[
                           GestureDetector(
-                            onTap: () => {
-                              print('123'),
-                              RouteUtils.push(
-                                  context,
-                                  FilmPersonalPage(
+                            onTap:
+                                () => {
+                                  print('123'),
+                                  RouteUtils.push(
+                                    context,
+                                    FilmPersonalPage(
                                       animationController:
-                                          widget.animationController))
-                            },
+                                          widget.animationController,
+                                    ),
+                                  ),
+                                },
                             child:
-                                // 圆形图片
-                                Container(
+                            // 圆形图片
+                            Container(
                               width: 32,
                               height: 32,
                               margin: EdgeInsets.only(right: 10),
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                        'assets/fitness_app/snack.png'),
-                                    fit: BoxFit.fill,
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    'assets/fitness_app/snack.png',
                                   ),
-                                  color: primaryColor),
+                                  fit: BoxFit.fill,
+                                ),
+                                color: primaryColor,
+                              ),
                             ),
                           ),
                           Expanded(
@@ -200,11 +206,12 @@ class _FilmScreenPage extends State<FilmScreenPage>
                                     builder: (context) => SearchScreen(),
                                   ),
                                 );
-                                print('123456');
                               },
                               child: Container(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
                                 decoration: BoxDecoration(
                                   color: Colors.grey[200],
                                   borderRadius: BorderRadius.circular(8),
@@ -214,9 +221,7 @@ class _FilmScreenPage extends State<FilmScreenPage>
                                     Expanded(
                                       child: Text(
                                         '搜索电影、剧集、综艺、动漫…',
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                        ),
+                                        style: TextStyle(color: Colors.grey),
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -226,29 +231,24 @@ class _FilmScreenPage extends State<FilmScreenPage>
                               ),
                             ),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
+                          SizedBox(width: 10),
                           GestureDetector(
-                            onTap: () => {
-                              print('123'),
-                              // 跳转页面
-                              RouteUtils.push(context, FilmHistoryPage())
-                            },
-                            child: Icon(
-                              Icons.history,
-                              color: Colors.white,
-                            ),
+                            onTap:
+                                () => {
+                                  print('123'),
+                                  // 跳转页面
+                                  RouteUtils.push(context, FilmHistoryPage()),
+                                },
+                            child: Icon(Icons.history, color: Colors.white),
                           ),
-                          SizedBox(
-                            width: 10,
-                          ),
+                          SizedBox(width: 10),
                           GestureDetector(
-                            onTap: () => {
-                              print('321'),
-                              // 跳转页面
-                              RouteUtils.push(context, FilmDownloadPage())
-                            },
+                            onTap:
+                                () => {
+                                  print('321'),
+                                  // 跳转页面
+                                  RouteUtils.push(context, FilmDownloadPage()),
+                                },
                             child: Icon(Icons.download, color: Colors.white),
                           ),
                         ],
@@ -259,7 +259,9 @@ class _FilmScreenPage extends State<FilmScreenPage>
                         labelPadding: EdgeInsets.all(0),
                         indicator: const BoxDecoration(),
                         labelStyle: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                         unselectedLabelStyle: TextStyle(fontSize: 14),
                         unselectedLabelColor: Colors.white.withOpacity(0.8),
                         tabs: [for (var i in buttonLabels) Tab(text: i.label)],
@@ -270,7 +272,7 @@ class _FilmScreenPage extends State<FilmScreenPage>
               ),
             );
           },
-        )
+        ),
       ],
     );
   }
@@ -281,12 +283,7 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '搜索',
-          style: TextStyle(fontSize: 18),
-        ),
-      ),
+      appBar: AppBar(title: Text('搜索', style: TextStyle(fontSize: 18))),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -39,6 +39,9 @@ import 'package:logistics_app/pages/shopping/payment/modify_payment_password_pag
 import 'package:logistics_app/pages/shopping/payment/payment_qrcode_page.dart';
 import 'package:logistics_app/pages/shopping/shopping_screen_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
+import 'package:logistics_app/pages/science/plants/plant_list_page.dart';
+import 'package:logistics_app/pages/science/animals/animal_list_page.dart';
+import 'package:logistics_app/pages/science/plants/plant_detail_page.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -84,6 +87,9 @@ class Routes {
       RoutePath.ShopWorkbenchPage: (context) => ShopWorkbenchPage(),
       RoutePath.FaceCollectionPage: (context) => FaceCollectionPage(),
       RoutePath.FoodRecommendPage: (context) => FoodRecommendPage(),
+      RoutePath.PlantListPage: (context) => PlantListPage(),
+      RoutePath.AnimalListPage: (context) => AnimalListPage(),
+      RoutePath.PlantDetailPage: (context) => PlantDetailPage(fId: '0'),
     };
 
     final builder = routeBuilders[settings.name];
@@ -195,4 +201,12 @@ class RoutePath {
   static const String ShopWorkbenchPage = 'shop_workbench_page';
   // 美食推荐
   static const String FoodRecommendPage = 'food_recommend_page';
+  // 植物识别
+  static const String PlantListPage = 'plant_list_page';
+  // 植物详情
+  static const String PlantDetailPage = 'plant_detail_page';
+  // 动物识别
+  static const String AnimalListPage = 'animal_list_page';
+  // 动物详情
+  static const String AnimalDetailPage = 'animal_detail_page';
 }

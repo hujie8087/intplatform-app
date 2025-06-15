@@ -149,7 +149,6 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
         if (appMenuList.isEmpty) {
           getAppMenu();
         } else {
-          print('123456');
           filterAppMenu();
         }
       },

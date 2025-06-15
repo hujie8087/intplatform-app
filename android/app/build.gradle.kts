@@ -13,7 +13,9 @@ android {
     namespace = "com.iwip.intplatform"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
-
+    aaptOptions {
+        noCompress += "tflite"
+    }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
@@ -33,17 +35,17 @@ android {
         versionName = flutter.versionName
         multiDexEnabled = true
     }
-    
+
     signingConfigs {
         create("release") {
             keyAlias = "intplatform"
-            keyPassword = "123456" 
+            keyPassword = "123456"
             storeFile = file("intplatform.keystore")
             storePassword = "123456"
         }
         // release {
         //     keyAlias = "intplatform"
-        //     keyPassword = "123456" 
+        //     keyPassword = "123456"
         //     storeFile = file('intplatform.keystore')
         //     storePassword = "123456"
         // }
