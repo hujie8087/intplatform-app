@@ -4,9 +4,6 @@ import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/delivery/online/delivery_online_list_page.dart';
 import 'package:logistics_app/pages/delivery/order/delivery_order_list_page.dart';
 import 'package:logistics_app/pages/delivery/store/shop_workbench_page.dart';
-import 'package:logistics_app/pages/film_page/film_download_page.dart';
-import 'package:logistics_app/pages/film_page/film_screen_page.dart';
-import 'package:logistics_app/pages/film_page/film_view_page.dart';
 import 'package:logistics_app/pages/guide/guide_list_page.dart';
 import 'package:logistics_app/pages/guide/guide_type_page.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_detail_page.dart';
@@ -22,6 +19,7 @@ import 'package:logistics_app/pages/news/monthly_page/monthly_list_page.dart';
 import 'package:logistics_app/pages/news/news_page/news_list_page.dart';
 import 'package:logistics_app/pages/news/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/news/promo_page/promo_list_page.dart';
+import 'package:logistics_app/pages/public_convenience_page/public_list_page.dart';
 import 'package:logistics_app/pages/repair/my_repair_page/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/my_repair_page/repair_rating_page.dart';
 import 'package:logistics_app/pages/repair/repair_order_page/repair_order_page.dart';
@@ -42,6 +40,8 @@ import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/pages/science/plants/plant_list_page.dart';
 import 'package:logistics_app/pages/science/animals/animal_list_page.dart';
 import 'package:logistics_app/pages/science/plants/plant_detail_page.dart';
+import 'package:logistics_app/pages/shopping/food_menu_page.dart';
+import 'package:logistics_app/pages/bus/bus_timetable_page.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -57,9 +57,6 @@ class Routes {
       RoutePath.NewsListPage: (context) => NewsListPage(),
       RoutePath.LostFoundListPage: (context) => LostFoundListPage(),
       RoutePath.LostFoundDetailPage: (context) => LostFoundDetailPage(),
-      RoutePath.FilmScreenPage: (context) => FilmScreenPage(),
-      RoutePath.FilmDownloadPage: (context) => FilmDownloadPage(),
-      RoutePath.FilmViewPage: (context) => FilmViewPage(),
       RoutePath.RepairFormPage: (context) => RepairFormPage(),
       RoutePath.RepairRatingPage: (context) => RepairRatingPage(),
       RoutePath.MyRepairPage: (context) => MyRepairPage(),
@@ -90,6 +87,9 @@ class Routes {
       RoutePath.PlantListPage: (context) => PlantListPage(),
       RoutePath.AnimalListPage: (context) => AnimalListPage(),
       RoutePath.PlantDetailPage: (context) => PlantDetailPage(fId: '0'),
+      RoutePath.PublicListPage: (context) => PublicListPage(),
+      RoutePath.FoodMenuPage: (context) => FoodMenuPage(),
+      RoutePath.BusTimetablePage: (context) => BusTimetablePage(),
     };
 
     final builder = routeBuilders[settings.name];
@@ -154,8 +154,7 @@ class RoutePath {
   // 地址管理
   static const String MyAddressPage = 'my_address_page';
   // 公共便利列表页
-  static const String PublicConvenienceListPage =
-      'public_convenience_list_page';
+  static const String PublicListPage = 'public_list_page';
 
   // 工具箱
   static const String ToolBoxPage = 'tool_box_page';
@@ -209,4 +208,8 @@ class RoutePath {
   static const String AnimalListPage = 'animal_list_page';
   // 动物详情
   static const String AnimalDetailPage = 'animal_detail_page';
+  // 今日菜单
+  static const String FoodMenuPage = 'food_menu_page';
+  // 公交时刻表
+  static const String BusTimetablePage = 'bus_timetable_page';
 }

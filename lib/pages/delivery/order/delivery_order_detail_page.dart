@@ -471,7 +471,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage>
                                       ),
                                     ),
                                     Text(
-                                      '${_orderDetail?.orderDelivery?.deliveryNo}',
+                                      '${_orderDetail?.orderDelivery?.orderNo}',
                                       style: TextStyle(
                                         fontSize: 14.px,
                                         fontWeight: FontWeight.bold,
@@ -597,7 +597,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage>
                                     children: [
                                       SizedBox(height: 6.px),
                                       Text(
-                                        '送达照片',
+                                        S.of(context).deliveryPhoto,
                                         style: TextStyle(
                                           fontSize: 14.px,
                                           color: Colors.grey[600],
@@ -728,19 +728,19 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage>
   String _getStatusText(String? status) {
     switch (status) {
       case '0':
-        return '待接单';
+        return S.of(context).toBeDelivered;
       case '1':
-        return '配送中';
+        return S.of(context).delivering;
       case '2':
-        return '已送达';
+        return S.of(context).delivered;
       case '3':
-        return '已收货';
+        return S.of(context).received;
       case '4':
-        return '已评价';
-      case '99':
-        return '待打包';
+        return S.of(context).evaluated;
+      case '-1':
+        return S.of(context).toBePacked;
       default:
-        return '未知状态';
+        return S.of(context).unknownStatus;
     }
   }
 }

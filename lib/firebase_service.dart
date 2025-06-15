@@ -25,13 +25,16 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
   // ignore: avoid_print
-  print('notification(${notificationResponse.id}) action tapped: '
-      '${notificationResponse.actionId} with'
-      ' payload: ${notificationResponse.payload}');
+  print(
+    'notification(${notificationResponse.id}) action tapped: '
+    '${notificationResponse.actionId} with'
+    ' payload: ${notificationResponse.payload}',
+  );
   if (notificationResponse.input?.isNotEmpty ?? false) {
     // ignore: avoid_print
     print(
-        'notification action tapped with input: ${notificationResponse.input}');
+      'notification action tapped with input: ${notificationResponse.input}',
+    );
   }
 }
 
@@ -46,11 +49,10 @@ class FirebaseService {
 
   Future<void> notifyInit() async {
     final InitializationSettings initSetting = InitializationSettings(
-        android: const AndroidInitializationSettings('@mipmap/ic_launcher'),
-        iOS: DarwinInitializationSettings());
-    flutterLocalNotificationsPlugin.initialize(
-      initSetting,
+      android: const AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(),
     );
+    flutterLocalNotificationsPlugin.initialize(initSetting);
   }
 
   Future<void> initNotifications() async {
@@ -79,13 +81,15 @@ class FirebaseService {
     // 监听 后台运行时通过系统信息条打开应用
     FirebaseMessaging.onMessageOpenedApp.listen(onMessageOpenedApp);
     // 如需在每次令牌更新时获得通知
-    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
-      // TODO: If necessary send token to application server.
+    FirebaseMessaging.instance.onTokenRefresh
+        .listen((fcmToken) {
+          // TODO: If necessary send token to application server.
 
-      // 每当生成新令牌时，都会触发此回调。
-    }).onError((err) {
-      // Error getting token.
-    });
+          // 每当生成新令牌时，都会触发此回调。
+        })
+        .onError((err) {
+          // Error getting token.
+        });
   }
 
   void onMessageOpenedApp(RemoteMessage message) {
@@ -109,21 +113,26 @@ class FirebaseService {
   }
 
   Future<void> _notifyShow(
-      int id, String title, String content, String payload) async {
+    int id,
+    String title,
+    String content,
+    String payload,
+  ) async {
     // const chanel = "me.liucx.demoNotification"; //channel name
     print(
-        'id:${id},string:${title},content:${content},_chanelName:${_chanelName}');
+      'id:${id},string:${title},content:${content},_chanelName:${_chanelName}',
+    );
     try {
       await flutterLocalNotificationsPlugin.show(
-          id,
-          title,
-          content,
-          const NotificationDetails(
-              android: AndroidNotificationDetails(_chanelName, _chanelName),
-              iOS: DarwinNotificationDetails(
-                threadIdentifier: _chanelName,
-              )),
-          payload: payload);
+        id,
+        title,
+        content,
+        const NotificationDetails(
+          android: AndroidNotificationDetails(_chanelName, _chanelName),
+          iOS: DarwinNotificationDetails(threadIdentifier: _chanelName),
+        ),
+        payload: payload,
+      );
     } catch (e) {
       print(e);
     }
@@ -139,9 +148,10 @@ class FirebaseService {
             child: Text(
               message.notification?.title ?? "新消息",
               style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold),
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

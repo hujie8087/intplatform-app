@@ -149,6 +149,8 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
     if (isRefresh) {
       pageNum = 1;
       _orders = [];
+    } else {
+      pageNum++;
     }
 
     DataUtils.getMyOrderList(
@@ -663,9 +665,11 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                           enablePullDown: true,
                           enablePullUp: true,
                           onRefresh: () async {
+                            print('onRefresh');
                             await _loadOrders(true);
                           },
                           onLoading: () async {
+                            print('onLoading');
                             await _loadOrders(false);
                           },
                           child: ListView.builder(

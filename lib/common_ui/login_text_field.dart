@@ -11,7 +11,6 @@ import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
-const double _lineHeight = 0.8; // 底部线高
 const double _textFontSize = 12.0;
 const double _hintTextFontSize = 12.0;
 
@@ -21,8 +20,8 @@ typedef _InputCallBack = void Function(String value);
 /// 录入完成回调（失去焦点或者点击键盘右下角按钮触发）
 /// isSubmitted：是否通过onSubmitted方法触发
 /// 直接使用回调范围更大，可判断外部三方键盘关闭按钮点击事件，如果有多个textField切换，也会走这个回调，按需使用
-typedef _InputCompletionCallBack = void Function(
-    String value, bool isSubmitted);
+typedef _InputCompletionCallBack =
+    void Function(String value, bool isSubmitted);
 
 class JhLoginTextField extends StatefulWidget {
   const JhLoginTextField({
@@ -71,7 +70,7 @@ class JhLoginTextField extends StatefulWidget {
   final InputBorder? border; // 边框样式
   final bool isDense; // 是否紧凑显示，默认false
   final EdgeInsetsGeometry?
-      contentPadding; // 当父组件固定高度时，文本一行显示文本过多会出现文字显示不全bug,可设置EdgeInsets.symmetric(vertical: 0)
+  contentPadding; // 当父组件固定高度时，文本一行显示文本过多会出现文字显示不全bug,可设置EdgeInsets.symmetric(vertical: 0)
 
   @override
   State<JhLoginTextField> createState() => _JhLoginTextFieldState();
@@ -96,8 +95,10 @@ class _JhLoginTextFieldState extends State<JhLoginTextField> {
     _textController!.text = widget.text ?? '';
     // 超过最大长度截取
     if ((widget.text ?? '').length > widget.maxLength) {
-      _textController!.text =
-          (widget.text ?? '').substring(0, widget.maxLength);
+      _textController!.text = (widget.text ?? '').substring(
+        0,
+        widget.maxLength,
+      );
     }
     _focusNode = widget.focusNode ?? FocusNode();
     _isHiddenPwdBtn = !widget.isPwd;
@@ -138,13 +139,16 @@ class _JhLoginTextFieldState extends State<JhLoginTextField> {
       _textController!.text = widget.text ?? '';
       // 超过最大长度截取
       if ((widget.text ?? '').length > widget.maxLength) {
-        _textController!.text =
-            (widget.text ?? '').substring(0, widget.maxLength);
+        _textController!.text = (widget.text ?? '').substring(
+          0,
+          widget.maxLength,
+        );
       }
       if (cursorPos.start > _textController!.text.length) {
         // 光标保持在文本最后
         cursorPos = TextSelection.fromPosition(
-            TextPosition(offset: _textController!.text.length));
+          TextPosition(offset: _textController!.text.length),
+        );
       }
       _textController!.selection = cursorPos;
     }
@@ -167,30 +171,35 @@ class _JhLoginTextFieldState extends State<JhLoginTextField> {
   _body() {
     if (widget.pwdOpen != null && widget.pwdClose != null) {
       if (widget.pwdOpen!.isNotEmpty && widget.pwdClose!.isNotEmpty) {
-        _pwdImg = _pwdShow!
-            ? ImageIcon(AssetImage(widget.pwdClose!))
-            : ImageIcon(AssetImage(widget.pwdOpen!));
+        _pwdImg =
+            _pwdShow!
+                ? ImageIcon(AssetImage(widget.pwdClose!))
+                : ImageIcon(AssetImage(widget.pwdOpen!));
       } else {
         _pwdImg = Icon(_pwdShow! ? Icons.visibility_off : Icons.visibility);
       }
     } else {
       _pwdImg = Icon(_pwdShow! ? Icons.visibility_off : Icons.visibility);
-//      _pwdImg = _pwdShow?Image.asset('assets/images/ic_pwd_close.png',width: 18.0,):Image.asset('assets/images/ic_pwd_open.png',width: 18.0,);
-//      _pwdImg = _pwdShow?ImageIcon(AssetImage('assets/images/ic_pwd_close.png')):ImageIcon(AssetImage('assets/images/ic_pwd_open.png')) ;
+      //      _pwdImg = _pwdShow?Image.asset('assets/images/ic_pwd_close.png',width: 18.0,):Image.asset('assets/images/ic_pwd_open.png',width: 18.0,);
+      //      _pwdImg = _pwdShow?ImageIcon(AssetImage('assets/images/ic_pwd_close.png')):ImageIcon(AssetImage('assets/images/ic_pwd_open.png')) ;
     }
 
     // 默认颜色
     var textColor = AppTheme.darkerText;
     var textStyle = TextStyle(fontSize: _textFontSize.px, color: textColor);
     var hintColor = AppTheme.darkerText;
-    var hintTextStyle =
-        TextStyle(fontSize: _hintTextFontSize, color: hintColor);
+    var hintTextStyle = TextStyle(
+      fontSize: _hintTextFontSize,
+      color: hintColor,
+    );
 
     // TODO: 通过ThemeProvider进行主题管理
     // final provider = Provider.of<ThemeProvider>(context);
     var themeColor = primaryColor;
-    var labelTextStyle =
-        TextStyle(fontSize: _hintTextFontSize.px, color: themeColor);
+    var labelTextStyle = TextStyle(
+      fontSize: _hintTextFontSize.px,
+      color: themeColor,
+    );
 
     return Stack(
       alignment: Alignment.centerRight,
@@ -201,7 +210,8 @@ class _JhLoginTextFieldState extends State<JhLoginTextField> {
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,
           style: textStyle,
-          inputFormatters: widget.inputFormatters ??
+          inputFormatters:
+              widget.inputFormatters ??
               [LengthLimitingTextInputFormatter(widget.maxLength)],
           decoration: InputDecoration(
             contentPadding: widget.contentPadding,
@@ -262,30 +272,36 @@ class _JhLoginTextFieldState extends State<JhLoginTextField> {
           children: <Widget>[
             Offstage(
               offstage: !widget.isShowDeleteBtn,
-              child: _isShowDelete!
-                  ? IconButton(
-                      icon: const Icon(Icons.cancel,
-                          color: Color(0xFFC8C8C8), size: 20),
-                      onPressed: () {
-                        _textController!.text = '';
-                        if (widget.inputCallBack != null) {
-                          widget.inputCallBack!(_textController!.text);
-                        }
-                      })
-                  : const Text(''),
+              child:
+                  _isShowDelete!
+                      ? IconButton(
+                        icon: const Icon(
+                          Icons.cancel,
+                          color: Color(0xFFC8C8C8),
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          _textController!.text = '';
+                          if (widget.inputCallBack != null) {
+                            widget.inputCallBack!(_textController!.text);
+                          }
+                        },
+                      )
+                      : const Text(''),
             ),
             Offstage(
-                offstage: _isHiddenPwdBtn!,
-                child: IconButton(
-                  icon: _pwdImg!,
-                  color: const Color(0xFFC8C8C8),
-                  iconSize: 18.0,
-                  onPressed: () {
-                    setState(() {
-                      _pwdShow = !_pwdShow!;
-                    });
-                  },
-                )),
+              offstage: _isHiddenPwdBtn!,
+              child: IconButton(
+                icon: _pwdImg!,
+                color: const Color(0xFFC8C8C8),
+                iconSize: 18.0,
+                onPressed: () {
+                  setState(() {
+                    _pwdShow = !_pwdShow!;
+                  });
+                },
+              ),
+            ),
             widget.rightWidget ?? Container(),
           ],
         ),

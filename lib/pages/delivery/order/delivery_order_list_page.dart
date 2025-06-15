@@ -20,9 +20,10 @@ class DashedLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double dashHeight = 4, dashSpace = 3, startY = 0;
-    final paint = Paint()
-      ..color = Colors.grey
-      ..strokeWidth = 1;
+    final paint =
+        Paint()
+          ..color = Colors.grey
+          ..strokeWidth = 1;
     while (startY < size.height) {
       canvas.drawLine(
         Offset(size.width / 2, startY),
@@ -63,16 +64,16 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
     _fetchOrderStatus();
   }
 
-// 获取订单类型
+  // 获取订单类型
   Future<void> _fetchOrderStatus() async {
     DataUtils.getDeliveryStationInfo(
-      {
-        'pageNum': 1,
-        'pageSize': 1000,
-      },
+      {'pageNum': 1, 'pageSize': 1000},
       success: (data) {
-        stationList = RowsModel<DeliveryStationModel>.fromJson(
-                data, (json) => DeliveryStationModel.fromJson(json)).rows ??
+        stationList =
+            RowsModel<DeliveryStationModel>.fromJson(
+              data,
+              (json) => DeliveryStationModel.fromJson(json),
+            ).rows ??
             [];
         setState(() {
           _loadOrders(isRefresh: true);
@@ -92,59 +93,60 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
     } else {
       pageNum = pageNum + 1;
     }
-    var params = {
-      'pageNum': pageNum,
-      'pageSize': pageSize,
-      'nick': userName,
-    };
+    var params = {'pageNum': pageNum, 'pageSize': pageSize, 'nick': userName};
     if (selectedStatus != -1) {
       params['deliveryStatus'] = selectedStatus;
     }
     if (searchText != '') {
       params['orderNo'] = searchText;
     }
-    DataUtils.getPageList(APIs.getDeliveryOrderList, params, success: (data) {
-      var rowsModel =
-          RowsModel.fromJson(data, (json) => DeliveryOrderModel.fromJson(json));
-      if (rowsModel.rows != null) {
-        setState(() {
-          orders = rowsModel.rows!;
-          total = rowsModel.total ?? 0;
-          if (isRefresh) {
+    DataUtils.getPageList(
+      APIs.getDeliveryOrderList,
+      params,
+      success: (data) {
+        var rowsModel = RowsModel.fromJson(
+          data,
+          (json) => DeliveryOrderModel.fromJson(json),
+        );
+        if (rowsModel.rows != null) {
+          setState(() {
             orders = rowsModel.rows!;
-          } else {
-            orders.addAll(rowsModel.rows!);
-          }
-        });
-      }
-      setState(() {
-        if (orders.length >= total) {
-          _refreshController.loadNoData();
-        } else {
-          _refreshController.loadComplete();
+            total = rowsModel.total ?? 0;
+            if (isRefresh) {
+              orders = rowsModel.rows!;
+            } else {
+              orders.addAll(rowsModel.rows!);
+            }
+          });
         }
-        _refreshController.refreshCompleted();
-        isLoading = false;
-      });
-    });
+        setState(() {
+          if (orders.length >= total) {
+            _refreshController.loadNoData();
+          } else {
+            _refreshController.loadComplete();
+          }
+          _refreshController.refreshCompleted();
+          isLoading = false;
+        });
+      },
+    );
   }
 
   // 确认收货
   Future<void> _confirmDelivery(DeliveryOrderModel order) async {
-    DataUtils.confirmDelivery(order.id, success: (data) {
-      _loadOrders(isRefresh: true);
-    });
+    DataUtils.confirmDelivery(
+      order.id,
+      success: (data) {
+        _loadOrders(isRefresh: true);
+      },
+    );
   }
 
   // 异常反馈
   Future<void> _errorDelivery(DeliveryOrderModel order, String errorMsg) async {
     print(errorMsg);
     DataUtils.errorDelivery(
-      {
-        'id': order.id,
-        'errorMsg': errorMsg,
-        'deliveryStatus': 5,
-      },
+      {'id': order.id, 'errorMsg': errorMsg, 'deliveryStatus': 5},
       success: (data) {
         _loadOrders(isRefresh: true);
       },
@@ -205,12 +207,13 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildTabItem(
-                      icon: Icons.list_alt,
-                      text: S.of(context).all,
-                      isSelected: selectedStatus == -1,
-                      onTap: () {
-                        _onTabSelected(-1);
-                      }),
+                    icon: Icons.list_alt,
+                    text: S.of(context).all,
+                    isSelected: selectedStatus == -1,
+                    onTap: () {
+                      _onTabSelected(-1);
+                    },
+                  ),
                   _buildTabItem(
                     icon: Icons.access_time,
                     text: S.of(context).pendingOrder,
@@ -238,42 +241,44 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                 ],
               ),
               Expanded(
-                child: orders.isEmpty
-                    ? Center(
-                        child: EmptyView(),
-                      )
-                    : SmartRefreshWidget(
-                        controller: _refreshController,
-                        enablePullDown: true,
-                        enablePullUp: true,
-                        onRefresh: () async {
-                          await _loadOrders(isRefresh: true);
-                        },
-                        onLoading: () async {
-                          await _loadOrders();
-                        },
-                        child: ListView.builder(
-                          itemCount: orders.length,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 0.px, vertical: 8.px),
-                          itemBuilder: (context, index) {
-                            final order = orders[index];
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        DeliveryOrderDetailPage(
-                                            orderNo: order.sourceNo),
-                                  ),
-                                );
-                              },
-                              child: _buildOrderCard(order),
-                            );
+                child:
+                    orders.isEmpty
+                        ? Center(child: EmptyView())
+                        : SmartRefreshWidget(
+                          controller: _refreshController,
+                          enablePullDown: true,
+                          enablePullUp: true,
+                          onRefresh: () async {
+                            await _loadOrders(isRefresh: true);
                           },
+                          onLoading: () async {
+                            await _loadOrders();
+                          },
+                          child: ListView.builder(
+                            itemCount: orders.length,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 0.px,
+                              vertical: 8.px,
+                            ),
+                            itemBuilder: (context, index) {
+                              final order = orders[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => DeliveryOrderDetailPage(
+                                            orderNo: order.sourceNo,
+                                          ),
+                                    ),
+                                  );
+                                },
+                                child: _buildOrderCard(order),
+                              );
+                            },
+                          ),
                         ),
-                      ),
               ),
             ],
           ),
@@ -286,9 +291,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
     return Card(
       elevation: 2,
       margin: EdgeInsets.only(bottom: 12.px),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.px),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.px)),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.px, vertical: 8.px),
         child: Column(
@@ -312,14 +315,12 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                       child: Text(
                         stationList
                                 .firstWhere(
-                                    (element) => element.code == order.code,
-                                    orElse: () => DeliveryStationModel())
+                                  (element) => element.code == order.code,
+                                  orElse: () => DeliveryStationModel(),
+                                )
                                 .sourceStation ??
                             '',
-                        style: TextStyle(
-                          color: primaryColor,
-                          fontSize: 12.px,
-                        ),
+                        style: TextStyle(color: primaryColor, fontSize: 12.px),
                       ),
                     ),
                     SizedBox(width: 8.px),
@@ -340,8 +341,9 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                     vertical: 4.px,
                   ),
                   decoration: BoxDecoration(
-                    color:
-                        _getStatusColor(order.deliveryStatus).withOpacity(0.1),
+                    color: _getStatusColor(
+                      order.deliveryStatus,
+                    ).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(4.px),
                   ),
                   child: Text(
@@ -379,11 +381,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                   SizedBox(height: 8.px),
                   Row(
                     children: [
-                      Icon(
-                        Icons.person,
-                        size: 16.px,
-                        color: primaryColor,
-                      ),
+                      Icon(Icons.person, size: 16.px, color: primaryColor),
                       SizedBox(width: 8.px),
                       Text(
                         '${order.deliveryName}',
@@ -397,11 +395,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                   SizedBox(height: 8.px),
                   Row(
                     children: [
-                      Icon(
-                        Icons.phone,
-                        size: 16.px,
-                        color: primaryColor,
-                      ),
+                      Icon(Icons.phone, size: 16.px, color: primaryColor),
                       SizedBox(width: 8.px),
                       Text(
                         '${order.deliveryTel}',
@@ -424,39 +418,30 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
               children: [
                 Text(
                   S.of(context).createTime + ': ${order.createTime}',
-                  style: TextStyle(
-                    fontSize: 12.px,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                 ),
               ],
             ),
             // 接单时间
-            if (order.deliveryStatus > 0)
+            if (order.deliveryStatus > 0 && order.deliveryStatus != 99)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     S.of(context).acceptTime + ': ${order.acceptTime}',
-                    style: TextStyle(
-                      fontSize: 12.px,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                   ),
                 ],
               ),
 
             // 送达时间
-            if (order.deliveryStatus > 1)
+            if (order.deliveryStatus > 1 && order.deliveryStatus != 99)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     S.of(context).deliverTime + ': ${order.arrivalTime}',
-                    style: TextStyle(
-                      fontSize: 12.px,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -466,184 +451,197 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
                 children: [
                   Text(
                     S.of(context).deliveryException + ':',
-                    style: TextStyle(
-                      fontSize: 12.px,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                   ),
                   Text(
                     order.errorMsg ?? '',
-                    style: TextStyle(
-                      fontSize: 12.px,
-                      color: secondaryColor,
-                    ),
+                    style: TextStyle(fontSize: 12.px, color: secondaryColor),
                   ),
                 ],
               ),
 
-            if (order.deliveryStatus > 0)
+            if (order.deliveryStatus > 0 && order.deliveryStatus != 99)
               Container(
-                  child: Column(
-                children: [
-                  SizedBox(height: 8.px),
-                  // 配送信息
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // 配送员信息
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 14.px,
-                            backgroundColor: Colors.grey[200],
-                            child: Icon(
-                              Icons.delivery_dining,
-                              size: 20.px,
-                              color: Colors.grey[400],
-                            ),
-                          ),
-                          SizedBox(width: 8.px),
-                          Text(
-                            order.deliveryStaff?.nickName ?? '',
-                            style: TextStyle(
-                              fontSize: 10.px,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          // 联系按钮
-                          if (order.deliveryStaff?.tel != '')
-                            GestureDetector(
-                              onTap: () => {
-                                print(order.deliveryStaff?.tel),
-                                launchUrl(Uri.parse(
-                                    'tel:${order.deliveryStaff?.tel}'))
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8.px,
-                                  vertical: 4.px,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: secondaryColor,
-                                  borderRadius: BorderRadius.circular(10.px),
-                                  border: Border.all(
-                                    color: secondaryColor,
-                                  ),
-                                ),
-                                child: Icon(Icons.phone,
-                                    size: 16.px, color: Colors.white),
+                child: Column(
+                  children: [
+                    SizedBox(height: 8.px),
+                    // 配送信息
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // 配送员信息
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 14.px,
+                              backgroundColor: Colors.grey[200],
+                              child: Icon(
+                                Icons.delivery_dining,
+                                size: 20.px,
+                                color: Colors.grey[400],
                               ),
                             ),
-                          SizedBox(width: 8.px),
-                          // 确认收货
-                          if (order.deliveryStatus == 2)
-                            Row(children: [
+                            SizedBox(width: 8.px),
+                            Text(
+                              order.deliveryStaff?.nickName ?? '',
+                              style: TextStyle(
+                                fontSize: 10.px,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            // 联系按钮
+                            if (order.deliveryStaff?.tel != '')
                               GestureDetector(
-                                onTap: () {
-                                  // 弹出确认框
-                                  DialogFactory.instance.showConfirmDialog(
-                                    context: context,
-                                    title: S.of(context).confirmDelivery,
-                                    content:
-                                        S.of(context).confirmDeliveryContent,
-                                    confirmClick: () {
-                                      _confirmDelivery(order);
+                                onTap:
+                                    () => {
+                                      print(order.deliveryStaff?.tel),
+                                      launchUrl(
+                                        Uri.parse(
+                                          'tel:${order.deliveryStaff?.tel}',
+                                        ),
+                                      ),
                                     },
-                                  );
-                                },
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 8.px,
                                     vertical: 4.px,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: primaryColor,
+                                    color: secondaryColor,
                                     borderRadius: BorderRadius.circular(10.px),
-                                    border: Border.all(
-                                      color: primaryColor,
-                                    ),
+                                    border: Border.all(color: secondaryColor),
                                   ),
-                                  child: Text(S.of(context).confirmDelivery,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.px)),
+                                  child: Icon(
+                                    Icons.phone,
+                                    size: 16.px,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                              SizedBox(
-                                width: 8.px,
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  _errorMsgController.text = '';
-                                  // 弹出确认框
-                                  DialogFactory.instance.showFieldDialog(
-                                    context: context,
-                                    title: S.of(context).deliveryException,
-                                    customContentWidget: Container(
-                                      child: TextField(
-                                        maxLines: 3,
-                                        controller: _errorMsgController,
-                                        keyboardType: TextInputType.text,
-                                        style: TextStyle(
-                                          fontSize: 12.px,
+                            SizedBox(width: 8.px),
+                            // 确认收货
+                            if (order.deliveryStatus == 2)
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      // 弹出确认框
+                                      DialogFactory.instance.showConfirmDialog(
+                                        context: context,
+                                        title: S.of(context).confirmDelivery,
+                                        content:
+                                            S
+                                                .of(context)
+                                                .confirmDeliveryContent,
+                                        confirmClick: () {
+                                          _confirmDelivery(order);
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 8.px,
+                                        vertical: 4.px,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.circular(
+                                          10.px,
                                         ),
-                                        decoration: InputDecoration(
-                                          hintText:
-                                              S.of(context).deliveryException,
-                                          hintStyle: TextStyle(
-                                            fontSize: 12.px,
-                                          ),
-                                          // 边距
-                                          contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 8.px,
-                                            vertical: 4.px,
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Colors.grey,
-                                            ),
-                                          ),
+                                        border: Border.all(color: primaryColor),
+                                      ),
+                                      child: Text(
+                                        S.of(context).confirmDelivery,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.px,
                                         ),
                                       ),
                                     ),
-                                    confirmClick: () {
-                                      if (_errorMsgController.text == '') {
-                                        return;
-                                      }
-                                      _errorDelivery(
-                                          order, _errorMsgController.text);
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8.px,
-                                    vertical: 4.px,
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: secondaryColor,
-                                    borderRadius: BorderRadius.circular(10.px),
-                                    border: Border.all(
-                                      color: secondaryColor,
+                                  SizedBox(width: 8.px),
+                                  GestureDetector(
+                                    onTap: () {
+                                      _errorMsgController.text = '';
+                                      // 弹出确认框
+                                      DialogFactory.instance.showFieldDialog(
+                                        context: context,
+                                        title: S.of(context).deliveryException,
+                                        customContentWidget: Container(
+                                          child: TextField(
+                                            maxLines: 3,
+                                            controller: _errorMsgController,
+                                            keyboardType: TextInputType.text,
+                                            style: TextStyle(fontSize: 12.px),
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  S
+                                                      .of(context)
+                                                      .deliveryException,
+                                              hintStyle: TextStyle(
+                                                fontSize: 12.px,
+                                              ),
+                                              // 边距
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                    horizontal: 8.px,
+                                                    vertical: 4.px,
+                                                  ),
+                                              border: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        confirmClick: () {
+                                          if (_errorMsgController.text == '') {
+                                            return;
+                                          }
+                                          _errorDelivery(
+                                            order,
+                                            _errorMsgController.text,
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 8.px,
+                                        vertical: 4.px,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: secondaryColor,
+                                        borderRadius: BorderRadius.circular(
+                                          10.px,
+                                        ),
+                                        border: Border.all(
+                                          color: secondaryColor,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        S.of(context).deliveryException,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.px,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  child: Text(S.of(context).deliveryException,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.px)),
-                                ),
+                                ],
                               ),
-                            ])
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              )),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
@@ -699,7 +697,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
   Color _getStatusColor(int? status) {
     switch (status) {
       case 0:
-        return Colors.orange; // 待接单
+        return Colors.orange; // 已打包
       case 1:
         return Colors.blue; // 配送中
       case 2:
@@ -710,6 +708,8 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
         return primaryColor; // 已完成
       case 5:
         return Colors.red; // 异常订单
+      case -1:
+        return Colors.orange; // 待打包
       default:
         return Colors.grey;
     }
@@ -719,7 +719,7 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
   String _getStatusText(String? status) {
     switch (status) {
       case '0':
-        return S.of(context).pendingOrder;
+        return S.of(context).toBeDelivered;
       case '1':
         return S.of(context).delivering;
       case '2':
@@ -727,9 +727,9 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
       case '3':
         return S.of(context).received;
       case '4':
-        return S.of(context).evaluate;
-      case '5':
-        return S.of(context).exception;
+        return S.of(context).evaluated;
+      case '-1':
+        return S.of(context).toBePacked;
       default:
         return S.of(context).unknownStatus;
     }

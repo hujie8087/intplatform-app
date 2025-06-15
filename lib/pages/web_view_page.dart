@@ -23,11 +23,13 @@ class _WebViewPageState extends State<WebViewPage> {
 
   // 异步获取数据
   Future getNoticeData() async {
-    DataUtils.getDetailById('/system/notice/' + widget.id.toString(),
-        success: (data) {
-      noticeData = NoticeModel.fromJson(data);
-      setState(() {});
-    });
+    DataUtils.getDetailById(
+      '/system/notice/' + widget.id.toString(),
+      success: (data) {
+        noticeData = NoticeModel.fromJson(data);
+        setState(() {});
+      },
+    );
   }
 
   @override
@@ -49,36 +51,22 @@ class _WebViewPageState extends State<WebViewPage> {
               noticeData?.noticeTitle ?? '',
               style: TextStyle(fontSize: 16.px),
             ),
-            SizedBox(
-              height: 8.px,
-            ),
+            SizedBox(height: 8.px),
             Row(
               children: [
                 Text(
                   noticeData?.createDept ?? '',
                   style: TextStyle(color: primaryColor, fontSize: 12.px),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 Text(
                   noticeData?.createTime ?? '',
                   style: TextStyle(color: Colors.grey, fontSize: 12.px),
                 ),
               ],
             ),
-            SizedBox(
-              height: 8.px,
-            ),
-            Image.asset(
-              'assets/images/bg_video.gif',
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-            SizedBox(
-              height: 8.px,
-            ),
-            Container(child: Html(data: noticeData?.noticeContent ?? ''))
+            SizedBox(height: 8.px),
+            Container(child: Html(data: noticeData?.noticeContent ?? '')),
           ],
         ),
       ),

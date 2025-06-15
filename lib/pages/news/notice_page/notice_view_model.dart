@@ -18,20 +18,27 @@ class NoticeViewModel with ChangeNotifier {
       'noticeType': 1,
       'approvalStatus': 4,
     };
-    DataUtils.getPageList('/system/notice/list', params, success: (data) {
-      RowsModel rowsModel =
-          RowsModel.fromJson(data, (json) => NoticeModel.fromJson(json));
-      if (rowsModel.rows != null) {
-        var noticeList = data['rows'] as List;
-        List<NoticeModel> rows =
-            noticeList.map((i) => NoticeModel.fromJson(i)).toList();
-        list = rows;
-      }
-      notifyListeners();
-      Loading.dismissAll();
-    }, fail: (code, msg) {
-      Loading.dismissAll();
-    });
+    DataUtils.getPageList(
+      '/system/notice/list',
+      params,
+      success: (data) {
+        RowsModel rowsModel = RowsModel.fromJson(
+          data,
+          (json) => NoticeModel.fromJson(json),
+        );
+        if (rowsModel.rows != null) {
+          var noticeList = data['rows'] as List;
+          List<NoticeModel> rows =
+              noticeList.map((i) => NoticeModel.fromJson(i)).toList();
+          list = rows;
+        }
+        notifyListeners();
+        Loading.dismissAll();
+      },
+      fail: (code, msg) {
+        Loading.dismissAll();
+      },
+    );
     Loading.dismissAll();
   }
 
@@ -40,23 +47,31 @@ class NoticeViewModel with ChangeNotifier {
     var params = {
       'pageNum': pageNum,
       'pageSize': pageSize,
+      'status': '0',
       'noticeType': 2,
       'approvalStatus': 4,
     };
-    DataUtils.getPageList('/system/notice/list', params, success: (data) {
-      RowsModel rowsModel =
-          RowsModel.fromJson(data, (json) => NoticeModel.fromJson(json));
-      if (rowsModel.rows != null) {
-        var noticeList = data['rows'] as List;
-        List<NoticeModel> rows =
-            noticeList.map((i) => NoticeModel.fromJson(i)).toList();
-        newsList = rows;
-      }
-      notifyListeners();
-      Loading.dismissAll();
-    }, fail: (code, msg) {
-      Loading.dismissAll();
-    });
+    DataUtils.getPageList(
+      '/system/notice/list',
+      params,
+      success: (data) {
+        RowsModel rowsModel = RowsModel.fromJson(
+          data,
+          (json) => NoticeModel.fromJson(json),
+        );
+        if (rowsModel.rows != null) {
+          var noticeList = data['rows'] as List;
+          List<NoticeModel> rows =
+              noticeList.map((i) => NoticeModel.fromJson(i)).toList();
+          newsList = rows;
+        }
+        notifyListeners();
+        Loading.dismissAll();
+      },
+      fail: (code, msg) {
+        Loading.dismissAll();
+      },
+    );
     Loading.dismissAll();
   }
 }

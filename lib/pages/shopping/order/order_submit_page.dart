@@ -920,6 +920,10 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
       ProgressHUD.showError(S.of(context).pleaseFillIn(S.of(context).phone));
       return;
     }
+    if (restaurantDetail?.id == null) {
+      ProgressHUD.showError('店铺信息异常，请返回店铺页面重新提交结算！');
+      return;
+    }
     // 配送方式为配送时
     if (selectedPickupType == 3) {
       // 检查地址
@@ -938,7 +942,6 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
         return;
       }
     }
-
     DialogFactory.new().showConfirmDialog(
       context: context,
       title: S.of(context).confirmSubmit,

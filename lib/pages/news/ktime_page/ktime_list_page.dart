@@ -32,7 +32,9 @@ class _KTimeListPageState extends State<KTimeListPage>
   @override
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 600), vsync: this);
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
     super.initState();
     _refreshController = RefreshController();
     getPromoList(true);
@@ -45,35 +47,39 @@ class _KTimeListPageState extends State<KTimeListPage>
       promoList = [];
     }
     try {
-      DataUtils.getPageList('/system/notice/list', {
-        'pageNum': pageNum,
-        'pageSize': pageSize,
-        'noticeType': 4,
-        "status": '0',
-        'approvalStatus': 4,
-      }, success: (data) {
-        if (data != null) {
-          var noticeList = data['rows'] as List;
-          List<NoticeModel> rows =
-              noticeList.map((i) => NoticeModel.fromJson(i)).toList();
-          if (isRefresh) {
-            promoList = rows;
-          } else {
-            promoList = [...promoList, ...rows];
+      DataUtils.getPageList(
+        '/system/notice/list',
+        {
+          'pageNum': pageNum,
+          'pageSize': pageSize,
+          'noticeType': 4,
+          "status": '0',
+          'approvalStatus': 4,
+        },
+        success: (data) {
+          if (data != null) {
+            var noticeList = data['rows'] as List;
+            List<NoticeModel> rows =
+                noticeList.map((i) => NoticeModel.fromJson(i)).toList();
+            if (isRefresh) {
+              promoList = rows;
+            } else {
+              promoList = [...promoList, ...rows];
+            }
+            total = data['total'] ?? 0;
+            pageNum++;
           }
-          total = data['total'] ?? 0;
-          pageNum++;
-        }
-        setState(() {
-          if (promoList.length >= total) {
-            _refreshController.loadNoData();
-          } else {
-            _refreshController.loadComplete();
-          }
-          _refreshController.refreshCompleted();
-          isLoading = false;
-        });
-      });
+          setState(() {
+            if (promoList.length >= total) {
+              _refreshController.loadNoData();
+            } else {
+              _refreshController.loadComplete();
+            }
+            _refreshController.refreshCompleted();
+            isLoading = false;
+          });
+        },
+      );
     } catch (e) {
       print('Error fetching news: $e');
       rethrow;
@@ -93,33 +99,34 @@ class _KTimeListPageState extends State<KTimeListPage>
       appBar: AppBar(
         title: Text(S.of(context).kTimeList, style: TextStyle(fontSize: 16.px)),
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : promoList.isEmpty
+      body:
+          isLoading
+              ? Center(child: CircularProgressIndicator())
+              : promoList.isEmpty
               ? EmptyView()
               : SmartRefreshWidget(
-                  controller: _refreshController,
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  onRefresh: () async {
-                    await getPromoList(true);
-                  },
-                  onLoading: () async {
-                    await getPromoList(false);
-                  },
-                  child: GridView.builder(
-                    padding: EdgeInsets.all(16.px),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.75,
-                    ),
-                    itemCount: promoList.length,
-                    itemBuilder: (context, index) {
-                      final promo = promoList[index];
-                      return _buildPromoCard(promo);
-                    },
+                controller: _refreshController,
+                enablePullDown: true,
+                enablePullUp: true,
+                onRefresh: () async {
+                  await getPromoList(true);
+                },
+                onLoading: () async {
+                  await getPromoList(false);
+                },
+                child: GridView.builder(
+                  padding: EdgeInsets.all(16.px),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.75,
                   ),
+                  itemCount: promoList.length,
+                  itemBuilder: (context, index) {
+                    final promo = promoList[index];
+                    return _buildPromoCard(promo);
+                  },
                 ),
+              ),
     );
   }
 
@@ -127,7 +134,9 @@ class _KTimeListPageState extends State<KTimeListPage>
     return GestureDetector(
       onTap: () {
         RouteUtils.push(
-            context, PromoDetailPage(noticeId: promo.noticeId.toString()));
+          context,
+          PromoDetailPage(noticeId: promo.noticeId.toString()),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -152,7 +161,7 @@ class _KTimeListPageState extends State<KTimeListPage>
                   AspectRatio(
                     aspectRatio: 1,
                     child: Image.network(
-                      APIs.imagePrefix + (promo.img ?? ''),
+                      APIs.imageOnlinePrefix + (promo.img ?? ''),
                       fit: BoxFit.cover,
                     ),
                   ),

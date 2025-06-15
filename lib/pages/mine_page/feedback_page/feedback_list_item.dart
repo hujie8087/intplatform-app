@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class FeedbackListItem extends StatelessWidget {
-  const FeedbackListItem(
-      {Key? key,
-      this.noticeData,
-      this.animationController,
-      this.animation,
-      this.callback})
-      : super(key: key);
+  const FeedbackListItem({
+    Key? key,
+    this.noticeData,
+    this.animationController,
+    this.animation,
+    this.callback,
+  }) : super(key: key);
 
   final VoidCallback? callback;
   final HomeNoticeData? noticeData;
@@ -25,7 +25,11 @@ class FeedbackListItem extends StatelessWidget {
         return FadeTransition(
           opacity: animation!,
           child: Transform(
-            transform: Matrix4.translationValues(0.0, 50 * (1.0 - animation!.value), 0.0),
+            transform: Matrix4.translationValues(
+              0.0,
+              50 * (1.0 - animation!.value),
+              0.0,
+            ),
             child: Container(
               child: InkWell(
                 splashColor: Colors.transparent,
@@ -53,38 +57,48 @@ class FeedbackListItem extends StatelessWidget {
                                   height: 30,
                                   margin: EdgeInsets.only(right: 10),
                                   decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/fitness_app/snack.png'),
-                                        fit: BoxFit.fill,
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: AssetImage(
+                                        'assets/images/snack.png',
                                       ),
-                                      color: primaryColor),
+                                      fit: BoxFit.fill,
+                                    ),
+                                    color: primaryColor,
+                                  ),
                                 ),
                                 Expanded(
-                                    child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(noticeData?.noticeTitle ?? '',
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        noticeData?.noticeTitle ?? '',
                                         style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                    Text(noticeData?.createTime ?? '',
-                                        style: TextStyle(fontSize: 12))
-                                  ],
-                                ))
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        noticeData?.createTime ?? '',
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                             Container(
-                                margin: EdgeInsets.only(top: 10),
-                                alignment: Alignment.centerLeft,
-                                child: Html(
-                                  data: noticeData?.noticeContent ?? '',
-                                ))
+                              margin: EdgeInsets.only(top: 10),
+                              alignment: Alignment.centerLeft,
+                              child: Html(
+                                data: noticeData?.noticeContent ?? '',
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

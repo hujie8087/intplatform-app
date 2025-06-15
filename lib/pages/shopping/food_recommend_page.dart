@@ -109,7 +109,9 @@ class _FoodRecommendPageState extends State<FoodRecommendPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.current.foodRecommend)),
+      appBar: AppBar(
+        title: Text(S.current.foodRecommend, style: TextStyle(fontSize: 16.px)),
+      ),
       body: SafeArea(
         child: SmartRefreshWidget(
           enablePullDown: true,
@@ -271,7 +273,7 @@ class FoodRecommendDataView extends StatelessWidget {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.all(16.px),
+                              padding: EdgeInsets.all(10.px),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -279,7 +281,7 @@ class FoodRecommendDataView extends StatelessWidget {
                                   Text(
                                     listData?.foodName ?? '',
                                     style: TextStyle(
-                                      fontSize: 18.px,
+                                      fontSize: 14.px,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -289,7 +291,7 @@ class FoodRecommendDataView extends StatelessWidget {
                                     children: [
                                       Icon(
                                         Icons.location_on,
-                                        size: 16.px,
+                                        size: 14.px,
                                         color: Colors.grey,
                                       ),
                                       SizedBox(width: 4.px),
@@ -312,7 +314,7 @@ class FoodRecommendDataView extends StatelessWidget {
                                     children: [
                                       Icon(
                                         Icons.access_time,
-                                        size: 16.px,
+                                        size: 14.px,
                                         color: Colors.grey,
                                       ),
                                       SizedBox(width: 4.px),
@@ -337,7 +339,7 @@ class FoodRecommendDataView extends StatelessWidget {
                                   Text(
                                     '${S.current.recommendReason}：${listData?.rdReason}',
                                     style: TextStyle(
-                                      fontSize: 12.px,
+                                      fontSize: 10.px,
                                       color: Colors.grey,
                                     ),
                                   ),
@@ -381,7 +383,10 @@ class FoodRecommendDataView extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16.px),
+                                bottomRight: Radius.circular(16.px),
+                              ),
                             ),
                             // 新品推荐
                             child: Row(

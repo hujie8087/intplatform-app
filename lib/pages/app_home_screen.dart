@@ -136,6 +136,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
         //线上版本的code
         Version oldVersion = Version.parse(versionName);
         Version newVersion = Version.parse(updateModel.versionName);
+        SpUtils.saveString('plantAccessToken', data['data']['def1'] ?? '');
+        SpUtils.saveString('animalAccessToken', data['data']['def2'] ?? '');
         try {
           //如果当前版本小于线上版本，需要更新
           if (oldVersion == newVersion) {

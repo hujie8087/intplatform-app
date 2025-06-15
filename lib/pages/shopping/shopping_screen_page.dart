@@ -229,48 +229,50 @@ class _ShoppingScreenPage extends State<ShoppingScreenPage>
         if (model.list?.isEmpty == true) {
           return Center(child: EmptyView(type: EmptyType.loading));
         }
-        return Wrap(
-          spacing: 8.px,
-          runSpacing: 5.px,
-          children: List.generate(model.list?.length ?? 0, (index) {
-            final int count = model.list?.length ?? 0;
-            final Animation<double> animation = Tween<double>(
-              begin: 0.0,
-              end: 1.0,
-            ).animate(
-              CurvedAnimation(
-                parent: animationController!,
-                curve: Interval(
-                  (1 / count) * index,
-                  1.0,
-                  curve: Curves.fastOutSlowIn,
+        return SingleChildScrollView(
+          child: Wrap(
+            spacing: 8.px,
+            runSpacing: 5.px,
+            children: List.generate(model.list?.length ?? 0, (index) {
+              final int count = model.list?.length ?? 0;
+              final Animation<double> animation = Tween<double>(
+                begin: 0.0,
+                end: 1.0,
+              ).animate(
+                CurvedAnimation(
+                  parent: animationController!,
+                  curve: Interval(
+                    (1 / count) * index,
+                    1.0,
+                    curve: Curves.fastOutSlowIn,
+                  ),
                 ),
-              ),
-            );
-            animationController?.forward();
-            return Container(
-              width:
-                  isCollapsed
-                      ? double.infinity
-                      : MediaQuery.of(context).size.width / 2 - 16.px,
-              child: RestaurantDataView(
-                listData: model.list![index]!,
-                callBack:
-                    () => {
-                      RouteUtils.push(
-                        context,
-                        RestaurantScreenPage(id: model.list![index]!.id!),
-                      ),
-                    },
-                imagePrefix: imagePrefix,
-                imageNewPrefix: imageNewPrefix,
-                animation: animation,
-                animationController: animationController,
-                pickupTypes: model.pickupTypes,
-                isCollapsed: isCollapsed,
-              ),
-            );
-          }),
+              );
+              animationController?.forward();
+              return Container(
+                width:
+                    isCollapsed
+                        ? double.infinity
+                        : MediaQuery.of(context).size.width / 2 - 16.px,
+                child: RestaurantDataView(
+                  listData: model.list![index]!,
+                  callBack:
+                      () => {
+                        RouteUtils.push(
+                          context,
+                          RestaurantScreenPage(id: model.list![index]!.id!),
+                        ),
+                      },
+                  imagePrefix: imagePrefix,
+                  imageNewPrefix: imageNewPrefix,
+                  animation: animation,
+                  animationController: animationController,
+                  pickupTypes: model.pickupTypes,
+                  isCollapsed: isCollapsed,
+                ),
+              );
+            }),
+          ),
         );
       },
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -17,8 +18,10 @@ class _PublicDetailPageState extends State<PublicDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.listData.showTitle ?? '',
-            style: TextStyle(fontSize: 16.px)),
+        title: Text(
+          widget.listData.showTitle ?? '',
+          style: TextStyle(fontSize: 16.px),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -32,8 +35,9 @@ class _PublicDetailPageState extends State<PublicDetailPage> {
                 height: 200.px,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image:
-                        NetworkImage(APIs.imagePrefix + widget.listData.image!),
+                    image: NetworkImage(
+                      APIs.imagePrefix + widget.listData.image!,
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -55,13 +59,30 @@ class _PublicDetailPageState extends State<PublicDetailPage> {
                   SizedBox(height: 16.px),
                   // 信息列表
                   _buildInfoItem(
-                      Icons.location_on, '所在区域', widget.listData.region),
+                    Icons.location_on,
+                    '${S.of(context).region}',
+                    widget.listData.region,
+                  ),
                   _buildInfoItem(
-                      Icons.access_time, '营业时间', widget.listData.businessHours),
-                  _buildInfoItem(Icons.person, '负责人', widget.listData.head),
+                    Icons.access_time,
+                    '${S.of(context).publicBusinessHours}',
+                    widget.listData.businessHours,
+                  ),
                   _buildInfoItem(
-                      Icons.phone, '联系电话', widget.listData.telephone),
-                  _buildInfoItem(Icons.home, '详细地址', widget.listData.address),
+                    Icons.person,
+                    '${S.of(context).head}',
+                    widget.listData.head,
+                  ),
+                  _buildInfoItem(
+                    Icons.phone,
+                    '${S.of(context).phoneNumber}',
+                    widget.listData.telephone,
+                  ),
+                  _buildInfoItem(
+                    Icons.home,
+                    '${S.of(context).publicAddress}',
+                    widget.listData.address,
+                  ),
 
                   // 内容
                   if (widget.listData.details != null &&
@@ -136,18 +157,12 @@ class _PublicDetailPageState extends State<PublicDetailPage> {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 12.px,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                 ),
                 SizedBox(height: 2.px),
                 Text(
                   value,
-                  style: TextStyle(
-                    fontSize: 14.px,
-                    color: Colors.black87,
-                  ),
+                  style: TextStyle(fontSize: 14.px, color: Colors.black87),
                 ),
               ],
             ),

@@ -25,17 +25,20 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
   bool _showTitle = false;
 
   Future<void> getNoticeDetail() async {
-    DataUtils.getDetailById('/system/notice/' + widget.noticeId,
-        success: (data) {
-      _promo = NoticeModel.fromJson(data['data']);
-      setState(() {
-        if (_promo?.video != null) {
-          _initializePlayer();
-        }
-      });
-    }, fail: (error, message) {
-      ProgressHUD.showError(message);
-    });
+    DataUtils.getDetailById(
+      '/system/notice/' + widget.noticeId,
+      success: (data) {
+        _promo = NoticeModel.fromJson(data['data']);
+        setState(() {
+          if (_promo?.video != null) {
+            _initializePlayer();
+          }
+        });
+      },
+      fail: (error, message) {
+        ProgressHUD.showError(message);
+      },
+    );
   }
 
   @override
@@ -56,7 +59,7 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
   Future<void> _initializePlayer() async {
     try {
       _videoPlayerController = VideoPlayerController.networkUrl(
-        Uri.parse(APIs.imagePrefix + (_promo?.video ?? '')),
+        Uri.parse(APIs.imageOnlinePrefix + (_promo?.video ?? '')),
       );
 
       await _videoPlayerController.initialize();
@@ -70,7 +73,7 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
         allowMuting: true,
         placeholder: Center(
           child: Image.network(
-            APIs.imagePrefix + (_promo?.img ?? ''),
+            APIs.imageOnlinePrefix + (_promo?.img ?? ''),
             fit: BoxFit.cover,
           ),
         ),
@@ -114,10 +117,7 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
           duration: Duration(milliseconds: 200),
           child: Text(
             _promo?.noticeTitle ?? '',
-            style: TextStyle(
-              fontSize: 16.px,
-              color: Colors.black,
-            ),
+            style: TextStyle(fontSize: 16.px, color: Colors.black),
           ),
         ),
         leading: IconButton(
@@ -128,121 +128,131 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: _promo == null
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              controller: _scrollController,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 视频播放器
-                  Stack(
-                    children: [
-                      AspectRatio(
-                        aspectRatio: 16 / 9,
-                        child: Container(
-                          color: Colors.black,
-                          child: _isInitialized
-                              ? Chewie(controller: _chewieController!)
-                              : Center(child: CircularProgressIndicator()),
-                        ),
-                      ),
-                      if (!_isInitialized)
-                        Positioned.fill(
-                          child: Image.network(
-                            APIs.imagePrefix + (_promo?.img ?? ''),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                    ],
-                  ),
-
-                  // 内容区域
-                  Container(
-                    padding: EdgeInsets.all(16.px),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      body:
+          _promo == null
+              ? Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 视频播放器
+                    Stack(
                       children: [
-                        // 标题
-                        Text(
-                          _promo?.noticeTitle ?? '',
-                          style: TextStyle(
-                            fontSize: 20.px,
-                            fontWeight: FontWeight.bold,
-                            height: 1.4,
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Container(
+                            color: Colors.black,
+                            child:
+                                _isInitialized
+                                    ? Chewie(controller: _chewieController!)
+                                    : Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
                           ),
                         ),
-                        SizedBox(height: 16.px),
-
-                        // 信息栏
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 8.px,
-                            horizontal: 12.px,
+                        if (!_isInitialized)
+                          Positioned.fill(
+                            child: Image.network(
+                              APIs.imageOnlinePrefix + (_promo?.img ?? ''),
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(8.px),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.access_time,
-                                  size: 16.px, color: Colors.grey[600]),
-                              SizedBox(width: 4.px),
-                              Text(
-                                _promo?.createTime ?? '',
-                                style: TextStyle(
-                                  fontSize: 12.px,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              SizedBox(width: 16.px),
-                              Icon(Icons.remove_red_eye,
-                                  size: 16.px, color: Colors.grey[600]),
-                              SizedBox(width: 4.px),
-                              Text(
-                                '${_promo?.papeView ?? 0}',
-                                style: TextStyle(
-                                  fontSize: 12.px,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(height: 20.px),
-
-                        // 描述内容
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8.px),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          padding: EdgeInsets.all(16.px),
-                          child: Html(
-                            data: _promo?.noticeContent ?? '',
-                            style: {
-                              "body": Style(
-                                fontSize: FontSize(14.px),
-                                lineHeight: LineHeight(1.6),
-                              ),
-                            },
-                          ),
-                        ),
                       ],
                     ),
-                  ),
-                ],
+
+                    // 内容区域
+                    Container(
+                      padding: EdgeInsets.all(16.px),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 标题
+                          Text(
+                            _promo?.noticeTitle ?? '',
+                            style: TextStyle(
+                              fontSize: 20.px,
+                              fontWeight: FontWeight.bold,
+                              height: 1.4,
+                            ),
+                          ),
+                          SizedBox(height: 16.px),
+
+                          // 信息栏
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 8.px,
+                              horizontal: 12.px,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(8.px),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.access_time,
+                                  size: 16.px,
+                                  color: Colors.grey[600],
+                                ),
+                                SizedBox(width: 4.px),
+                                Text(
+                                  _promo?.createTime ?? '',
+                                  style: TextStyle(
+                                    fontSize: 12.px,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                SizedBox(width: 16.px),
+                                Icon(
+                                  Icons.remove_red_eye,
+                                  size: 16.px,
+                                  color: Colors.grey[600],
+                                ),
+                                SizedBox(width: 4.px),
+                                Text(
+                                  '${_promo?.papeView ?? 0}',
+                                  style: TextStyle(
+                                    fontSize: 12.px,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: 20.px),
+
+                          // 描述内容
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.px),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            padding: EdgeInsets.all(16.px),
+                            child: Html(
+                              data: _promo?.noticeContent ?? '',
+                              style: {
+                                "body": Style(
+                                  fontSize: FontSize(14.px),
+                                  lineHeight: LineHeight(1.6),
+                                ),
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
     );
   }
 

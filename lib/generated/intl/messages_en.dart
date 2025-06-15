@@ -26,7 +26,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m2(title) => "Please fill in ${title}";
 
-  static String m3(title) => "Please select";
+  static String m3(label) => "Please enter ${label}";
+
+  static String m4(title) => "Please select";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -53,7 +55,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
         "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
         "attention": MessageLookupByLibrary.simpleMessage("Attention"),
+        "auditRejected":
+            MessageLookupByLibrary.simpleMessage("Rejected by Review"),
         "birthday": MessageLookupByLibrary.simpleMessage("Birthday"),
+        "busTimetable": MessageLookupByLibrary.simpleMessage("Bus Timetable"),
+        "busToday": MessageLookupByLibrary.simpleMessage("Today"),
         "businessHours": MessageLookupByLibrary.simpleMessage("Business hours"),
         "cameraPermissionDenied": MessageLookupByLibrary.simpleMessage(
             "Camera permission is permanently denied, open the settings page"),
@@ -97,6 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "changeTheme": MessageLookupByLibrary.simpleMessage("Change theme"),
         "checkUpdate": MessageLookupByLibrary.simpleMessage("Check Update"),
         "checkout": MessageLookupByLibrary.simpleMessage("Checkout"),
+        "chooseRoute": MessageLookupByLibrary.simpleMessage("Choose Route"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
         "clearCart": MessageLookupByLibrary.simpleMessage("Clear cart"),
         "clearCartTips":
@@ -106,15 +113,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "companyNews": MessageLookupByLibrary.simpleMessage("Company News"),
         "completed": MessageLookupByLibrary.simpleMessage("Completed"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "confirmDelete":
+            MessageLookupByLibrary.simpleMessage("Confirm Deletion"),
+        "confirmDeleteContent": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to delete this entry? It cannot be recovered!"),
         "confirmDelivery":
             MessageLookupByLibrary.simpleMessage("Confirm delivery"),
         "confirmDeliveryContent": MessageLookupByLibrary.simpleMessage(
             "Confirm delivery, the order will not be modified after confirmation, please confirm whether to receive the order?"),
         "confirmModify": MessageLookupByLibrary.simpleMessage("Confirm modify"),
+        "confirmPublish":
+            MessageLookupByLibrary.simpleMessage("Confirm publish"),
+        "confirmReceive":
+            MessageLookupByLibrary.simpleMessage("Confirm Receipt"),
+        "confirmReceiveContent": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to receive this item?"),
         "confirmSubmit": MessageLookupByLibrary.simpleMessage("Confirm submit"),
         "confirmSubmitContent":
             MessageLookupByLibrary.simpleMessage("Confirm to submit order?"),
         "contact": MessageLookupByLibrary.simpleMessage("Contact"),
+        "contactNumber": MessageLookupByLibrary.simpleMessage("Contact Number"),
         "contactPerson": MessageLookupByLibrary.simpleMessage("Contact person"),
         "contactPhone": MessageLookupByLibrary.simpleMessage("Contact Phone"),
         "contactPhoneNotEmpty": MessageLookupByLibrary.simpleMessage(
@@ -160,11 +178,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "deliveryOrderNo":
             MessageLookupByLibrary.simpleMessage("Delivery order number"),
         "deliveryPhone": MessageLookupByLibrary.simpleMessage("Tel"),
+        "deliveryPhoto": MessageLookupByLibrary.simpleMessage("Delivery Photo"),
         "deliveryTime": MessageLookupByLibrary.simpleMessage("Delivery time"),
         "dept": MessageLookupByLibrary.simpleMessage("Department"),
         "diningIn": MessageLookupByLibrary.simpleMessage("Dining In"),
         "diningService": MessageLookupByLibrary.simpleMessage("Dining Service"),
         "diningTime": MessageLookupByLibrary.simpleMessage("Dining time"),
+        "direction": MessageLookupByLibrary.simpleMessage("Direction"),
         "dishMethod": MessageLookupByLibrary.simpleMessage("Dish method"),
         "dishName": MessageLookupByLibrary.simpleMessage("Dish name"),
         "dishSuggestion":
@@ -173,12 +193,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Drag here to remove"),
         "dragRemoveImage":
             MessageLookupByLibrary.simpleMessage("Drag to remove image"),
+        "edit": MessageLookupByLibrary.simpleMessage("Edit"),
+        "editToBeAuditedMessage": MessageLookupByLibrary.simpleMessage(
+            "Modified successfully, pending review"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "employeeNumber":
             MessageLookupByLibrary.simpleMessage("Employee number"),
         "en": MessageLookupByLibrary.simpleMessage("English"),
         "endDate": MessageLookupByLibrary.simpleMessage("End Date"),
         "endOfList": MessageLookupByLibrary.simpleMessage("End of list"),
+        "endStation": MessageLookupByLibrary.simpleMessage("End Station"),
         "enterNewPasswordAgin": MessageLookupByLibrary.simpleMessage(
             "Please enter the new password again"),
         "evaluate": MessageLookupByLibrary.simpleMessage("Evaluate"),
@@ -209,14 +233,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedbackTitle": MessageLookupByLibrary.simpleMessage("Title"),
         "firstLoginTips": MessageLookupByLibrary.simpleMessage(
             "For your financial security, please change your password as soon as you log in for the first time!"),
+        "firstTripTime":
+            MessageLookupByLibrary.simpleMessage("First Trip Time"),
         "fixed": MessageLookupByLibrary.simpleMessage("Fixed"),
         "foodRecommend":
             MessageLookupByLibrary.simpleMessage("Food Recommendation"),
         "forgetPassword":
             MessageLookupByLibrary.simpleMessage("Forget password?"),
+        "found": MessageLookupByLibrary.simpleMessage("Found"),
+        "foundItem": MessageLookupByLibrary.simpleMessage("Found Item"),
+        "foundItemList":
+            MessageLookupByLibrary.simpleMessage("Found Item List"),
         "gender": MessageLookupByLibrary.simpleMessage("Gender"),
+        "goodHeartedColleague":
+            MessageLookupByLibrary.simpleMessage("Kind Colleague"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("Goods info"),
         "goodsTotal": MessageLookupByLibrary.simpleMessage("Goods total"),
+        "head": MessageLookupByLibrary.simpleMessage("Head"),
         "hello": MessageLookupByLibrary.simpleMessage("Hello"),
         "homePage": MessageLookupByLibrary.simpleMessage("Home"),
         "iWantToEat": MessageLookupByLibrary.simpleMessage("I want to eat"),
@@ -247,9 +280,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "inputWorkNumber": MessageLookupByLibrary.simpleMessage(
             "Please enter your employee number"),
         "isDefault": MessageLookupByLibrary.simpleMessage("Is default"),
+        "itemName": MessageLookupByLibrary.simpleMessage("Item name"),
         "items": MessageLookupByLibrary.simpleMessage("Items"),
         "kTimeDetail": MessageLookupByLibrary.simpleMessage("K Time Detail"),
         "kTimeList": MessageLookupByLibrary.simpleMessage("K Time"),
+        "lastTripTime": MessageLookupByLibrary.simpleMessage("Last Trip Time"),
         "like": MessageLookupByLibrary.simpleMessage("Like"),
         "likeFailed": MessageLookupByLibrary.simpleMessage("Failed to like"),
         "likeSuccess":
@@ -266,6 +301,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "logoutSuccess": MessageLookupByLibrary.simpleMessage("Logout success"),
         "logoutTip":
             MessageLookupByLibrary.simpleMessage("Are you sure to logout?"),
+        "lost": MessageLookupByLibrary.simpleMessage("Lost"),
+        "lostAndFound": MessageLookupByLibrary.simpleMessage("Lost and Found"),
+        "lostItem": MessageLookupByLibrary.simpleMessage("Lost Item"),
+        "lostItemColleague":
+            MessageLookupByLibrary.simpleMessage("Lost Item Owner"),
+        "lostItemList": MessageLookupByLibrary.simpleMessage("Lost Item List"),
+        "lostPlace": MessageLookupByLibrary.simpleMessage("Lost Place"),
+        "lostStatus": MessageLookupByLibrary.simpleMessage("Lost Status"),
+        "lostTime": MessageLookupByLibrary.simpleMessage("Lost Time"),
+        "lostType": MessageLookupByLibrary.simpleMessage("Lost Type"),
         "man": MessageLookupByLibrary.simpleMessage("Male"),
         "manage": MessageLookupByLibrary.simpleMessage("Manage"),
         "message": MessageLookupByLibrary.simpleMessage("Message"),
@@ -279,6 +324,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "myFeedback": MessageLookupByLibrary.simpleMessage("My Feedback"),
         "myOrder": MessageLookupByLibrary.simpleMessage("My Order"),
         "myProcess": MessageLookupByLibrary.simpleMessage("My Process"),
+        "myRelease": MessageLookupByLibrary.simpleMessage("My Posts"),
+        "myReleaseList": MessageLookupByLibrary.simpleMessage("My Post List"),
         "myRepair": MessageLookupByLibrary.simpleMessage("My Repair"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "needCameraPermission": MessageLookupByLibrary.simpleMessage(
@@ -349,6 +396,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "pendingRepair": MessageLookupByLibrary.simpleMessage("Pending Repair"),
         "personalInfo": MessageLookupByLibrary.simpleMessage("Personal info"),
         "phone": MessageLookupByLibrary.simpleMessage("Phone"),
+        "phoneNumber": MessageLookupByLibrary.simpleMessage("Phone number"),
         "photoAlbum": MessageLookupByLibrary.simpleMessage("Photo album"),
         "pickupLimitTime":
             MessageLookupByLibrary.simpleMessage("Pickup limit time"),
@@ -359,16 +407,28 @@ class MessageLookup extends MessageLookupByLibrary {
         "pleaseCancelOrder": MessageLookupByLibrary.simpleMessage(
             "Please cancel the order first"),
         "pleaseFillIn": m2,
-        "pleaseSelect": m3,
+        "pleaseInput": m3,
+        "pleaseSelect": m4,
         "process": MessageLookupByLibrary.simpleMessage("Process"),
         "processDescription":
             MessageLookupByLibrary.simpleMessage("Process description"),
         "promo": MessageLookupByLibrary.simpleMessage("Promotional Video"),
         "promoDetail": MessageLookupByLibrary.simpleMessage("Promo Detail"),
         "promoList": MessageLookupByLibrary.simpleMessage("Promo List"),
+        "publicAddress":
+            MessageLookupByLibrary.simpleMessage("Detailed address"),
+        "publicBusinessHours":
+            MessageLookupByLibrary.simpleMessage("Business hours"),
+        "publish": MessageLookupByLibrary.simpleMessage("Publish"),
+        "publishInfo":
+            MessageLookupByLibrary.simpleMessage("Publish information"),
         "pullUpLoadMore":
             MessageLookupByLibrary.simpleMessage("Pull up to load more"),
         "read": MessageLookupByLibrary.simpleMessage("Read"),
+        "receive": MessageLookupByLibrary.simpleMessage("Receive"),
+        "receivePlace":
+            MessageLookupByLibrary.simpleMessage("Receiving Address"),
+        "receiveTime": MessageLookupByLibrary.simpleMessage("Found Time"),
         "received": MessageLookupByLibrary.simpleMessage("Received"),
         "recommendPerson": MessageLookupByLibrary.simpleMessage("Recommender"),
         "recommendReason":
@@ -380,6 +440,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Refresh complete"),
         "refreshFailed": MessageLookupByLibrary.simpleMessage("Refresh failed"),
         "refreshing": MessageLookupByLibrary.simpleMessage("Refreshing..."),
+        "region": MessageLookupByLibrary.simpleMessage("Region"),
         "releaseLoadMore":
             MessageLookupByLibrary.simpleMessage("Release to load more"),
         "remaining": MessageLookupByLibrary.simpleMessage("Remaining"),
@@ -451,6 +512,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "selectAddress":
             MessageLookupByLibrary.simpleMessage("Select delivery address"),
         "selectByTime": MessageLookupByLibrary.simpleMessage("Select by Time"),
+        "selectDate": MessageLookupByLibrary.simpleMessage("Select date"),
         "selectRepairTime":
             MessageLookupByLibrary.simpleMessage("Please select repair time"),
         "selectRepairType":
@@ -461,6 +523,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "shopWorkbench": MessageLookupByLibrary.simpleMessage("Shop Workbench"),
         "startDate": MessageLookupByLibrary.simpleMessage("Start Date"),
         "startLocation": MessageLookupByLibrary.simpleMessage("Start location"),
+        "startStation": MessageLookupByLibrary.simpleMessage("Start Station"),
+        "stationNumber": MessageLookupByLibrary.simpleMessage("Station Number"),
+        "stopList": MessageLookupByLibrary.simpleMessage("Stop List"),
         "stopLocation": MessageLookupByLibrary.simpleMessage("Stop location"),
         "submit": MessageLookupByLibrary.simpleMessage("Submit"),
         "submitOrder": MessageLookupByLibrary.simpleMessage("Submit order"),
@@ -468,14 +533,24 @@ class MessageLookup extends MessageLookupByLibrary {
         "takePhoto": MessageLookupByLibrary.simpleMessage("Take photo"),
         "takeout": MessageLookupByLibrary.simpleMessage("Takeout"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("Three Months"),
+        "timetable": MessageLookupByLibrary.simpleMessage("Timetable"),
         "tip": MessageLookupByLibrary.simpleMessage("Tip"),
         "to": MessageLookupByLibrary.simpleMessage("To"),
+        "toBeAudited": MessageLookupByLibrary.simpleMessage("Pending Review"),
+        "toBeAuditedMessage": MessageLookupByLibrary.simpleMessage(
+            "Submitted successfully, pending review"),
         "toBeDelivered":
             MessageLookupByLibrary.simpleMessage("To Be Delivered"),
+        "toBeFound": MessageLookupByLibrary.simpleMessage("To Be Found"),
         "toBePacked": MessageLookupByLibrary.simpleMessage("To Be Packed"),
+        "toBeReceived":
+            MessageLookupByLibrary.simpleMessage("Pending Collection"),
+        "toBeRejected": MessageLookupByLibrary.simpleMessage("Rejected"),
         "today": MessageLookupByLibrary.simpleMessage("Today"),
         "toolPage": MessageLookupByLibrary.simpleMessage("Toolbox"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
+        "tripNumber": MessageLookupByLibrary.simpleMessage("Trip Number"),
+        "type": MessageLookupByLibrary.simpleMessage("Type"),
         "unfixed": MessageLookupByLibrary.simpleMessage("Unfixed"),
         "unfixedReason": MessageLookupByLibrary.simpleMessage(
             "Please specify the reason for unfixed"),
@@ -493,6 +568,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "updateTime": MessageLookupByLibrary.simpleMessage("Update time"),
         "uploadFacePhoto":
             MessageLookupByLibrary.simpleMessage("Please upload a face photo"),
+        "uploadImageFailed":
+            MessageLookupByLibrary.simpleMessage("Image upload failed"),
         "uploadImages": MessageLookupByLibrary.simpleMessage("Upload Images"),
         "uploadNewFacePhoto":
             MessageLookupByLibrary.simpleMessage("Upload New ID Photo"),

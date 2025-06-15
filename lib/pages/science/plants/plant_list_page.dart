@@ -1,20 +1,67 @@
-import 'dart:io';
+import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/plant_model.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
-import 'package:logistics_app/route/route_utils.dart';
-import 'package:logistics_app/route/routes.dart';
+import 'package:logistics_app/pages/science/plants/plant_detail_page.dart';
+import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
-import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:image/image.dart' as img;
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:http/http.dart' as http;
+
+// 识别结果
+class IdentifyResult {
+  int? logId;
+  List<Result>? result;
+
+  IdentifyResult({this.logId, this.result});
+
+  IdentifyResult.fromJson(Map<String, dynamic> json) {
+    logId = json['log_id'];
+    if (json['result'] != null) {
+      result = <Result>[];
+      json['result'].forEach((v) {
+        result!.add(new Result.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['log_id'] = this.logId;
+    if (this.result != null) {
+      data['result'] = this.result!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Result {
+  double? score;
+  String? name;
+
+  Result({this.score, this.name});
+
+  Result.fromJson(Map<String, dynamic> json) {
+    score = json['score'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['score'] = this.score;
+    data['name'] = this.name;
+    return data;
+  }
+}
 
 class PlantListPage extends StatefulWidget {
   const PlantListPage({Key? key}) : super(key: key);
@@ -28,132 +75,52 @@ class _PlantListPageState extends State<PlantListPage>
   final TextEditingController _searchController = TextEditingController();
   late RefreshController _refreshController;
   AnimationController? animationController;
+  // 选择的图片
+  List<AssetEntity> selectedAssets = [];
   int _page = 1;
   int _pageSize = 10;
   List<PlantModel> _list = [];
   int _total = 0;
-  File? _image;
-  bool _loading = false;
-  late Interpreter _interpreter;
-  List<String> _labels = [];
-  String _result = '';
-  Uint8List? _imageBytes;
+  // 语言
+  String _language = '0';
+  String _accessToken = '';
+  AssetEntity? _image;
+  List<Result>? _identifyResult;
+  bool _isLoading = false;
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  double _lastProgress = 0;
 
   @override
   void initState() {
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     animationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
     _refreshController = RefreshController();
     super.initState();
-    _loadPlants();
-    _loadModel();
+    getLanguage();
+    getAccessToken();
   }
 
-  Future<void> _loadModel() async {
-    setState(() => _loading = true);
-
-    try {
-      print('开始加载模型...');
-      // 加载模型
-      _interpreter = await Interpreter.fromAsset('assets/model.tflite');
-      print('模型加载成功，输入数量: ${_interpreter.getInputTensors().length}');
-      print('输入张量形状: ${_interpreter.getInputTensor(0).shape}');
-      print('输出张量形状: ${_interpreter.getOutputTensor(0).shape}');
-
-      // 加载标签
-      String labelContent = await rootBundle.loadString('assets/labels.txt');
-      _labels = labelContent.split('\n');
-      print('标签加载成功，数量: ${_labels.length}');
-
-      setState(() => _loading = false);
-    } catch (e, stackTrace) {
-      print('加载模型失败: $e');
-      print('错误堆栈: $stackTrace');
-      setState(() {
-        _loading = false;
-        _result = '加载模型失败: $e';
-      });
-    }
-  }
-
-  Future<void> _pickImage(ImageSource source) async {
-    // 选择照片或拍照
-    final result = await HJBottomSheet.wxPicker(context, [], 1);
-    if (result != null && result.isNotEmpty) {
-      final asset = result[0];
-      final file = await asset.file;
-      if (file != null) {
-        final bytes = await file.readAsBytes();
-        setState(() => _imageBytes = bytes);
-        _recognizePlant(bytes);
-      }
-    }
-  }
-
-  Future<void> _recognizePlant(Uint8List imageBytes) async {
+  // 获取语言
+  Future<void> getLanguage() async {
+    var result = await SpUtils.getString('locale');
+    var plantAccessToken = await SpUtils.getString('plantAccessToken');
     setState(() {
-      _loading = true;
-      _result = '识别中...';
+      _language = result == 'id' ? '1' : '0';
+      _accessToken = plantAccessToken ?? '';
+      getPlantList(true);
     });
-
-    print('_result::${_result}');
-    try {
-      // 1. 预处理图像
-      final inputImage = img.decodeImage(imageBytes)!;
-      final processedImage = _preprocessImage(inputImage);
-
-      // 2. 运行推理
-      final output = List.filled(
-        1 * _labels.length,
-        0,
-      ).reshape([1, _labels.length]);
-      _interpreter.run(processedImage, output);
-
-      // 3. 解析结果
-      final prediction = output[0];
-      final maxIndex = prediction.indexOf(
-        prediction.reduce((a, b) => a > b ? a : b),
-      );
-      final confidence = prediction[maxIndex];
-
-      setState(() {
-        _result =
-            '识别结果: ${_labels[maxIndex]}\n置信度: ${(confidence * 100).toStringAsFixed(2)}%';
-      });
-    } catch (e) {
-      print('识别失败: $e');
-      setState(() => _result = '识别失败: $e');
-    } finally {
-      print('_result::${_result}');
-      setState(() => _loading = false);
-    }
-  }
-
-  List<List<List<List<double>>>> _preprocessImage(img.Image image) {
-    // 调整大小到模型需要的尺寸
-    final resized = img.copyResize(image, width: 224, height: 224);
-
-    // 归一化像素值到模型需要的范围
-    var input = List.generate(
-      1,
-      (_) => List.generate(
-        224,
-        (_) => List.generate(224, (_) => List.filled(3, 0.0)),
-      ),
-    );
-
-    for (var y = 0; y < resized.height; y++) {
-      for (var x = 0; x < resized.width; x++) {
-        final pixel = resized.getPixel(x, y);
-        input[0][y][x][0] = (pixel.r / 127.5) - 1.0;
-        input[0][y][x][1] = (pixel.g / 127.5) - 1.0;
-        input[0][y][x][2] = (pixel.b / 127.5) - 1.0;
-      }
-    }
-
-    return input;
   }
 
   Future<void> getPlantList(bool isRefresh) async {
@@ -161,66 +128,128 @@ class _PlantListPageState extends State<PlantListPage>
       _page = 1;
       _list.clear();
     }
-    _loadPlants();
-    // DataUtils.getPageList(
-    //   '/system/fauna/list',
-    //   {
-    //     'pageNum': _page,
-    //     'pageSize': _pageSize,
-    //     'noticeType': 1,
-    //     "status": '0',
-    //     "approvalStatus": 4,
-    //   },
-    //   success: (data) {
-    //     var noticeList = data['rows'] as List;
-    //     List<PlantModel> rows =
-    //         noticeList.map((i) => PlantModel.fromJson(i)).toList();
-    //     if (isRefresh) {
-    //       _list = rows;
-    //     } else {
-    //       _list = [..._list, ...rows];
-    //     }
-    //     _total = data['total'] ?? 0;
-    //     _page++;
-    //     setState(() {
-    //       if (_list.length >= _total) {
-    //         _refreshController.loadNoData();
-    //       } else {
-    //         _refreshController.loadComplete();
-    //       }
-    //     });
-    //   },
-    // );
-  }
-
-  void _loadPlants() {
-    // TODO: 从API加载植物数据
-    _list = [
-      PlantModel(
-        name: '向日葵',
-        introduce:
-            '向日葵是菊科向日葵属的一年生草本植物向日葵是菊科向日葵属的一年生草本植物向日葵是菊科向日葵属的一年生草本植物向日葵是菊科向日葵属的一年生草本植物向日葵是菊科向日葵属的一年生草本植物',
-        picture: 'assets/images/sunflowers.jpg',
-      ),
-      PlantModel(
-        name: '玫瑰',
-        introduce: '玫瑰是蔷薇科蔷薇属的植物',
-        picture: 'assets/images/roses.jpg',
-      ),
-      // 添加更多植物数据
-    ];
-  }
-
-  void _filterPlants(String query) {
-    setState(() {});
+    print('_language${_language}');
+    DataUtils.getPageList(
+      '/other/fauna/list',
+      {
+        'pageNum': _page,
+        'pageSize': _pageSize,
+        "status": '0',
+        "type": '1',
+        "language": _language,
+      },
+      success: (data) {
+        var noticeList = data['rows'] as List;
+        List<PlantModel> rows =
+            noticeList.map((i) => PlantModel.fromJson(i)).toList();
+        if (isRefresh) {
+          _list = rows;
+        } else {
+          _list = [..._list, ...rows];
+        }
+        _total = data['total'] ?? 0;
+        _page++;
+        setState(() {
+          if (_list.length >= _total) {
+            _refreshController.loadNoData();
+          } else {
+            _refreshController.loadComplete();
+          }
+        });
+      },
+    );
   }
 
   @override
   void dispose() {
+    animationController?.dispose();
     _searchController.dispose();
     _refreshController.dispose();
-    animationController?.dispose();
+    _controller.dispose();
     super.dispose();
+  }
+
+  // 拍照或选择图片
+  Future<void> _pickImage() async {
+    List<AssetEntity>? pickedFile = await HJBottomSheet.wxPicker(
+      context,
+      selectedAssets,
+      1,
+    );
+    if (pickedFile != null && pickedFile.isNotEmpty) {
+      final imageFile = await pickedFile[0].file;
+      if (imageFile != null) {
+        setState(() {
+          _image = pickedFile[0];
+          _isLoading = true;
+          identifyPlant(imageFile.readAsBytesSync(), _accessToken).then((
+            value,
+          ) {
+            print('value:${value}');
+            setState(() {
+              _identifyResult = value;
+              _isLoading = false;
+            });
+          });
+        });
+      }
+    }
+  }
+
+  Future<List<Result>?> identifyPlant(
+    Uint8List imageBytes,
+    String accessToken,
+  ) async {
+    final base64Image = base64Encode(imageBytes);
+
+    final response = await http.post(
+      Uri.parse(
+        'https://aip.baidubce.com/rest/2.0/image-classify/v1/plant?access_token=$accessToken',
+      ),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: {'image': base64Image},
+    );
+
+    print('response:${response.statusCode}');
+    if (response.statusCode == 200) {
+      print('response:${response.body}');
+      var result = IdentifyResult.fromJson(json.decode(response.body));
+      return result.result;
+    } else {
+      print('识别失败: ${response.body}');
+      return null;
+    }
+  }
+
+  // 获取百度AI access_token
+  Future getAccessToken() async {
+    var accessToken = await SpUtils.getString('access_token');
+    if (accessToken != null) {
+      setState(() {
+        _accessToken = accessToken;
+        print('access_token2: ${accessToken}');
+      });
+    } else {
+      final response = await http.post(
+        Uri.parse('https://aip.baidubce.com/oauth/2.0/token'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {
+          'grant_type': 'client_credentials',
+          'client_id': 'tTzUnbWPljCNvncZx3sLOhqi',
+          'client_secret': 'vJZSD1t5H9omgojE1ruQoYiaoQWQSpwy',
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print('access_token1: ${data['access_token']}');
+        setState(() {
+          SpUtils.saveString('access_token', data['access_token']);
+          _accessToken = data['access_token'];
+        });
+      } else {
+        print('获取 access_token 失败: ${response.body}');
+      }
+    }
   }
 
   @override
@@ -229,39 +258,240 @@ class _PlantListPageState extends State<PlantListPage>
       appBar: AppBar(
         title: Text('植物科普', style: TextStyle(fontSize: 16.px)),
         actions: [
-          IconButton(
-            onPressed: () => _pickImage(ImageSource.gallery),
-            icon: const Icon(Icons.camera_alt),
-          ),
+          if (_accessToken != '')
+            IconButton(
+              onPressed: _pickImage,
+              icon: const Icon(Icons.camera_alt),
+            ),
           IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
         ],
       ),
       body: SafeArea(
-        child: SmartRefreshWidget(
-          enablePullDown: true,
-          enablePullUp: true,
-          onRefresh: () {
-            getPlantList(true).then((value) {
-              _refreshController.refreshCompleted();
-            });
-          },
-          onLoading: () {
-            getPlantList(false).then((value) {
-              _refreshController.loadComplete();
-            });
-          },
-          controller: _refreshController,
-          child: Padding(
-            padding: EdgeInsets.all(10.px),
-            child: PlantListView(
-              plants: _list,
-              animationController: animationController,
+        child: Stack(
+          children: [
+            SmartRefreshWidget(
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: () {
+                getPlantList(true).then((value) {
+                  _refreshController.refreshCompleted();
+                });
+              },
+              onLoading: () {
+                getPlantList(false).then((value) {
+                  _refreshController.loadComplete();
+                });
+              },
+              controller: _refreshController,
+              child: Padding(
+                padding: EdgeInsets.all(10.px),
+                child: PlantListView(
+                  plants: _list,
+                  animationController: animationController,
+                ),
+              ),
             ),
-          ),
+            if (_image != null)
+              Positioned(
+                top: 10.px,
+                left: 10.px,
+                bottom: 10.px,
+                right: 10.px,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: AssetEntityImage(
+                          _image!,
+                          isOriginal: true,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      _isLoading
+                          ?
+                          // 加载中
+                          Positioned.fill(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5),
+                              child: AnimatedBuilder(
+                                animation: _animation,
+                                builder: (context, child) {
+                                  final current = _animation.value;
+                                  final painter = ScanOverlayPainter(
+                                    progress: current,
+                                    lastProgress: _lastProgress,
+                                  );
+                                  _lastProgress = current; // 更新为下一帧使用
+                                  return CustomPaint(
+                                    size: Size.infinite,
+                                    painter: painter,
+                                  );
+                                },
+                              ),
+                            ),
+                          )
+                          : Positioned(
+                            top: 10.px,
+                            left: 10.px,
+                            width: 200.px,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.px,
+                                vertical: 5.px,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: primaryColor,
+                              ),
+
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '识别结果',
+                                    style: TextStyle(color: secondaryColor),
+                                  ),
+                                  // 遍历识别结果
+                                  SizedBox(height: 10.px),
+                                  if (_identifyResult != null)
+                                    for (var item in _identifyResult!)
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 5.px),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                item.name ?? '',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12.px,
+                                                ),
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                SizedBox(width: 10.px),
+                                                // 进度条
+                                                Container(
+                                                  width: 60.px,
+                                                  height: 6.px,
+                                                  color: primaryColor,
+                                                  child:
+                                                      LinearProgressIndicator(
+                                                        value: item.score,
+                                                        color: secondaryColor,
+                                                      ),
+                                                ),
+                                                // 百分比
+                                                Container(
+                                                  width: 45.px,
+                                                  child: Text(
+                                                    '${(item.score! * 100).toStringAsFixed(2)}%',
+                                                    textAlign: TextAlign.right,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 10.px,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                      // 弹窗关闭
+                      Positioned(
+                        top: 10.px,
+                        right: 10.px,
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _image = null;
+                              _identifyResult = null;
+                            });
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
+}
+
+class ScanOverlayPainter extends CustomPainter {
+  final double progress;
+  final double? lastProgress; // 新增：传入上一次的值（由外部State记录）
+
+  ScanOverlayPainter({required this.progress, this.lastProgress});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scanY = size.height * progress;
+    const lineHeight = 2.0;
+    const tailHeight = 300.0;
+
+    // 背景遮罩
+    final overlayPaint = Paint()..color = Colors.black.withOpacity(0.1);
+    canvas.drawRect(Offset.zero & size, overlayPaint);
+
+    // ✅ 判断方向：向下 or 向上
+    final movingDown = !(lastProgress == null || progress >= lastProgress!);
+
+    // ✅ 尾影绘制范围
+    Rect tailRect;
+    if (movingDown) {
+      // 向下扫：尾影在下方
+      final tailBottom = (scanY + tailHeight).clamp(
+        0.0,
+        size.height.toDouble(),
+      );
+      tailRect = Rect.fromLTWH(0, scanY, size.width, tailBottom - scanY);
+    } else {
+      // 向上扫：尾影在上方
+      final tailTop = (scanY - tailHeight).clamp(0.0, size.height.toDouble());
+      tailRect = Rect.fromLTWH(0, tailTop, size.width, scanY - tailTop);
+    }
+
+    final tailPaint =
+        Paint()
+          ..shader = LinearGradient(
+            begin: movingDown ? Alignment.topCenter : Alignment.bottomCenter,
+            end: movingDown ? Alignment.bottomCenter : Alignment.topCenter,
+            colors: [
+              Colors.greenAccent.withOpacity(0.4),
+              Colors.greenAccent.withOpacity(0.2),
+              Colors.greenAccent.withOpacity(0.05),
+              Colors.transparent,
+            ],
+          ).createShader(tailRect)
+          ..maskFilter = ui.MaskFilter.blur(ui.BlurStyle.normal, 10);
+    ;
+
+    canvas.drawRect(tailRect, tailPaint);
+
+    // ✅ 主扫描线
+    final linePaint =
+        Paint()
+          ..color = Colors.greenAccent
+          ..strokeWidth = lineHeight;
+    canvas.drawLine(Offset(0, scanY), Offset(size.width, scanY), linePaint);
+  }
+
+  @override
+  bool shouldRepaint(covariant ScanOverlayPainter oldDelegate) =>
+      oldDelegate.progress != progress;
 }
 
 class PlantListView extends StatelessWidget {
@@ -272,15 +502,9 @@ class PlantListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
+    return ListView.builder(
       physics: NeverScrollableScrollPhysics(), // 禁用内部滚动
       shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 4,
-        mainAxisSpacing: 4,
-        childAspectRatio: 0.8,
-      ),
       itemCount: plants.length,
       itemBuilder: (context, index) {
         final int count = plants.length;
@@ -302,13 +526,18 @@ class PlantListView extends StatelessWidget {
             ? PlantItemView(
               plant: plants[index],
               animation: animation,
+              index: index,
               callBack:
                   () => {
                     // 跳转到详情页
-                    RouteUtils.pushNamed(
+                    Navigator.push(
                       context,
-                      RoutePath.PlantDetailPage,
-                      arguments: {'fId': '0'},
+                      MaterialPageRoute(
+                        builder:
+                            (context) => PlantDetailPage(
+                              fId: plants[index].fId.toString(),
+                            ),
+                      ),
                     ),
                   },
               animationController: animationController,
@@ -323,6 +552,7 @@ class PlantItemView extends StatelessWidget {
   PlantItemView({
     required this.plant,
     this.animation,
+    this.index,
     this.animationController,
     this.callBack,
   });
@@ -330,7 +560,7 @@ class PlantItemView extends StatelessWidget {
   final AnimationController? animationController;
   final Animation<double>? animation;
   final VoidCallback? callBack;
-
+  final int? index;
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -356,7 +586,7 @@ class PlantItemView extends StatelessWidget {
                   // 超出隐藏
                   clipBehavior: Clip.hardEdge,
                   shadowColor: Colors.grey,
-                  elevation: 2,
+                  elevation: 4,
                   child: InkWell(
                     onTap: callBack,
                     child: Ink(
@@ -364,33 +594,48 @@ class PlantItemView extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      child: Row(
                         children: [
-                          Image.asset(
-                            plant.picture ?? '',
-                            width: double.infinity,
-                            height: 130.px,
-                            fit: BoxFit.cover,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.px,
-                              vertical: 4.px,
+                          if (index != null && index! % 2 == 0)
+                            Image.network(
+                              plant.picture != ''
+                                  ? APIs.imagePrefix + plant.picture!
+                                  : '',
+                              width: 100.px,
+                              height: 100.px,
+                              fit: BoxFit.cover,
                             ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  plant.name ?? '',
-                                  style: TextStyle(fontSize: 12.px),
-                                ),
-                                HtmlLineLimit(
-                                  htmlContent: plant.introduce ?? '',
-                                  fontSize: 10.px,
-                                ),
-                              ],
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.px,
+                                vertical: 4.px,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    plant.name ?? '',
+                                    style: TextStyle(fontSize: 14.px),
+                                  ),
+                                  HtmlLineLimit(
+                                    htmlContent: plant.introduce ?? '',
+                                    maxLines: 3,
+                                    fontSize: 10.px,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
+                          if (index != null && index! % 2 == 1)
+                            Image.network(
+                              plant.picture != ''
+                                  ? APIs.imagePrefix + plant.picture!
+                                  : '',
+                              width: 100.px,
+                              height: 100.px,
+                              fit: BoxFit.cover,
+                            ),
                         ],
                       ),
                     ),

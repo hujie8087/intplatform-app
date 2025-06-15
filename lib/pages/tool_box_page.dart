@@ -20,6 +20,7 @@ import 'package:logistics_app/main.dart';
 import 'package:logistics_app/pages/accommodation_page/apply_detail_page.dart';
 import 'package:logistics_app/pages/guide/guide_list_page.dart';
 import 'package:logistics_app/pages/guide/guide_type_page.dart';
+import 'package:logistics_app/pages/public_convenience_page/public_list_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -120,17 +121,6 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   List<AppMenuModel> appMenuListFilter = [];
   UserInfoModel? userInfoData;
   String token = '';
-  List<Map<String, dynamic>> publicIconMap = [
-    {'id': 1, 'title': '缝纫店', 'icon': Icons.local_laundry_service},
-    {'id': 2, 'title': '超市', 'icon': Icons.shopping_bag},
-    {'id': 3, 'title': '配钥匙', 'icon': Icons.key},
-    {'id': 4, 'title': '理发店', 'icon': Icons.content_cut},
-    {'id': 5, 'title': '消费卡', 'icon': Icons.credit_card},
-    {'id': 6, 'title': '健身房', 'icon': Icons.fitness_center},
-    {'id': 7, 'title': '体育馆', 'icon': Icons.sports_soccer},
-  ];
-  // 获取当前语言版本
-
   String languageCode = 'zh';
 
   // 获取维修订单未完成数量
@@ -305,6 +295,17 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
                                     context,
                                     GuideListPage(
                                       guideTypeId: int.parse(article.remark!),
+                                    ),
+                                  );
+                                  break;
+                                case 'public_list_page':
+                                  RouteUtils.push(
+                                    context,
+                                    PublicListPage(
+                                      souceType: article.remark,
+                                      cname: article.cname,
+                                      yname: article.yname,
+                                      uname: article.uname,
                                     ),
                                   );
                                   break;

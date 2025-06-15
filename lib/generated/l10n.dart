@@ -3619,6 +3619,576 @@ class S {
       args: [],
     );
   }
+
+  /// `公交时刻表`
+  String get busTimetable {
+    return Intl.message(
+      '公交时刻表',
+      name: 'busTimetable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择路线`
+  String get chooseRoute {
+    return Intl.message(
+      '选择路线',
+      name: 'chooseRoute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `起点站`
+  String get startStation {
+    return Intl.message(
+      '起点站',
+      name: 'startStation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `终点站`
+  String get endStation {
+    return Intl.message(
+      '终点站',
+      name: 'endStation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `站点数`
+  String get stationNumber {
+    return Intl.message(
+      '站点数',
+      name: 'stationNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `班次数`
+  String get tripNumber {
+    return Intl.message(
+      '班次数',
+      name: 'tripNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `首班车`
+  String get firstTripTime {
+    return Intl.message(
+      '首班车',
+      name: 'firstTripTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `末班车`
+  String get lastTripTime {
+    return Intl.message(
+      '末班车',
+      name: 'lastTripTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `发车时间表`
+  String get timetable {
+    return Intl.message(
+      '发车时间表',
+      name: 'timetable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `今日`
+  String get busToday {
+    return Intl.message(
+      '今日',
+      name: 'busToday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `站点列表`
+  String get stopList {
+    return Intl.message(
+      '站点列表',
+      name: 'stopList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `方向`
+  String get direction {
+    return Intl.message(
+      '方向',
+      name: 'direction',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `送达照片`
+  String get deliveryPhoto {
+    return Intl.message(
+      '送达照片',
+      name: 'deliveryPhoto',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `失物`
+  String get lost {
+    return Intl.message(
+      '失物',
+      name: 'lost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `招领`
+  String get found {
+    return Intl.message(
+      '招领',
+      name: 'found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `我的发布`
+  String get myRelease {
+    return Intl.message(
+      '我的发布',
+      name: 'myRelease',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `失物招领`
+  String get lostAndFound {
+    return Intl.message(
+      '失物招领',
+      name: 'lostAndFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `发布`
+  String get publish {
+    return Intl.message(
+      '发布',
+      name: 'publish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `失物`
+  String get lostItem {
+    return Intl.message(
+      '失物',
+      name: 'lostItem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `招领`
+  String get foundItem {
+    return Intl.message(
+      '招领',
+      name: 'foundItem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `失物列表`
+  String get lostItemList {
+    return Intl.message(
+      '失物列表',
+      name: 'lostItemList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `招领列表`
+  String get foundItemList {
+    return Intl.message(
+      '招领列表',
+      name: 'foundItemList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `我的发布列表`
+  String get myReleaseList {
+    return Intl.message(
+      '我的发布列表',
+      name: 'myReleaseList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `领取地址`
+  String get receivePlace {
+    return Intl.message(
+      '领取地址',
+      name: 'receivePlace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `拾取时间`
+  String get receiveTime {
+    return Intl.message(
+      '拾取时间',
+      name: 'receiveTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `丢失时间`
+  String get lostTime {
+    return Intl.message(
+      '丢失时间',
+      name: 'lostTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `丢失地点`
+  String get lostPlace {
+    return Intl.message(
+      '丢失地点',
+      name: 'lostPlace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `丢失类型`
+  String get lostType {
+    return Intl.message(
+      '丢失类型',
+      name: 'lostType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `丢失状态`
+  String get lostStatus {
+    return Intl.message(
+      '丢失状态',
+      name: 'lostStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `好心同事`
+  String get goodHeartedColleague {
+    return Intl.message(
+      '好心同事',
+      name: 'goodHeartedColleague',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `失物同事`
+  String get lostItemColleague {
+    return Intl.message(
+      '失物同事',
+      name: 'lostItemColleague',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `联系电话`
+  String get contactNumber {
+    return Intl.message(
+      '联系电话',
+      name: 'contactNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `审核驳回`
+  String get auditRejected {
+    return Intl.message(
+      '审核驳回',
+      name: 'auditRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认领取`
+  String get confirmReceive {
+    return Intl.message(
+      '确认领取',
+      name: 'confirmReceive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定领取该物品吗？`
+  String get confirmReceiveContent {
+    return Intl.message(
+      '确定领取该物品吗？',
+      name: 'confirmReceiveContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `领取`
+  String get receive {
+    return Intl.message(
+      '领取',
+      name: 'receive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `编辑`
+  String get edit {
+    return Intl.message(
+      '编辑',
+      name: 'edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认删除`
+  String get confirmDelete {
+    return Intl.message(
+      '确认删除',
+      name: 'confirmDelete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定删除该条信息吗？删除后无法恢复！`
+  String get confirmDeleteContent {
+    return Intl.message(
+      '确定删除该条信息吗？删除后无法恢复！',
+      name: 'confirmDeleteContent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `待审核`
+  String get toBeAudited {
+    return Intl.message(
+      '待审核',
+      name: 'toBeAudited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `待领取`
+  String get toBeReceived {
+    return Intl.message(
+      '待领取',
+      name: 'toBeReceived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `待找回`
+  String get toBeFound {
+    return Intl.message(
+      '待找回',
+      name: 'toBeFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已驳回`
+  String get toBeRejected {
+    return Intl.message(
+      '已驳回',
+      name: 'toBeRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交成功，等待审核`
+  String get toBeAuditedMessage {
+    return Intl.message(
+      '提交成功，等待审核',
+      name: 'toBeAuditedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `修改成功，等待审核`
+  String get editToBeAuditedMessage {
+    return Intl.message(
+      '修改成功，等待审核',
+      name: 'editToBeAuditedMessage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `图片上传失败`
+  String get uploadImageFailed {
+    return Intl.message(
+      '图片上传失败',
+      name: 'uploadImageFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `发布信息`
+  String get publishInfo {
+    return Intl.message(
+      '发布信息',
+      name: 'publishInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `类型`
+  String get type {
+    return Intl.message(
+      '类型',
+      name: 'type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `物品名称`
+  String get itemName {
+    return Intl.message(
+      '物品名称',
+      name: 'itemName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择日期`
+  String get selectDate {
+    return Intl.message(
+      '选择日期',
+      name: 'selectDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认发布`
+  String get confirmPublish {
+    return Intl.message(
+      '确认发布',
+      name: 'confirmPublish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入{label}`
+  String pleaseInput(Object label) {
+    return Intl.message(
+      '请输入$label',
+      name: 'pleaseInput',
+      desc: '',
+      args: [label],
+    );
+  }
+
+  /// `所在区域`
+  String get region {
+    return Intl.message(
+      '所在区域',
+      name: 'region',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `负责人`
+  String get head {
+    return Intl.message(
+      '负责人',
+      name: 'head',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `联系电话`
+  String get phoneNumber {
+    return Intl.message(
+      '联系电话',
+      name: 'phoneNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `营业时间`
+  String get publicBusinessHours {
+    return Intl.message(
+      '营业时间',
+      name: 'publicBusinessHours',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `详细地址`
+  String get publicAddress {
+    return Intl.message(
+      '详细地址',
+      name: 'publicAddress',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

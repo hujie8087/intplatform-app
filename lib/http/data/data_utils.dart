@@ -77,6 +77,21 @@ class DataUtils {
     HttpUtils.get(url, parameters, success: success, fail: fail);
   }
 
+  // 删除数据
+  static void deleteData<T>(url, parameters, {Success? success, Fail? fail}) {
+    HttpUtils.delete(url, parameters, success: success, fail: fail);
+  }
+
+  // 编辑数据
+  static void editData<T>(url, parameters, {Success? success, Fail? fail}) {
+    HttpUtils.put(url, parameters, success: success, fail: fail);
+  }
+
+  // 获取数据
+  static void getData<T>(url, parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(url, parameters, success: success, fail: fail);
+  }
+
   /// 分页加载分组数据
   static void getPageGroupList<T>(parameters, {Success? success, Fail? fail}) {
     HttpUtils.get(APIs.getGroupPage, parameters, success: success, fail: fail);
@@ -96,6 +111,16 @@ class DataUtils {
   // 上传文件
   static void uploadFile<T>(FormData formData, {Success? success, Fail? fail}) {
     HttpUtils.post('/file/upload', formData, success: success, fail: fail);
+  }
+
+  // 上传文件
+  static void uploadByfName<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      '/file/uploadByfName',
+      parameters,
+      success: success,
+      fail: fail,
+    );
   }
 
   // 上传证件图片
@@ -376,5 +401,15 @@ class DataUtils {
       success: success,
       fail: fail,
     );
+  }
+
+  // 提交失物招领
+  static void submitLostFound(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post('/other/found', parameters, success: success, fail: fail);
+  }
+
+  // 修改失物招领
+  static void updateLostFound(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.put('/other/found', parameters, success: success, fail: fail);
   }
 }

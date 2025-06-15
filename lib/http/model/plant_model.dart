@@ -8,6 +8,15 @@ class PlantModel {
   String? status;
   int? sort;
   String? remark;
+  String? language;
+  String? food;
+  String? habit;
+  String? origin;
+  String? peacockType;
+  String? reproduce;
+  String? otherName;
+  String? code;
+  String? feature;
 
   PlantModel({
     this.fId,
@@ -19,6 +28,15 @@ class PlantModel {
     this.status,
     this.sort,
     this.remark,
+    this.language,
+    this.food,
+    this.habit,
+    this.origin,
+    this.peacockType,
+    this.reproduce,
+    this.code,
+    this.feature,
+    this.otherName,
   });
 
   PlantModel.fromJson(Map<String, dynamic> json) {
@@ -31,6 +49,15 @@ class PlantModel {
     status = json["status"];
     sort = json["sort"];
     remark = json["remark"];
+    language = json["language"];
+    food = json["food"];
+    habit = json["habit"];
+    origin = json["origin"];
+    peacockType = json["peacockType"];
+    reproduce = json["reproduce"];
+    code = json["code"];
+    feature = json["feature"];
+    otherName = json["otherName"];
   }
 
   static List<PlantModel> fromList(List<Map<String, dynamic>> list) {
@@ -48,6 +75,15 @@ class PlantModel {
     _data["status"] = status;
     _data["sort"] = sort;
     _data["remark"] = remark;
+    _data["language"] = language;
+    _data["food"] = food;
+    _data["habit"] = habit;
+    _data["origin"] = origin;
+    _data["peacockType"] = peacockType;
+    _data["reproduce"] = reproduce;
+    _data["code"] = code;
+    _data["otherName"] = otherName;
+    _data["feature"] = feature;
     return _data;
   }
 }

@@ -37,7 +37,7 @@ class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
   bool _isLoading = false;
   List<DictModel> statusList = [];
   int currentIndex = 0;
-  int status = 99;
+  int status = -1;
   // 选择的图片
   List<AssetEntity> selectedAssets = [];
   String fileUrl = '';
@@ -51,7 +51,7 @@ class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
   static const platform = MethodChannel('com.iwip.intplatform');
   // 状态选项
   final List<SwitchType> statusOptions = [
-    SwitchType(S.current.toBePacked, 99),
+    SwitchType(S.current.toBePacked, -1),
     SwitchType(S.current.toBeDelivered, 0),
     SwitchType(S.current.delivering, 1),
     SwitchType(S.current.delivered, 2),
@@ -114,7 +114,6 @@ class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
   }
 
   // 获取订单详情
-  // 获取订单详情
   Future<void> _fetchOrderDetail(String sourceNo) async {
     DataUtils.getDeliveryOrderDetail(
       {'orderNo': sourceNo},
@@ -122,7 +121,7 @@ class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
         DeliveryOrderDetailModel _orderDetail =
             DeliveryOrderDetailModel.fromJson(data['data']);
         setState(() {
-          if (_orderDetail.orderDelivery?.deliveryStatus == 99) {
+          if (_orderDetail.orderDelivery?.deliveryStatus == -1) {
             _packOrder(_orderDetail.orderDelivery?.sourceNo ?? '');
           } else {
             ProgressHUD.showError(S.current.orderCompleted);
@@ -695,8 +694,8 @@ class OrderCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                // 如果订单状态为99，则显示接单按钮
-                if (order.deliveryStatus == 99)
+                // 如果订单状态为-1，则显示接单按钮
+                if (order.deliveryStatus == -1)
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondaryColor,

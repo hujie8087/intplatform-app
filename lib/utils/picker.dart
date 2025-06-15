@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
@@ -9,10 +8,11 @@ class Picker {
     return showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(10),
-        topRight: Radius.circular(10),
-      )),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+        ),
+      ),
       builder: (BuildContext context) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 15),
@@ -29,12 +29,15 @@ class Picker {
     int? maxAssets,
   }) async {
     print('maxAssets: $maxAssets');
-    final List<AssetEntity>? result = await AssetPicker.pickAssets(context,
-        pickerConfig: AssetPickerConfig(
-            requestType: RequestType.image,
-            textDelegate: AssetPickerTextDelegate(),
-            maxAssets: maxAssets ?? 6,
-            selectedAssets: selectedAssets));
+    final List<AssetEntity>? result = await AssetPicker.pickAssets(
+      context,
+      pickerConfig: AssetPickerConfig(
+        requestType: RequestType.image,
+        textDelegate: AssetPickerTextDelegate(),
+        maxAssets: maxAssets ?? 6,
+        selectedAssets: selectedAssets,
+      ),
+    );
     return result;
   }
 

@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
+import 'package:logistics_app/common_ui/empty_view.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
-import 'package:logistics_app/http/model/notice_list_model.dart';
+import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
+import 'package:logistics_app/http/model/found_model.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_view_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -25,18 +30,16 @@ class _LostFoundListPageState extends State<LostFoundListPage>
   var model = LostFoundViewModel();
   late RefreshController _refreshController;
   int current = 0;
+  String userName = '';
+  String createBy = '';
 
   final List<SwitchType> buttonLabels = [
-    SwitchType('全部', 0),
-    SwitchType('失物', 1),
-    SwitchType('招领', 2),
+    SwitchType(S.current.all, 0),
+    SwitchType(S.current.lost, 1),
+    SwitchType(S.current.found, 2),
+    SwitchType(S.current.myRelease, 3),
   ];
-  final List<String> galleryItems = <String>[
-    'assets/hotel/hotel_1.png',
-    'assets/hotel/hotel_2.png',
-    'assets/hotel/hotel_3.png',
-    'assets/hotel/hotel_4.png',
-  ];
+
   @override
   void initState() {
     animationController = AnimationController(
@@ -54,7 +57,28 @@ class _LostFoundListPageState extends State<LostFoundListPage>
     );
 
     super.initState();
-    model.getLostFoundModelList(true);
+    getUserInfo();
+  }
+
+  // 获取用户信息
+  void getUserInfo() async {
+    var userInfoData = await SpUtils.getModel('userInfo');
+    if (userInfoData != null) {
+      setState(() {
+        userName = UserInfoModel.fromJson(userInfoData).user?.userName ?? '';
+        createBy = userName;
+      });
+    }
+
+    // 等待获取列表完成
+    await model.getLostFoundModelList(true);
+    setState(() {
+      if (model.isLoadComplete == true) {
+        _refreshController.loadNoData();
+      } else {
+        _refreshController.loadComplete();
+      }
+    });
   }
 
   @override
@@ -67,12 +91,43 @@ class _LostFoundListPageState extends State<LostFoundListPage>
   void updateCurrent(int value) {
     setState(() {
       current = value;
-      print(current);
+      switch (current) {
+        case 0:
+          model.type = '';
+          model.reviewStatus = 1;
+          model.createBy = '';
+          break;
+        case 1:
+          model.type = '0';
+          model.reviewStatus = 1;
+          model.createBy = '';
+          break;
+        case 2:
+          model.type = '1';
+          model.reviewStatus = 1;
+          model.createBy = '';
+          break;
+        case 3:
+          model.type = '';
+          model.reviewStatus = null;
+          model.createBy = createBy;
+          break;
+      }
+      model.getLostFoundModelList(true).then((value) {
+        setState(() {
+          if (model.isLoadComplete == true) {
+            _refreshController.loadNoData();
+          } else {
+            _refreshController.loadComplete();
+          }
+        });
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    animationController?.forward();
     return ChangeNotifierProvider(
       create: (context) {
         return model;
@@ -81,119 +136,81 @@ class _LostFoundListPageState extends State<LostFoundListPage>
         backgroundColor: backgroundColor,
         appBar: AppBar(
           title: Text(
-            '失物招领',
-            style: TextStyle(fontSize: 18, color: Colors.black),
+            S.current.lostAndFound,
+            style: TextStyle(fontSize: 16.px),
           ),
-          foregroundColor: Colors.black,
           centerTitle: true,
-          elevation: 0,
-          backgroundColor: backgroundColor,
         ),
         body: SafeArea(
           child: Stack(
             children: [
-              SmartRefreshWidget(
-                enablePullDown: true,
-                enablePullUp: true,
-                onRefresh: () {
-                  //关闭刷新
-                  model.getLostFoundModelList(true).then((value) {
-                    _refreshController.refreshCompleted();
-                    // 刷新完成
-                    animationController?.forward();
-                  });
-                },
-                onLoading: () async {
-                  await model.getLostFoundModelList(false);
-                  _refreshController.loadComplete();
-                },
-                controller: _refreshController,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'assets/images/lost_found.png',
-                        fit: BoxFit.fill,
-                      ),
-                      SizedBox(height: 10),
-                      // 搜索框带按钮
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: SizedBox(
-                                height: 30, // 设置输入框高度
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    fillColor: Colors.white,
-                                    hintText: '请输入关键字',
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                    // 设置行高
-                                    prefixIcon: Icon(Icons.search),
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 5,
-                                    ),
-                                    filled: true,
-                                    border: OutlineInputBorder(
-                                      // 无边框
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  style: TextStyle(height: 1, fontSize: 12),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            SizedBox(
-                              height: 30, // 设置按钮高度
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  '搜索',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                    primaryColor,
-                                  ),
-                                  shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SwitchTypeView(
-                        listData: buttonLabels,
-                        callBack: (int value) {
-                          print(value);
-                          updateCurrent(value);
-                        },
-                        animationController: animationController,
-                        animation: switchAnimation,
-                        current: current,
-                      ),
-                      LostFountListView(),
-                    ],
+              Column(
+                children: [
+                  // 筛选
+                  SwitchTypeView(
+                    listData: buttonLabels,
+                    callBack: (int value) {
+                      updateCurrent(value);
+                    },
+                    animationController: animationController,
+                    animation: switchAnimation,
+                    current: current,
                   ),
-                ),
+                  // 添加Expanded让SmartRefreshWidget只在剩余空间内工作
+                  Expanded(
+                    child: Consumer<LostFoundViewModel>(
+                      builder: (context, model, child) {
+                        return model.list == null || model.list?.length == 0
+                            ? EmptyView()
+                            : SmartRefreshWidget(
+                              enablePullDown: true,
+                              enablePullUp: true,
+                              onRefresh: () {
+                                //关闭刷新
+                                model.getLostFoundModelList(true).then((value) {
+                                  _refreshController.refreshCompleted();
+                                  if (model.isLoadComplete == true) {
+                                    _refreshController.loadNoData();
+                                  } else {
+                                    _refreshController.loadComplete();
+                                  }
+                                  // 刷新完成
+                                  animationController?.forward();
+                                });
+                              },
+                              onLoading: () async {
+                                await model.getLostFoundModelList(false);
+                                if (model.isLoadComplete == true) {
+                                  _refreshController.loadNoData();
+                                } else {
+                                  _refreshController.loadComplete();
+                                }
+                              },
+                              controller: _refreshController,
+                              child: LostFountListView(),
+                            );
+                      },
+                    ),
+                  ),
+                ],
               ),
               // 固定屏幕的发布按钮
               Positioned(
                 bottom: 20,
                 right: 20,
                 child: FloatingActionButton(
-                  onPressed: () {
-                    RouteUtils.pushNamed(
+                  onPressed: () async {
+                    final result = await RouteUtils.pushNamed(
                       context,
                       RoutePath.LostFoundDetailPage,
                     );
+                    if (result != null && result['success'] == true) {
+                      setState(() {
+                        model.getLostFoundModelList(true);
+                        animationController?.forward();
+                        ProgressHUD.showSuccess(result['msg']);
+                      });
+                    }
                   },
                   // 背景设置为白色
                   backgroundColor: primaryColor,
@@ -201,7 +218,7 @@ class _LostFoundListPageState extends State<LostFoundListPage>
                   foregroundColor: secondaryColor,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Icon(Icons.add), Text('发布')],
+                    children: [Icon(Icons.add, size: 36.px)],
                   ),
                 ),
               ),
@@ -215,11 +232,9 @@ class _LostFoundListPageState extends State<LostFoundListPage>
   Widget LostFountListView() {
     return Consumer<LostFoundViewModel>(
       builder: (context, model, child) {
-        if (model.list?.isEmpty == true) {
-          return Center(heightFactor: 10, child: Text("暂无数据"));
-        }
         return ListView.builder(
           shrinkWrap: true,
+          // 移除NeverScrollableScrollPhysics，允许在SmartRefreshWidget内滚动
           physics: NeverScrollableScrollPhysics(),
           itemCount: model.list?.length ?? 0,
           padding: EdgeInsets.all(0),
@@ -241,9 +256,11 @@ class _LostFoundListPageState extends State<LostFoundListPage>
             animationController?.forward();
             return LostFoundView(
               listData: model.list?[index],
-              galleryItems: galleryItems,
               animation: animation,
               animationController: animationController,
+              userName: userName,
+              current: current,
+              model: model,
             );
           },
         );
@@ -259,11 +276,17 @@ class LostFoundView extends StatelessWidget {
     this.animationController,
     this.galleryItems,
     this.animation,
+    this.userName,
+    this.current,
+    this.model,
   }) : super(key: key);
   final List<String>? galleryItems;
-  final NoticeModel? listData;
+  final FoundModel? listData;
   final AnimationController? animationController;
   final Animation<double>? animation;
+  final String? userName;
+  final int? current;
+  final LostFoundViewModel? model;
 
   @override
   Widget build(BuildContext context) {
@@ -279,156 +302,504 @@ class LostFoundView extends StatelessWidget {
               0.0,
             ),
             child: Container(
-              margin: EdgeInsets.only(bottom: 10),
-              padding: EdgeInsets.only(left: 10, right: 10),
+              margin: EdgeInsets.only(bottom: 8.px),
+              padding: EdgeInsets.only(left: 8.px, right: 8.px),
               child: Material(
                 color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-                child: InkWell(
-                  onTap: () {
-                    // 跳转到详情页
-                    RouteUtils.pushNamed(
-                      context,
-                      RoutePath.NoticeDetailPage,
-                      arguments: {
-                        'noticeTitle': listData?.noticeTitle,
-                        'noticeId': listData?.noticeId,
-                        'noticeContent': listData?.noticeContent,
-                      },
-                    );
-                  },
-                  child: Ink(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
+                borderRadius: BorderRadius.circular(16.px),
+                child: Container(
+                  margin: EdgeInsets.all(5.px),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10.px),
+                  ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8.px,
+                          vertical: 10.px,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    listData?.noticeTitle ?? '',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    listData?.createTime ?? '',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 20),
-                            // 是否已查看
                             Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 5,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                '丢失',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        HtmlLineLimit(
-                          htmlContent: listData?.noticeContent ?? '',
-                        ),
-                        Container(
-                          height: 100,
-                          child: GridView.builder(
-                            // 禁止滚动
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 4,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                  childAspectRatio: 1,
-                                ),
-                            itemCount: galleryItems?.length ?? 0,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => PhotoViewGallery(
-                                            pageOptions:
-                                                galleryItems!
-                                                    .map(
-                                                      (
-                                                        item,
-                                                      ) => PhotoViewGalleryPageOptions(
-                                                        imageProvider:
-                                                            AssetImage(item),
-                                                        initialScale:
-                                                            PhotoViewComputedScale
-                                                                .contained,
-                                                        heroAttributes:
-                                                            PhotoViewHeroAttributes(
-                                                              tag:
-                                                                  'galleryTag_$index',
-                                                            ),
-                                                        onTapUp:
-                                                            (
-                                                              context,
-                                                              details,
-                                                              controllerValue,
-                                                            ) =>
-                                                                Navigator.of(
-                                                                  context,
-                                                                ).pop(),
-                                                      ),
-                                                    )
-                                                    .toList(),
-                                            backgroundDecoration: BoxDecoration(
-                                              color: Colors.white,
-                                            ),
-                                            pageController: PageController(
-                                              initialPage: index,
-                                            ),
-                                          ),
+                              height: 110.px,
+                              child: GridView.builder(
+                                // 禁止滚动
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 10,
+                                      childAspectRatio: 1,
+                                    ),
+                                itemCount:
+                                    listData?.photo?.split(',').length ?? 0,
+                                itemBuilder: (context, index) {
+                                  return Center(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(
+                                        8.px,
+                                      ), // 圆角大小
+                                      child: Container(
+                                        width: 100.px,
+                                        height: 100.px,
+                                        child: Image.network(
+                                          APIs.imagePrefix +
+                                              (listData?.photo?.split(
+                                                    ',',
+                                                  )[index] ??
+                                                  ''),
+                                          fit: BoxFit.cover, // 保证图片铺满整个容器
+                                        ),
+                                      ),
                                     ),
                                   );
                                 },
-                                child:
-                                    galleryItems != null
-                                        ? Image.asset(
-                                          galleryItems![index],
-                                          fit: BoxFit.cover,
-                                        )
-                                        : SizedBox.shrink(
-                                          // 空间占位符
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              listData?.lostName ?? '',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 14.px,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          // 类型标签
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 8.px,
+                                              vertical: 5.px,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  listData?.def2 == '1'
+                                                      ? primaryColor[500]
+                                                      : secondaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(5.px),
+                                            ),
+                                            child: Text(
+                                              listData?.def2 == '1'
+                                                  ? S.current.found
+                                                  : S.current.lost,
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.px),
+                                      if (listData?.def2 == '1' &&
+                                          listData?.receivePlace != null)
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.location_on,
+                                              size: 14.px,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              S.current.receivePlace,
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Text(
+                                              listData?.receivePlace ?? '',
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                              );
-                            },
+                                      // 分割线
+                                      if (listData?.def2 == '1' &&
+                                          listData?.receivePlace != null)
+                                        Divider(
+                                          height: 10.px,
+                                          color: Colors.grey,
+                                        ),
+                                      if (listData?.def2 == '0')
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.access_time,
+                                              size: 14.px,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              S.current.lostTime,
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Text(
+                                              listData?.foundTime ?? '',
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      if (listData?.def2 == '1')
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.access_time,
+                                              size: 14.px,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              S.current.receiveTime,
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Text(
+                                              listData?.foundTime ?? '',
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      SizedBox(height: 8.px),
+
+                                      if (listData?.def2 == '1')
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.person,
+                                              size: 14.px,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              S
+                                                  .of(context)
+                                                  .goodHeartedColleague,
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Text(
+                                              listData?.receiveName ?? '',
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      if (listData?.def2 == '0')
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.person,
+                                              size: 14.px,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              S.of(context).lostItemColleague,
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Text(
+                                              listData?.receiveName ?? '',
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      SizedBox(height: 8.px),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.phone,
+                                            size: 14.px,
+                                            color: Colors.grey,
+                                          ),
+                                          SizedBox(width: 5),
+                                          Text(
+                                            S.of(context).contactNumber,
+                                            style: TextStyle(
+                                              fontSize: 12.px,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            listData?.tel ?? '',
+                                            style: TextStyle(
+                                              fontSize: 12.px,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.px),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.location_on,
+                                            size: 14.px,
+                                            color: Colors.grey,
+                                          ),
+                                          SizedBox(width: 5),
+                                          Text(
+                                            S.of(context).lostPlace,
+                                            style: TextStyle(
+                                              fontSize: 12.px,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            listData?.foundPlace ?? '',
+                                            style: TextStyle(
+                                              fontSize: 12.px,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      if (listData?.reviewStatus == 2)
+                                        SizedBox(height: 8.px),
+                                      if (listData?.reviewStatus == 2)
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.error,
+                                              size: 14.px,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              S.of(context).auditRejected,
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            Text(
+                                              listData?.def3 ?? '',
+                                              style: TextStyle(
+                                                fontSize: 12.px,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 5.px),
+                            Divider(height: 10.px, color: Colors.grey[300]),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                // 领取
+                                if (listData?.isFound == '0')
+                                  SizedBox(
+                                    height: 20.px,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: primaryColor,
+                                        padding: EdgeInsets.all(0.px),
+                                        minimumSize: Size(40.px, 20.px),
+                                      ),
+                                      onPressed: () {
+                                        // 弹出确认框
+                                        DialogFactory.instance
+                                            .showConfirmDialog(
+                                              context: context,
+                                              title:
+                                                  S.of(context).confirmReceive,
+                                              content:
+                                                  S
+                                                      .of(context)
+                                                      .confirmReceiveContent,
+                                              confirmText:
+                                                  S.of(context).confirm,
+                                              cancelText: S.of(context).cancel,
+                                              confirmClick: () {
+                                                model?.receiveLostFound(
+                                                  listData!,
+                                                );
+                                              },
+                                            );
+                                      },
+                                      child: Text(
+                                        S.of(context).receive,
+                                        style: TextStyle(fontSize: 10.px),
+                                      ),
+                                    ),
+                                  ),
+                                if (listData?.createBy == userName &&
+                                    current == 3)
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10.px),
+                                      // 编辑按钮
+                                      if (listData?.reviewStatus == 2)
+                                        SizedBox(
+                                          height: 20.px,
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  primaryColor[500],
+                                              padding: EdgeInsets.all(0.px),
+                                              minimumSize: Size(40.px, 20.px),
+                                            ),
+                                            onPressed: () async {
+                                              final result =
+                                                  await RouteUtils.pushNamed(
+                                                    context,
+                                                    RoutePath
+                                                        .LostFoundDetailPage,
+                                                    arguments: {
+                                                      'id': listData?.id,
+                                                    },
+                                                  );
+                                              if (result != null &&
+                                                  result['success'] == true) {
+                                                model?.getLostFoundModelList(
+                                                  true,
+                                                );
+                                                ProgressHUD.showSuccess(
+                                                  result['msg'],
+                                                );
+                                              }
+                                            },
+                                            child: Text(
+                                              S.of(context).edit,
+                                              style: TextStyle(fontSize: 10.px),
+                                            ),
+                                          ),
+                                        ),
+                                      // 删除按钮
+                                      SizedBox(width: 10.px),
+                                      SizedBox(
+                                        height: 20.px,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: secondaryColor,
+                                            padding: EdgeInsets.all(0.px),
+                                            minimumSize: Size(40.px, 20.px),
+                                          ),
+                                          onPressed: () {
+                                            // 弹出确认框
+                                            DialogFactory.instance
+                                                .showConfirmDialog(
+                                                  context: context,
+                                                  title:
+                                                      S
+                                                          .of(context)
+                                                          .confirmDelete,
+                                                  content:
+                                                      S
+                                                          .of(context)
+                                                          .confirmDeleteContent,
+                                                  confirmText:
+                                                      S.of(context).confirm,
+                                                  cancelText:
+                                                      S.of(context).cancel,
+                                                  confirmClick: () {
+                                                    model?.deleteLostFound(
+                                                      listData?.id.toString() ??
+                                                          '',
+                                                    );
+                                                  },
+                                                );
+                                          },
+                                          child: Text(
+                                            S.of(context).delete,
+                                            style: TextStyle(fontSize: 10.px),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      // 定位右上角状态
+                      Positioned(
+                        top: 5.px,
+                        right: -40.px,
+                        child: Transform.rotate(
+                          angle: 0.785398, // 45度角，弧度制
+                          child: Container(
+                            width: 120.px,
+                            height: 24.px,
+                            alignment: Alignment.center,
+                            color:
+                                listData?.reviewStatus == 0
+                                    ? Colors.orange
+                                    : listData?.reviewStatus == 1
+                                    ? listData?.isFound == '1'
+                                        ? Colors.green
+                                        : Colors.red
+                                    : Colors.red,
+                            child: Text(
+                              listData?.reviewStatus == 0
+                                  ? S.of(context).toBeAudited
+                                  : listData?.reviewStatus == 1
+                                  ? listData?.isFound == '1'
+                                      ? S.of(context).toBeReceived
+                                      : listData?.def2 == '1'
+                                      ? S.of(context).toBeReceived
+                                      : S.of(context).toBeFound
+                                  : S.of(context).auditRejected,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12.px,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -467,16 +838,14 @@ class HtmlLineLimit extends StatelessWidget {
         return Container(
           margin: EdgeInsets.only(top: 8.px, bottom: 8.px),
           alignment: Alignment.centerLeft,
-          child: SingleChildScrollView(
-            child: Text(
-              _removeHtmlTags(htmlContent),
-              style: TextStyle(
-                fontSize: fontSize ?? 12.px,
-                color: color ?? Colors.grey,
-              ),
-              maxLines: maxLines ?? 2,
-              overflow: TextOverflow.ellipsis,
+          child: Text(
+            _removeHtmlTags(htmlContent),
+            style: TextStyle(
+              fontSize: fontSize ?? 12.px,
+              color: color ?? Colors.grey,
             ),
+            maxLines: maxLines ?? 2,
+            overflow: TextOverflow.ellipsis,
           ),
         );
       },
