@@ -58,7 +58,7 @@ class _RouteQueryPage extends State<RouteQueryPage>
     return true;
   }
 
-  void _showFullScreenImage(BuildContext context, String imagePath) {
+  void _showFullScreenImage(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -70,7 +70,10 @@ class _RouteQueryPage extends State<RouteQueryPage>
               Navigator.of(context).pop();
             },
             child: PhotoView(
-              imageProvider: AssetImage(imagePath),
+              imageProvider:
+                  imageNetworkPath != ''
+                      ? NetworkImage(APIs.imagePrefix + imageNetworkPath)
+                      : AssetImage(imagePath),
               backgroundDecoration: BoxDecoration(color: Colors.white),
             ),
           ),
@@ -95,14 +98,7 @@ class _RouteQueryPage extends State<RouteQueryPage>
               flexibleSpace: FlexibleSpaceBar(
                 background: GestureDetector(
                   onTap: () {
-                    if (imageNetworkPath != '') {
-                      _showFullScreenImage(
-                        context,
-                        APIs.imagePrefix + imageNetworkPath,
-                      );
-                    } else {
-                      _showFullScreenImage(context, imagePath);
-                    }
+                    _showFullScreenImage(context);
                   },
                   child:
                       imageNetworkPath != ''
