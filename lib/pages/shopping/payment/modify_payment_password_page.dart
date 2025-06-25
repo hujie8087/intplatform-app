@@ -78,7 +78,7 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
         'oriPassword': _oldPasswordController.text,
         'newPassword': _newPasswordController.text,
         'uniqueId': userInfo?.user?.userName,
-        "pwdType": "1"
+        "pwdType": "1",
       },
       success: (data) {
         ProgressHUD.showSuccess(S.of(context).passwordModifySuccess);
@@ -101,18 +101,13 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
       padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 3.px),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(
-          bottom: BorderSide(color: Colors.grey[200]!),
-        ),
+        border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
       ),
       child: Row(
         children: [
           Container(
             width: 100.px,
-            child: Text(
-              label,
-              style: TextStyle(fontSize: 12.px),
-            ),
+            child: Text(label, style: TextStyle(fontSize: 12.px)),
           ),
           Expanded(
             child: TextField(
@@ -127,13 +122,12 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
               ],
               decoration: InputDecoration(
                 border: InputBorder.none,
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 10.px, vertical: 6.px),
-                hintText: S.of(context).inputPasswordError,
-                hintStyle: TextStyle(
-                  color: Colors.grey[400],
-                  fontSize: 12.px,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 10.px,
+                  vertical: 6.px,
                 ),
+                hintText: S.of(context).inputPasswordError,
+                hintStyle: TextStyle(color: Colors.grey[400], fontSize: 12.px),
               ),
             ),
           ),
@@ -146,8 +140,10 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).updatePaymentPassword,
-            style: TextStyle(fontSize: 16.px)),
+        title: Text(
+          S.of(context).updatePaymentPassword,
+          style: TextStyle(fontSize: 16.px),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -155,11 +151,17 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
           children: [
             SizedBox(height: 16.px),
             _buildPasswordInput(
-                S.of(context).inputOldPassword, _oldPasswordController),
+              S.of(context).inputOldPassword,
+              _oldPasswordController,
+            ),
             _buildPasswordInput(
-                S.of(context).inputNewPassword, _newPasswordController),
+              S.of(context).inputNewPassword,
+              _newPasswordController,
+            ),
             _buildPasswordInput(
-                S.of(context).inputConfirmPassword, _confirmPasswordController),
+              S.of(context).inputConfirmPassword,
+              _confirmPasswordController,
+            ),
             SizedBox(height: 16.px),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20.px),
@@ -167,35 +169,35 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
               child: ElevatedButton(
                 onPressed: _isLoading ? null : _modifyPassword,
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor[700],
-                    padding: EdgeInsets.symmetric(vertical: 6.px),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.px),
-                    ),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                child: _isLoading
-                    ? SizedBox(
-                        width: 16.px,
-                        height: 16.px,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                  backgroundColor: primaryColor[700],
+                  padding: EdgeInsets.symmetric(vertical: 6.px),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.px),
+                  ),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child:
+                    _isLoading
+                        ? SizedBox(
+                          width: 16.px,
+                          height: 16.px,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        )
+                        : Text(
+                          S.of(context).confirmModify,
+                          style: TextStyle(fontSize: 12.px),
                         ),
-                      )
-                    : Text(
-                        S.of(context).confirmModify,
-                        style: TextStyle(fontSize: 12.px),
-                      ),
               ),
             ),
             SizedBox(height: 16.px),
             Text(
               S.of(context).passwordTips,
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 10.px,
-              ),
+              style: TextStyle(color: Colors.grey[600], fontSize: 10.px),
             ),
           ],
         ),

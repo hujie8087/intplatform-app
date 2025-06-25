@@ -412,5 +412,6 @@
   "head": "负责人",
   "phoneNumber": "联系电话",
   "publicBusinessHours": "营业时间",
-  "publicAddress": "详细地址"
+  "publicAddress": "详细地址",
+  "pickupCode": "货架"
 }

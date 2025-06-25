@@ -355,7 +355,10 @@ class _RestaurantBodyState extends State<RestaurantBody>
             Positioned(
               bottom: 8.px,
               left: 0,
-              child: ShoppingCart(cartKey: cartKey),
+              child: ShoppingCart(
+                cartKey: cartKey,
+                restaurantDetail: restaurantDetail,
+              ),
             ),
           ],
         ),

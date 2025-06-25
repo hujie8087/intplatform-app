@@ -412,5 +412,6 @@
   "head": "Head",
   "phoneNumber": "Phone number",
   "publicBusinessHours": "Business hours",
-  "publicAddress": "Detailed address"
+  "publicAddress": "Detailed address",
+  "pickupCode": "Shelves"
 }

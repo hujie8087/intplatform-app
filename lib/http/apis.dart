@@ -16,8 +16,8 @@ class APIs {
       'https://web.iwipwedabay.com/static/intplatform';
 
   // 测试环境
-  // static const String apiPrefix =
-  //     'https://test.iwipwedabay.com/intplatform-stage-api'; // 外网
+  //   static const String apiPrefix =
+  //       'https://test.iwipwedabay.com/intplatform-stage-api'; // 外网
   // static const String imageOnlinePrefix =
   //     'http://192.168.90.30/static/intplatform';
   // static const String imagePrefix =

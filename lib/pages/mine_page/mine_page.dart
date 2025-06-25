@@ -75,20 +75,21 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
   Future<void> _fetchData() async {
     // 模拟异步数据获取
     var userInfoData = await SpUtils.getModel('userInfo');
-    if (userInfoData != null) {
-      userInfo = UserInfoModel.fromJson(userInfoData);
-    }
     version = await DeviceUtils.version();
     var languageCode = await SpUtils.getString('locale');
-    if (languageCode == 'en') {
-      localeName = 'English';
-    } else if (languageCode == 'id') {
-      localeName = 'Indonesia';
-    } else {
-      localeName = '中文';
-    }
     // 更新状态
-    setState(() {});
+    setState(() {
+      if (languageCode == 'en') {
+        localeName = 'English';
+      } else if (languageCode == 'id') {
+        localeName = 'Indonesia';
+      } else {
+        localeName = '中文';
+      }
+      if (userInfoData != null) {
+        userInfo = UserInfoModel.fromJson(userInfoData);
+      }
+    });
   }
 
   Future _changeLocale(value, context) async {

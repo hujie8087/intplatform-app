@@ -217,6 +217,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             ),
           if (_orderDetail?.pickupType == 3)
             _buildInfoItem(S.of(context).address, _orderDetail?.address ?? ''),
+          if (_orderDetail?.pickupCode != null)
+            _buildInfoItem(
+              S.of(context).pickupCode,
+              _orderDetail?.pickupCode ?? '',
+            ),
 
           if (_orderDetail?.remark?.isNotEmpty == true)
             _buildInfoItem(S.of(context).remark, _orderDetail?.remark ?? ''),
@@ -343,7 +348,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 style: TextStyle(color: Colors.grey[600], fontSize: 12.px),
               ),
               Text(
-                '${_orderDetail?.totalPrice?.toStringAsFixed(2)}',
+                '${(_orderDetail!.totalPrice! - (_orderDetail?.postPrice ?? 0)).toStringAsFixed(2)}',
                 style: TextStyle(fontSize: 12.px),
               ),
             ],

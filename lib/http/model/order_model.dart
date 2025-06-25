@@ -14,37 +14,40 @@ class OrderModel {
   int? status;
   String? remark;
   String? deliveryArea;
-  int? totalPrice;
-  int? postPrice;
+  double? totalPrice;
+  double? postPrice;
   int? pickupType;
+  String? pickupCode;
   String? tableNumber;
   String? address;
   List<OrderDetailsList>? orderDetailsList;
   int? versionNum;
 
-  OrderModel(
-      {this.id,
-      this.no,
-      this.nick,
-      this.name,
-      this.tel,
-      this.canteenId,
-      this.canteenName,
-      this.createTime,
-      this.expectedTime,
-      this.print,
-      this.refund,
-      this.endTime,
-      this.status,
-      this.remark,
-      this.deliveryArea,
-      this.totalPrice,
-      this.postPrice,
-      this.pickupType,
-      this.tableNumber,
-      this.address,
-      this.orderDetailsList,
-      this.versionNum});
+  OrderModel({
+    this.id,
+    this.no,
+    this.nick,
+    this.name,
+    this.tel,
+    this.canteenId,
+    this.canteenName,
+    this.createTime,
+    this.expectedTime,
+    this.print,
+    this.refund,
+    this.endTime,
+    this.status,
+    this.remark,
+    this.deliveryArea,
+    this.totalPrice,
+    this.postPrice,
+    this.pickupType,
+    this.pickupCode,
+    this.tableNumber,
+    this.address,
+    this.orderDetailsList,
+    this.versionNum,
+  });
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -65,6 +68,7 @@ class OrderModel {
     totalPrice = json['totalPrice'];
     postPrice = json['postPrice'];
     pickupType = json['pickupType'];
+    pickupCode = json['pickupCode'];
     tableNumber = json['tableNumber'];
     address = json['address'];
     if (json['orderDetailsList'] != null) {
@@ -96,6 +100,7 @@ class OrderModel {
     data['totalPrice'] = this.totalPrice;
     data['postPrice'] = this.postPrice;
     data['pickupType'] = this.pickupType;
+    data['pickupCode'] = this.pickupCode;
     data['tableNumber'] = this.tableNumber;
     data['address'] = this.address;
     if (this.orderDetailsList != null) {
@@ -120,18 +125,19 @@ class OrderDetailsList {
   String? image;
   String? createTime;
 
-  OrderDetailsList(
-      {this.id,
-      this.commodityId,
-      this.orderId,
-      this.code,
-      this.name,
-      this.num,
-      this.deal,
-      this.taste,
-      this.price,
-      this.image,
-      this.createTime});
+  OrderDetailsList({
+    this.id,
+    this.commodityId,
+    this.orderId,
+    this.code,
+    this.name,
+    this.num,
+    this.deal,
+    this.taste,
+    this.price,
+    this.image,
+    this.createTime,
+  });
 
   OrderDetailsList.fromJson(Map<String, dynamic> json) {
     id = json['id'];

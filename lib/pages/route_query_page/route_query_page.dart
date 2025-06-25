@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/loading.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/bus_line_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
@@ -30,6 +31,8 @@ class _RouteQueryPage extends State<RouteQueryPage>
   int pageNum = 1;
   int pageSize = 10;
   late RefreshController _refreshController;
+  String imagePath = 'assets/images/generalMap.webp';
+  String imageNetworkPath = '';
 
   @override
   void initState() {
@@ -78,7 +81,6 @@ class _RouteQueryPage extends State<RouteQueryPage>
 
   @override
   Widget build(BuildContext context) {
-    String imagePath = 'assets/images/generalMap.jpeg';
     return Scaffold(
       backgroundColor: backgroundColor,
       body: NestedScrollView(
@@ -93,9 +95,22 @@ class _RouteQueryPage extends State<RouteQueryPage>
               flexibleSpace: FlexibleSpaceBar(
                 background: GestureDetector(
                   onTap: () {
-                    _showFullScreenImage(context, imagePath);
+                    if (imageNetworkPath != '') {
+                      _showFullScreenImage(
+                        context,
+                        APIs.imagePrefix + imageNetworkPath,
+                      );
+                    } else {
+                      _showFullScreenImage(context, imagePath);
+                    }
                   },
-                  child: Image.asset(imagePath, fit: BoxFit.cover),
+                  child:
+                      imageNetworkPath != ''
+                          ? Image.network(
+                            APIs.imagePrefix + imageNetworkPath,
+                            fit: BoxFit.cover,
+                          )
+                          : Image.asset(imagePath, fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -207,6 +222,9 @@ class _RouteQueryPage extends State<RouteQueryPage>
           setState(() {
             if (busLineList.isEmpty) {
               busLineList = rows;
+              if (rows[0].allPath != null) {
+                imageNetworkPath = rows[0].allPath ?? '';
+              }
             } else {
               busLineList.addAll(rows);
             }

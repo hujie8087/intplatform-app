@@ -412,5 +412,6 @@
   "head": "Pemilik",
   "phoneNumber": "Nomor telepon",
   "publicBusinessHours": "Jam buka",
-  "publicAddress": "Alamat"
+  "publicAddress": "Alamat",
+  "pickupCode": "Rak"
 }

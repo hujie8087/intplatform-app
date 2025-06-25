@@ -1,4 +1,5 @@
 // import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,7 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart';
 
 // 在文件顶部定义全局 key
 final GlobalKey<_AppHomeScreenState> appHomeScreenKey =
@@ -86,13 +88,14 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   Widget tabBody = Container(color: Colors.white);
 
   Future<bool> isLogin() async {
-    // 判断是否登录
     final token = await SpUtils.getString(Constants.SP_TOKEN);
     if (token == null || token.isEmpty) {
       ProgressHUD.showText(S.of(context).needLogin);
       RouteUtils.navigateToLogin();
       return false;
     } else {
+      // 用Completer来等待回调
+      final completer = Completer<bool>();
       DataUtils.getUserInfo(
         success: (res) async {
           UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
@@ -105,22 +108,21 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             Constants.SP_USER_DEPT,
             userInfo.user?.dept?.deptName ?? '',
           );
-          return true;
+          completer.complete(true);
         },
         fail: (code, msg) {
           DataUtils.logout(
             success: (data) {
-              //清除缓存
               SpUtils.remove(Constants.SP_USER_NAME);
               SpUtils.remove(Constants.SP_USER_DEPT);
               SpUtils.remove(Constants.SP_TOKEN);
               Navigator.pushNamed(context, '/login');
             },
           );
-          return false;
+          completer.complete(false);
         },
       );
-      return true;
+      return completer.future;
     }
   }
 

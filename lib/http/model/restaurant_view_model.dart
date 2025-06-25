@@ -19,7 +19,7 @@ class RestaurantModel {
   String? updateTime;
   String? remark;
   int? id;
-  String? typeId;
+  int? typeId;
   String? name;
   String? image;
   int? status;
@@ -30,25 +30,28 @@ class RestaurantModel {
   List<dynamic>? pickupTypeIds;
   List<dynamic>? newDeliveryIds;
   String? code;
+  double? lowConsumption;
 
-  RestaurantModel(
-      {this.createBy,
-      this.createTime,
-      this.updateBy,
-      this.updateTime,
-      this.remark,
-      this.id,
-      this.typeId,
-      this.name,
-      this.image,
-      this.status,
-      this.endTime,
-      this.startTime,
-      this.bookTable,
-      this.pickup,
-      this.pickupTypeIds,
-      this.newDeliveryIds,
-      this.code});
+  RestaurantModel({
+    this.createBy,
+    this.createTime,
+    this.updateBy,
+    this.updateTime,
+    this.remark,
+    this.id,
+    this.typeId,
+    this.name,
+    this.image,
+    this.status,
+    this.endTime,
+    this.startTime,
+    this.bookTable,
+    this.pickup,
+    this.pickupTypeIds,
+    this.newDeliveryIds,
+    this.lowConsumption,
+    this.code,
+  });
 
   RestaurantModel.fromJson(Map<String, dynamic> json) {
     createBy = json['createBy'];
@@ -67,6 +70,7 @@ class RestaurantModel {
     pickup = json['pickup'];
     pickupTypeIds = json['pickupTypeIds'];
     newDeliveryIds = json['newDeliveryIds'];
+    lowConsumption = json['lowConsumption'];
     code = json['code'];
   }
 
@@ -89,6 +93,7 @@ class RestaurantModel {
     data['pickupTypeIds'] = this.pickupTypeIds ?? null;
     data['newDeliveryIds'] = this.newDeliveryIds ?? null;
     data['code'] = this.code;
+    data['lowConsumption'] = this.lowConsumption;
     return data;
   }
 }

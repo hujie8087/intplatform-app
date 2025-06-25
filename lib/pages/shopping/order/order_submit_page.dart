@@ -152,6 +152,34 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
     );
   }
 
+  // 生成配送费说明
+  String generateDeliveryFeeDescription(List<DeliveryFeeModel> rules) {
+    List<String> descriptions = [];
+
+    for (var rule in rules) {
+      final condition = rule.billingConditions;
+      final price = rule.price;
+
+      String readable = '';
+
+      if (condition != null && price != null) {
+        // 简单替换逻辑，适用于你给的规则格式
+        readable = condition
+            .replaceAll('price', '订单金额')
+            .replaceAll('<=', '≤')
+            .replaceAll('>=', '≥')
+            .replaceAll('<', '<')
+            .replaceAll('>', '>')
+            .replaceAll('&&', '且');
+
+        readable += '  配送费: ${price.toStringAsFixed(2)}';
+        descriptions.add(readable);
+      }
+    }
+
+    return descriptions.join('\n');
+  }
+
   // 第一个页面
   void _navigateToSecondPage() async {
     final result = await Navigator.push(
@@ -498,9 +526,57 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          S.of(context).deliveryFee + ':',
-                          style: TextStyle(fontSize: 12.px),
+                        Row(
+                          children: [
+                            Text(
+                              S.of(context).deliveryFee + ':',
+                              style: TextStyle(fontSize: 12.px),
+                            ),
+                            SizedBox(width: 4),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder:
+                                      (_) => AlertDialog(
+                                        title: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.info_outline,
+                                              size: 20.px,
+                                              color: primaryColor,
+                                            ),
+                                            SizedBox(width: 4.px),
+                                            Text(
+                                              '配送费说明',
+                                              style: TextStyle(fontSize: 14.px),
+                                            ),
+                                          ],
+                                        ),
+                                        content: Text(
+                                          generateDeliveryFeeDescription(
+                                            deliveryFeeOptions,
+                                          ),
+                                          style: TextStyle(fontSize: 12.px),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            child: Text('知道了'),
+                                            onPressed:
+                                                () =>
+                                                    Navigator.of(context).pop(),
+                                          ),
+                                        ],
+                                      ),
+                                );
+                              },
+                              child: Icon(
+                                Icons.info_outline,
+                                size: 14.px,
+                                color: primaryColor,
+                              ),
+                            ),
+                          ],
                         ),
                         Text(
                           selectedDeliveryFee?.price?.toStringAsFixed(2) ??
