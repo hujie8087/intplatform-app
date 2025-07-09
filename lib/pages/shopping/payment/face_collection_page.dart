@@ -129,7 +129,7 @@ class _FaceCollectionPageState extends State<FaceCollectionPage> {
         children: [
           Container(
             margin: EdgeInsets.only(top: 20.px),
-            height: 300,
+            height: 200.px,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.circular(8),
@@ -140,7 +140,7 @@ class _FaceCollectionPageState extends State<FaceCollectionPage> {
             child:
                 userFaceImage == null || userFaceImage == ''
                     ? Container(
-                      width: 300,
+                      width: 300.px,
                       child: Center(
                         child: Text(
                           S.current.uploadFacePhoto,
@@ -156,7 +156,7 @@ class _FaceCollectionPageState extends State<FaceCollectionPage> {
           SizedBox(height: 10.px),
           Text(
             S.current.faceCollectionTips,
-            style: TextStyle(color: secondaryColor),
+            style: TextStyle(color: secondaryColor, fontSize: 12.px),
           ),
           // 人脸采集说明
           Container(
@@ -207,6 +207,9 @@ class _FaceCollectionPageState extends State<FaceCollectionPage> {
             padding: EdgeInsets.symmetric(horizontal: 30.px),
             child: ElevatedButton(
               style: ButtonStyle(
+                minimumSize: WidgetStateProperty.all(
+                  Size(double.infinity, 26.px),
+                ),
                 backgroundColor: MaterialStateProperty.all(primaryColor[500]),
                 textStyle: MaterialStateProperty.all(
                   TextStyle(fontSize: 14.px, color: Colors.white),
@@ -231,7 +234,10 @@ class _FaceCollectionPageState extends State<FaceCollectionPage> {
                   setState(() {});
                 }
               },
-              child: Text(S.current.uploadNewFacePhoto),
+              child: Text(
+                S.current.uploadNewFacePhoto,
+                style: TextStyle(fontSize: 14.px, color: Colors.white),
+              ),
             ),
           ),
         ],

@@ -5,7 +5,9 @@ import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:logistics_app/route/route_annotation.dart';
 
+@AppRoute(path: 'notice_detail_page', name: '通知公告详情页')
 class NoticeDetailPage extends StatefulWidget {
   const NoticeDetailPage({Key? key, required this.noticeId}) : super(key: key);
   final int noticeId;

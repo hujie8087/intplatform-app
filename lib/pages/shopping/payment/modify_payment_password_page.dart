@@ -190,7 +190,10 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
                         )
                         : Text(
                           S.of(context).confirmModify,
-                          style: TextStyle(fontSize: 12.px),
+                          style: TextStyle(
+                            fontSize: 12.px,
+                            color: Colors.white,
+                          ),
                         ),
               ),
             ),

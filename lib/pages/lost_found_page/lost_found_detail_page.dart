@@ -11,7 +11,9 @@ import 'package:logistics_app/utils/hj_bottom_sheet.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/route/route_annotation.dart';
 
+@AppRoute(path: 'lost_found_detail_page', name: '失物招领详情页')
 class LostFoundDetailPage extends StatefulWidget {
   const LostFoundDetailPage({Key? key}) : super(key: key);
 

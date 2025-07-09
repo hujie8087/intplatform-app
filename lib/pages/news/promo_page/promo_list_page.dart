@@ -7,10 +7,12 @@ import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
 import 'package:logistics_app/pages/news/promo_page/promo_detail_page.dart';
+import 'package:logistics_app/route/route_annotation.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+@AppRoute(path: 'promo_list_page', name: '宣传片列表页')
 class PromoListPage extends StatefulWidget {
   const PromoListPage({Key? key}) : super(key: key);
 

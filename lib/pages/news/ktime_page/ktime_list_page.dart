@@ -6,11 +6,13 @@ import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/pages/news/promo_page/promo_detail_page.dart';
+import 'package:logistics_app/route/route_annotation.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+@AppRoute(path: 'k_time_list_page', name: '小K拾光')
 class KTimeListPage extends StatefulWidget {
   const KTimeListPage({Key? key}) : super(key: key);
 

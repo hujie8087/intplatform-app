@@ -6,8 +6,8 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/base_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/route/auto_route_generator.dart';
 import 'package:logistics_app/route/route_utils.dart';
-import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 
 import '../../constants.dart';

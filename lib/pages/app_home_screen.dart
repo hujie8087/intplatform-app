@@ -58,7 +58,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             index: 0,
             isSelected: true,
             animationController: animationController,
-            labelName: S.current.homePage,
+            labelName: '', // 先设为空，在build中设置
           ),
           TabIconData(
             imagePath: 'assets/images/tab_tool1.png',
@@ -66,7 +66,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             index: 1,
             isSelected: false,
             animationController: animationController,
-            labelName: S.current.toolPage,
+            labelName: '', // 先设为空，在build中设置
           ),
           TabIconData(
             imagePath: 'assets/images/tab_4.png',
@@ -74,15 +74,20 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             index: 2,
             isSelected: false,
             animationController: animationController,
-            labelName: S.current.minePage,
+            labelName: '', // 先设为空，在build中设置
           ),
         ];
-      } else {
-        _tabIconsList[0].labelName = S.current.homePage;
-        _tabIconsList[1].labelName = S.current.toolPage;
-        _tabIconsList[2].labelName = S.current.minePage;
       }
     });
+  }
+
+  // 更新tab标签名称
+  void _updateTabLabels() {
+    if (_tabIconsList.isNotEmpty) {
+      _tabIconsList[0].labelName = S.of(context).homePage;
+      _tabIconsList[1].labelName = S.of(context).toolPage;
+      _tabIconsList[2].labelName = S.of(context).minePage;
+    }
   }
 
   Widget tabBody = Container(color: Colors.white);
@@ -294,6 +299,9 @@ class _AppHomeScreenState extends State<AppHomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    // 在build方法中更新标签名称
+    _updateTabLabels();
+
     return WillPopScope(
       onWillPop: () async {
         // 禁用返回行为

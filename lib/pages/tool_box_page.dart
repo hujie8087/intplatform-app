@@ -17,7 +17,7 @@ import 'package:logistics_app/http/model/guide_view_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/main.dart';
-import 'package:logistics_app/pages/accommodation_page/apply_detail_page.dart';
+import 'package:logistics_app/pages/accommodation/apply/apply_detail_page.dart';
 import 'package:logistics_app/pages/guide/guide_list_page.dart';
 import 'package:logistics_app/pages/guide/guide_type_page.dart';
 import 'package:logistics_app/pages/public_convenience_page/public_list_page.dart';
@@ -588,8 +588,8 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
               languageCode == 'zh'
                   ? meneItem.cname ?? ''
                   : languageCode == 'en'
-                  ? meneItem.yname ?? ''
-                  : meneItem.uname ?? '',
+                  ? meneItem.uname ?? ''
+                  : meneItem.yname ?? '',
               maxLines: 2,
               style: TextStyle(fontSize: 12.px),
               textAlign: TextAlign.center,

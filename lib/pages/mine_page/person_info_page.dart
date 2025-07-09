@@ -189,6 +189,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                   style: TextStyle(fontSize: 12.px),
                   decoration: InputDecoration(
                     hintText: S.of(context).inputMessage(S.of(context).name),
+                    hintStyle: TextStyle(fontSize: 12.px),
                   ),
                 ),
               ),
@@ -220,9 +221,12 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
               title: S.of(context).inputMessage(S.of(context).idCard),
               customContentWidget: Container(
                 child: TextField(
+                  style: TextStyle(fontSize: 12.px),
                   controller: _controller,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText: S.of(context).inputMessage(S.of(context).idCard),
+                    hintStyle: TextStyle(fontSize: 12.px),
                   ),
                 ),
               ),
@@ -261,7 +265,10 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                             child: Container(
                               alignment: Alignment.center,
                               height: 44.px,
-                              child: Text(sex.dictLabel ?? ''),
+                              child: Text(
+                                sex.dictLabel ?? '',
+                                style: TextStyle(fontSize: 12.px),
+                              ),
                             ),
                           ),
                           DividerWidget(),
@@ -290,10 +297,12 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
               title: S.of(context).inputMessage(S.of(context).phone),
               customContentWidget: Container(
                 child: TextField(
+                  style: TextStyle(fontSize: 12.px),
                   keyboardType: TextInputType.number,
                   controller: _controller,
                   decoration: InputDecoration(
                     hintText: S.of(context).inputMessage(S.of(context).phone),
+                    hintStyle: TextStyle(fontSize: 12.px),
                   ),
                 ),
               ),
@@ -317,10 +326,12 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
               title: S.of(context).inputMessage(S.of(context).email),
               customContentWidget: Container(
                 child: TextField(
+                  style: TextStyle(fontSize: 12.px),
                   keyboardType: TextInputType.emailAddress,
                   controller: _controller,
                   decoration: InputDecoration(
                     hintText: S.of(context).inputMessage(S.of(context).email),
+                    hintStyle: TextStyle(fontSize: 12.px),
                   ),
                 ),
               ),
@@ -378,7 +389,8 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
                 color: isWarning ? secondaryColor : Colors.grey,
               ),
             ),
-            if (isEdit) Icon(Icons.chevron_right, color: Colors.grey),
+            if (isEdit)
+              Icon(Icons.chevron_right, color: Colors.grey, size: 16.px),
           ],
         ),
       ),

@@ -366,6 +366,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage>
                                   child: Icon(
                                     Icons.delivery_dining,
                                     color: Colors.grey,
+                                    size: 24.px,
                                   ),
                                 ),
                                 SizedBox(width: 10.px),

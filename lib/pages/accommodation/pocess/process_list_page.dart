@@ -7,7 +7,7 @@ import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:logistics_app/http/model/accommodation_process_model.dart';
-import 'package:logistics_app/pages/accommodation_page/process_detail_page.dart';
+import 'package:logistics_app/pages/accommodation/pocess/process_detail_page.dart';
 
 class ProcessListPage extends StatefulWidget {
   @override
@@ -37,25 +37,24 @@ class _ProcessListPageState extends State<ProcessListPage> {
     }
 
     pageNum = isLoadMore ? pageNum + 1 : 1;
-    var params = {
-      'pageNum': pageNum,
-      'pageSize': pageSize,
-      'status': '2',
-    };
+    var params = {'pageNum': pageNum, 'pageSize': pageSize, 'status': '2'};
 
     DataUtils.getAccommodationProcessList(
       params,
       success: (data) {
         setState(() {
           if (isLoadMore) {
-            _dataList.addAll((data['rows'] as List)
-                .map((item) => AccommodationProcessModel.fromJson(item))
-                .toList());
+            _dataList.addAll(
+              (data['rows'] as List)
+                  .map((item) => AccommodationProcessModel.fromJson(item))
+                  .toList(),
+            );
             _refreshController.loadComplete();
           } else {
-            _dataList = (data['rows'] as List)
-                .map((item) => AccommodationProcessModel.fromJson(item))
-                .toList();
+            _dataList =
+                (data['rows'] as List)
+                    .map((item) => AccommodationProcessModel.fromJson(item))
+                    .toList();
             totalItems = data['total'] ?? 0;
             _refreshController.refreshCompleted();
           }
@@ -85,29 +84,33 @@ class _ProcessListPageState extends State<ProcessListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).accommodationProcess,
-            style: TextStyle(fontSize: 16.px)),
+        title: Text(
+          S.of(context).accommodationProcess,
+          style: TextStyle(fontSize: 16.px),
+        ),
         centerTitle: true,
       ),
-      body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : SmartRefreshWidget(
-              enablePullDown: true,
-              enablePullUp: true,
-              onRefresh: () => _fetchData(isLoadMore: false),
-              onLoading: () => _fetchData(isLoadMore: true),
-              controller: _refreshController,
-              child: _dataList.isEmpty
-                  ? EmptyView()
-                  : ListView.builder(
-                      padding: EdgeInsets.all(16.px),
-                      itemCount: _dataList.length,
-                      itemBuilder: (context, index) {
-                        final item = _dataList[index];
-                        return _buildAccommodationItem(item);
-                      },
-                    ),
-            ),
+      body:
+          isLoading
+              ? Center(child: CircularProgressIndicator())
+              : SmartRefreshWidget(
+                enablePullDown: true,
+                enablePullUp: true,
+                onRefresh: () => _fetchData(isLoadMore: false),
+                onLoading: () => _fetchData(isLoadMore: true),
+                controller: _refreshController,
+                child:
+                    _dataList.isEmpty
+                        ? EmptyView()
+                        : ListView.builder(
+                          padding: EdgeInsets.all(16.px),
+                          itemCount: _dataList.length,
+                          itemBuilder: (context, index) {
+                            final item = _dataList[index];
+                            return _buildAccommodationItem(item);
+                          },
+                        ),
+              ),
     );
   }
 
@@ -121,9 +124,11 @@ class _ProcessListPageState extends State<ProcessListPage> {
           borderRadius: BorderRadius.circular(10),
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ProcessDetailPage(model: item)));
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProcessDetailPage(model: item),
+              ),
+            );
           },
           child: Ink(
             decoration: BoxDecoration(
@@ -144,15 +149,17 @@ class _ProcessListPageState extends State<ProcessListPage> {
                 // 图片
                 if (item.img != null)
                   ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(12.px)),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(12.px),
+                    ),
                     child: Image.network(
                       imagePrefix + item.img!,
                       width: double.infinity,
                       height: 180.px,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Image.asset('assets/images/empty/空.png'),
+                      errorBuilder:
+                          (context, error, stackTrace) =>
+                              Image.asset('assets/images/empty/空.png'),
                     ),
                   ),
 
@@ -188,22 +195,32 @@ class _ProcessListPageState extends State<ProcessListPage> {
                       SizedBox(height: 12.px),
                       Row(
                         children: [
-                          Icon(Icons.access_time,
-                              size: 14.px, color: Colors.grey[400]),
+                          Icon(
+                            Icons.access_time,
+                            size: 14.px,
+                            color: Colors.grey[400],
+                          ),
                           SizedBox(width: 4.px),
                           Text(
                             item.createTime ?? '',
                             style: TextStyle(
-                                fontSize: 12.px, color: Colors.grey[400]),
+                              fontSize: 12.px,
+                              color: Colors.grey[400],
+                            ),
                           ),
                           Spacer(),
-                          Icon(Icons.remove_red_eye,
-                              size: 14.px, color: Colors.grey[400]),
+                          Icon(
+                            Icons.remove_red_eye,
+                            size: 14.px,
+                            color: Colors.grey[400],
+                          ),
                           SizedBox(width: 4.px),
                           Text(
                             '${item.views ?? 0}',
                             style: TextStyle(
-                                fontSize: 12.px, color: Colors.grey[400]),
+                              fontSize: 12.px,
+                              color: Colors.grey[400],
+                            ),
                           ),
                         ],
                       ),

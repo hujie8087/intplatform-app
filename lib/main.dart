@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -14,8 +14,11 @@ import 'package:logistics_app/firebase_service.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/http/log_utils.dart';
+import 'package:logistics_app/route/auto_route_generator.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
+import 'package:logistics_app/route/route_registry.dart';
+import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
@@ -26,6 +29,10 @@ import 'generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 注册所有注解路由
+  // RouteRegistry.registerAllAnnotatedRoutes();
+
   initializeFirebase();
   // 设置竖屏
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
@@ -240,7 +247,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 });
               },
               theme: ThemeData(
-                primarySwatch: Colors.blue,
+                primarySwatch: primaryColor,
                 platform: TargetPlatform.iOS,
                 navigationBarTheme: const NavigationBarThemeData(
                   backgroundColor: Colors.white,

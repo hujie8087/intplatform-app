@@ -58,6 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "auditRejected":
             MessageLookupByLibrary.simpleMessage("Rejected by Review"),
         "birthday": MessageLookupByLibrary.simpleMessage("Birthday"),
+        "breakfast": MessageLookupByLibrary.simpleMessage("Breakfast"),
         "busTimetable": MessageLookupByLibrary.simpleMessage("Bus Timetable"),
         "busToday": MessageLookupByLibrary.simpleMessage("Today"),
         "businessHours": MessageLookupByLibrary.simpleMessage("Business hours"),
@@ -104,6 +105,81 @@ class MessageLookup extends MessageLookupByLibrary {
         "checkUpdate": MessageLookupByLibrary.simpleMessage("Check Update"),
         "checkout": MessageLookupByLibrary.simpleMessage("Checkout"),
         "chooseRoute": MessageLookupByLibrary.simpleMessage("Choose Route"),
+        "cleaning_area": MessageLookupByLibrary.simpleMessage("Cleaning Area"),
+        "cleaning_basic_info":
+            MessageLookupByLibrary.simpleMessage("Basic Info"),
+        "cleaning_contacts": MessageLookupByLibrary.simpleMessage("Contacts"),
+        "cleaning_deep_cleaning":
+            MessageLookupByLibrary.simpleMessage("Deep Cleaning"),
+        "cleaning_evaluate": MessageLookupByLibrary.simpleMessage("Evaluate"),
+        "cleaning_loading": MessageLookupByLibrary.simpleMessage("Loading..."),
+        "cleaning_order":
+            MessageLookupByLibrary.simpleMessage("Cleaning Order"),
+        "cleaning_order_create": MessageLookupByLibrary.simpleMessage("Create"),
+        "cleaning_order_detail":
+            MessageLookupByLibrary.simpleMessage("Cleaning Order Detail"),
+        "cleaning_order_evaluate":
+            MessageLookupByLibrary.simpleMessage("Evaluate Order"),
+        "cleaning_order_evaluate_average":
+            MessageLookupByLibrary.simpleMessage("Average"),
+        "cleaning_order_evaluate_content":
+            MessageLookupByLibrary.simpleMessage("Evaluation Content"),
+        "cleaning_order_evaluate_content_hint":
+            MessageLookupByLibrary.simpleMessage(
+                "Please enter your evaluation content (optional)"),
+        "cleaning_order_evaluate_dissatisfied":
+            MessageLookupByLibrary.simpleMessage("Dissatisfied"),
+        "cleaning_order_evaluate_fail":
+            MessageLookupByLibrary.simpleMessage("Evaluation Failed"),
+        "cleaning_order_evaluate_satisfied":
+            MessageLookupByLibrary.simpleMessage("Satisfied"),
+        "cleaning_order_evaluate_select_rating":
+            MessageLookupByLibrary.simpleMessage("Please select a rating"),
+        "cleaning_order_evaluate_submit":
+            MessageLookupByLibrary.simpleMessage("Submit Evaluation"),
+        "cleaning_order_evaluate_success":
+            MessageLookupByLibrary.simpleMessage("Evaluation Success"),
+        "cleaning_order_evaluate_title":
+            MessageLookupByLibrary.simpleMessage("Service Rating"),
+        "cleaning_order_evaluate_very_dissatisfied":
+            MessageLookupByLibrary.simpleMessage("Very Dissatisfied"),
+        "cleaning_order_evaluate_very_satisfied":
+            MessageLookupByLibrary.simpleMessage("Very Satisfied"),
+        "cleaning_order_handle": MessageLookupByLibrary.simpleMessage("Handle"),
+        "cleaning_order_number":
+            MessageLookupByLibrary.simpleMessage("Order Number"),
+        "cleaning_order_pending":
+            MessageLookupByLibrary.simpleMessage("Pending"),
+        "cleaning_order_progress":
+            MessageLookupByLibrary.simpleMessage("Order Progress"),
+        "cleaning_order_search": MessageLookupByLibrary.simpleMessage(
+            "Please enter the order number or room number to search"),
+        "cleaning_order_status": MessageLookupByLibrary.simpleMessage("Status"),
+        "cleaning_order_submit":
+            MessageLookupByLibrary.simpleMessage("Submit Order"),
+        "cleaning_order_view": MessageLookupByLibrary.simpleMessage("View"),
+        "cleaning_other_info":
+            MessageLookupByLibrary.simpleMessage("Other Info"),
+        "cleaning_price": MessageLookupByLibrary.simpleMessage("Price"),
+        "cleaning_project":
+            MessageLookupByLibrary.simpleMessage("Cleaning Project"),
+        "cleaning_remark": MessageLookupByLibrary.simpleMessage("Remark"),
+        "cleaning_room_number":
+            MessageLookupByLibrary.simpleMessage("Room Number"),
+        "cleaning_search": MessageLookupByLibrary.simpleMessage("Search"),
+        "cleaning_select_address":
+            MessageLookupByLibrary.simpleMessage("Select Address"),
+        "cleaning_select_address_error": MessageLookupByLibrary.simpleMessage(
+            "Address is not in the cleaning project area, please select again!"),
+        "cleaning_select_cleaning_project":
+            MessageLookupByLibrary.simpleMessage("Select Cleaning Project"),
+        "cleaning_select_date":
+            MessageLookupByLibrary.simpleMessage("Select Date"),
+        "cleaning_service_detail":
+            MessageLookupByLibrary.simpleMessage("Service Detail"),
+        "cleaning_special_cleaning":
+            MessageLookupByLibrary.simpleMessage("Special Cleaning"),
+        "cleaning_tel": MessageLookupByLibrary.simpleMessage("Tel"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
         "clearCart": MessageLookupByLibrary.simpleMessage("Clear cart"),
         "clearCartTips":
@@ -140,6 +216,143 @@ class MessageLookup extends MessageLookupByLibrary {
         "contactUs": MessageLookupByLibrary.simpleMessage("Contact us"),
         "contentUpdating": MessageLookupByLibrary.simpleMessage(
             "Content is updating, please wait..."),
+        "coupleRoom": MessageLookupByLibrary.simpleMessage("Room"),
+        "coupleRoom_feedback":
+            MessageLookupByLibrary.simpleMessage("Room Feedback"),
+        "coupleRoom_feedback_content":
+            MessageLookupByLibrary.simpleMessage("Feedback Content"),
+        "coupleRoom_feedback_other":
+            MessageLookupByLibrary.simpleMessage("Other"),
+        "coupleRoom_feedback_room":
+            MessageLookupByLibrary.simpleMessage("Room Problem"),
+        "coupleRoom_feedback_submit":
+            MessageLookupByLibrary.simpleMessage("Submit"),
+        "coupleRoom_feedback_submit_fail":
+            MessageLookupByLibrary.simpleMessage("Submit Failed"),
+        "coupleRoom_feedback_submit_success":
+            MessageLookupByLibrary.simpleMessage("Submit Success"),
+        "coupleRoom_feedback_system":
+            MessageLookupByLibrary.simpleMessage("System Problem"),
+        "coupleRoom_feedback_type":
+            MessageLookupByLibrary.simpleMessage("Feedback Type"),
+        "coupleRoom_room_all": MessageLookupByLibrary.simpleMessage("All"),
+        "coupleRoom_room_approved":
+            MessageLookupByLibrary.simpleMessage("Approved"),
+        "coupleRoom_room_audit_info":
+            MessageLookupByLibrary.simpleMessage("Audit Info"),
+        "coupleRoom_room_audit_remark":
+            MessageLookupByLibrary.simpleMessage("Audit Remark"),
+        "coupleRoom_room_audit_staff":
+            MessageLookupByLibrary.simpleMessage("Audit Staff"),
+        "coupleRoom_room_audit_status":
+            MessageLookupByLibrary.simpleMessage("Audit Status"),
+        "coupleRoom_room_audit_status_pass":
+            MessageLookupByLibrary.simpleMessage("Pass"),
+        "coupleRoom_room_audit_status_reject":
+            MessageLookupByLibrary.simpleMessage("Reject"),
+        "coupleRoom_room_audit_time":
+            MessageLookupByLibrary.simpleMessage("Audit Time"),
+        "coupleRoom_room_available":
+            MessageLookupByLibrary.simpleMessage("Available"),
+        "coupleRoom_room_available_days":
+            MessageLookupByLibrary.simpleMessage("Available Days"),
+        "coupleRoom_room_booking":
+            MessageLookupByLibrary.simpleMessage("Room Booking"),
+        "coupleRoom_room_booking_body": MessageLookupByLibrary.simpleMessage(
+            "You have a new room booking, please confirm the order in time"),
+        "coupleRoom_room_booking_book":
+            MessageLookupByLibrary.simpleMessage("Book"),
+        "coupleRoom_room_booking_book_fail":
+            MessageLookupByLibrary.simpleMessage("Book Failed"),
+        "coupleRoom_room_booking_book_success":
+            MessageLookupByLibrary.simpleMessage("Book Success"),
+        "coupleRoom_room_booking_confirm":
+            MessageLookupByLibrary.simpleMessage("Confirm"),
+        "coupleRoom_room_booking_remark":
+            MessageLookupByLibrary.simpleMessage("Remark"),
+        "coupleRoom_room_booking_search": MessageLookupByLibrary.simpleMessage(
+            "Please enter the room number to search"),
+        "coupleRoom_room_booking_select_date": MessageLookupByLibrary.simpleMessage(
+            "Please select the check-in date (multiple selection is allowed, and must be continuous)"),
+        "coupleRoom_room_booking_submit":
+            MessageLookupByLibrary.simpleMessage("Submit"),
+        "coupleRoom_room_booking_submit_fail":
+            MessageLookupByLibrary.simpleMessage("Submit Failed"),
+        "coupleRoom_room_booking_submit_success":
+            MessageLookupByLibrary.simpleMessage("Submit Success"),
+        "coupleRoom_room_cancel":
+            MessageLookupByLibrary.simpleMessage("Cancel"),
+        "coupleRoom_room_cancel_order":
+            MessageLookupByLibrary.simpleMessage("Cancel order"),
+        "coupleRoom_room_cancel_order_confirm":
+            MessageLookupByLibrary.simpleMessage(
+                "Are you sure you want to cancel this order?"),
+        "coupleRoom_room_cancel_order_success":
+            MessageLookupByLibrary.simpleMessage("Cancel order success"),
+        "coupleRoom_room_canceled":
+            MessageLookupByLibrary.simpleMessage("Canceled"),
+        "coupleRoom_room_check_in_date": MessageLookupByLibrary.simpleMessage(
+            "Please select the check-in date"),
+        "coupleRoom_room_check_in_time":
+            MessageLookupByLibrary.simpleMessage("Check-in Time"),
+        "coupleRoom_room_check_out_time":
+            MessageLookupByLibrary.simpleMessage("Check-out Time"),
+        "coupleRoom_room_confirm_content": MessageLookupByLibrary.simpleMessage(
+            "Are you sure you want to confirm this order?"),
+        "coupleRoom_room_confirm_fail":
+            MessageLookupByLibrary.simpleMessage("Confirm order failed"),
+        "coupleRoom_room_confirm_order":
+            MessageLookupByLibrary.simpleMessage("Confirm order"),
+        "coupleRoom_room_confirm_success":
+            MessageLookupByLibrary.simpleMessage("Confirm order success"),
+        "coupleRoom_room_days": MessageLookupByLibrary.simpleMessage("Days"),
+        "coupleRoom_room_info":
+            MessageLookupByLibrary.simpleMessage("Room Info"),
+        "coupleRoom_room_number":
+            MessageLookupByLibrary.simpleMessage("Room Number"),
+        "coupleRoom_room_order":
+            MessageLookupByLibrary.simpleMessage("Room Order"),
+        "coupleRoom_room_order_cancel_fail":
+            MessageLookupByLibrary.simpleMessage("Cancel order failed"),
+        "coupleRoom_room_order_cancel_success":
+            MessageLookupByLibrary.simpleMessage(
+                "Your room booking has been canceled, please re-book"),
+        "coupleRoom_room_order_create_time":
+            MessageLookupByLibrary.simpleMessage("Create time"),
+        "coupleRoom_room_order_detail":
+            MessageLookupByLibrary.simpleMessage("Order Detail"),
+        "coupleRoom_room_order_end_time":
+            MessageLookupByLibrary.simpleMessage("Check-out time"),
+        "coupleRoom_room_order_price":
+            MessageLookupByLibrary.simpleMessage("Total price"),
+        "coupleRoom_room_order_search": MessageLookupByLibrary.simpleMessage(
+            "Please enter the room number to search"),
+        "coupleRoom_room_order_start_time":
+            MessageLookupByLibrary.simpleMessage("Check-in time"),
+        "coupleRoom_room_pending":
+            MessageLookupByLibrary.simpleMessage("Pending Review"),
+        "coupleRoom_room_price": MessageLookupByLibrary.simpleMessage("Price"),
+        "coupleRoom_room_price_unit":
+            MessageLookupByLibrary.simpleMessage("KRP/Day"),
+        "coupleRoom_room_rejected":
+            MessageLookupByLibrary.simpleMessage("Rejected"),
+        "coupleRoom_room_search":
+            MessageLookupByLibrary.simpleMessage("Search"),
+        "coupleRoom_room_staff_dept":
+            MessageLookupByLibrary.simpleMessage("Department"),
+        "coupleRoom_room_staff_info":
+            MessageLookupByLibrary.simpleMessage("Staff Info"),
+        "coupleRoom_room_staff_job":
+            MessageLookupByLibrary.simpleMessage("Job/Service"),
+        "coupleRoom_room_staff_name":
+            MessageLookupByLibrary.simpleMessage("Name"),
+        "coupleRoom_room_staff_sex":
+            MessageLookupByLibrary.simpleMessage("Sex"),
+        "coupleRoom_room_staff_tel":
+            MessageLookupByLibrary.simpleMessage("Tel"),
+        "coupleRoom_room_staff_username":
+            MessageLookupByLibrary.simpleMessage("Employee"),
+        "coupleRoom_room_view": MessageLookupByLibrary.simpleMessage("View"),
         "createTime": MessageLookupByLibrary.simpleMessage("Create time"),
         "currentVersionIsLatest": MessageLookupByLibrary.simpleMessage(
             "You are using the latest version"),
@@ -184,11 +397,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "diningIn": MessageLookupByLibrary.simpleMessage("Dining In"),
         "diningService": MessageLookupByLibrary.simpleMessage("Dining Service"),
         "diningTime": MessageLookupByLibrary.simpleMessage("Dining time"),
+        "dinner": MessageLookupByLibrary.simpleMessage("Dinner"),
         "direction": MessageLookupByLibrary.simpleMessage("Direction"),
         "dishMethod": MessageLookupByLibrary.simpleMessage("Dish method"),
         "dishName": MessageLookupByLibrary.simpleMessage("Dish name"),
         "dishSuggestion":
             MessageLookupByLibrary.simpleMessage("Dish suggestion"),
+        "dishes": MessageLookupByLibrary.simpleMessage("Dishes"),
         "dragHereToRemove":
             MessageLookupByLibrary.simpleMessage("Drag here to remove"),
         "dragRemoveImage":
@@ -238,6 +453,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "fixed": MessageLookupByLibrary.simpleMessage("Fixed"),
         "foodRecommend":
             MessageLookupByLibrary.simpleMessage("Food Recommendation"),
+        "food_menu": MessageLookupByLibrary.simpleMessage("Food Menu"),
         "forgetPassword":
             MessageLookupByLibrary.simpleMessage("Forget password?"),
         "found": MessageLookupByLibrary.simpleMessage("Found"),
@@ -292,7 +508,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "livingAreaDataLoading":
             MessageLookupByLibrary.simpleMessage("Living Area Data Loading..."),
         "loadFailed": MessageLookupByLibrary.simpleMessage("Load failed"),
+        "load_failed": MessageLookupByLibrary.simpleMessage("Load failed"),
         "loading": MessageLookupByLibrary.simpleMessage("Data loading..."),
+        "loading_food_menu":
+            MessageLookupByLibrary.simpleMessage("Loading food menu..."),
         "loginBtn": MessageLookupByLibrary.simpleMessage("Login"),
         "loginFailed": MessageLookupByLibrary.simpleMessage("Login failed"),
         "loginSuccess": MessageLookupByLibrary.simpleMessage("Login success"),
@@ -311,6 +530,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lostStatus": MessageLookupByLibrary.simpleMessage("Lost Status"),
         "lostTime": MessageLookupByLibrary.simpleMessage("Lost Time"),
         "lostType": MessageLookupByLibrary.simpleMessage("Lost Type"),
+        "lunch": MessageLookupByLibrary.simpleMessage("Lunch"),
         "man": MessageLookupByLibrary.simpleMessage("Male"),
         "manage": MessageLookupByLibrary.simpleMessage("Manage"),
         "message": MessageLookupByLibrary.simpleMessage("Message"),
@@ -347,6 +567,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "noData": MessageLookupByLibrary.simpleMessage("No data"),
         "noMoreData": MessageLookupByLibrary.simpleMessage("No more data"),
         "noOrder": MessageLookupByLibrary.simpleMessage("No order"),
+        "no_food_menu_info":
+            MessageLookupByLibrary.simpleMessage("No food menu info"),
+        "no_food_menu_info_tips":
+            MessageLookupByLibrary.simpleMessage("No food menu for this date"),
+        "no_more_info": MessageLookupByLibrary.simpleMessage("No more info"),
         "notice": MessageLookupByLibrary.simpleMessage("Notice"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "oldPassword": MessageLookupByLibrary.simpleMessage("Old Password"),
@@ -369,6 +594,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "orderNo": MessageLookupByLibrary.simpleMessage("Order No."),
         "orderStatus": MessageLookupByLibrary.simpleMessage("Order Status"),
         "orderTime": MessageLookupByLibrary.simpleMessage("Order time"),
+        "other": MessageLookupByLibrary.simpleMessage("Other"),
         "packOrderSuccess": MessageLookupByLibrary.simpleMessage(
             "Packing Completed Successfully"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
@@ -440,10 +666,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "refreshComplete":
             MessageLookupByLibrary.simpleMessage("Refresh complete"),
         "refreshFailed": MessageLookupByLibrary.simpleMessage("Refresh failed"),
+        "refresh_food_menu": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refreshing": MessageLookupByLibrary.simpleMessage("Refreshing..."),
         "region": MessageLookupByLibrary.simpleMessage("Region"),
         "releaseLoadMore":
             MessageLookupByLibrary.simpleMessage("Release to load more"),
+        "reload": MessageLookupByLibrary.simpleMessage("Reload"),
         "remaining": MessageLookupByLibrary.simpleMessage("Remaining"),
         "remark": MessageLookupByLibrary.simpleMessage("Remark"),
         "rememberPassword":
@@ -518,6 +746,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Please select repair time"),
         "selectRepairType":
             MessageLookupByLibrary.simpleMessage("Please select repair type"),
+        "select_date": MessageLookupByLibrary.simpleMessage("Select Date"),
         "serviceGuide": MessageLookupByLibrary.simpleMessage("Service Guide"),
         "setDefault": MessageLookupByLibrary.simpleMessage(
             "Confirm to set this address as default?"),
@@ -556,6 +785,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "unfixedReason": MessageLookupByLibrary.simpleMessage(
             "Please specify the reason for unfixed"),
         "unknownStatus": MessageLookupByLibrary.simpleMessage("Unknown Status"),
+        "unknown_dish": MessageLookupByLibrary.simpleMessage("Unknown Dish"),
+        "unknown_error": MessageLookupByLibrary.simpleMessage("Unknown error"),
+        "unknown_status":
+            MessageLookupByLibrary.simpleMessage("Unknown Status"),
         "unlike": MessageLookupByLibrary.simpleMessage("Unlike"),
         "unread": MessageLookupByLibrary.simpleMessage("Unread"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),

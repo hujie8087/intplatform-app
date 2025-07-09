@@ -73,7 +73,7 @@ class OrderScreenPage extends StatefulWidget {
 class _OrderScreenPageState extends State<OrderScreenPage> {
   final TextEditingController _remarkController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  int selectedPickupType = 1; // 默认取餐方式
+  int? selectedPickupType; // 默认取餐方式
   RestaurantModel? restaurantDetail;
   UserInfoModel? userInfo;
   RepairDataModel model = RepairDataModel();
@@ -998,6 +998,13 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
     }
     if (restaurantDetail?.id == null) {
       ProgressHUD.showError('店铺信息异常，请返回店铺页面重新提交结算！');
+      return;
+    }
+    // 检查取餐方式没选
+    if (selectedPickupType == null) {
+      ProgressHUD.showError(
+        S.of(context).pleaseSelect(S.of(context).pickupType),
+      );
       return;
     }
     // 配送方式为配送时

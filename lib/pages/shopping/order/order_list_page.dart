@@ -238,7 +238,7 @@ class _OrderListPageState extends State<OrderListPage> {
                             fontSize: 14.px,
                           ),
                         ),
-                        Icon(Icons.chevron_right),
+                        Icon(Icons.chevron_right, size: 16.px),
                       ],
                     ),
                   ),
@@ -259,7 +259,10 @@ class _OrderListPageState extends State<OrderListPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 8.px),
+              // 下划线
+              SizedBox(height: 4.px),
+              Divider(height: 2.px, color: Colors.grey[300]),
+              SizedBox(height: 4.px),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 5.px),
                 child: Row(

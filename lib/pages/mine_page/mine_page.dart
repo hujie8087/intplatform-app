@@ -577,7 +577,10 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                     Expanded(
                       child: Text(title, style: TextStyle(fontSize: 14.px)),
                     ),
-                    Text(subTitle ?? '', style: TextStyle(color: Colors.grey)),
+                    Text(
+                      subTitle ?? '',
+                      style: TextStyle(color: Colors.grey, fontSize: 12.px),
+                    ),
                     SizedBox(width: 10.px),
                     Icon(
                       Icons.arrow_forward_ios,

@@ -3,10 +3,12 @@ import 'package:logistics_app/common_ui/image_preview_page.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
+import 'package:logistics_app/route/route_annotation.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+@AppRoute(path: 'news_detail_page', name: '公司新闻详情页')
 class NewsDetailPage extends StatefulWidget {
   const NewsDetailPage({Key? key, required this.noticeId}) : super(key: key);
 

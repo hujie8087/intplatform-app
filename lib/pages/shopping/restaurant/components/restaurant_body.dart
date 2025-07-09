@@ -486,7 +486,9 @@ class _RestaurantBodyState extends State<RestaurantBody>
                 ),
                 if (restaurantDetail?.image != null)
                   Image.network(
-                    APIs.foodPrefix + restaurantDetail!.image!,
+                    restaurantDetail?.image?.indexOf('food') != -1
+                        ? APIs.foodPrefix + restaurantDetail!.image!
+                        : APIs.imagePrefix + restaurantDetail!.image!,
                     width: 60.px,
                     height: 60.px,
                     fit: BoxFit.cover,

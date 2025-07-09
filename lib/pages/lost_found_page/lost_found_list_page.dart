@@ -9,14 +9,15 @@ import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/model/found_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/lost_found_page/lost_found_view_model.dart';
+import 'package:logistics_app/route/route_annotation.dart';
 import 'package:logistics_app/route/route_utils.dart';
-import 'package:logistics_app/route/routes.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+@AppRoute(path: 'lost_found_list_page', name: '失物招领列表页')
 class LostFoundListPage extends StatefulWidget {
   const LostFoundListPage({super.key});
   @override
@@ -71,14 +72,22 @@ class _LostFoundListPageState extends State<LostFoundListPage>
     }
 
     // 等待获取列表完成
-    await model.getLostFoundModelList(true);
-    setState(() {
-      if (model.isLoadComplete == true) {
-        _refreshController.loadNoData();
-      } else {
-        _refreshController.loadComplete();
-      }
-    });
+    model
+        .getLostFoundModelList(true)
+        .then((value) {
+          setState(() {
+            if (model.isLoadComplete == true) {
+              _refreshController.loadNoData();
+            } else {
+              _refreshController.loadComplete();
+            }
+          });
+        })
+        .catchError((error) {
+          print('加载失败1111111: $error');
+          ProgressHUD.showError(error.toString());
+          _refreshController.loadFailed();
+        });
   }
 
   @override
@@ -113,15 +122,22 @@ class _LostFoundListPageState extends State<LostFoundListPage>
           model.createBy = createBy;
           break;
       }
-      model.getLostFoundModelList(true).then((value) {
-        setState(() {
-          if (model.isLoadComplete == true) {
-            _refreshController.loadNoData();
-          } else {
-            _refreshController.loadComplete();
-          }
-        });
-      });
+      model
+          .getLostFoundModelList(true)
+          .then((value) {
+            setState(() {
+              if (model.isLoadComplete == true) {
+                _refreshController.loadNoData();
+              } else {
+                _refreshController.loadComplete();
+              }
+            });
+          })
+          .catchError((error) {
+            print('加载失败1111111: $error');
+            ProgressHUD.showError(error.toString());
+            _refreshController.loadFailed();
+          });
     });
   }
 
@@ -167,24 +183,37 @@ class _LostFoundListPageState extends State<LostFoundListPage>
                               enablePullUp: true,
                               onRefresh: () {
                                 //关闭刷新
-                                model.getLostFoundModelList(true).then((value) {
-                                  _refreshController.refreshCompleted();
-                                  if (model.isLoadComplete == true) {
-                                    _refreshController.loadNoData();
-                                  } else {
-                                    _refreshController.loadComplete();
-                                  }
-                                  // 刷新完成
-                                  animationController?.forward();
-                                });
+                                model
+                                    .getLostFoundModelList(true)
+                                    .then((value) {
+                                      _refreshController.refreshCompleted();
+                                      if (model.isLoadComplete == true) {
+                                        _refreshController.loadNoData();
+                                      } else {
+                                        _refreshController.loadComplete();
+                                      }
+                                      // 刷新完成
+                                      animationController?.forward();
+                                    })
+                                    .catchError((error) {
+                                      ProgressHUD.showError(error.toString());
+                                      _refreshController.refreshFailed();
+                                    });
                               },
-                              onLoading: () async {
-                                await model.getLostFoundModelList(false);
-                                if (model.isLoadComplete == true) {
-                                  _refreshController.loadNoData();
-                                } else {
-                                  _refreshController.loadComplete();
-                                }
+                              onLoading: () {
+                                model
+                                    .getLostFoundModelList(false)
+                                    .then((value) {
+                                      if (model.isLoadComplete == true) {
+                                        _refreshController.loadNoData();
+                                      } else {
+                                        _refreshController.loadComplete();
+                                      }
+                                    })
+                                    .catchError((error) {
+                                      ProgressHUD.showError(error.toString());
+                                      _refreshController.loadFailed();
+                                    });
                               },
                               controller: _refreshController,
                               child: LostFountListView(),
@@ -202,7 +231,7 @@ class _LostFoundListPageState extends State<LostFoundListPage>
                   onPressed: () async {
                     final result = await RouteUtils.pushNamed(
                       context,
-                      RoutePath.LostFoundDetailPage,
+                      'lost_found_detail_page',
                     );
                     if (result != null && result['success'] == true) {
                       setState(() {
@@ -691,8 +720,7 @@ class LostFoundView extends StatelessWidget {
                                               final result =
                                                   await RouteUtils.pushNamed(
                                                     context,
-                                                    RoutePath
-                                                        .LostFoundDetailPage,
+                                                    'lost_found_detail_page',
                                                     arguments: {
                                                       'id': listData?.id,
                                                     },

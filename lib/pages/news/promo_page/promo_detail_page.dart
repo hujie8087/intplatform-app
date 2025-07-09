@@ -7,7 +7,9 @@ import 'package:video_player/video_player.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:logistics_app/route/route_annotation.dart';
 
+@AppRoute(path: 'promo_detail_page', name: '宣传片详情页')
 class PromoDetailPage extends StatefulWidget {
   const PromoDetailPage({Key? key, required this.noticeId}) : super(key: key);
   final String noticeId;

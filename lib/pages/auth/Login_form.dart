@@ -67,13 +67,17 @@ class _LoginFormState extends State<LoginForm> {
               cursorColor: primaryColor,
               controller: _usernameController,
               style: TextStyle(
-                fontSize: 16.px,
+                fontSize: 12.px,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
               decoration: InputDecoration(
                 hintText: S.of(context).usernamePlaceholder,
-                prefixIcon: Icon(Icons.person_2_outlined, color: primaryColor),
+                prefixIcon: Icon(
+                  Icons.person_2_outlined,
+                  color: primaryColor,
+                  size: 18.px,
+                ),
                 border: InputBorder.none,
               ),
               onChanged: (value) {
@@ -86,7 +90,7 @@ class _LoginFormState extends State<LoginForm> {
             child: TextField(
               cursorColor: primaryColor,
               style: TextStyle(
-                fontSize: 14.px,
+                fontSize: 12.px,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
@@ -94,7 +98,7 @@ class _LoginFormState extends State<LoginForm> {
               controller: _passwordController,
               decoration: InputDecoration(
                 hintText: S.of(context).passwordPlaceholder,
-                prefixIcon: Icon(Icons.lock, color: primaryColor),
+                prefixIcon: Icon(Icons.lock, color: primaryColor, size: 18.px),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _isPasswordVisible
@@ -125,7 +129,10 @@ class _LoginFormState extends State<LoginForm> {
                   onTap: () {
                     RouteUtils.push(context, ForgetPasswordPage());
                   },
-                  child: Text(S.of(context).forgetPassword),
+                  child: Text(
+                    S.of(context).forgetPassword,
+                    style: TextStyle(color: primaryColor, fontSize: 12.px),
+                  ),
                 ),
               ),
               // 记住密码
@@ -138,14 +145,16 @@ class _LoginFormState extends State<LoginForm> {
                 checkColor: Colors.white,
                 activeColor: primaryColor,
                 onChanged: (value) {
-                  _isRememberPassword = value!;
-                  setState(() {});
+                  setState(() {
+                    _isRememberPassword = value!;
+                  });
                 },
               ),
             ],
           ),
           Container(
             width: double.infinity,
+            margin: EdgeInsets.only(top: 10.px),
             child:
                 _isLoading
                     ? Center(
@@ -217,6 +226,9 @@ class _LoginFormState extends State<LoginForm> {
                         style: TextStyle(color: Colors.white),
                       ),
                       style: ButtonStyle(
+                        minimumSize: WidgetStateProperty.all(
+                          Size(double.infinity, 36.px),
+                        ),
                         backgroundColor: MaterialStateProperty.all(
                           primaryColor[500],
                         ),

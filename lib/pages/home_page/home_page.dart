@@ -27,7 +27,7 @@ import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.onChanged, this.addClick})
-      : super(key: key);
+    : super(key: key);
 
   final ValueChanged<int>? onChanged;
   final Function()? addClick;
@@ -54,11 +54,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   ];
   void initState() {
     animationController = AnimationController(
-        duration: const Duration(milliseconds: 300), vsync: this);
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: animationController!,
-            curve: Interval(0, 0.3, curve: Curves.fastOutSlowIn)));
+      CurvedAnimation(
+        parent: animationController!,
+        curve: Interval(0, 0.3, curve: Curves.fastOutSlowIn),
+      ),
+    );
     scrollController.addListener(() {
       if (scrollController.offset >= 50) {
         if (topBarOpacity != 1.0) {
@@ -126,290 +130,351 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => model,
-        child: Scaffold(
-          backgroundColor: backgroundColor,
-          body: SafeArea(
-            top: false,
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    child: Column(
-                      children: [
-                        _Banner(),
-                        _Announcement(),
-                        _FunctionArea(),
-                        SwitchTypeView(
-                          listData: buttonLabels,
-                          callBack: (int value) {
-                            updateCurrent(value);
-                          },
-                          animationController: animationController,
-                          animation: topBarAnimation,
-                          current: current,
-                        ),
-                        Container(
-                          child: current == 0
-                              ? Consumer<NoticeViewModel>(
+      create: (context) => model,
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        body: SafeArea(
+          top: false,
+          child: Stack(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height,
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Column(
+                    children: [
+                      _Banner(),
+                      _Announcement(),
+                      _FunctionArea(),
+                      SwitchTypeView(
+                        listData: buttonLabels,
+                        callBack: (int value) {
+                          updateCurrent(value);
+                        },
+                        animationController: animationController,
+                        animation: topBarAnimation,
+                        current: current,
+                      ),
+                      Container(
+                        child:
+                            current == 0
+                                ? Consumer<NoticeViewModel>(
                                   builder: (context, model, child) {
-                                  if (model.list?.isEmpty == true) {
-                                    return Center(
-                                      child: EmptyView(),
+                                    if (model.list?.isEmpty == true) {
+                                      return Center(child: EmptyView());
+                                    }
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: model.list?.length ?? 0,
+                                      padding: EdgeInsets.only(
+                                        left: 8.px,
+                                        right: 8.px,
+                                      ),
+                                      itemBuilder: (context, index) {
+                                        final int count =
+                                            model.list?.length ?? 0;
+                                        final Animation<double> animation =
+                                            Tween<double>(
+                                              begin: 0.0,
+                                              end: 1.0,
+                                            ).animate(
+                                              CurvedAnimation(
+                                                parent: animationController!,
+                                                curve: Interval(
+                                                  (1 / count) * index,
+                                                  1.0,
+                                                  curve: Curves.fastOutSlowIn,
+                                                ),
+                                              ),
+                                            );
+                                        return NoticeDataView(
+                                          listData: model.list?[index],
+                                          callBack:
+                                              () => {
+                                                // 跳转到详情页
+                                                RouteUtils.push(
+                                                  context,
+                                                  NoticeDetailPage(
+                                                    noticeId:
+                                                        model
+                                                            .list![index]!
+                                                            .noticeId!,
+                                                  ),
+                                                ),
+                                              },
+                                          animation: animation,
+                                          animationController:
+                                              animationController,
+                                        );
+                                      },
                                     );
-                                  }
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: model.list?.length ?? 0,
-                                    padding: EdgeInsets.only(
-                                        left: 8.px, right: 8.px),
-                                    itemBuilder: (context, index) {
-                                      final int count = model.list?.length ?? 0;
-                                      final Animation<double> animation =
-                                          Tween<double>(begin: 0.0, end: 1.0)
-                                              .animate(CurvedAnimation(
-                                                  parent: animationController!,
-                                                  curve: Interval(
-                                                      (1 / count) * index, 1.0,
-                                                      curve: Curves
-                                                          .fastOutSlowIn)));
-                                      return NoticeDataView(
-                                        listData: model.list?[index],
-                                        callBack: () => {
-                                          // 跳转到详情页
-                                          RouteUtils.push(
-                                              context,
-                                              NoticeDetailPage(
-                                                  noticeId: model
-                                                      .list![index]!.noticeId!))
-                                        },
-                                        animation: animation,
-                                        animationController:
-                                            animationController,
-                                      );
-                                    },
-                                  );
-                                })
-                              : Consumer<NoticeViewModel>(
+                                  },
+                                )
+                                : Consumer<NoticeViewModel>(
                                   builder: (context, model, child) {
-                                  if (model.newsList?.isEmpty == true) {
-                                    return Center(
-                                      child: EmptyView(),
+                                    if (model.newsList?.isEmpty == true) {
+                                      return Center(child: EmptyView());
+                                    }
+                                    return ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: model.newsList?.length ?? 0,
+                                      padding: EdgeInsets.only(
+                                        left: 8.px,
+                                        right: 8.px,
+                                      ),
+                                      itemBuilder: (context, index) {
+                                        final int count =
+                                            model.list?.length ?? 0;
+                                        final Animation<double> animation =
+                                            Tween<double>(
+                                              begin: 0.0,
+                                              end: 1.0,
+                                            ).animate(
+                                              CurvedAnimation(
+                                                parent: animationController!,
+                                                curve: Interval(
+                                                  (1 / count) * index,
+                                                  1.0,
+                                                  curve: Curves.fastOutSlowIn,
+                                                ),
+                                              ),
+                                            );
+                                        animationController?.forward();
+                                        return NewsDataView(
+                                          listData: model.newsList?[index],
+                                          callBack:
+                                              () => {
+                                                // 跳转到详情页
+                                                RouteUtils.push(
+                                                  context,
+                                                  NoticeDetailPage(
+                                                    noticeId:
+                                                        model
+                                                            .newsList![index]!
+                                                            .noticeId!,
+                                                  ),
+                                                ),
+                                              },
+                                          animation: animation,
+                                          animationController:
+                                              animationController,
+                                        );
+                                      },
                                     );
-                                  }
-                                  return ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemCount: model.newsList?.length ?? 0,
-                                    padding: EdgeInsets.only(
-                                        left: 8.px, right: 8.px),
-                                    itemBuilder: (context, index) {
-                                      final int count = model.list?.length ?? 0;
-                                      final Animation<double> animation =
-                                          Tween<double>(begin: 0.0, end: 1.0)
-                                              .animate(CurvedAnimation(
-                                                  parent: animationController!,
-                                                  curve: Interval(
-                                                      (1 / count) * index, 1.0,
-                                                      curve: Curves
-                                                          .fastOutSlowIn)));
-                                      animationController?.forward();
-                                      return NewsDataView(
-                                        listData: model.newsList?[index],
-                                        callBack: () => {
-                                          // 跳转到详情页
-                                          RouteUtils.push(
-                                              context,
-                                              NoticeDetailPage(
-                                                  noticeId: model
-                                                      .newsList![index]!
-                                                      .noticeId!))
-                                        },
-                                        animation: animation,
-                                        animationController:
-                                            animationController,
-                                      );
-                                    },
-                                  );
-                                }),
-                        ),
-                        SizedBox(
-                          height: 50,
-                        )
-                      ],
-                    ),
+                                  },
+                                ),
+                      ),
+                      SizedBox(height: 50),
+                    ],
                   ),
                 ),
-                getAppBarUI(),
-              ],
-            ),
+              ),
+              getAppBarUI(),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   // 功能图标区域
   Widget _FunctionArea() {
     return AnimatedBuilder(
-        animation: animationController!,
-        builder: (BuildContext context, Widget? child) {
-          return FadeTransition(
-            opacity: topBarAnimation!,
-            child: Transform(
-                transform: Matrix4.translationValues(
-                    0.0, 50 * (1.0 - topBarAnimation!.value), 0.0),
-                child: Container(
-                  margin: EdgeInsets.only(
-                      top: 10.px, left: 8.px, right: 8.px, bottom: 0),
-                  padding: EdgeInsets.only(top: 10.px),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10.px),
+      animation: animationController!,
+      builder: (BuildContext context, Widget? child) {
+        return FadeTransition(
+          opacity: topBarAnimation!,
+          child: Transform(
+            transform: Matrix4.translationValues(
+              0.0,
+              50 * (1.0 - topBarAnimation!.value),
+              0.0,
+            ),
+            child: Container(
+              margin: EdgeInsets.only(
+                top: 10.px,
+                left: 8.px,
+                right: 8.px,
+                bottom: 0,
+              ),
+              padding: EdgeInsets.only(top: 10.px),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.px),
+              ),
+              child: GridView(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  childAspectRatio: 1.3,
+                  crossAxisSpacing: 0,
+                  mainAxisSpacing: 0,
+                ),
+                shrinkWrap: true,
+                padding: EdgeInsets.all(0),
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  // 在线报修
+                  _FunctionAreaItem(
+                    S.of(context).repairOnline,
+                    true,
+                    Icons.build,
+                    () => RouteUtils.push(context, RepairFormPage()),
                   ),
-                  child: GridView(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4,
-                      childAspectRatio: 1.3,
-                      crossAxisSpacing: 0,
-                      mainAxisSpacing: 0,
-                    ),
-                    shrinkWrap: true,
-                    padding: EdgeInsets.all(0),
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      // 在线报修
-                      _FunctionAreaItem(
-                          S.of(context).repairOnline,
-                          true,
-                          Icons.build,
-                          () => RouteUtils.push(context, RepairFormPage())),
-                      // 我的报修
-                      _FunctionAreaItem(
-                          S.of(context).myRepair,
-                          false,
-                          Icons.history,
-                          () => RouteUtils.push(context, MyRepairPage())),
-                      // _FunctionAreaItem('失物招领', true, Icons.search,
-                      //     () => RouteUtils.push(context, LostFoundListPage())),
-                      // 通知公告
-                      _FunctionAreaItem(
-                          S.of(context).notifications,
-                          true,
-                          Icons.notifications,
-                          () => RouteUtils.push(context, NoticeListPage())),
-                      // _FunctionAreaItem('意见反馈', true, Icons.feedback,
-                      //     () => RouteUtils.push(context, FeedbackPage())),
-                      // 联系我们
-                      _FunctionAreaItem(
-                          S.of(context).contactUs,
-                          false,
-                          Icons.phone,
-                          () => RouteUtils.push(context, ContactUsPage())),
-                      _FunctionAreaItem(
-                          S.of(context).addressManagement,
-                          true,
-                          Icons.fastfood,
-                          () => RouteUtils.push(context, MyAddressPage())),
-                      // 我的订单
-                      _FunctionAreaItem(
-                          S.of(context).myOrder,
-                          false,
-                          Icons.bookmark_outline,
-                          () => RouteUtils.push(context, OrderListPage())),
-                      // 付款码
-                      _FunctionAreaItem(
-                          S.of(context).paymentQRCode,
-                          false,
-                          Icons.qr_code,
-                          () => RouteUtils.push(context, PaymentQRCodePage())),
-                      // _FunctionAreaItem(
-                      //     '我的收藏',
-                      //     true,
-                      //     Icons.star,
-                      //     () => Toast.showToast(
-                      //         color: Colors.red,
-                      //         icon: Icon(Icons.error, color: Colors.red),
-                      //         title: '功能开发中，敬请期待！')),
-                      _FunctionAreaItem(S.of(context).moreFunction, false,
-                          Icons.more_horiz, () => widget.onChanged!(1)),
-                    ],
+                  // 我的报修
+                  _FunctionAreaItem(
+                    S.of(context).myRepair,
+                    false,
+                    Icons.history,
+                    () => RouteUtils.push(context, MyRepairPage()),
                   ),
-                )),
-          );
-        });
+                  // _FunctionAreaItem('失物招领', true, Icons.search,
+                  //     () => RouteUtils.push(context, LostFoundListPage())),
+                  // 通知公告
+                  _FunctionAreaItem(
+                    S.of(context).notifications,
+                    true,
+                    Icons.notifications,
+                    () => RouteUtils.push(context, NoticeListPage()),
+                  ),
+                  // _FunctionAreaItem('意见反馈', true, Icons.feedback,
+                  //     () => RouteUtils.push(context, FeedbackPage())),
+                  // 联系我们
+                  _FunctionAreaItem(
+                    S.of(context).contactUs,
+                    false,
+                    Icons.phone,
+                    () => RouteUtils.push(context, ContactUsPage()),
+                  ),
+                  _FunctionAreaItem(
+                    S.of(context).addressManagement,
+                    true,
+                    Icons.fastfood,
+                    () => RouteUtils.push(context, MyAddressPage()),
+                  ),
+                  // 我的订单
+                  _FunctionAreaItem(
+                    S.of(context).myOrder,
+                    false,
+                    Icons.bookmark_outline,
+                    () => RouteUtils.push(context, OrderListPage()),
+                  ),
+                  // 付款码
+                  _FunctionAreaItem(
+                    S.of(context).paymentQRCode,
+                    false,
+                    Icons.qr_code,
+                    () => RouteUtils.push(context, PaymentQRCodePage()),
+                  ),
+                  // _FunctionAreaItem(
+                  //     '我的收藏',
+                  //     true,
+                  //     Icons.star,
+                  //     () => Toast.showToast(
+                  //         color: Colors.red,
+                  //         icon: Icon(Icons.error, color: Colors.red),
+                  //         title: '功能开发中，敬请期待！')),
+                  _FunctionAreaItem(
+                    S.of(context).moreFunction,
+                    false,
+                    Icons.more_horiz,
+                    () => widget.onChanged!(1),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   // 公告
   Widget _Announcement() {
     return AnimatedBuilder(
-        animation: animationController!,
-        builder: (BuildContext context, Widget? child) {
-          return FadeTransition(
-            opacity: topBarAnimation!,
-            child: Transform(
-                transform: Matrix4.translationValues(
-                    0.0, 30.px * (1.0 - topBarAnimation!.value), 0.0),
-                child: Container(
-                    margin:
-                        EdgeInsets.only(top: 10.px, left: 8.px, right: 8.px),
-                    padding: EdgeInsets.all(10.px),
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.px),
+      animation: animationController!,
+      builder: (BuildContext context, Widget? child) {
+        return FadeTransition(
+          opacity: topBarAnimation!,
+          child: Transform(
+            transform: Matrix4.translationValues(
+              0.0,
+              30.px * (1.0 - topBarAnimation!.value),
+              0.0,
+            ),
+            child: Container(
+              margin: EdgeInsets.only(top: 10.px, left: 8.px, right: 8.px),
+              padding: EdgeInsets.all(10.px),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.px),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Text(
+                      S.current.notice,
+                      style: TextStyle(
+                        fontSize: 14.px,
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor,
+                      ),
                     ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                            child: Text(S.current.notice,
-                                style: TextStyle(
-                                    fontSize: 14.px,
-                                    fontWeight: FontWeight.bold,
-                                    color: primaryColor)),
-                            padding: EdgeInsets.only(right: 8.px),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    right: BorderSide(
-                                        width: 2,
-                                        color: Colors.grey.withOpacity(0.3))))),
-                        SizedBox(width: 8.px),
-                        Expanded(
-                          child: Consumer<NoticeViewModel>(
-                              builder: (context, model, child) {
-                            return SizedBox(
-                                height: 24.px, // 限制高度以只显示一个公告
-                                child: model.list?.isEmpty == true
-                                    ? Text(
-                                        S.of(context).noData,
-                                        style: TextStyle(height: 1.5),
-                                      )
-                                    : PageView.builder(
-                                        controller: _pageController,
-                                        itemCount: model.list?.length,
-                                        scrollDirection: Axis.vertical,
-                                        itemBuilder: (context, index) {
-                                          return GestureDetector(
-                                            onTap: () async {
-                                              RouteUtils.push(
-                                                  context,
-                                                  NoticeDetailPage(
-                                                      noticeId: model
-                                                          .list![index]!
-                                                          .noticeId!));
-                                            },
-                                            child: Row(children: [
-                                              Expanded(
-                                                  child: Text(
-                                                      model.list?[index]
-                                                              ?.noticeTitle ??
-                                                          '',
-                                                      style: TextStyle(
-                                                          fontSize: 12.px))),
-                                              Container(
-                                                  child: Container(
+                    padding: EdgeInsets.only(right: 8.px),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        right: BorderSide(
+                          width: 2,
+                          color: Colors.grey.withOpacity(0.3),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8.px),
+                  Expanded(
+                    child: Consumer<NoticeViewModel>(
+                      builder: (context, model, child) {
+                        return SizedBox(
+                          height: 24.px, // 限制高度以只显示一个公告
+                          child:
+                              model.list?.isEmpty == true
+                                  ? Text(
+                                    S.of(context).noData,
+                                    style: TextStyle(height: 1.5),
+                                  )
+                                  : PageView.builder(
+                                    controller: _pageController,
+                                    itemCount: model.list?.length,
+                                    scrollDirection: Axis.vertical,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () async {
+                                          RouteUtils.push(
+                                            context,
+                                            NoticeDetailPage(
+                                              noticeId:
+                                                  model.list![index]!.noticeId!,
+                                            ),
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                model
+                                                        .list?[index]
+                                                        ?.noticeTitle ??
+                                                    '',
+                                                style: TextStyle(
+                                                  fontSize: 12.px,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Container(
                                                 alignment:
                                                     Alignment.centerRight,
                                                 child: Icon(
@@ -417,46 +482,58 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                                   size: 14.px,
                                                   color: Colors.grey,
                                                 ),
-                                              )),
-                                            ]),
-                                          );
-                                        },
-                                      ));
-                          }),
-                        ),
-                      ],
-                    ))),
-          );
-        });
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   // 广告图轮播
   Widget _Banner() {
     return AnimatedBuilder(
-        animation: animationController!,
-        builder: (BuildContext context, Widget? child) {
-          return FadeTransition(
-            opacity: topBarAnimation!,
-            child: Transform(
-                transform: Matrix4.translationValues(
-                    0.0, 24.px * (1.0 - topBarAnimation!.value), 0.0),
-                child: Container(
-                  width: double.infinity,
-                  height: 180.px,
-                  child: Swiper(
-                    itemCount: 2,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Image.asset(
-                        'assets/images/banner.jpg',
-                        fit: BoxFit.fill,
-                      );
-                    },
-                    autoplay: true,
-                    indicatorLayout: PageIndicatorLayout.COLOR,
-                  ),
-                )),
-          );
-        });
+      animation: animationController!,
+      builder: (BuildContext context, Widget? child) {
+        return FadeTransition(
+          opacity: topBarAnimation!,
+          child: Transform(
+            transform: Matrix4.translationValues(
+              0.0,
+              24.px * (1.0 - topBarAnimation!.value),
+              0.0,
+            ),
+            child: Container(
+              width: double.infinity,
+              height: 180.px,
+              child: Swiper(
+                itemCount: 2,
+                itemBuilder: (BuildContext context, int index) {
+                  return Image.asset(
+                    'assets/images/banner.jpg',
+                    fit: BoxFit.fill,
+                  );
+                },
+                autoplay: true,
+                indicatorLayout: PageIndicatorLayout.COLOR,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _handleTap(int value) {
@@ -491,7 +568,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               opacity: topBarAnimation!,
               child: Transform(
                 transform: Matrix4.translationValues(
-                    0.0, 24.px * (1.0 - topBarAnimation!.value), 0.0),
+                  0.0,
+                  24.px * (1.0 - topBarAnimation!.value),
+                  0.0,
+                ),
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppTheme.white.withOpacity(topBarOpacity),
@@ -500,69 +580,76 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                     boxShadow: <BoxShadow>[
                       BoxShadow(
-                          color: AppTheme.grey.withOpacity(0.4 * topBarOpacity),
-                          offset: const Offset(1.1, 1.1),
-                          blurRadius: 10.0),
+                        color: AppTheme.grey.withOpacity(0.4 * topBarOpacity),
+                        offset: const Offset(1.1, 1.1),
+                        blurRadius: 10.0,
+                      ),
                     ],
                   ),
                   child: Column(
                     children: <Widget>[
-                      SizedBox(
-                        height: MediaQuery.of(context).padding.top,
-                      ),
+                      SizedBox(height: MediaQuery.of(context).padding.top),
                       Padding(
                         padding: EdgeInsets.only(
-                            left: 10.px,
-                            right: 10.px,
-                            top: 10.px * topBarOpacity,
-                            bottom: 10.px),
+                          left: 10.px,
+                          right: 10.px,
+                          top: 10.px * topBarOpacity,
+                          bottom: 10.px,
+                        ),
                         child: Row(
-                          mainAxisAlignment: userName != ''
-                              ? MainAxisAlignment.spaceAround
-                              : MainAxisAlignment.end,
+                          mainAxisAlignment:
+                              userName != ''
+                                  ? MainAxisAlignment.spaceAround
+                                  : MainAxisAlignment.end,
                           children: <Widget>[
                             if (userName != '')
                               Expanded(
-                                  child: InkWell(
-                                onTap: () => _handleTap(2),
-                                child: Row(
-                                  children: [
-                                    // 圆形图片
-                                    AvatarWidget(width: 36.px),
-                                    Expanded(
+                                child: InkWell(
+                                  onTap: () => _handleTap(2),
+                                  child: Row(
+                                    children: [
+                                      // 圆形图片
+                                      AvatarWidget(width: 36.px),
+                                      Expanded(
                                         child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          userName,
-                                          style: TextStyle(
-                                            fontFamily: AppTheme.fontName,
-                                            fontWeight: FontWeight.w700,
-                                            fontSize:
-                                                (12 + 2 - 2 * topBarOpacity).px,
-                                            letterSpacing: 1.2,
-                                            color: topBarOpacity == 1.0
-                                                ? AppTheme.darkerText
-                                                : Colors.white,
-                                          ),
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              userName,
+                                              style: TextStyle(
+                                                fontFamily: AppTheme.fontName,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize:
+                                                    (12 + 2 - 2 * topBarOpacity)
+                                                        .px,
+                                                letterSpacing: 1.2,
+                                                color:
+                                                    topBarOpacity == 1.0
+                                                        ? AppTheme.darkerText
+                                                        : Colors.white,
+                                              ),
+                                            ),
+                                            Text(
+                                              nickName,
+                                              style: TextStyle(
+                                                fontFamily: AppTheme.fontName,
+                                                fontSize:
+                                                    (12 + 2 - 2 * topBarOpacity)
+                                                        .px,
+                                                color:
+                                                    topBarOpacity == 1.0
+                                                        ? AppTheme.darkerText
+                                                        : Colors.white,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          nickName,
-                                          style: TextStyle(
-                                            fontFamily: AppTheme.fontName,
-                                            fontSize:
-                                                (12 + 2 - 2 * topBarOpacity).px,
-                                            color: topBarOpacity == 1.0
-                                                ? AppTheme.darkerText
-                                                : Colors.white,
-                                          ),
-                                        )
-                                      ],
-                                    ))
-                                  ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              )),
+                              ),
                             Container(
                               padding: EdgeInsets.all(5.px),
                               // 圆形背景
@@ -575,8 +662,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               // 消息图标
                               child: InkWell(
                                 highlightColor: Colors.transparent,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(18.px)),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(18.px),
+                                ),
                                 onTap: () {
                                   RouteUtils.push(context, MessagePage());
                                 },
@@ -588,14 +676,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
               ),
             );
           },
-        )
+        ),
       ],
     );
   }
@@ -612,32 +700,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _FunctionAreaItem(
-      String title, bool isEven, IconData icon, GestureTapCallback? onTap) {
+    String title,
+    bool isEven,
+    IconData icon,
+    GestureTapCallback? onTap,
+  ) {
     return GestureDetector(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 36.px,
-            height: 36.px,
+            width: 32.px,
+            height: 32.px,
             decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isEven
-                    ? primaryColor.withOpacity(0.1)
-                    : secondaryColor.withOpacity(0.1)),
+              shape: BoxShape.circle,
+              color:
+                  isEven
+                      ? primaryColor.withOpacity(0.1)
+                      : secondaryColor.withOpacity(0.1),
+            ),
             child: Icon(
               icon,
               color: isEven ? primaryColor : secondaryColor,
-              size: 20.px,
+              size: 18.px,
             ),
           ),
-          SizedBox(
-            height: 5.px,
-          ),
+          SizedBox(height: 5.px),
           Text(
             title,
             style: TextStyle(fontSize: 12.px),
+            textAlign: TextAlign.center,
           ),
         ],
       ),

@@ -412,4 +412,128 @@ class DataUtils {
   static void updateLostFound(parameters, {Success? success, Fail? fail}) {
     HttpUtils.put('/other/found', parameters, success: success, fail: fail);
   }
+
+  // 获取夫妻房房间列表
+  static void getCoupleRoomList(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/coupleRoom/room/chamber/appList',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取夫妻房订单列表
+  static void getCoupleOrderList(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/coupleRoom/room/order/appList',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取夫妻房订单详情
+  static void getCoupleOrderDetail(id, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/coupleRoom/room/order/' + id,
+      null,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 预约夫妻房
+  static void bookCoupleRoom(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      '/coupleRoom/room/order',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 取消预约
+  static void cancelBookCoupleRoom(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.put(
+      '/coupleRoom/room/order/cancel',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 确认订单
+  static void confirmCoupleOrder(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      '/coupleRoom/room/order/appAudit',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取夫妻房工作人员列表
+  static void getCoupleStaffList(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/coupleRoom/room/staff/list',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取夫妻房工作人员列表
+  static void submitCoupleFeedback(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      '/coupleRoom/room/feedback',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取保洁类型列表
+  static void getCleaningTypeList(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/maintenance/clean/project/list',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取保洁订单列表
+  static void getCleaningOrderList(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/maintenance/clean/order/list',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 提交保洁订单
+  static void submitCleaningOrder(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      '/maintenance/clean/order',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 订单评价
+  static void evaluateCleaningOrder(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put(
+      '/maintenance/clean/order',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
 }

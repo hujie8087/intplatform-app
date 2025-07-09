@@ -173,4 +173,9 @@ class ShoppingUtils {
   static void getFoodRecommend<T>({Success? success, Fail? fail}) {
     HttpUtils.get(APIs.getFoodRecommend, null, success: success, fail: fail);
   }
+
+  // 获取今日菜谱
+  static void getTodayMenu<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(APIs.getTodayMenu, parameters, success: success, fail: fail);
+  }
 }

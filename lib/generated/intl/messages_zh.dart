@@ -52,6 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attention": MessageLookupByLibrary.simpleMessage("注意事项"),
         "auditRejected": MessageLookupByLibrary.simpleMessage("审核驳回"),
         "birthday": MessageLookupByLibrary.simpleMessage("生日"),
+        "breakfast": MessageLookupByLibrary.simpleMessage("早餐"),
         "busTimetable": MessageLookupByLibrary.simpleMessage("公交时刻表"),
         "busToday": MessageLookupByLibrary.simpleMessage("今日"),
         "businessHours": MessageLookupByLibrary.simpleMessage("营业时间"),
@@ -89,6 +90,66 @@ class MessageLookup extends MessageLookupByLibrary {
         "checkUpdate": MessageLookupByLibrary.simpleMessage("检查更新"),
         "checkout": MessageLookupByLibrary.simpleMessage("去结算"),
         "chooseRoute": MessageLookupByLibrary.simpleMessage("选择路线"),
+        "cleaning_area": MessageLookupByLibrary.simpleMessage("清洁区域"),
+        "cleaning_basic_info": MessageLookupByLibrary.simpleMessage("基本信息"),
+        "cleaning_contacts": MessageLookupByLibrary.simpleMessage("联系人"),
+        "cleaning_deep_cleaning": MessageLookupByLibrary.simpleMessage("深度保洁"),
+        "cleaning_evaluate": MessageLookupByLibrary.simpleMessage("评价"),
+        "cleaning_loading": MessageLookupByLibrary.simpleMessage("加载中..."),
+        "cleaning_order": MessageLookupByLibrary.simpleMessage("保洁订单"),
+        "cleaning_order_create": MessageLookupByLibrary.simpleMessage("下单"),
+        "cleaning_order_detail": MessageLookupByLibrary.simpleMessage("保洁订单详情"),
+        "cleaning_order_evaluate": MessageLookupByLibrary.simpleMessage("评价订单"),
+        "cleaning_order_evaluate_average":
+            MessageLookupByLibrary.simpleMessage("一般"),
+        "cleaning_order_evaluate_content":
+            MessageLookupByLibrary.simpleMessage("评价内容"),
+        "cleaning_order_evaluate_content_hint":
+            MessageLookupByLibrary.simpleMessage("请输入您的评价内容（可选）"),
+        "cleaning_order_evaluate_dissatisfied":
+            MessageLookupByLibrary.simpleMessage("不满意"),
+        "cleaning_order_evaluate_fail":
+            MessageLookupByLibrary.simpleMessage("评价失败"),
+        "cleaning_order_evaluate_satisfied":
+            MessageLookupByLibrary.simpleMessage("满意"),
+        "cleaning_order_evaluate_select_rating":
+            MessageLookupByLibrary.simpleMessage("请选择评分"),
+        "cleaning_order_evaluate_submit":
+            MessageLookupByLibrary.simpleMessage("提交评价"),
+        "cleaning_order_evaluate_success":
+            MessageLookupByLibrary.simpleMessage("评价成功"),
+        "cleaning_order_evaluate_title":
+            MessageLookupByLibrary.simpleMessage("服务评分"),
+        "cleaning_order_evaluate_very_dissatisfied":
+            MessageLookupByLibrary.simpleMessage("非常不满意"),
+        "cleaning_order_evaluate_very_satisfied":
+            MessageLookupByLibrary.simpleMessage("非常满意"),
+        "cleaning_order_handle": MessageLookupByLibrary.simpleMessage("处理"),
+        "cleaning_order_number": MessageLookupByLibrary.simpleMessage("订单号"),
+        "cleaning_order_pending": MessageLookupByLibrary.simpleMessage("待处理"),
+        "cleaning_order_progress": MessageLookupByLibrary.simpleMessage("订单进度"),
+        "cleaning_order_search":
+            MessageLookupByLibrary.simpleMessage("请输入订单号或房间号查询"),
+        "cleaning_order_status": MessageLookupByLibrary.simpleMessage("状态"),
+        "cleaning_order_submit": MessageLookupByLibrary.simpleMessage("提交订单"),
+        "cleaning_order_view": MessageLookupByLibrary.simpleMessage("查看"),
+        "cleaning_other_info": MessageLookupByLibrary.simpleMessage("其他信息"),
+        "cleaning_price": MessageLookupByLibrary.simpleMessage("价格"),
+        "cleaning_project": MessageLookupByLibrary.simpleMessage("保洁项目"),
+        "cleaning_remark": MessageLookupByLibrary.simpleMessage("备注"),
+        "cleaning_room_number": MessageLookupByLibrary.simpleMessage("房间号"),
+        "cleaning_search": MessageLookupByLibrary.simpleMessage("搜索"),
+        "cleaning_select_address":
+            MessageLookupByLibrary.simpleMessage("请选择保洁地址"),
+        "cleaning_select_address_error":
+            MessageLookupByLibrary.simpleMessage("保洁地址不在保洁项目对应的区域，请重新选择！"),
+        "cleaning_select_cleaning_project":
+            MessageLookupByLibrary.simpleMessage("选择保洁项目"),
+        "cleaning_select_date": MessageLookupByLibrary.simpleMessage("请选择预约日期"),
+        "cleaning_service_detail": MessageLookupByLibrary.simpleMessage("服务详情"),
+        "cleaning_special_cleaning":
+            MessageLookupByLibrary.simpleMessage("专项保洁"),
+        "cleaning_tel": MessageLookupByLibrary.simpleMessage("联系电话"),
         "clear": MessageLookupByLibrary.simpleMessage("清空"),
         "clearCart": MessageLookupByLibrary.simpleMessage("清空购物车"),
         "clearCartTips": MessageLookupByLibrary.simpleMessage("确定要清空购物车吗？"),
@@ -119,6 +180,127 @@ class MessageLookup extends MessageLookupByLibrary {
         "contactUs": MessageLookupByLibrary.simpleMessage("联系我们"),
         "contentUpdating":
             MessageLookupByLibrary.simpleMessage("内容待更新，敬请期待..."),
+        "coupleRoom": MessageLookupByLibrary.simpleMessage("客房"),
+        "coupleRoom_feedback": MessageLookupByLibrary.simpleMessage("客房反馈"),
+        "coupleRoom_feedback_content":
+            MessageLookupByLibrary.simpleMessage("反馈内容"),
+        "coupleRoom_feedback_other": MessageLookupByLibrary.simpleMessage("其他"),
+        "coupleRoom_feedback_room":
+            MessageLookupByLibrary.simpleMessage("房间问题"),
+        "coupleRoom_feedback_submit":
+            MessageLookupByLibrary.simpleMessage("提交"),
+        "coupleRoom_feedback_submit_fail":
+            MessageLookupByLibrary.simpleMessage("提交失败"),
+        "coupleRoom_feedback_submit_success":
+            MessageLookupByLibrary.simpleMessage("提交成功"),
+        "coupleRoom_feedback_system":
+            MessageLookupByLibrary.simpleMessage("系统问题"),
+        "coupleRoom_feedback_type":
+            MessageLookupByLibrary.simpleMessage("反馈类型"),
+        "coupleRoom_room_all": MessageLookupByLibrary.simpleMessage("全部"),
+        "coupleRoom_room_approved": MessageLookupByLibrary.simpleMessage("已通过"),
+        "coupleRoom_room_audit_info":
+            MessageLookupByLibrary.simpleMessage("审核信息"),
+        "coupleRoom_room_audit_remark":
+            MessageLookupByLibrary.simpleMessage("审核说明"),
+        "coupleRoom_room_audit_staff":
+            MessageLookupByLibrary.simpleMessage("审核人员"),
+        "coupleRoom_room_audit_status":
+            MessageLookupByLibrary.simpleMessage("审核状态"),
+        "coupleRoom_room_audit_status_pass":
+            MessageLookupByLibrary.simpleMessage("通过"),
+        "coupleRoom_room_audit_status_reject":
+            MessageLookupByLibrary.simpleMessage("拒绝"),
+        "coupleRoom_room_audit_time":
+            MessageLookupByLibrary.simpleMessage("审核时间"),
+        "coupleRoom_room_available":
+            MessageLookupByLibrary.simpleMessage("可预订"),
+        "coupleRoom_room_available_days":
+            MessageLookupByLibrary.simpleMessage("可预订天数"),
+        "coupleRoom_room_booking": MessageLookupByLibrary.simpleMessage("客房预订"),
+        "coupleRoom_room_booking_body":
+            MessageLookupByLibrary.simpleMessage("您有新的客房预订，请及时确认订单"),
+        "coupleRoom_room_booking_book":
+            MessageLookupByLibrary.simpleMessage("预订"),
+        "coupleRoom_room_booking_book_fail":
+            MessageLookupByLibrary.simpleMessage("预订失败"),
+        "coupleRoom_room_booking_book_success":
+            MessageLookupByLibrary.simpleMessage("预订成功"),
+        "coupleRoom_room_booking_confirm":
+            MessageLookupByLibrary.simpleMessage("确定"),
+        "coupleRoom_room_booking_remark":
+            MessageLookupByLibrary.simpleMessage("备注"),
+        "coupleRoom_room_booking_search":
+            MessageLookupByLibrary.simpleMessage("请输入房间号查询"),
+        "coupleRoom_room_booking_select_date":
+            MessageLookupByLibrary.simpleMessage("请选择入住日期（可多选，必须连续）"),
+        "coupleRoom_room_booking_submit":
+            MessageLookupByLibrary.simpleMessage("提交"),
+        "coupleRoom_room_booking_submit_fail":
+            MessageLookupByLibrary.simpleMessage("提交失败"),
+        "coupleRoom_room_booking_submit_success":
+            MessageLookupByLibrary.simpleMessage("提交成功"),
+        "coupleRoom_room_cancel": MessageLookupByLibrary.simpleMessage("取消"),
+        "coupleRoom_room_cancel_order":
+            MessageLookupByLibrary.simpleMessage("取消预约"),
+        "coupleRoom_room_cancel_order_confirm":
+            MessageLookupByLibrary.simpleMessage("确定取消预约吗？"),
+        "coupleRoom_room_cancel_order_success":
+            MessageLookupByLibrary.simpleMessage("取消预约成功"),
+        "coupleRoom_room_canceled": MessageLookupByLibrary.simpleMessage("已取消"),
+        "coupleRoom_room_check_in_date":
+            MessageLookupByLibrary.simpleMessage("请选择入住日期"),
+        "coupleRoom_room_check_in_time":
+            MessageLookupByLibrary.simpleMessage("可入住时间"),
+        "coupleRoom_room_check_out_time":
+            MessageLookupByLibrary.simpleMessage("退房时间"),
+        "coupleRoom_room_confirm_content":
+            MessageLookupByLibrary.simpleMessage("确定确认订单吗？"),
+        "coupleRoom_room_confirm_fail":
+            MessageLookupByLibrary.simpleMessage("确认订单失败"),
+        "coupleRoom_room_confirm_order":
+            MessageLookupByLibrary.simpleMessage("确认订单"),
+        "coupleRoom_room_confirm_success":
+            MessageLookupByLibrary.simpleMessage("确认订单成功"),
+        "coupleRoom_room_days": MessageLookupByLibrary.simpleMessage("天"),
+        "coupleRoom_room_info": MessageLookupByLibrary.simpleMessage("客房信息"),
+        "coupleRoom_room_number": MessageLookupByLibrary.simpleMessage("房间编号"),
+        "coupleRoom_room_order": MessageLookupByLibrary.simpleMessage("客房订单"),
+        "coupleRoom_room_order_cancel_fail":
+            MessageLookupByLibrary.simpleMessage("取消预约失败"),
+        "coupleRoom_room_order_cancel_success":
+            MessageLookupByLibrary.simpleMessage("您的客房预订已取消，请重新预订"),
+        "coupleRoom_room_order_create_time":
+            MessageLookupByLibrary.simpleMessage("下单时间"),
+        "coupleRoom_room_order_detail":
+            MessageLookupByLibrary.simpleMessage("订单详情"),
+        "coupleRoom_room_order_end_time":
+            MessageLookupByLibrary.simpleMessage("退房时间"),
+        "coupleRoom_room_order_price":
+            MessageLookupByLibrary.simpleMessage("总费用"),
+        "coupleRoom_room_order_search":
+            MessageLookupByLibrary.simpleMessage("请输入房间号查询"),
+        "coupleRoom_room_order_start_time":
+            MessageLookupByLibrary.simpleMessage("入住时间"),
+        "coupleRoom_room_pending": MessageLookupByLibrary.simpleMessage("待审核"),
+        "coupleRoom_room_price": MessageLookupByLibrary.simpleMessage("单价"),
+        "coupleRoom_room_price_unit":
+            MessageLookupByLibrary.simpleMessage("KRP/天"),
+        "coupleRoom_room_rejected": MessageLookupByLibrary.simpleMessage("已拒绝"),
+        "coupleRoom_room_search": MessageLookupByLibrary.simpleMessage("搜索"),
+        "coupleRoom_room_staff_dept":
+            MessageLookupByLibrary.simpleMessage("部门"),
+        "coupleRoom_room_staff_info":
+            MessageLookupByLibrary.simpleMessage("员工信息"),
+        "coupleRoom_room_staff_job":
+            MessageLookupByLibrary.simpleMessage("岗位/服务"),
+        "coupleRoom_room_staff_name":
+            MessageLookupByLibrary.simpleMessage("姓名"),
+        "coupleRoom_room_staff_sex": MessageLookupByLibrary.simpleMessage("性别"),
+        "coupleRoom_room_staff_tel": MessageLookupByLibrary.simpleMessage("电话"),
+        "coupleRoom_room_staff_username":
+            MessageLookupByLibrary.simpleMessage("工号"),
+        "coupleRoom_room_view": MessageLookupByLibrary.simpleMessage("查看"),
         "createTime": MessageLookupByLibrary.simpleMessage("下单时间"),
         "currentVersionIsLatest":
             MessageLookupByLibrary.simpleMessage("当前版本已是最新版本"),
@@ -155,10 +337,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "diningIn": MessageLookupByLibrary.simpleMessage("堂食"),
         "diningService": MessageLookupByLibrary.simpleMessage("订餐服务"),
         "diningTime": MessageLookupByLibrary.simpleMessage("订餐时间"),
+        "dinner": MessageLookupByLibrary.simpleMessage("晚餐"),
         "direction": MessageLookupByLibrary.simpleMessage("方向"),
         "dishMethod": MessageLookupByLibrary.simpleMessage("菜的做法"),
         "dishName": MessageLookupByLibrary.simpleMessage("菜名"),
         "dishSuggestion": MessageLookupByLibrary.simpleMessage("菜品建议"),
+        "dishes": MessageLookupByLibrary.simpleMessage("道菜"),
         "dragHereToRemove": MessageLookupByLibrary.simpleMessage("拖动此处删除"),
         "dragRemoveImage": MessageLookupByLibrary.simpleMessage("拖动删除图片"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
@@ -202,6 +386,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "firstTripTime": MessageLookupByLibrary.simpleMessage("首班车"),
         "fixed": MessageLookupByLibrary.simpleMessage("已修复"),
         "foodRecommend": MessageLookupByLibrary.simpleMessage("美食推荐"),
+        "food_menu": MessageLookupByLibrary.simpleMessage("今日菜谱"),
         "forgetPassword": MessageLookupByLibrary.simpleMessage("忘记密码？"),
         "found": MessageLookupByLibrary.simpleMessage("招领"),
         "foundItem": MessageLookupByLibrary.simpleMessage("招领"),
@@ -244,7 +429,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "livingAreaDataLoading":
             MessageLookupByLibrary.simpleMessage("生活区数据加载中..."),
         "loadFailed": MessageLookupByLibrary.simpleMessage("加载失败"),
+        "load_failed": MessageLookupByLibrary.simpleMessage("加载失败"),
         "loading": MessageLookupByLibrary.simpleMessage("数据加载中..."),
+        "loading_food_menu":
+            MessageLookupByLibrary.simpleMessage("正在加载今日菜谱..."),
         "loginBtn": MessageLookupByLibrary.simpleMessage("登录"),
         "loginFailed": MessageLookupByLibrary.simpleMessage("登录失败"),
         "loginSuccess": MessageLookupByLibrary.simpleMessage("登录成功"),
@@ -261,6 +449,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lostStatus": MessageLookupByLibrary.simpleMessage("丢失状态"),
         "lostTime": MessageLookupByLibrary.simpleMessage("丢失时间"),
         "lostType": MessageLookupByLibrary.simpleMessage("丢失类型"),
+        "lunch": MessageLookupByLibrary.simpleMessage("午餐"),
         "man": MessageLookupByLibrary.simpleMessage("男"),
         "manage": MessageLookupByLibrary.simpleMessage("管理"),
         "message": MessageLookupByLibrary.simpleMessage("消息"),
@@ -292,6 +481,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "noData": MessageLookupByLibrary.simpleMessage("暂无数据"),
         "noMoreData": MessageLookupByLibrary.simpleMessage("没有更多数据"),
         "noOrder": MessageLookupByLibrary.simpleMessage("暂无订单"),
+        "no_food_menu_info": MessageLookupByLibrary.simpleMessage("暂无菜谱信息"),
+        "no_food_menu_info_tips":
+            MessageLookupByLibrary.simpleMessage("该日期暂无菜谱安排"),
+        "no_more_info": MessageLookupByLibrary.simpleMessage("暂无详细信息"),
         "notice": MessageLookupByLibrary.simpleMessage("公告"),
         "notifications": MessageLookupByLibrary.simpleMessage("通知公告"),
         "oldPassword": MessageLookupByLibrary.simpleMessage("旧密码"),
@@ -311,6 +504,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "orderNo": MessageLookupByLibrary.simpleMessage("订单号"),
         "orderStatus": MessageLookupByLibrary.simpleMessage("订单状态"),
         "orderTime": MessageLookupByLibrary.simpleMessage("下单时间"),
+        "other": MessageLookupByLibrary.simpleMessage("其他"),
         "packOrderSuccess": MessageLookupByLibrary.simpleMessage("打包处理成功"),
         "password": MessageLookupByLibrary.simpleMessage("密码"),
         "passwordChangeFailed": MessageLookupByLibrary.simpleMessage("密码修改失败"),
@@ -361,9 +555,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "refresh": MessageLookupByLibrary.simpleMessage("刷新"),
         "refreshComplete": MessageLookupByLibrary.simpleMessage("刷新完成"),
         "refreshFailed": MessageLookupByLibrary.simpleMessage("刷新失败"),
+        "refresh_food_menu": MessageLookupByLibrary.simpleMessage("刷新菜谱"),
         "refreshing": MessageLookupByLibrary.simpleMessage("刷新中..."),
         "region": MessageLookupByLibrary.simpleMessage("所在区域"),
         "releaseLoadMore": MessageLookupByLibrary.simpleMessage("释放加载更多"),
+        "reload": MessageLookupByLibrary.simpleMessage("重新加载"),
         "remaining": MessageLookupByLibrary.simpleMessage("剩余"),
         "remark": MessageLookupByLibrary.simpleMessage("备注"),
         "rememberPassword": MessageLookupByLibrary.simpleMessage("记住密码"),
@@ -423,6 +619,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "selectDate": MessageLookupByLibrary.simpleMessage("选择日期"),
         "selectRepairTime": MessageLookupByLibrary.simpleMessage("请选择维修时间"),
         "selectRepairType": MessageLookupByLibrary.simpleMessage("请选择维修类型"),
+        "select_date": MessageLookupByLibrary.simpleMessage("选择日期"),
         "serviceGuide": MessageLookupByLibrary.simpleMessage("服务指南"),
         "setDefault": MessageLookupByLibrary.simpleMessage("确定把该地址设置为默认吗？"),
         "shopWorkbench": MessageLookupByLibrary.simpleMessage("店铺工作台"),
@@ -456,6 +653,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "unfixed": MessageLookupByLibrary.simpleMessage("未修复"),
         "unfixedReason": MessageLookupByLibrary.simpleMessage("请填写未修复原因"),
         "unknownStatus": MessageLookupByLibrary.simpleMessage("未知状态"),
+        "unknown_dish": MessageLookupByLibrary.simpleMessage("未知菜品"),
+        "unknown_error": MessageLookupByLibrary.simpleMessage("未知错误"),
+        "unknown_status": MessageLookupByLibrary.simpleMessage("未知状态"),
         "unlike": MessageLookupByLibrary.simpleMessage("取消点赞"),
         "unread": MessageLookupByLibrary.simpleMessage("未读"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),

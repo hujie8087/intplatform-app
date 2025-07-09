@@ -5,11 +5,13 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/pages/news/notice_page/notice_detail_page.dart';
+import 'package:logistics_app/route/route_annotation.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+@AppRoute(path: 'notice_list_page', name: '通知公告')
 class NoticeListPage extends StatefulWidget {
   const NoticeListPage({super.key});
   @override

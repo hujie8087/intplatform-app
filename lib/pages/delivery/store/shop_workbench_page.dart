@@ -58,7 +58,7 @@ class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
   ];
 
   // 时间选择选项，默认是今天
-  int _selectedDate = 0;
+  int _selectedDate = -1;
   // 时间选择选项，今天，一周，一个月，三个月，一年
   List<Map<String, String>> _timeOptions = [
     {
@@ -66,20 +66,21 @@ class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
       'startTime': DateTime.now().startOfDay,
       'endTime': DateTime.now().endOfDay,
     },
+    // 过去一周
     {
       'title': S.current.oneWeek,
-      'startTime': DateTime.now().startOfWeek,
-      'endTime': DateTime.now().endOfWeek,
+      'startTime': DateTime.now().subtract(Duration(days: 7)).toString(),
+      'endTime': DateTime.now().endOfDay,
     },
     {
       'title': S.current.oneMonth,
-      'startTime': DateTime.now().startOfMonth,
-      'endTime': DateTime.now().endOfMonth,
+      'startTime': DateTime.now().subtract(Duration(days: 30)).toString(),
+      'endTime': DateTime.now().endOfDay,
     },
     {
       'title': S.current.threeMonths,
-      'startTime': DateTime.now().startOfQuarter,
-      'endTime': DateTime.now().endOfQuarter,
+      'startTime': DateTime.now().subtract(Duration(days: 90)).toString(),
+      'endTime': DateTime.now().endOfDay,
     },
     {
       'title': S.current.oneYear,
@@ -149,8 +150,10 @@ class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
         'deliveryStatus': status,
         'deliveryName': _orderName,
         'orderNo': _orderNo,
-        'beginTime': _timeOptions[_selectedDate]['startTime'],
-        'endTime': _timeOptions[_selectedDate]['endTime'],
+        'beginTime':
+            _selectedDate == -1 ? '' : _timeOptions[_selectedDate]['startTime'],
+        'endTime':
+            _selectedDate == -1 ? '' : _timeOptions[_selectedDate]['endTime'],
       },
       success: (data) {
         var rowsModel = RowsModel<DeliveryOrderModel>.fromJson(
@@ -689,6 +692,17 @@ class OrderCard extends StatelessWidget {
                 Text(order.deliveryTime, style: TextStyle(fontSize: 12.px)),
               ],
             ),
+            SizedBox(height: 4.px),
+            // 下单时间
+            Row(
+              children: [
+                Text(
+                  S.of(context).orderTime + ':',
+                  style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
+                ),
+                Text(order.orderTime, style: TextStyle(fontSize: 12.px)),
+              ],
+            ),
             SizedBox(height: 8.px),
             Divider(height: 1.px, color: Colors.grey),
             Row(
@@ -708,7 +722,10 @@ class OrderCard extends StatelessWidget {
                     onPressed: () {
                       onAccept();
                     },
-                    child: Text('打包', style: TextStyle(fontSize: 12.px)),
+                    child: Text(
+                      '打包',
+                      style: TextStyle(fontSize: 12.px, color: Colors.white),
+                    ),
                   ),
                 SizedBox(width: 8.px),
                 // 查看订单
@@ -734,7 +751,7 @@ class OrderCard extends StatelessWidget {
                   },
                   child: Text(
                     S.of(context).viewOrder,
-                    style: TextStyle(fontSize: 12.px),
+                    style: TextStyle(fontSize: 12.px, color: Colors.white),
                   ),
                 ),
               ],

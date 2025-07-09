@@ -4199,6 +4199,1306 @@ class S {
       args: [],
     );
   }
+
+  /// `客房`
+  String get coupleRoom {
+    return Intl.message(
+      '客房',
+      name: 'coupleRoom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `客房反馈`
+  String get coupleRoom_feedback {
+    return Intl.message(
+      '客房反馈',
+      name: 'coupleRoom_feedback',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `房间问题`
+  String get coupleRoom_feedback_room {
+    return Intl.message(
+      '房间问题',
+      name: 'coupleRoom_feedback_room',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `系统问题`
+  String get coupleRoom_feedback_system {
+    return Intl.message(
+      '系统问题',
+      name: 'coupleRoom_feedback_system',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `其他`
+  String get coupleRoom_feedback_other {
+    return Intl.message(
+      '其他',
+      name: 'coupleRoom_feedback_other',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交`
+  String get coupleRoom_feedback_submit {
+    return Intl.message(
+      '提交',
+      name: 'coupleRoom_feedback_submit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交成功`
+  String get coupleRoom_feedback_submit_success {
+    return Intl.message(
+      '提交成功',
+      name: 'coupleRoom_feedback_submit_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交失败`
+  String get coupleRoom_feedback_submit_fail {
+    return Intl.message(
+      '提交失败',
+      name: 'coupleRoom_feedback_submit_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `反馈类型`
+  String get coupleRoom_feedback_type {
+    return Intl.message(
+      '反馈类型',
+      name: 'coupleRoom_feedback_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `反馈内容`
+  String get coupleRoom_feedback_content {
+    return Intl.message(
+      '反馈内容',
+      name: 'coupleRoom_feedback_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `客房预订`
+  String get coupleRoom_room_booking {
+    return Intl.message(
+      '客房预订',
+      name: 'coupleRoom_room_booking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入房间号查询`
+  String get coupleRoom_room_booking_search {
+    return Intl.message(
+      '请输入房间号查询',
+      name: 'coupleRoom_room_booking_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `搜索`
+  String get coupleRoom_room_search {
+    return Intl.message(
+      '搜索',
+      name: 'coupleRoom_room_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `房间编号`
+  String get coupleRoom_room_number {
+    return Intl.message(
+      '房间编号',
+      name: 'coupleRoom_room_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `可预订`
+  String get coupleRoom_room_available {
+    return Intl.message(
+      '可预订',
+      name: 'coupleRoom_room_available',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `退房时间`
+  String get coupleRoom_room_check_out_time {
+    return Intl.message(
+      '退房时间',
+      name: 'coupleRoom_room_check_out_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `可入住时间`
+  String get coupleRoom_room_check_in_time {
+    return Intl.message(
+      '可入住时间',
+      name: 'coupleRoom_room_check_in_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `可预订天数`
+  String get coupleRoom_room_available_days {
+    return Intl.message(
+      '可预订天数',
+      name: 'coupleRoom_room_available_days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `天`
+  String get coupleRoom_room_days {
+    return Intl.message(
+      '天',
+      name: 'coupleRoom_room_days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `单价`
+  String get coupleRoom_room_price {
+    return Intl.message(
+      '单价',
+      name: 'coupleRoom_room_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `KRP/天`
+  String get coupleRoom_room_price_unit {
+    return Intl.message(
+      'KRP/天',
+      name: 'coupleRoom_room_price_unit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `备注`
+  String get coupleRoom_room_booking_remark {
+    return Intl.message(
+      '备注',
+      name: 'coupleRoom_room_booking_remark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `预订`
+  String get coupleRoom_room_booking_book {
+    return Intl.message(
+      '预订',
+      name: 'coupleRoom_room_booking_book',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `预订成功`
+  String get coupleRoom_room_booking_book_success {
+    return Intl.message(
+      '预订成功',
+      name: 'coupleRoom_room_booking_book_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `预订失败`
+  String get coupleRoom_room_booking_book_fail {
+    return Intl.message(
+      '预订失败',
+      name: 'coupleRoom_room_booking_book_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择入住日期（可多选，必须连续）`
+  String get coupleRoom_room_booking_select_date {
+    return Intl.message(
+      '请选择入住日期（可多选，必须连续）',
+      name: 'coupleRoom_room_booking_select_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定`
+  String get coupleRoom_room_booking_confirm {
+    return Intl.message(
+      '确定',
+      name: 'coupleRoom_room_booking_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交`
+  String get coupleRoom_room_booking_submit {
+    return Intl.message(
+      '提交',
+      name: 'coupleRoom_room_booking_submit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交成功`
+  String get coupleRoom_room_booking_submit_success {
+    return Intl.message(
+      '提交成功',
+      name: 'coupleRoom_room_booking_submit_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交失败`
+  String get coupleRoom_room_booking_submit_fail {
+    return Intl.message(
+      '提交失败',
+      name: 'coupleRoom_room_booking_submit_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `您有新的客房预订，请及时确认订单`
+  String get coupleRoom_room_booking_body {
+    return Intl.message(
+      '您有新的客房预订，请及时确认订单',
+      name: 'coupleRoom_room_booking_body',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择入住日期`
+  String get coupleRoom_room_check_in_date {
+    return Intl.message(
+      '请选择入住日期',
+      name: 'coupleRoom_room_check_in_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `全部`
+  String get coupleRoom_room_all {
+    return Intl.message(
+      '全部',
+      name: 'coupleRoom_room_all',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `待审核`
+  String get coupleRoom_room_pending {
+    return Intl.message(
+      '待审核',
+      name: 'coupleRoom_room_pending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已通过`
+  String get coupleRoom_room_approved {
+    return Intl.message(
+      '已通过',
+      name: 'coupleRoom_room_approved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已拒绝`
+  String get coupleRoom_room_rejected {
+    return Intl.message(
+      '已拒绝',
+      name: 'coupleRoom_room_rejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已取消`
+  String get coupleRoom_room_canceled {
+    return Intl.message(
+      '已取消',
+      name: 'coupleRoom_room_canceled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `客房订单`
+  String get coupleRoom_room_order {
+    return Intl.message(
+      '客房订单',
+      name: 'coupleRoom_room_order',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入房间号查询`
+  String get coupleRoom_room_order_search {
+    return Intl.message(
+      '请输入房间号查询',
+      name: 'coupleRoom_room_order_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下单时间`
+  String get coupleRoom_room_order_create_time {
+    return Intl.message(
+      '下单时间',
+      name: 'coupleRoom_room_order_create_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `入住时间`
+  String get coupleRoom_room_order_start_time {
+    return Intl.message(
+      '入住时间',
+      name: 'coupleRoom_room_order_start_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `退房时间`
+  String get coupleRoom_room_order_end_time {
+    return Intl.message(
+      '退房时间',
+      name: 'coupleRoom_room_order_end_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `总费用`
+  String get coupleRoom_room_order_price {
+    return Intl.message(
+      '总费用',
+      name: 'coupleRoom_room_order_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `取消预约`
+  String get coupleRoom_room_cancel_order {
+    return Intl.message(
+      '取消预约',
+      name: 'coupleRoom_room_cancel_order',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定取消预约吗？`
+  String get coupleRoom_room_cancel_order_confirm {
+    return Intl.message(
+      '确定取消预约吗？',
+      name: 'coupleRoom_room_cancel_order_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `取消`
+  String get coupleRoom_room_cancel {
+    return Intl.message(
+      '取消',
+      name: 'coupleRoom_room_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `取消预约成功`
+  String get coupleRoom_room_cancel_order_success {
+    return Intl.message(
+      '取消预约成功',
+      name: 'coupleRoom_room_cancel_order_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `您的客房预订已取消，请重新预订`
+  String get coupleRoom_room_order_cancel_success {
+    return Intl.message(
+      '您的客房预订已取消，请重新预订',
+      name: 'coupleRoom_room_order_cancel_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `取消预约失败`
+  String get coupleRoom_room_order_cancel_fail {
+    return Intl.message(
+      '取消预约失败',
+      name: 'coupleRoom_room_order_cancel_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认订单`
+  String get coupleRoom_room_confirm_order {
+    return Intl.message(
+      '确认订单',
+      name: 'coupleRoom_room_confirm_order',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定确认订单吗？`
+  String get coupleRoom_room_confirm_content {
+    return Intl.message(
+      '确定确认订单吗？',
+      name: 'coupleRoom_room_confirm_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认订单成功`
+  String get coupleRoom_room_confirm_success {
+    return Intl.message(
+      '确认订单成功',
+      name: 'coupleRoom_room_confirm_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认订单失败`
+  String get coupleRoom_room_confirm_fail {
+    return Intl.message(
+      '确认订单失败',
+      name: 'coupleRoom_room_confirm_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `查看`
+  String get coupleRoom_room_view {
+    return Intl.message(
+      '查看',
+      name: 'coupleRoom_room_view',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单详情`
+  String get coupleRoom_room_order_detail {
+    return Intl.message(
+      '订单详情',
+      name: 'coupleRoom_room_order_detail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `客房信息`
+  String get coupleRoom_room_info {
+    return Intl.message(
+      '客房信息',
+      name: 'coupleRoom_room_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `员工信息`
+  String get coupleRoom_room_staff_info {
+    return Intl.message(
+      '员工信息',
+      name: 'coupleRoom_room_staff_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `岗位/服务`
+  String get coupleRoom_room_staff_job {
+    return Intl.message(
+      '岗位/服务',
+      name: 'coupleRoom_room_staff_job',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `电话`
+  String get coupleRoom_room_staff_tel {
+    return Intl.message(
+      '电话',
+      name: 'coupleRoom_room_staff_tel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `部门`
+  String get coupleRoom_room_staff_dept {
+    return Intl.message(
+      '部门',
+      name: 'coupleRoom_room_staff_dept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `工号`
+  String get coupleRoom_room_staff_username {
+    return Intl.message(
+      '工号',
+      name: 'coupleRoom_room_staff_username',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `姓名`
+  String get coupleRoom_room_staff_name {
+    return Intl.message(
+      '姓名',
+      name: 'coupleRoom_room_staff_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `性别`
+  String get coupleRoom_room_staff_sex {
+    return Intl.message(
+      '性别',
+      name: 'coupleRoom_room_staff_sex',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `审核信息`
+  String get coupleRoom_room_audit_info {
+    return Intl.message(
+      '审核信息',
+      name: 'coupleRoom_room_audit_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `审核人员`
+  String get coupleRoom_room_audit_staff {
+    return Intl.message(
+      '审核人员',
+      name: 'coupleRoom_room_audit_staff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `审核时间`
+  String get coupleRoom_room_audit_time {
+    return Intl.message(
+      '审核时间',
+      name: 'coupleRoom_room_audit_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `审核状态`
+  String get coupleRoom_room_audit_status {
+    return Intl.message(
+      '审核状态',
+      name: 'coupleRoom_room_audit_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `通过`
+  String get coupleRoom_room_audit_status_pass {
+    return Intl.message(
+      '通过',
+      name: 'coupleRoom_room_audit_status_pass',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `拒绝`
+  String get coupleRoom_room_audit_status_reject {
+    return Intl.message(
+      '拒绝',
+      name: 'coupleRoom_room_audit_status_reject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `审核说明`
+  String get coupleRoom_room_audit_remark {
+    return Intl.message(
+      '审核说明',
+      name: 'coupleRoom_room_audit_remark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `保洁订单`
+  String get cleaning_order {
+    return Intl.message(
+      '保洁订单',
+      name: 'cleaning_order',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入订单号或房间号查询`
+  String get cleaning_order_search {
+    return Intl.message(
+      '请输入订单号或房间号查询',
+      name: 'cleaning_order_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `搜索`
+  String get cleaning_search {
+    return Intl.message(
+      '搜索',
+      name: 'cleaning_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单号`
+  String get cleaning_order_number {
+    return Intl.message(
+      '订单号',
+      name: 'cleaning_order_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `联系人`
+  String get cleaning_contacts {
+    return Intl.message(
+      '联系人',
+      name: 'cleaning_contacts',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `联系电话`
+  String get cleaning_tel {
+    return Intl.message(
+      '联系电话',
+      name: 'cleaning_tel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `房间号`
+  String get cleaning_room_number {
+    return Intl.message(
+      '房间号',
+      name: 'cleaning_room_number',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `价格`
+  String get cleaning_price {
+    return Intl.message(
+      '价格',
+      name: 'cleaning_price',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下单`
+  String get cleaning_order_create {
+    return Intl.message(
+      '下单',
+      name: 'cleaning_order_create',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `处理`
+  String get cleaning_order_handle {
+    return Intl.message(
+      '处理',
+      name: 'cleaning_order_handle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `评价`
+  String get cleaning_evaluate {
+    return Intl.message(
+      '评价',
+      name: 'cleaning_evaluate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `查看`
+  String get cleaning_order_view {
+    return Intl.message(
+      '查看',
+      name: 'cleaning_order_view',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `状态`
+  String get cleaning_order_status {
+    return Intl.message(
+      '状态',
+      name: 'cleaning_order_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未知状态`
+  String get unknown_status {
+    return Intl.message(
+      '未知状态',
+      name: 'unknown_status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无详细信息`
+  String get no_more_info {
+    return Intl.message(
+      '暂无详细信息',
+      name: 'no_more_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `待处理`
+  String get cleaning_order_pending {
+    return Intl.message(
+      '待处理',
+      name: 'cleaning_order_pending',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `评价订单`
+  String get cleaning_order_evaluate {
+    return Intl.message(
+      '评价订单',
+      name: 'cleaning_order_evaluate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `服务评分`
+  String get cleaning_order_evaluate_title {
+    return Intl.message(
+      '服务评分',
+      name: 'cleaning_order_evaluate_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `评价内容`
+  String get cleaning_order_evaluate_content {
+    return Intl.message(
+      '评价内容',
+      name: 'cleaning_order_evaluate_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交评价`
+  String get cleaning_order_evaluate_submit {
+    return Intl.message(
+      '提交评价',
+      name: 'cleaning_order_evaluate_submit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `评价成功`
+  String get cleaning_order_evaluate_success {
+    return Intl.message(
+      '评价成功',
+      name: 'cleaning_order_evaluate_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `评价失败`
+  String get cleaning_order_evaluate_fail {
+    return Intl.message(
+      '评价失败',
+      name: 'cleaning_order_evaluate_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入您的评价内容（可选）`
+  String get cleaning_order_evaluate_content_hint {
+    return Intl.message(
+      '请输入您的评价内容（可选）',
+      name: 'cleaning_order_evaluate_content_hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择评分`
+  String get cleaning_order_evaluate_select_rating {
+    return Intl.message(
+      '请选择评分',
+      name: 'cleaning_order_evaluate_select_rating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `非常不满意`
+  String get cleaning_order_evaluate_very_dissatisfied {
+    return Intl.message(
+      '非常不满意',
+      name: 'cleaning_order_evaluate_very_dissatisfied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `不满意`
+  String get cleaning_order_evaluate_dissatisfied {
+    return Intl.message(
+      '不满意',
+      name: 'cleaning_order_evaluate_dissatisfied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `一般`
+  String get cleaning_order_evaluate_average {
+    return Intl.message(
+      '一般',
+      name: 'cleaning_order_evaluate_average',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `满意`
+  String get cleaning_order_evaluate_satisfied {
+    return Intl.message(
+      '满意',
+      name: 'cleaning_order_evaluate_satisfied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `非常满意`
+  String get cleaning_order_evaluate_very_satisfied {
+    return Intl.message(
+      '非常满意',
+      name: 'cleaning_order_evaluate_very_satisfied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择保洁项目`
+  String get cleaning_select_cleaning_project {
+    return Intl.message(
+      '选择保洁项目',
+      name: 'cleaning_select_cleaning_project',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `深度保洁`
+  String get cleaning_deep_cleaning {
+    return Intl.message(
+      '深度保洁',
+      name: 'cleaning_deep_cleaning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `专项保洁`
+  String get cleaning_special_cleaning {
+    return Intl.message(
+      '专项保洁',
+      name: 'cleaning_special_cleaning',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择保洁地址`
+  String get cleaning_select_address {
+    return Intl.message(
+      '请选择保洁地址',
+      name: 'cleaning_select_address',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择预约日期`
+  String get cleaning_select_date {
+    return Intl.message(
+      '请选择预约日期',
+      name: 'cleaning_select_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `保洁地址不在保洁项目对应的区域，请重新选择！`
+  String get cleaning_select_address_error {
+    return Intl.message(
+      '保洁地址不在保洁项目对应的区域，请重新选择！',
+      name: 'cleaning_select_address_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交订单`
+  String get cleaning_order_submit {
+    return Intl.message(
+      '提交订单',
+      name: 'cleaning_order_submit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `加载中...`
+  String get cleaning_loading {
+    return Intl.message(
+      '加载中...',
+      name: 'cleaning_loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `保洁订单详情`
+  String get cleaning_order_detail {
+    return Intl.message(
+      '保洁订单详情',
+      name: 'cleaning_order_detail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `基本信息`
+  String get cleaning_basic_info {
+    return Intl.message(
+      '基本信息',
+      name: 'cleaning_basic_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `清洁区域`
+  String get cleaning_area {
+    return Intl.message(
+      '清洁区域',
+      name: 'cleaning_area',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `服务详情`
+  String get cleaning_service_detail {
+    return Intl.message(
+      '服务详情',
+      name: 'cleaning_service_detail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `保洁项目`
+  String get cleaning_project {
+    return Intl.message(
+      '保洁项目',
+      name: 'cleaning_project',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单进度`
+  String get cleaning_order_progress {
+    return Intl.message(
+      '订单进度',
+      name: 'cleaning_order_progress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `其他信息`
+  String get cleaning_other_info {
+    return Intl.message(
+      '其他信息',
+      name: 'cleaning_other_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `备注`
+  String get cleaning_remark {
+    return Intl.message(
+      '备注',
+      name: 'cleaning_remark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `早餐`
+  String get breakfast {
+    return Intl.message(
+      '早餐',
+      name: 'breakfast',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `午餐`
+  String get lunch {
+    return Intl.message(
+      '午餐',
+      name: 'lunch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `晚餐`
+  String get dinner {
+    return Intl.message(
+      '晚餐',
+      name: 'dinner',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `其他`
+  String get other {
+    return Intl.message(
+      '其他',
+      name: 'other',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未知菜品`
+  String get unknown_dish {
+    return Intl.message(
+      '未知菜品',
+      name: 'unknown_dish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `道菜`
+  String get dishes {
+    return Intl.message(
+      '道菜',
+      name: 'dishes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择日期`
+  String get select_date {
+    return Intl.message(
+      '选择日期',
+      name: 'select_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `正在加载今日菜谱...`
+  String get loading_food_menu {
+    return Intl.message(
+      '正在加载今日菜谱...',
+      name: 'loading_food_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `加载失败`
+  String get load_failed {
+    return Intl.message(
+      '加载失败',
+      name: 'load_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未知错误`
+  String get unknown_error {
+    return Intl.message(
+      '未知错误',
+      name: 'unknown_error',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `重新加载`
+  String get reload {
+    return Intl.message(
+      '重新加载',
+      name: 'reload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无菜谱信息`
+  String get no_food_menu_info {
+    return Intl.message(
+      '暂无菜谱信息',
+      name: 'no_food_menu_info',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `该日期暂无菜谱安排`
+  String get no_food_menu_info_tips {
+    return Intl.message(
+      '该日期暂无菜谱安排',
+      name: 'no_food_menu_info_tips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `今日菜谱`
+  String get food_menu {
+    return Intl.message(
+      '今日菜谱',
+      name: 'food_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `刷新菜谱`
+  String get refresh_food_menu {
+    return Intl.message(
+      '刷新菜谱',
+      name: 'refresh_food_menu',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
