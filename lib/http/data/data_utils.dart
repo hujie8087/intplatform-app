@@ -506,7 +506,7 @@ class DataUtils {
   // 获取保洁订单列表
   static void getCleaningOrderList(parameters, {Success? success, Fail? fail}) {
     HttpUtils.get(
-      '/maintenance/clean/order/list',
+      '/maintenance/clean/order/appList',
       parameters,
       success: success,
       fail: fail,
