@@ -116,6 +116,7 @@ class _CoupleRoomPageState extends State<CoupleRoomPage> {
             } else {
               this.coupleRoomList = [];
             }
+            _refreshController.loadNoData();
             _isLoading = false;
           });
         },
