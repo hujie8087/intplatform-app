@@ -16,6 +16,7 @@ import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/home_page/home_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_page.dart';
 import 'package:logistics_app/pages/models/tabIcon_data.dart';
+import 'package:logistics_app/pages/repair/report_hazard_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -25,7 +26,6 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter/foundation.dart';
 
 // 在文件顶部定义全局 key
 final GlobalKey<_AppHomeScreenState> appHomeScreenKey =
@@ -47,6 +47,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   UpdateDialog? _updateDialog;
 
   List<TabIconData> _tabIconsList = [];
+  int _grooveIndex = 2;
 
   void _loadTabIcons() {
     setState(() {
@@ -61,9 +62,17 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             labelName: '', // 先设为空，在build中设置
           ),
           TabIconData(
+            imagePath: 'assets/images/tab_danger1.png',
+            selectedImagePath: 'assets/images/tab_danger1s.png',
+            index: 1,
+            isSelected: true,
+            animationController: animationController,
+            labelName: '', // 先设为空，在build中设置
+          ),
+          TabIconData(
             imagePath: 'assets/images/tab_tool1.png',
             selectedImagePath: 'assets/images/tab_tool21.png',
-            index: 1,
+            index: 2,
             isSelected: false,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
@@ -71,7 +80,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           TabIconData(
             imagePath: 'assets/images/tab_4.png',
             selectedImagePath: 'assets/images/tab_4s1.png',
-            index: 2,
+            index: 3,
             isSelected: false,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
@@ -85,8 +94,9 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   void _updateTabLabels() {
     if (_tabIconsList.isNotEmpty) {
       _tabIconsList[0].labelName = S.of(context).homePage;
-      _tabIconsList[1].labelName = S.of(context).toolPage;
-      _tabIconsList[2].labelName = S.of(context).minePage;
+      _tabIconsList[1].labelName = S.of(context).dangerPage;
+      _tabIconsList[2].labelName = S.of(context).toolPage;
+      _tabIconsList[3].labelName = S.of(context).minePage;
     }
   }
 
@@ -245,24 +255,27 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     _tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
-    _tabIconsList[1].isSelected = true;
+    _tabIconsList[_grooveIndex].isSelected = true;
 
     animationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
     super.initState();
-    _handleTabChanged(1);
+    handleTabChanged(_grooveIndex);
     // tabBody = HomePage(
-    //     animationController: animationController, onChanged: _handleTabChanged);
+    //     animationController: animationController, onChanged: handleTabChanged);
     checkUpdate(context);
   }
 
-  void _handleTabChanged(int newValue) async {
+  void handleTabChanged(int newValue) async {
     _tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
     _tabIconsList[newValue].isSelected = true;
+    setState(() {
+      _grooveIndex = newValue;
+    });
     animationController?.reverse().then<dynamic>((data) async {
       if (!mounted) {
         return;
@@ -270,15 +283,20 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       switch (newValue) {
         case 0:
           setState(() {
-            tabBody = HomePage(onChanged: _handleTabChanged);
+            tabBody = HomePage(onChanged: handleTabChanged);
           });
           break;
         case 1:
           setState(() {
-            tabBody = ToolBoxPage();
+            tabBody = ReportHazardPage();
           });
           break;
         case 2:
+          setState(() {
+            tabBody = ToolBoxPage();
+          });
+          break;
+        case 3:
           await isLogin();
           setState(() {
             tabBody = MinePage();
@@ -339,8 +357,9 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           key: navigationKey,
           tabIconsList: _tabIconsList,
           changeIndex: (int index) {
-            _handleTabChanged(index);
+            handleTabChanged(index);
           },
+          grooveIndex: _grooveIndex,
         ),
       ],
     );

@@ -356,6 +356,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "createTime": MessageLookupByLibrary.simpleMessage("Create time"),
         "currentVersionIsLatest": MessageLookupByLibrary.simpleMessage(
             "You are using the latest version"),
+        "dangerPage": MessageLookupByLibrary.simpleMessage("Hazards"),
         "defaultValue": MessageLookupByLibrary.simpleMessage("Default"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "deleteAddress": MessageLookupByLibrary.simpleMessage(
@@ -465,6 +466,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Kind Colleague"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("Goods info"),
         "goodsTotal": MessageLookupByLibrary.simpleMessage("Goods total"),
+        "hazard_description":
+            MessageLookupByLibrary.simpleMessage("Hazard Description"),
+        "hazard_location":
+            MessageLookupByLibrary.simpleMessage("Discover Location"),
+        "hazard_name": MessageLookupByLibrary.simpleMessage("Hazard Name"),
+        "hazard_photo": MessageLookupByLibrary.simpleMessage("Hazard Photo"),
+        "hazard_submit": MessageLookupByLibrary.simpleMessage("Submit"),
         "head": MessageLookupByLibrary.simpleMessage("Head"),
         "hello": MessageLookupByLibrary.simpleMessage("Hello"),
         "homePage": MessageLookupByLibrary.simpleMessage("Home"),
@@ -475,6 +483,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "ID card number can be used to retrieve password, please bind it as soon as possible!"),
         "imageUploading":
             MessageLookupByLibrary.simpleMessage("Image uploading..."),
+        "images": MessageLookupByLibrary.simpleMessage("Images"),
         "information": MessageLookupByLibrary.simpleMessage("Information"),
         "inputConfirmPassword": MessageLookupByLibrary.simpleMessage(
             "Please enter the new password again"),
@@ -585,6 +594,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Online delivery"),
         "onlineDining": MessageLookupByLibrary.simpleMessage("Online Dining"),
         "operator": MessageLookupByLibrary.simpleMessage("Operator"),
+        "optional": MessageLookupByLibrary.simpleMessage("(Optional)"),
         "order": MessageLookupByLibrary.simpleMessage("Order"),
         "orderCompleted":
             MessageLookupByLibrary.simpleMessage("Order Completed"),
@@ -636,6 +646,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "pleaseFillIn": m2,
         "pleaseInput": m3,
         "pleaseSelect": m4,
+        "please_enter_hazard_description": MessageLookupByLibrary.simpleMessage(
+            "Please describe discover hazard"),
+        "please_enter_hazard_location": MessageLookupByLibrary.simpleMessage(
+            "Please enter discover location"),
+        "please_enter_hazard_name":
+            MessageLookupByLibrary.simpleMessage("Please enter hazard name"),
+        "please_enter_reporter_name":
+            MessageLookupByLibrary.simpleMessage("Please enter reporter name"),
+        "please_enter_reporter_tel":
+            MessageLookupByLibrary.simpleMessage("Please enter reporter tel"),
+        "please_select_hazard_date":
+            MessageLookupByLibrary.simpleMessage("Please select discover date"),
+        "please_select_hazard_time":
+            MessageLookupByLibrary.simpleMessage("Please select discover time"),
+        "please_upload_hazard_photo": MessageLookupByLibrary.simpleMessage(
+            "Please upload discover photo"),
+        "please_upload_hazard_photo_tips": MessageLookupByLibrary.simpleMessage(
+            "Please take or select hazard scene photos, up to 6 photos"),
+        "please_upload_hazard_video": MessageLookupByLibrary.simpleMessage(
+            "Please upload discover video"),
         "process": MessageLookupByLibrary.simpleMessage("Process"),
         "processDescription":
             MessageLookupByLibrary.simpleMessage("Process description"),
@@ -721,6 +751,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "repairTime": MessageLookupByLibrary.simpleMessage("Processing Time"),
         "repairType": MessageLookupByLibrary.simpleMessage("Type"),
         "repaired": MessageLookupByLibrary.simpleMessage("Repaired"),
+        "report_hazard": MessageLookupByLibrary.simpleMessage("Report Hazard"),
+        "reporter": MessageLookupByLibrary.simpleMessage("Reporter"),
+        "reporter_name": MessageLookupByLibrary.simpleMessage("Name"),
+        "reporter_tel": MessageLookupByLibrary.simpleMessage("Tel"),
         "resetPassword": MessageLookupByLibrary.simpleMessage("Reset Password"),
         "restaurant": MessageLookupByLibrary.simpleMessage("Restaurant"),
         "returnPending": MessageLookupByLibrary.simpleMessage("Return Pending"),
@@ -747,6 +781,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "selectRepairType":
             MessageLookupByLibrary.simpleMessage("Please select repair type"),
         "select_date": MessageLookupByLibrary.simpleMessage("Select Date"),
+        "select_discover_date":
+            MessageLookupByLibrary.simpleMessage("Select Discover Date"),
+        "select_discover_description":
+            MessageLookupByLibrary.simpleMessage("Describe Discover"),
+        "select_discover_location":
+            MessageLookupByLibrary.simpleMessage("Select Discover Location"),
+        "select_discover_photo":
+            MessageLookupByLibrary.simpleMessage("Upload Discover Photo"),
+        "select_discover_time":
+            MessageLookupByLibrary.simpleMessage("Select Discover Time"),
+        "selected": MessageLookupByLibrary.simpleMessage("Selected"),
         "serviceGuide": MessageLookupByLibrary.simpleMessage("Service Guide"),
         "setDefault": MessageLookupByLibrary.simpleMessage(
             "Confirm to set this address as default?"),
@@ -760,6 +805,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "submit": MessageLookupByLibrary.simpleMessage("Submit"),
         "submitOrder": MessageLookupByLibrary.simpleMessage("Submit order"),
         "submitSuccess": MessageLookupByLibrary.simpleMessage("Submit success"),
+        "submit_hazard_report_content": MessageLookupByLibrary.simpleMessage(
+            "Confirm to submit hazard report?"),
+        "submit_hazard_report_fail":
+            MessageLookupByLibrary.simpleMessage("Submit Failed"),
+        "submit_hazard_report_success":
+            MessageLookupByLibrary.simpleMessage("Submit Success"),
         "takePhoto": MessageLookupByLibrary.simpleMessage("Take photo"),
         "takeout": MessageLookupByLibrary.simpleMessage("Takeout"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("Three Months"),
@@ -807,6 +858,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "uploadImages": MessageLookupByLibrary.simpleMessage("Upload Images"),
         "uploadNewFacePhoto":
             MessageLookupByLibrary.simpleMessage("Upload New ID Photo"),
+        "upload_images_failed": MessageLookupByLibrary.simpleMessage(
+            "Image upload failed, please try again"),
         "userFeedback": MessageLookupByLibrary.simpleMessage("User Feedback"),
         "userInfo": MessageLookupByLibrary.simpleMessage("User information"),
         "userName": MessageLookupByLibrary.simpleMessage("Account"),

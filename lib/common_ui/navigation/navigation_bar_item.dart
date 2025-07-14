@@ -10,11 +10,13 @@ import '../../pages/models/tabIcon_data.dart';
 class NavigationBarItem extends StatefulWidget {
   final List<TabIconData> tabIconsList;
   final Function(int index) changeIndex;
+  final int grooveIndex;
 
   const NavigationBarItem({
     Key? key,
     required this.tabIconsList,
     required this.changeIndex,
+    required this.grooveIndex,
   }) : super(key: key);
 
   @override
@@ -52,6 +54,20 @@ class NavigationBarItemState extends State<NavigationBarItem>
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    int tabCount = widget.tabIconsList.length;
+    int grooveIndex = widget.grooveIndex; // 想让凹槽居中第2个tab
+    double itemWidth = screenWidth / tabCount;
+    double fromOffset = (grooveIndex + 0.5) * itemWidth - screenWidth / 2;
+    double toOffset = (grooveIndex + 0.5) * itemWidth - screenWidth / 2;
+    Animation<double> offsetAnimation = Tween<double>(
+      begin: fromOffset,
+      end: toOffset,
+    ).animate(
+      CurvedAnimation(
+        parent: physicalShapeAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
     return Stack(
       alignment: AlignmentDirectional.bottomCenter,
       children: <Widget>[
@@ -59,63 +75,57 @@ class NavigationBarItemState extends State<NavigationBarItem>
           animation: animationController!,
           builder: (BuildContext context, Widget? child) {
             return AnimatedBuilder(
-                animation: physicalShapeAnimationController,
-                builder: (context, child) {
-                  double radius = Tween<double>(begin: 0.0, end: 1.0)
-                          .animate(CurvedAnimation(
-                              parent: animationController!,
-                              curve: Curves.fastOutSlowIn))
-                          .value *
-                      30.px;
-                  double horizontalOffset = prev == 1.0
-                      ? Tween<double>(begin: 0.0, end: 1.0)
-                              .animate(CurvedAnimation(
-                                  parent: physicalShapeAnimationController,
-                                  curve: Curves.fastOutSlowIn))
-                              .value *
-                          screenWidth /
-                          widget.tabIconsList.length *
-                          (current - 1)
-                      : Tween<double>(begin: -1.0, end: 1.0)
-                              .animate(CurvedAnimation(
-                                  parent: physicalShapeAnimationController,
-                                  curve: Curves.fastOutSlowIn))
-                              .value *
-                          screenWidth /
-                          widget.tabIconsList.length *
-                          (current - 1);
-                  return Transform(
-                    transform: Matrix4.translationValues(0.0, 0.0, 0.0),
-                    child: PhysicalShape(
-                      color: AppTheme.white,
-                      elevation: 14.0.px,
-                      clipper: TabClipper(
-                          radius: radius, horizontalOffset: horizontalOffset),
-                      child: Column(
-                        children: <Widget>[
-                          SizedBox(
-                            height: 40.px,
-                            child: Container(
-                              child: Row(
-                                children: widget.tabIconsList.map((item) {
-                                  return Expanded(
+              animation: physicalShapeAnimationController,
+              builder: (context, child) {
+                double radius =
+                    Tween<double>(begin: 0.0, end: 1.0)
+                        .animate(
+                          CurvedAnimation(
+                            parent: animationController!,
+                            curve: Curves.fastOutSlowIn,
+                          ),
+                        )
+                        .value *
+                    30.px;
+                double offset = offsetAnimation.valueOrDefault(
+                  (grooveIndex + 0.5) * itemWidth - screenWidth / 2,
+                );
+                return Transform(
+                  transform: Matrix4.translationValues(0.0, 0.0, 0.0),
+                  child: PhysicalShape(
+                    color: AppTheme.white,
+                    elevation: 14.0.px,
+                    clipper: TabClipper(
+                      radius: radius,
+                      horizontalOffset: offset,
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: 40.px,
+                          child: Container(
+                            child: Row(
+                              children:
+                                  widget.tabIconsList.map((item) {
+                                    return Expanded(
                                       child: TabIcons(
-                                          tabIconData: item,
-                                          removeAllSelect: () {
-                                            widget.changeIndex(item.index);
-                                          }));
-                                }).toList(),
-                              ),
+                                        tabIconData: item,
+                                        removeAllSelect: () {
+                                          widget.changeIndex(item.index);
+                                        },
+                                      ),
+                                    );
+                                  }).toList(),
                             ),
                           ),
-                          SizedBox(
-                            height: MediaQuery.of(context).padding.bottom,
-                          )
-                        ],
-                      ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).padding.bottom),
+                      ],
                     ),
-                  );
-                });
+                  ),
+                );
+              },
+            );
           },
         ),
       ],
@@ -135,7 +145,7 @@ class NavigationBarItemState extends State<NavigationBarItem>
 
 class TabIcons extends StatefulWidget {
   const TabIcons({Key? key, this.tabIconData, this.removeAllSelect})
-      : super(key: key);
+    : super(key: key);
 
   final TabIconData? tabIconData;
   final Function()? removeAllSelect;
@@ -150,12 +160,12 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 400),
     )..addStatusListener((AnimationStatus status) {
-        if (status == AnimationStatus.completed) {
-          if (!mounted) return;
-          widget.removeAllSelect!();
-          widget.tabIconData?.animationController?.reverse();
-        }
-      });
+      if (status == AnimationStatus.completed) {
+        if (!mounted) return;
+        widget.removeAllSelect!();
+        widget.tabIconData?.animationController?.reverse();
+      }
+    });
     super.initState();
   }
 
@@ -186,42 +196,51 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                   duration: Duration(milliseconds: 600), // 动画持续时间
                   curve: Curves.easeInOut, // 动画曲线
                   transform: Matrix4.translationValues(
-                      0.0, widget.tabIconData!.isSelected ? -20.px : 0, 0.0),
+                    0.0,
+                    widget.tabIconData!.isSelected ? -20.px : 0,
+                    0.0,
+                  ),
                   decoration: BoxDecoration(
-                    color: widget.tabIconData!.isSelected
-                        ? primaryColor
-                        : Colors.white, // 动画颜色
-                    gradient: widget.tabIconData!.isSelected
-                        ? LinearGradient(
-                            colors: [
-                                primaryColor,
-                                HexColor('#6A88E5'),
-                              ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight)
-                        : null,
+                    color:
+                        widget.tabIconData!.isSelected
+                            ? primaryColor
+                            : Colors.white, // 动画颜色
+                    gradient:
+                        widget.tabIconData!.isSelected
+                            ? LinearGradient(
+                              colors: [primaryColor, HexColor('#6A88E5')],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            )
+                            : null,
                     shape: BoxShape.circle,
-                    boxShadow: widget.tabIconData!.isSelected
-                        ? <BoxShadow>[
-                            BoxShadow(
+                    boxShadow:
+                        widget.tabIconData!.isSelected
+                            ? <BoxShadow>[
+                              BoxShadow(
                                 color: primaryColor.withOpacity(0.4),
                                 offset: Offset(8.0.px, 16.0.px),
-                                blurRadius: 16.0.px),
-                          ]
-                        : null,
+                                blurRadius: 16.0.px,
+                              ),
+                            ]
+                            : null,
                   ),
                   child: ScaleTransition(
-                    alignment: widget.tabIconData!.isSelected
-                        ? Alignment.center
-                        : Alignment.topCenter,
+                    alignment:
+                        widget.tabIconData!.isSelected
+                            ? Alignment.center
+                            : Alignment.topCenter,
                     scale: Tween<double>(begin: 0.7, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: widget.tabIconData!.animationController!,
-                            curve: Interval(0.1, 1.0,
-                                curve: Curves.fastOutSlowIn))),
-                    child: Image.asset(widget.tabIconData!.isSelected
-                        ? widget.tabIconData!.selectedImagePath
-                        : widget.tabIconData!.imagePath),
+                      CurvedAnimation(
+                        parent: widget.tabIconData!.animationController!,
+                        curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn),
+                      ),
+                    ),
+                    child: Image.asset(
+                      widget.tabIconData!.isSelected
+                          ? widget.tabIconData!.selectedImagePath
+                          : widget.tabIconData!.imagePath,
+                    ),
                   ),
                 ),
                 if (!widget.tabIconData!.isSelected)
@@ -230,17 +249,24 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                     child: ScaleTransition(
                       alignment: Alignment.bottomCenter,
                       scale: Tween<double>(begin: 0.8, end: 1.0).animate(
-                          CurvedAnimation(
-                              parent: widget.tabIconData!.animationController!,
-                              curve: Interval(0.1, 1.0,
-                                  curve: Curves.fastOutSlowIn))),
+                        CurvedAnimation(
+                          parent: widget.tabIconData!.animationController!,
+                          curve: Interval(
+                            0.1,
+                            1.0,
+                            curve: Curves.fastOutSlowIn,
+                          ),
+                        ),
+                      ),
                       child: Text(
                         widget.tabIconData!.labelName,
                         style: TextStyle(
-                            color: widget.tabIconData!.isSelected
-                                ? primaryColor
-                                : Colors.grey,
-                            fontSize: 12.px),
+                          color:
+                              widget.tabIconData!.isSelected
+                                  ? primaryColor
+                                  : Colors.grey,
+                          fontSize: 12.px,
+                        ),
                       ),
                     ),
                   ),
@@ -251,10 +277,11 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                   child: ScaleTransition(
                     alignment: Alignment.topCenter,
                     scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: widget.tabIconData!.animationController!,
-                            curve: Interval(0.2, 1.0,
-                                curve: Curves.fastOutSlowIn))),
+                      CurvedAnimation(
+                        parent: widget.tabIconData!.animationController!,
+                        curve: Interval(0.2, 1.0, curve: Curves.fastOutSlowIn),
+                      ),
+                    ),
                     child: Container(
                       width: 8.px,
                       height: 8.px,
@@ -272,10 +299,11 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                   child: ScaleTransition(
                     alignment: Alignment.topCenter,
                     scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: widget.tabIconData!.animationController!,
-                            curve: Interval(0.5, 0.8,
-                                curve: Curves.fastOutSlowIn))),
+                      CurvedAnimation(
+                        parent: widget.tabIconData!.animationController!,
+                        curve: Interval(0.5, 0.8, curve: Curves.fastOutSlowIn),
+                      ),
+                    ),
                     child: Container(
                       width: 4.px,
                       height: 4.px,
@@ -293,10 +321,11 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                   child: ScaleTransition(
                     alignment: Alignment.topCenter,
                     scale: Tween<double>(begin: 0.0, end: 1.0).animate(
-                        CurvedAnimation(
-                            parent: widget.tabIconData!.animationController!,
-                            curve: Interval(0.5, 0.6,
-                                curve: Curves.fastOutSlowIn))),
+                      CurvedAnimation(
+                        parent: widget.tabIconData!.animationController!,
+                        curve: Interval(0.5, 0.6, curve: Curves.fastOutSlowIn),
+                      ),
+                    ),
                     child: Container(
                       width: 6.px,
                       height: 6.px,
@@ -321,53 +350,58 @@ class TabClipper extends CustomClipper<Path> {
   TabClipper({this.radius = 38.0, this.horizontalOffset = 0.0});
 
   final double radius;
-  final double horizontalOffset; // 只影响凹型图案的水平偏移量
+  final double horizontalOffset;
 
   @override
   Path getClip(Size size) {
     final Path path = Path();
-
     final double v = radius * 2;
 
-    // 绘制从左侧开始的路径，不影响到凹槽部分
     path.lineTo(0, 0);
-    path.arcTo(Rect.fromLTWH(0, 0, radius, radius), degreeToRadians(180),
-        degreeToRadians(90), false);
-
-    // 绘制凹槽前的直线路径
     path.arcTo(
-        Rect.fromLTWH(
-            ((size.width / 2 + horizontalOffset) - v / 2) - radius + v * 0.04,
-            0,
-            radius,
-            radius),
-        degreeToRadians(270),
-        degreeToRadians(70),
-        false);
+      Rect.fromLTWH(0, 0, radius, radius),
+      degreeToRadians(180),
+      degreeToRadians(90),
+      false,
+    );
 
-    // 应用水平偏移量到凹槽部分
     path.arcTo(
-        Rect.fromLTWH(
-            (size.width / 2) - v / 2 + horizontalOffset, -v / 2, v, v),
-        degreeToRadians(160),
-        degreeToRadians(-140),
-        false);
+      Rect.fromLTWH(
+        ((size.width / 2 + horizontalOffset) - v / 2) - radius + v * 0.04,
+        0,
+        radius,
+        radius,
+      ),
+      degreeToRadians(270),
+      degreeToRadians(70),
+      false,
+    );
 
-    // 绘制凹槽后的直线路径
     path.arcTo(
-        Rect.fromLTWH(
-            (size.width + horizontalOffset - ((size.width / 2) - v / 2)) -
-                v * 0.04,
-            0,
-            radius,
-            radius),
-        degreeToRadians(200),
-        degreeToRadians(70),
-        false);
+      Rect.fromLTWH((size.width / 2) - v / 2 + horizontalOffset, -v / 2, v, v),
+      degreeToRadians(160),
+      degreeToRadians(-140),
+      false,
+    );
 
-    // 完成剩下的路径
-    path.arcTo(Rect.fromLTWH(size.width - radius, 0, radius, radius),
-        degreeToRadians(270), degreeToRadians(90), false);
+    path.arcTo(
+      Rect.fromLTWH(
+        (size.width + horizontalOffset - ((size.width / 2) - v / 2)) - v * 0.04,
+        0,
+        radius,
+        radius,
+      ),
+      degreeToRadians(200),
+      degreeToRadians(70),
+      false,
+    );
+
+    path.arcTo(
+      Rect.fromLTWH(size.width - radius, 0, radius, radius),
+      degreeToRadians(270),
+      degreeToRadians(90),
+      false,
+    );
     path.lineTo(size.width, 0);
     path.lineTo(size.width, size.height);
     path.lineTo(0, size.height);
@@ -380,7 +414,13 @@ class TabClipper extends CustomClipper<Path> {
   bool shouldReclip(TabClipper oldClipper) => true;
 
   double degreeToRadians(double degree) {
-    final double radian = (math.pi / 180) * degree;
-    return radian;
+    return (math.pi / 180) * degree;
+  }
+}
+
+extension _AnimExt on Animation<double> {
+  double valueOrDefault(double fallback) {
+    if (status == AnimationStatus.dismissed || value.isNaN) return fallback;
+    return value;
   }
 }

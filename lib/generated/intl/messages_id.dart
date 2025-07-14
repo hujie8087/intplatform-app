@@ -359,6 +359,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "createTime": MessageLookupByLibrary.simpleMessage("Waktu Pemesanan"),
         "currentVersionIsLatest": MessageLookupByLibrary.simpleMessage(
             "Versi saat ini sudah terbaru"),
+        "dangerPage": MessageLookupByLibrary.simpleMessage("Temukan Resiko"),
         "defaultValue": MessageLookupByLibrary.simpleMessage("Default"),
         "delete": MessageLookupByLibrary.simpleMessage("Hapus"),
         "deleteAddress": MessageLookupByLibrary.simpleMessage(
@@ -474,6 +475,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Rekan Baik Hati"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("Info barang"),
         "goodsTotal": MessageLookupByLibrary.simpleMessage("Total barang"),
+        "hazard_description": MessageLookupByLibrary.simpleMessage("Deskripsi"),
+        "hazard_location": MessageLookupByLibrary.simpleMessage("Lokasi"),
+        "hazard_name": MessageLookupByLibrary.simpleMessage("Nama Masalah"),
+        "hazard_photo": MessageLookupByLibrary.simpleMessage("Foto"),
+        "hazard_submit": MessageLookupByLibrary.simpleMessage("Kirim"),
         "head": MessageLookupByLibrary.simpleMessage("Pemilik"),
         "hello": MessageLookupByLibrary.simpleMessage("Halo"),
         "homePage": MessageLookupByLibrary.simpleMessage("Beranda"),
@@ -484,6 +490,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "NIK dapat digunakan untuk pemulihan password, segera daftarkan!"),
         "imageUploading":
             MessageLookupByLibrary.simpleMessage("Mengunggah gambar..."),
+        "images": MessageLookupByLibrary.simpleMessage("Foto"),
         "information": MessageLookupByLibrary.simpleMessage("Informasi"),
         "inputConfirmPassword": MessageLookupByLibrary.simpleMessage(
             "Masukkan kata sandi baru kembali"),
@@ -600,6 +607,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Terima Pesanan Online"),
         "onlineDining": MessageLookupByLibrary.simpleMessage("Pesan Online"),
         "operator": MessageLookupByLibrary.simpleMessage("Operator"),
+        "optional": MessageLookupByLibrary.simpleMessage("（Opsional）"),
         "order": MessageLookupByLibrary.simpleMessage("Pesan"),
         "orderCompleted":
             MessageLookupByLibrary.simpleMessage("Pesanan Selesai"),
@@ -652,6 +660,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "pleaseFillIn": m2,
         "pleaseInput": m3,
         "pleaseSelect": m4,
+        "please_enter_hazard_description":
+            MessageLookupByLibrary.simpleMessage("Deskripsi masalah"),
+        "please_enter_hazard_location":
+            MessageLookupByLibrary.simpleMessage("Masukkan lokasi"),
+        "please_enter_hazard_name":
+            MessageLookupByLibrary.simpleMessage("Masukkan nama masalah"),
+        "please_enter_reporter_name":
+            MessageLookupByLibrary.simpleMessage("Masukkan nama pengirim"),
+        "please_enter_reporter_tel":
+            MessageLookupByLibrary.simpleMessage("Masukkan nomor telepon"),
+        "please_select_hazard_date":
+            MessageLookupByLibrary.simpleMessage("Pilih tanggal"),
+        "please_select_hazard_time":
+            MessageLookupByLibrary.simpleMessage("Pilih waktu"),
+        "please_upload_hazard_photo":
+            MessageLookupByLibrary.simpleMessage("Unggah foto"),
+        "please_upload_hazard_photo_tips": MessageLookupByLibrary.simpleMessage(
+            "Silakan unggah foto atau video dari lokasi masalah, maksimal 6 foto"),
+        "please_upload_hazard_video":
+            MessageLookupByLibrary.simpleMessage("Unggah video"),
         "process": MessageLookupByLibrary.simpleMessage("Proses"),
         "processDescription":
             MessageLookupByLibrary.simpleMessage("Deskripsi Proses"),
@@ -746,6 +774,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "repairTime": MessageLookupByLibrary.simpleMessage("Waktu Pemrosesan"),
         "repairType": MessageLookupByLibrary.simpleMessage("Jenis Perbaikan"),
         "repaired": MessageLookupByLibrary.simpleMessage("Diperbaiki"),
+        "report_hazard":
+            MessageLookupByLibrary.simpleMessage("Temukan Masalah"),
+        "reporter": MessageLookupByLibrary.simpleMessage("Pengirim"),
+        "reporter_name": MessageLookupByLibrary.simpleMessage("Nama"),
+        "reporter_tel": MessageLookupByLibrary.simpleMessage("Nomor Telepon"),
         "resetPassword":
             MessageLookupByLibrary.simpleMessage("Reset Kata Sandi"),
         "restaurant": MessageLookupByLibrary.simpleMessage("Restoran"),
@@ -774,6 +807,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "selectRepairType":
             MessageLookupByLibrary.simpleMessage("Pilih Jenis Perbaikan"),
         "select_date": MessageLookupByLibrary.simpleMessage("Pilih tanggal"),
+        "select_discover_date":
+            MessageLookupByLibrary.simpleMessage("Pilih tanggal"),
+        "select_discover_description":
+            MessageLookupByLibrary.simpleMessage("Deskripsi"),
+        "select_discover_location":
+            MessageLookupByLibrary.simpleMessage("Pilih lokasi"),
+        "select_discover_photo": MessageLookupByLibrary.simpleMessage("Foto"),
+        "select_discover_time":
+            MessageLookupByLibrary.simpleMessage("Pilih waktu"),
+        "selected": MessageLookupByLibrary.simpleMessage("Sudah dipilih"),
         "serviceGuide": MessageLookupByLibrary.simpleMessage("Panduan Layanan"),
         "setDefault": MessageLookupByLibrary.simpleMessage(
             "Apakah Anda yakin ingin menetapkan alamat ini sebagai default?"),
@@ -790,6 +833,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "submit": MessageLookupByLibrary.simpleMessage("Kirim"),
         "submitOrder": MessageLookupByLibrary.simpleMessage("Kirim pesanan"),
         "submitSuccess": MessageLookupByLibrary.simpleMessage("Berhasil kirim"),
+        "submit_hazard_report_content": MessageLookupByLibrary.simpleMessage(
+            "Apakah Anda yakin ingin mengirim laporan masalah ini?"),
+        "submit_hazard_report_fail":
+            MessageLookupByLibrary.simpleMessage("Gagal mengirim"),
+        "submit_hazard_report_success":
+            MessageLookupByLibrary.simpleMessage("Berhasil mengirim"),
         "takePhoto": MessageLookupByLibrary.simpleMessage("Ambil"),
         "takeout": MessageLookupByLibrary.simpleMessage("Bungkus"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("Tiga Bulan"),
@@ -839,6 +888,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "uploadImages": MessageLookupByLibrary.simpleMessage("Unggah Gambar"),
         "uploadNewFacePhoto":
             MessageLookupByLibrary.simpleMessage("Unggah Foto Identitas Baru"),
+        "upload_images_failed":
+            MessageLookupByLibrary.simpleMessage("Gagal mengunggah gambar"),
         "userFeedback":
             MessageLookupByLibrary.simpleMessage("Umpan Balik Pengguna"),
         "userInfo": MessageLookupByLibrary.simpleMessage("Informasi Pribadi"),

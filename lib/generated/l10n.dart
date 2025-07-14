@@ -330,6 +330,16 @@ class S {
     );
   }
 
+  /// `发现隐患`
+  String get dangerPage {
+    return Intl.message(
+      '发现隐患',
+      name: 'dangerPage',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `工具箱`
   String get toolPage {
     return Intl.message(
@@ -5495,6 +5505,316 @@ class S {
     return Intl.message(
       '刷新菜谱',
       name: 'refresh_food_menu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `发现隐患`
+  String get report_hazard {
+    return Intl.message(
+      '发现隐患',
+      name: 'report_hazard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择发现日期`
+  String get select_discover_date {
+    return Intl.message(
+      '请选择发现日期',
+      name: 'select_discover_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择发现时间`
+  String get select_discover_time {
+    return Intl.message(
+      '请选择发现时间',
+      name: 'select_discover_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择发现地点`
+  String get select_discover_location {
+    return Intl.message(
+      '请选择发现地点',
+      name: 'select_discover_location',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请描述发现情况`
+  String get select_discover_description {
+    return Intl.message(
+      '请描述发现情况',
+      name: 'select_discover_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请上传发现照片`
+  String get select_discover_photo {
+    return Intl.message(
+      '请上传发现照片',
+      name: 'select_discover_photo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `图片上传失败，请重试`
+  String get upload_images_failed {
+    return Intl.message(
+      '图片上传失败，请重试',
+      name: 'upload_images_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交成功`
+  String get submit_hazard_report_success {
+    return Intl.message(
+      '提交成功',
+      name: 'submit_hazard_report_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交失败`
+  String get submit_hazard_report_fail {
+    return Intl.message(
+      '提交失败',
+      name: 'submit_hazard_report_fail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定提交隐患报告吗？`
+  String get submit_hazard_report_content {
+    return Intl.message(
+      '确定提交隐患报告吗？',
+      name: 'submit_hazard_report_content',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `隐患名称`
+  String get hazard_name {
+    return Intl.message(
+      '隐患名称',
+      name: 'hazard_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `发现地点`
+  String get hazard_location {
+    return Intl.message(
+      '发现地点',
+      name: 'hazard_location',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `隐患描述`
+  String get hazard_description {
+    return Intl.message(
+      '隐患描述',
+      name: 'hazard_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `隐患照片`
+  String get hazard_photo {
+    return Intl.message(
+      '隐患照片',
+      name: 'hazard_photo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交`
+  String get hazard_submit {
+    return Intl.message(
+      '提交',
+      name: 'hazard_submit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入隐患名称`
+  String get please_enter_hazard_name {
+    return Intl.message(
+      '请输入隐患名称',
+      name: 'please_enter_hazard_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入发现地点`
+  String get please_enter_hazard_location {
+    return Intl.message(
+      '请输入发现地点',
+      name: 'please_enter_hazard_location',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请描述发现隐患`
+  String get please_enter_hazard_description {
+    return Intl.message(
+      '请描述发现隐患',
+      name: 'please_enter_hazard_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请上传发现照片`
+  String get please_upload_hazard_photo {
+    return Intl.message(
+      '请上传发现照片',
+      name: 'please_upload_hazard_photo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请上传发现视频`
+  String get please_upload_hazard_video {
+    return Intl.message(
+      '请上传发现视频',
+      name: 'please_upload_hazard_video',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择发现日期`
+  String get please_select_hazard_date {
+    return Intl.message(
+      '请选择发现日期',
+      name: 'please_select_hazard_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择发现时间`
+  String get please_select_hazard_time {
+    return Intl.message(
+      '请选择发现时间',
+      name: 'please_select_hazard_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `上报人`
+  String get reporter {
+    return Intl.message(
+      '上报人',
+      name: 'reporter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `姓名`
+  String get reporter_name {
+    return Intl.message(
+      '姓名',
+      name: 'reporter_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `联系电话`
+  String get reporter_tel {
+    return Intl.message(
+      '联系电话',
+      name: 'reporter_tel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入上报人姓名`
+  String get please_enter_reporter_name {
+    return Intl.message(
+      '请输入上报人姓名',
+      name: 'please_enter_reporter_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入联系电话`
+  String get please_enter_reporter_tel {
+    return Intl.message(
+      '请输入联系电话',
+      name: 'please_enter_reporter_tel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `（可选）`
+  String get optional {
+    return Intl.message(
+      '（可选）',
+      name: 'optional',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请拍摄或选择隐患现场照片，最多选择6张`
+  String get please_upload_hazard_photo_tips {
+    return Intl.message(
+      '请拍摄或选择隐患现场照片，最多选择6张',
+      name: 'please_upload_hazard_photo_tips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已选择`
+  String get selected {
+    return Intl.message(
+      '已选择',
+      name: 'selected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `张图片`
+  String get images {
+    return Intl.message(
+      '张图片',
+      name: 'images',
       desc: '',
       args: [],
     );

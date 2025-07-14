@@ -304,6 +304,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "createTime": MessageLookupByLibrary.simpleMessage("下单时间"),
         "currentVersionIsLatest":
             MessageLookupByLibrary.simpleMessage("当前版本已是最新版本"),
+        "dangerPage": MessageLookupByLibrary.simpleMessage("发现隐患"),
         "defaultValue": MessageLookupByLibrary.simpleMessage("默认"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "deleteAddress": MessageLookupByLibrary.simpleMessage("确定删除地址吗？"),
@@ -395,6 +396,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "goodHeartedColleague": MessageLookupByLibrary.simpleMessage("好心同事"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("商品信息"),
         "goodsTotal": MessageLookupByLibrary.simpleMessage("商品总额"),
+        "hazard_description": MessageLookupByLibrary.simpleMessage("隐患描述"),
+        "hazard_location": MessageLookupByLibrary.simpleMessage("发现地点"),
+        "hazard_name": MessageLookupByLibrary.simpleMessage("隐患名称"),
+        "hazard_photo": MessageLookupByLibrary.simpleMessage("隐患照片"),
+        "hazard_submit": MessageLookupByLibrary.simpleMessage("提交"),
         "head": MessageLookupByLibrary.simpleMessage("负责人"),
         "hello": MessageLookupByLibrary.simpleMessage("你好"),
         "homePage": MessageLookupByLibrary.simpleMessage("首页"),
@@ -404,6 +410,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "idCardTips":
             MessageLookupByLibrary.simpleMessage("身份证号可用于找回密码，请尽快绑定！"),
         "imageUploading": MessageLookupByLibrary.simpleMessage("图片上传中..."),
+        "images": MessageLookupByLibrary.simpleMessage("张图片"),
         "information": MessageLookupByLibrary.simpleMessage("资讯类"),
         "inputConfirmPassword":
             MessageLookupByLibrary.simpleMessage("请再次输入新密码"),
@@ -496,6 +503,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlineDelivery": MessageLookupByLibrary.simpleMessage("在线接单"),
         "onlineDining": MessageLookupByLibrary.simpleMessage("在线订餐"),
         "operator": MessageLookupByLibrary.simpleMessage("操作人"),
+        "optional": MessageLookupByLibrary.simpleMessage("（可选）"),
         "order": MessageLookupByLibrary.simpleMessage("点餐"),
         "orderCompleted": MessageLookupByLibrary.simpleMessage("订单已完成"),
         "orderDetail": MessageLookupByLibrary.simpleMessage("订单详情"),
@@ -534,6 +542,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "pleaseFillIn": m2,
         "pleaseInput": m3,
         "pleaseSelect": m4,
+        "please_enter_hazard_description":
+            MessageLookupByLibrary.simpleMessage("请描述发现隐患"),
+        "please_enter_hazard_location":
+            MessageLookupByLibrary.simpleMessage("请输入发现地点"),
+        "please_enter_hazard_name":
+            MessageLookupByLibrary.simpleMessage("请输入隐患名称"),
+        "please_enter_reporter_name":
+            MessageLookupByLibrary.simpleMessage("请输入上报人姓名"),
+        "please_enter_reporter_tel":
+            MessageLookupByLibrary.simpleMessage("请输入联系电话"),
+        "please_select_hazard_date":
+            MessageLookupByLibrary.simpleMessage("请选择发现日期"),
+        "please_select_hazard_time":
+            MessageLookupByLibrary.simpleMessage("请选择发现时间"),
+        "please_upload_hazard_photo":
+            MessageLookupByLibrary.simpleMessage("请上传发现照片"),
+        "please_upload_hazard_photo_tips":
+            MessageLookupByLibrary.simpleMessage("请拍摄或选择隐患现场照片，最多选择6张"),
+        "please_upload_hazard_video":
+            MessageLookupByLibrary.simpleMessage("请上传发现视频"),
         "process": MessageLookupByLibrary.simpleMessage("处理"),
         "processDescription": MessageLookupByLibrary.simpleMessage("流程说明"),
         "promo": MessageLookupByLibrary.simpleMessage("宣传片"),
@@ -600,6 +628,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "repairTime": MessageLookupByLibrary.simpleMessage("维修时间"),
         "repairType": MessageLookupByLibrary.simpleMessage("维修类型"),
         "repaired": MessageLookupByLibrary.simpleMessage("已维修"),
+        "report_hazard": MessageLookupByLibrary.simpleMessage("发现隐患"),
+        "reporter": MessageLookupByLibrary.simpleMessage("上报人"),
+        "reporter_name": MessageLookupByLibrary.simpleMessage("姓名"),
+        "reporter_tel": MessageLookupByLibrary.simpleMessage("联系电话"),
         "resetPassword": MessageLookupByLibrary.simpleMessage("重置密码"),
         "restaurant": MessageLookupByLibrary.simpleMessage("餐厅"),
         "returnPending": MessageLookupByLibrary.simpleMessage("待返修"),
@@ -620,6 +652,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "selectRepairTime": MessageLookupByLibrary.simpleMessage("请选择维修时间"),
         "selectRepairType": MessageLookupByLibrary.simpleMessage("请选择维修类型"),
         "select_date": MessageLookupByLibrary.simpleMessage("选择日期"),
+        "select_discover_date": MessageLookupByLibrary.simpleMessage("请选择发现日期"),
+        "select_discover_description":
+            MessageLookupByLibrary.simpleMessage("请描述发现情况"),
+        "select_discover_location":
+            MessageLookupByLibrary.simpleMessage("请选择发现地点"),
+        "select_discover_photo":
+            MessageLookupByLibrary.simpleMessage("请上传发现照片"),
+        "select_discover_time": MessageLookupByLibrary.simpleMessage("请选择发现时间"),
+        "selected": MessageLookupByLibrary.simpleMessage("已选择"),
         "serviceGuide": MessageLookupByLibrary.simpleMessage("服务指南"),
         "setDefault": MessageLookupByLibrary.simpleMessage("确定把该地址设置为默认吗？"),
         "shopWorkbench": MessageLookupByLibrary.simpleMessage("店铺工作台"),
@@ -632,6 +673,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "submit": MessageLookupByLibrary.simpleMessage("提交"),
         "submitOrder": MessageLookupByLibrary.simpleMessage("提交订单"),
         "submitSuccess": MessageLookupByLibrary.simpleMessage("提交成功"),
+        "submit_hazard_report_content":
+            MessageLookupByLibrary.simpleMessage("确定提交隐患报告吗？"),
+        "submit_hazard_report_fail":
+            MessageLookupByLibrary.simpleMessage("提交失败"),
+        "submit_hazard_report_success":
+            MessageLookupByLibrary.simpleMessage("提交成功"),
         "takePhoto": MessageLookupByLibrary.simpleMessage("拍摄"),
         "takeout": MessageLookupByLibrary.simpleMessage("打包"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("三个月"),
@@ -669,6 +716,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "uploadImageFailed": MessageLookupByLibrary.simpleMessage("图片上传失败"),
         "uploadImages": MessageLookupByLibrary.simpleMessage("上传图片"),
         "uploadNewFacePhoto": MessageLookupByLibrary.simpleMessage("上传新证件照"),
+        "upload_images_failed":
+            MessageLookupByLibrary.simpleMessage("图片上传失败，请重试"),
         "userFeedback": MessageLookupByLibrary.simpleMessage("用户反馈"),
         "userInfo": MessageLookupByLibrary.simpleMessage("个人信息"),
         "userName": MessageLookupByLibrary.simpleMessage("账号"),

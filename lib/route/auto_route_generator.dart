@@ -47,6 +47,7 @@ import 'package:logistics_app/pages/bus/bus_timetable_page.dart';
 import 'package:logistics_app/pages/accommodation/room/couple_feedback_page.dart';
 import 'package:logistics_app/pages/accommodation/cleaning/cleaning_order_page.dart';
 import 'package:logistics_app/pages/accommodation/cleaning/cleaning_submit_page.dart';
+import 'package:logistics_app/pages/repair/report_hazard_page.dart';
 
 /// 自动路由生成器
 /// 通过注解和反射自动注册路由，无需手动维护路由表
@@ -146,7 +147,10 @@ class AutoRouteGenerator {
       builder: (context) => RepairOrderPage(),
       name: 'RepairOrderPage',
     ),
-
+    RoutePath.ReportHazardPage: RouteConfig(
+      builder: (context) => ReportHazardPage(),
+      name: 'ReportHazardPage',
+    ),
     // 服务指南
     RoutePath.GuideTypePage: RouteConfig(
       builder: (context) => GuideTypePage(id: 0),
@@ -363,6 +367,7 @@ class RoutePath {
   static const String MyRepairPage = 'my_repair_page';
   static const String RepairRatingPage = 'repair_rating_page';
   static const String RepairOrderPage = 'repair_order_page';
+  static const String ReportHazardPage = 'report_hazard_page';
 
   // 服务指南
   static const String GuideTypePage = 'guide_type_page';

@@ -536,4 +536,14 @@ class DataUtils {
       fail: fail,
     );
   }
+
+  // 提交隐患报告
+  static void submitHazardReport(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      '/maintenance/hidden/danger',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
 }
