@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
+import 'package:logistics_app/pages/guide/guide_type_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
@@ -99,12 +102,46 @@ class _PublicDetailPageState extends State<PublicDetailPage> {
                           ),
                         ),
                         SizedBox(height: 8.px),
-                        Text(
-                          widget.listData.details ?? '',
-                          style: TextStyle(
-                            fontSize: 12.px,
-                            color: Colors.grey[600],
-                          ),
+                        Html(
+                          data: widget.listData.details ?? '',
+                          extensions: [
+                            TagExtension(
+                              tagsToExtend: {"img"},
+                              builder: (context) {
+                                final attributes = context.attributes;
+                                final imageUrl = attributes["src"] ?? "";
+                                return Container(
+                                  margin: EdgeInsets.only(bottom: 8.px),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context.buildContext!,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => ImagePreviewScreen(
+                                                imageUrl: imageUrl,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: CachedNetworkImage(
+                                      imageUrl: imageUrl,
+                                      fit: BoxFit.cover,
+                                      placeholder:
+                                          (context, url) => const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                      errorWidget:
+                                          (context, url, error) => const Icon(
+                                            Icons.error,
+                                            color: Colors.red,
+                                          ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
