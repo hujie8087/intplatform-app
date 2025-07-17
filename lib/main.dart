@@ -10,6 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:logistics_app/app_theme.dart';
+import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/firebase_service.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/http_utils.dart';
@@ -177,8 +178,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      // 应用从后台返回前台时刷新 token
-      _checkAndRefreshToken();
+      SpUtils.getString(Constants.SP_TOKEN).then((token) {
+        if (token != null) {
+          // 应用从后台返回前台时刷新 token
+          _checkAndRefreshToken();
+        }
+      });
     }
   }
 

@@ -198,6 +198,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirmDeliveryContent": MessageLookupByLibrary.simpleMessage(
             "Confirm delivery, the order will not be modified after confirmation, please confirm whether to receive the order?"),
         "confirmModify": MessageLookupByLibrary.simpleMessage("Confirm modify"),
+        "confirmPassword":
+            MessageLookupByLibrary.simpleMessage("Confirm password"),
         "confirmPublish":
             MessageLookupByLibrary.simpleMessage("Confirm publish"),
         "confirmReceive":
@@ -699,6 +701,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "refresh_food_menu": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refreshing": MessageLookupByLibrary.simpleMessage("Refreshing..."),
         "region": MessageLookupByLibrary.simpleMessage("Region"),
+        "register": MessageLookupByLibrary.simpleMessage("Register"),
+        "registerFailed":
+            MessageLookupByLibrary.simpleMessage("Register failed"),
+        "registerSuccess":
+            MessageLookupByLibrary.simpleMessage("Register success"),
+        "registerText":
+            MessageLookupByLibrary.simpleMessage("No account? Register now"),
         "releaseLoadMore":
             MessageLookupByLibrary.simpleMessage("Release to load more"),
         "reload": MessageLookupByLibrary.simpleMessage("Reload"),
@@ -863,6 +872,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "userFeedback": MessageLookupByLibrary.simpleMessage("User Feedback"),
         "userInfo": MessageLookupByLibrary.simpleMessage("User information"),
         "userName": MessageLookupByLibrary.simpleMessage("Account"),
+        "userNamePlaceholder":
+            MessageLookupByLibrary.simpleMessage("Enter your account"),
         "usernamePlaceholder":
             MessageLookupByLibrary.simpleMessage("Enter your employee number"),
         "viewOrder": MessageLookupByLibrary.simpleMessage("View order"),

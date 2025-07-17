@@ -201,6 +201,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Konfirmasi penerimaan, pesanan tidak dapat diubah lagi."),
         "confirmModify":
             MessageLookupByLibrary.simpleMessage("Konfirmasi ubah"),
+        "confirmPassword":
+            MessageLookupByLibrary.simpleMessage("Konfirmasi kata sandi"),
         "confirmPublish":
             MessageLookupByLibrary.simpleMessage("Konfirmasi publikasi"),
         "confirmReceive":
@@ -712,6 +714,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "refresh_food_menu": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refreshing": MessageLookupByLibrary.simpleMessage("Refreshing..."),
         "region": MessageLookupByLibrary.simpleMessage("Daerah"),
+        "register": MessageLookupByLibrary.simpleMessage("Daftar"),
+        "registerFailed":
+            MessageLookupByLibrary.simpleMessage("Gagal mendaftar"),
+        "registerSuccess":
+            MessageLookupByLibrary.simpleMessage("Berhasil mendaftar"),
+        "registerText": MessageLookupByLibrary.simpleMessage(
+            "Tidak punya akun? Daftar sekarang"),
         "releaseLoadMore": MessageLookupByLibrary.simpleMessage(
             "Lepaskan untuk memuat lebih banyak"),
         "reload": MessageLookupByLibrary.simpleMessage("Muat ulang"),
@@ -894,6 +903,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Umpan Balik Pengguna"),
         "userInfo": MessageLookupByLibrary.simpleMessage("Informasi Pribadi"),
         "userName": MessageLookupByLibrary.simpleMessage("Nomor Karyawan"),
+        "userNamePlaceholder": MessageLookupByLibrary.simpleMessage(
+            "Silakan masukkan nomor karyawan Anda"),
         "usernamePlaceholder": MessageLookupByLibrary.simpleMessage(
             "Silakan masukkan nomor karyawan Anda"),
         "viewOrder": MessageLookupByLibrary.simpleMessage("Lihat Pesanan"),

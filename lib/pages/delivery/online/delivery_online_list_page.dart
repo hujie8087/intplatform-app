@@ -361,7 +361,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 50),
+                      SizedBox(height: 50.px),
                       Text(
                         S.current.selectByTime,
                         style: TextStyle(
@@ -369,11 +369,12 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 14.px),
+                      SizedBox(height: 8.px),
                       // ⭐ 这里用 StatefulBuilder
                       StatefulBuilder(
                         builder: (context, innerSetState) {
                           return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children:
                                 _timeOptions.asMap().entries.map((entry) {
                                   int index = entry.key;
@@ -392,7 +393,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                                                 : Colors.transparent,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(
-                                            8,
+                                            8.px,
                                           ),
                                           side: BorderSide(
                                             color:
@@ -401,6 +402,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                                                     : Colors.grey.shade300,
                                           ),
                                         ),
+                                        minimumSize: Size(30.px, 30.px),
                                       ),
                                       onPressed: () {
                                         innerSetState(() {
@@ -410,6 +412,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                                       child: Text(
                                         option['title'] ?? '',
                                         style: TextStyle(
+                                          fontSize: 12.px,
                                           color:
                                               isSelected
                                                   ? Colors.white
@@ -422,7 +425,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                           );
                         },
                       ),
-                      SizedBox(height: 16.px),
+                      SizedBox(height: 8.px),
                       Row(
                         children: [
                           // 订单编号
@@ -510,10 +513,16 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text(S.current.cancel),
+                              child: Text(
+                                S.current.cancel,
+                                style: TextStyle(
+                                  fontSize: 12.px,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          SizedBox(width: 10.px),
                           // 确定
                           Expanded(
                             child: ElevatedButton(
@@ -527,7 +536,13 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
                                 });
                                 Navigator.of(context).pop();
                               },
-                              child: Text(S.current.confirm),
+                              child: Text(
+                                S.current.confirm,
+                                style: TextStyle(
+                                  fontSize: 12.px,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -599,6 +614,7 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
+        isExtended: false,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Stack(
@@ -734,9 +750,14 @@ class OrderCard extends StatelessWidget {
                 ''
             : '';
     return Card(
-      margin: const EdgeInsets.all(8.0),
+      margin: EdgeInsets.only(
+        left: 10.px,
+        right: 10.px,
+        top: 10.px,
+        bottom: 0.px,
+      ),
       // 圆角
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.px)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.px)),
       shadowColor: Colors.grey,
       child: Padding(
         padding: EdgeInsets.only(
@@ -751,7 +772,10 @@ class OrderCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(S.of(context).orderNo + ':' + order.sourceNo),
+                Text(
+                  S.of(context).orderNo + ':' + order.sourceNo,
+                  style: TextStyle(fontSize: 14.px),
+                ),
                 Text(
                   dictLabel,
                   style: TextStyle(color: primaryColor, fontSize: 12.px),
@@ -766,7 +790,7 @@ class OrderCard extends StatelessWidget {
                   S.of(context).name + ':',
                   style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                 ),
-                Text(order.deliveryName),
+                Text(order.deliveryName, style: TextStyle(fontSize: 14.px)),
               ],
             ),
             SizedBox(height: 4.px),
@@ -776,7 +800,7 @@ class OrderCard extends StatelessWidget {
                   S.of(context).phone + ':',
                   style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
                 ),
-                Text(order.deliveryTel),
+                Text(order.deliveryTel, style: TextStyle(fontSize: 14.px)),
               ],
             ),
             SizedBox(height: 4.px),
@@ -878,11 +902,7 @@ class OrderCard extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.px,
-                        horizontal: 8.px,
-                      ),
-                      minimumSize: Size(42.px, 20.px),
+                      minimumSize: Size(32.px, 16.px),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -905,11 +925,7 @@ class OrderCard extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondaryColor,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.px,
-                        horizontal: 8.px,
-                      ),
-                      minimumSize: Size(42.px, 20.px),
+                      minimumSize: Size(32.px, 16.px),
                     ),
                     onPressed: acceptOrder,
                     child: Text(

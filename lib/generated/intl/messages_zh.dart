@@ -164,6 +164,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirmDeliveryContent":
             MessageLookupByLibrary.simpleMessage("确认收货后，订单将无法修改，请确认是否收货？"),
         "confirmModify": MessageLookupByLibrary.simpleMessage("确认修改"),
+        "confirmPassword": MessageLookupByLibrary.simpleMessage("确认密码"),
         "confirmPublish": MessageLookupByLibrary.simpleMessage("确认发布"),
         "confirmReceive": MessageLookupByLibrary.simpleMessage("确认领取"),
         "confirmReceiveContent":
@@ -586,6 +587,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "refresh_food_menu": MessageLookupByLibrary.simpleMessage("刷新菜谱"),
         "refreshing": MessageLookupByLibrary.simpleMessage("刷新中..."),
         "region": MessageLookupByLibrary.simpleMessage("所在区域"),
+        "register": MessageLookupByLibrary.simpleMessage("注册"),
+        "registerFailed": MessageLookupByLibrary.simpleMessage("注册失败"),
+        "registerSuccess": MessageLookupByLibrary.simpleMessage("注册成功"),
+        "registerText": MessageLookupByLibrary.simpleMessage("没有账号？立即注册"),
         "releaseLoadMore": MessageLookupByLibrary.simpleMessage("释放加载更多"),
         "reload": MessageLookupByLibrary.simpleMessage("重新加载"),
         "remaining": MessageLookupByLibrary.simpleMessage("剩余"),
@@ -721,6 +726,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "userFeedback": MessageLookupByLibrary.simpleMessage("用户反馈"),
         "userInfo": MessageLookupByLibrary.simpleMessage("个人信息"),
         "userName": MessageLookupByLibrary.simpleMessage("账号"),
+        "userNamePlaceholder": MessageLookupByLibrary.simpleMessage("请输入您的账号"),
         "usernamePlaceholder": MessageLookupByLibrary.simpleMessage("请输入您的工号"),
         "viewOrder": MessageLookupByLibrary.simpleMessage("查看订单"),
         "viewed": MessageLookupByLibrary.simpleMessage("已查看"),

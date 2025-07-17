@@ -180,6 +180,66 @@ class S {
     );
   }
 
+  /// `注册成功`
+  String get registerSuccess {
+    return Intl.message(
+      '注册成功',
+      name: 'registerSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `注册失败`
+  String get registerFailed {
+    return Intl.message(
+      '注册失败',
+      name: 'registerFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确认密码`
+  String get confirmPassword {
+    return Intl.message(
+      '确认密码',
+      name: 'confirmPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `注册`
+  String get register {
+    return Intl.message(
+      '注册',
+      name: 'register',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `没有账号？立即注册`
+  String get registerText {
+    return Intl.message(
+      '没有账号？立即注册',
+      name: 'registerText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入您的账号`
+  String get userNamePlaceholder {
+    return Intl.message(
+      '请输入您的账号',
+      name: 'userNamePlaceholder',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `个人信息`
   String get userInfo {
     return Intl.message(

@@ -4,6 +4,7 @@ import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
+import 'package:logistics_app/pages/auth/Register_page.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
 import 'package:logistics_app/pages/auth/forget_password_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
@@ -242,6 +243,17 @@ class _LoginFormState extends State<LoginForm> {
                         ),
                       ),
                     ),
+          ),
+          SizedBox(height: 10.px),
+          // 注册
+          GestureDetector(
+            onTap: () {
+              RouteUtils.push(context, RegisterPage());
+            },
+            child: Text(
+              S.of(context).registerText,
+              style: TextStyle(color: primaryColor, fontSize: 12.px),
+            ),
           ),
         ],
       ),

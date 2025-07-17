@@ -76,6 +76,55 @@ class AuthViewModel with ChangeNotifier {
     return completer.future;
   }
 
+  Future<bool> register() async {
+    if (nickName?.trim().isEmpty == true) {
+      ProgressHUD.showError(S.current.inputMessage(S.current.name));
+      return false;
+    }
+
+    if (inputUserName?.trim().isEmpty == true) {
+      ProgressHUD.showError(S.current.inputMessage(S.current.userName));
+      return false;
+    }
+
+    if (inputPassword?.trim().isEmpty == true) {
+      ProgressHUD.showError(S.current.inputMessage(S.current.password));
+      return false;
+    }
+
+    if (confirmPassword?.trim().isEmpty == true) {
+      ProgressHUD.showError(S.current.inputMessage(S.current.confirmPassword));
+      return false;
+    }
+
+    if (confirmPassword?.trim() != inputPassword?.trim()) {
+      ProgressHUD.showError(S.current.inputDifferentPassword);
+      return false;
+    }
+    final Completer<bool> completer = Completer<bool>();
+
+    DataUtils.register(
+      {
+        'userName': inputUserName,
+        'password': inputPassword,
+        'nickName': nickName,
+      },
+      success: (res) async {
+        print(res);
+        ProgressHUD.showSuccess(S.current.registerSuccess);
+        completer.complete(true);
+        return true;
+      },
+      fail: (code, msg) {
+        if (!completer.isCompleted) {
+          ProgressHUD.showError(msg);
+          completer.complete(false);
+        }
+      },
+    );
+    return completer.future;
+  }
+
   // 获取区域楼栋数据
   void getAddressData() async {
     int? buildingVersion = await SpUtils.getInt('buildingVersion');
