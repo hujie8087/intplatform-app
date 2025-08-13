@@ -322,6 +322,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
 
     return WillPopScope(
       onWillPop: () async {
+        // 如果是主页面，返回时退出应用
+        SystemNavigator.pop(); // 或 exit(0)，但不推荐
         // 禁用返回行为
         return false;
       },
