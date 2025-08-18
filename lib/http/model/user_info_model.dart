@@ -2,13 +2,18 @@ class UserInfoModel {
   List<String>? permissions;
   List<String>? roles;
   User? user;
+  MealUser? mealUser;
 
-  UserInfoModel({this.permissions, this.roles, this.user});
+  UserInfoModel({this.permissions, this.roles, this.user, this.mealUser});
 
   UserInfoModel.fromJson(Map<String, dynamic> json) {
     permissions = json['permissions'].cast<String>();
     roles = json['roles'].cast<String>();
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    mealUser =
+        json['mealUser'] != null
+            ? new MealUser.fromJson(json['mealUser'])
+            : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -17,6 +22,45 @@ class UserInfoModel {
     data['roles'] = this.roles;
     if (this.user != null) {
       data['user'] = this.user!.toJson();
+    }
+    if (this.mealUser != null) {
+      data['mealUser'] = this.mealUser!.toJson();
+    }
+    return data;
+  }
+}
+
+class MealUser {
+  int? userId;
+  String? username;
+  List<String>? permissions;
+  List<String>? roles;
+  User? sysUser;
+
+  MealUser({
+    required this.userId,
+    required this.username,
+    required this.permissions,
+    required this.roles,
+    required this.sysUser,
+  });
+
+  MealUser.fromJson(Map<String, dynamic> json) {
+    userId = json['userId'];
+    username = json['username'];
+    permissions = json['permissions'].cast<String>();
+    roles = json['roles'].cast<String>();
+    sysUser = User.fromJson(json['sysUser']);
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['userId'] = this.userId;
+    data['username'] = this.username;
+    data['permissions'] = this.permissions;
+    data['roles'] = this.roles;
+    if (this.sysUser != null) {
+      data['sysUser'] = this.sysUser!.toJson();
     }
     return data;
   }

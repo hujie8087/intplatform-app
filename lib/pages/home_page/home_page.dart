@@ -688,17 +688,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  static InkWell _buildButton(Widget child, {Function()? onTap}) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        alignment: Alignment.center,
-        height: 36.px,
-        child: child,
-      ),
-    );
-  }
-
   Widget _FunctionAreaItem(
     String title,
     bool isEven,

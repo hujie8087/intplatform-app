@@ -18,7 +18,6 @@ import 'package:logistics_app/http/log_utils.dart';
 import 'package:logistics_app/route/auto_route_generator.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/route/routes.dart';
-import 'package:logistics_app/route/route_registry.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -252,8 +251,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 });
               },
               theme: ThemeData(
+                scaffoldBackgroundColor: backgroundColor,
                 primarySwatch: primaryColor,
                 platform: TargetPlatform.iOS,
+                iconTheme: const IconThemeData(size: 20),
                 navigationBarTheme: const NavigationBarThemeData(
                   backgroundColor: Colors.white,
                   indicatorColor: Colors.transparent,

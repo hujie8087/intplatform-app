@@ -25,8 +25,8 @@ class ProgressHUD {
     return _showToast(loadingText, _ToastType.info);
   }
 
-  static showLoadingText([loadingText = '加载中...']) {
-    return _showLoading(loadingText);
+  static showLoadingText([String loadingText = '加载中...', int? closeTime]) {
+    return _showLoading(loadingText, closeTime);
   }
 
   /// 隐藏所有Toast
@@ -44,11 +44,11 @@ void _showToast(String loadingText, _ToastType toastType) {
   );
 }
 
-void _showLoading(String loadingText) {
+void _showLoading(String loadingText, int? closeTime) {
   dismissAllToast();
   showToastWidget(
     _showCustomToast(loadingText, _ToastType.loading),
-    duration: Duration(milliseconds: _closeTime),
+    duration: Duration(milliseconds: closeTime ?? _closeTime),
     position: ToastPosition.center,
   );
 }

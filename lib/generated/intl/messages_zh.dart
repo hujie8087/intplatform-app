@@ -20,15 +20,27 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
-  static String m0(title) => "删除${title}成功！";
+  static String m0(name) => "绑定${name}账号";
 
-  static String m1(title) => "请输入${title}";
+  static String m1(name) => "确定要解除${name}账号的绑定吗？";
 
-  static String m2(title) => "请填写${title}";
+  static String m2(title) => "删除${title}成功！";
 
-  static String m3(label) => "请输入${label}";
+  static String m3(count) => "共${count}人";
 
-  static String m4(title) => "请选择";
+  static String m4(title) => "请输入${title}";
+
+  static String m5(count) => "取餐成功，剩余${count}份包裹未取";
+
+  static String m6(name) => "请输入${name}账号";
+
+  static String m7(name) => "请输入${name}密码";
+
+  static String m8(title) => "请填写${title}";
+
+  static String m9(label) => "请输入${label}";
+
+  static String m10(title) => "请选择${title}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -37,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "acceptOrderSuccess": MessageLookupByLibrary.simpleMessage("接单成功"),
         "acceptTime": MessageLookupByLibrary.simpleMessage("接单时间"),
         "accommodationProcess": MessageLookupByLibrary.simpleMessage("住宿流程"),
+        "account": MessageLookupByLibrary.simpleMessage("账号"),
         "actualPayment": MessageLookupByLibrary.simpleMessage("实付金额"),
         "addAddress": MessageLookupByLibrary.simpleMessage("新增地址"),
         "address": MessageLookupByLibrary.simpleMessage("地址"),
@@ -51,7 +64,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
         "attention": MessageLookupByLibrary.simpleMessage("注意事项"),
         "auditRejected": MessageLookupByLibrary.simpleMessage("审核驳回"),
+        "bind": MessageLookupByLibrary.simpleMessage("绑定"),
+        "bindAccount": m0,
+        "bindFail": MessageLookupByLibrary.simpleMessage("绑定失败"),
+        "bindMealDeliveryAccount":
+            MessageLookupByLibrary.simpleMessage("绑定报餐送餐账号，获取报餐送餐系统权限功能信息"),
+        "bindSuccess": MessageLookupByLibrary.simpleMessage("绑定成功"),
+        "bindThirdPartyAccount":
+            MessageLookupByLibrary.simpleMessage("绑定第三方账号"),
         "birthday": MessageLookupByLibrary.simpleMessage("生日"),
+        "bottleWater": MessageLookupByLibrary.simpleMessage("瓶装水"),
+        "bound": MessageLookupByLibrary.simpleMessage("已绑定"),
         "breakfast": MessageLookupByLibrary.simpleMessage("早餐"),
         "busTimetable": MessageLookupByLibrary.simpleMessage("公交时刻表"),
         "busToday": MessageLookupByLibrary.simpleMessage("今日"),
@@ -89,10 +112,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "changeTheme": MessageLookupByLibrary.simpleMessage("切换主题"),
         "checkUpdate": MessageLookupByLibrary.simpleMessage("检查更新"),
         "checkout": MessageLookupByLibrary.simpleMessage("去结算"),
+        "chineseFood": MessageLookupByLibrary.simpleMessage("中国餐"),
         "chooseRoute": MessageLookupByLibrary.simpleMessage("选择路线"),
         "cleaning_area": MessageLookupByLibrary.simpleMessage("清洁区域"),
         "cleaning_basic_info": MessageLookupByLibrary.simpleMessage("基本信息"),
         "cleaning_contacts": MessageLookupByLibrary.simpleMessage("联系人"),
+        "cleaning_date": MessageLookupByLibrary.simpleMessage("预约日期"),
         "cleaning_deep_cleaning": MessageLookupByLibrary.simpleMessage("深度保洁"),
         "cleaning_evaluate": MessageLookupByLibrary.simpleMessage("评价"),
         "cleaning_loading": MessageLookupByLibrary.simpleMessage("加载中..."),
@@ -137,6 +162,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "cleaning_price": MessageLookupByLibrary.simpleMessage("价格"),
         "cleaning_project": MessageLookupByLibrary.simpleMessage("保洁项目"),
         "cleaning_remark": MessageLookupByLibrary.simpleMessage("备注"),
+        "cleaning_remark_hint":
+            MessageLookupByLibrary.simpleMessage("请输入特殊要求或备注信息（可选）"),
         "cleaning_room_number": MessageLookupByLibrary.simpleMessage("房间号"),
         "cleaning_search": MessageLookupByLibrary.simpleMessage("搜索"),
         "cleaning_select_address":
@@ -149,11 +176,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "cleaning_service_detail": MessageLookupByLibrary.simpleMessage("服务详情"),
         "cleaning_special_cleaning":
             MessageLookupByLibrary.simpleMessage("专项保洁"),
+        "cleaning_submit": MessageLookupByLibrary.simpleMessage("提交保洁服务"),
         "cleaning_tel": MessageLookupByLibrary.simpleMessage("联系电话"),
         "clear": MessageLookupByLibrary.simpleMessage("清空"),
         "clearCart": MessageLookupByLibrary.simpleMessage("清空购物车"),
         "clearCartTips": MessageLookupByLibrary.simpleMessage("确定要清空购物车吗？"),
+        "clickConfirmButtonToViewUnreceivedOrders":
+            MessageLookupByLibrary.simpleMessage("点击确认按钮查看未接收订单"),
         "clickRetry": MessageLookupByLibrary.simpleMessage("点击重试"),
+        "close": MessageLookupByLibrary.simpleMessage("关闭"),
         "companyNews": MessageLookupByLibrary.simpleMessage("公司动态"),
         "completed": MessageLookupByLibrary.simpleMessage("已完结"),
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
@@ -172,6 +203,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirmSubmit": MessageLookupByLibrary.simpleMessage("确认提交"),
         "confirmSubmitContent":
             MessageLookupByLibrary.simpleMessage("确定要提交订单吗？"),
+        "confirmToUnbind": m1,
         "contact": MessageLookupByLibrary.simpleMessage("联系Ta"),
         "contactNumber": MessageLookupByLibrary.simpleMessage("联系电话"),
         "contactPerson": MessageLookupByLibrary.simpleMessage("联系人"),
@@ -181,6 +213,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "contactUs": MessageLookupByLibrary.simpleMessage("联系我们"),
         "contentUpdating":
             MessageLookupByLibrary.simpleMessage("内容待更新，敬请期待..."),
+        "copySuccess": MessageLookupByLibrary.simpleMessage("复制成功"),
         "coupleRoom": MessageLookupByLibrary.simpleMessage("客房"),
         "coupleRoom_feedback": MessageLookupByLibrary.simpleMessage("客房反馈"),
         "coupleRoom_feedback_content":
@@ -303,6 +336,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("工号"),
         "coupleRoom_room_view": MessageLookupByLibrary.simpleMessage("查看"),
         "createTime": MessageLookupByLibrary.simpleMessage("下单时间"),
+        "currentBound": MessageLookupByLibrary.simpleMessage("当前绑定: "),
         "currentVersionIsLatest":
             MessageLookupByLibrary.simpleMessage("当前版本已是最新版本"),
         "dangerPage": MessageLookupByLibrary.simpleMessage("发现隐患"),
@@ -313,7 +347,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "deleteRepair": MessageLookupByLibrary.simpleMessage("删除"),
         "deleteRepairSuccess": MessageLookupByLibrary.simpleMessage("删除报修单成功"),
         "deleteRepairTips": MessageLookupByLibrary.simpleMessage("确认删除该报修单吗?"),
-        "deleteSuccess": m0,
+        "deleteSuccess": m2,
         "deliver": MessageLookupByLibrary.simpleMessage("送达"),
         "deliverFailed": MessageLookupByLibrary.simpleMessage("送达失败"),
         "deliverFailedTips":
@@ -325,17 +359,131 @@ class MessageLookup extends MessageLookupByLibrary {
         "delivering": MessageLookupByLibrary.simpleMessage("配送中"),
         "delivery": MessageLookupByLibrary.simpleMessage("配送"),
         "deliveryAddress": MessageLookupByLibrary.simpleMessage("配送地址"),
+        "deliveryAuditRejected": MessageLookupByLibrary.simpleMessage("审核驳回"),
+        "deliveryAudited": MessageLookupByLibrary.simpleMessage("审核通过"),
+        "deliveryBag": MessageLookupByLibrary.simpleMessage("打包袋"),
+        "deliveryBindAccount": MessageLookupByLibrary.simpleMessage("绑定帐号"),
+        "deliveryBoxedMeal": MessageLookupByLibrary.simpleMessage("盒装饭"),
+        "deliveryBucket": MessageLookupByLibrary.simpleMessage("桶装"),
+        "deliveryCancel": MessageLookupByLibrary.simpleMessage("取消"),
+        "deliveryCancelled": MessageLookupByLibrary.simpleMessage("已退单"),
+        "deliveryConfirm": MessageLookupByLibrary.simpleMessage("确定"),
+        "deliveryCooking": MessageLookupByLibrary.simpleMessage("配餐中"),
+        "deliveryCreateOrder": MessageLookupByLibrary.simpleMessage("创建订单"),
+        "deliveryDeliver": MessageLookupByLibrary.simpleMessage("手持机扫码送达"),
+        "deliveryDeliverOrder": MessageLookupByLibrary.simpleMessage("开始配送"),
+        "deliveryDeliverOrderFail":
+            MessageLookupByLibrary.simpleMessage("开始配送失败"),
+        "deliveryDelivered": MessageLookupByLibrary.simpleMessage("已送达"),
+        "deliveryDelivering": MessageLookupByLibrary.simpleMessage("送餐中"),
+        "deliveryDept": MessageLookupByLibrary.simpleMessage("部门"),
+        "deliveryDeptName": MessageLookupByLibrary.simpleMessage("部门名称"),
+        "deliveryEmail": MessageLookupByLibrary.simpleMessage("邮箱"),
         "deliveryException": MessageLookupByLibrary.simpleMessage("异常原因"),
+        "deliveryFail": MessageLookupByLibrary.simpleMessage("订单送达失败！"),
         "deliveryFee": MessageLookupByLibrary.simpleMessage("配送费"),
+        "deliveryGetMealPlace":
+            MessageLookupByLibrary.simpleMessage("获取送餐地点数据中..."),
+        "deliveryGetMealPlaceFail":
+            MessageLookupByLibrary.simpleMessage("获取送餐地点数据失败"),
+        "deliveryGetPersonList": MessageLookupByLibrary.simpleMessage("获取人员列表"),
+        "deliveryGetPersonListFail":
+            MessageLookupByLibrary.simpleMessage("获取人员列表失败"),
         "deliveryInfo": MessageLookupByLibrary.simpleMessage("查看配送信息"),
+        "deliveryJobNumber": MessageLookupByLibrary.simpleMessage("工号"),
+        "deliveryLoading": MessageLookupByLibrary.simpleMessage("加载中..."),
+        "deliveryMealBox": MessageLookupByLibrary.simpleMessage("餐盒"),
         "deliveryName": MessageLookupByLibrary.simpleMessage("配送员"),
+        "deliveryNotAudited": MessageLookupByLibrary.simpleMessage("未审核"),
+        "deliveryNotStarted": MessageLookupByLibrary.simpleMessage("未开始配送"),
         "deliveryOrder": MessageLookupByLibrary.simpleMessage("配送订单"),
+        "deliveryOrderAvailable":
+            MessageLookupByLibrary.simpleMessage("今日可选餐次"),
+        "deliveryOrderCompleted": MessageLookupByLibrary.simpleMessage("订单已完成"),
         "deliveryOrderDetail": MessageLookupByLibrary.simpleMessage("配送订单详情"),
+        "deliveryOrderList": MessageLookupByLibrary.simpleMessage("订单列表"),
         "deliveryOrderNo": MessageLookupByLibrary.simpleMessage("配送单号"),
+        "deliveryOrderNoPermission":
+            MessageLookupByLibrary.simpleMessage("暂无订餐权限，联系部门文员"),
+        "deliveryOrderNotAvailable":
+            MessageLookupByLibrary.simpleMessage("当前时间不可预订"),
+        "deliveryOrderNotBindAccount":
+            MessageLookupByLibrary.simpleMessage("未绑定报餐送餐帐号，请先绑定帐号"),
+        "deliveryOrderPlaced": MessageLookupByLibrary.simpleMessage("已下单"),
+        "deliveryOrderStatus": MessageLookupByLibrary.simpleMessage("订单状态"),
+        "deliveryOrderSubmit": MessageLookupByLibrary.simpleMessage("点击预订"),
+        "deliveryOrderSubmitFail":
+            MessageLookupByLibrary.simpleMessage("订单提交失败"),
+        "deliveryOrderSuccess": MessageLookupByLibrary.simpleMessage("订单提交成功！"),
+        "deliveryOrderTemporary":
+            MessageLookupByLibrary.simpleMessage("临时人员订餐"),
+        "deliveryOrderTips": MessageLookupByLibrary.simpleMessage(
+            "温馨提示：请根据用餐时间选择合适的餐食类型，订单提交后不可更改"),
+        "deliveryOrderTitle": MessageLookupByLibrary.simpleMessage("今日订餐"),
+        "deliveryOrderType": MessageLookupByLibrary.simpleMessage("订单种类"),
+        "deliveryPackOrderFail": MessageLookupByLibrary.simpleMessage("打包失败"),
+        "deliveryPackage": MessageLookupByLibrary.simpleMessage("打包"),
+        "deliveryPackageType": MessageLookupByLibrary.simpleMessage("打包方式"),
+        "deliveryPacked": MessageLookupByLibrary.simpleMessage("已打包"),
+        "deliveryPackedMeal": MessageLookupByLibrary.simpleMessage("打包饭"),
         "deliveryPhone": MessageLookupByLibrary.simpleMessage("配送电话"),
         "deliveryPhoto": MessageLookupByLibrary.simpleMessage("送达照片"),
+        "deliveryPost": MessageLookupByLibrary.simpleMessage("职位"),
+        "deliveryQuantity": MessageLookupByLibrary.simpleMessage("份数"),
+        "deliveryReject": MessageLookupByLibrary.simpleMessage("驳回"),
+        "deliveryRejectFail": MessageLookupByLibrary.simpleMessage("驳回失败"),
+        "deliveryRejectReason": MessageLookupByLibrary.simpleMessage("驳回原因"),
+        "deliveryRejectSuccess": MessageLookupByLibrary.simpleMessage("驳回成功"),
+        "deliveryReset": MessageLookupByLibrary.simpleMessage("重置"),
+        "deliveryReturnOrder": MessageLookupByLibrary.simpleMessage("退单"),
+        "deliveryReturnOrderConfirm":
+            MessageLookupByLibrary.simpleMessage("确定退单吗？"),
+        "deliveryReturnOrderFail": MessageLookupByLibrary.simpleMessage("退单失败"),
+        "deliveryReturnOrderSuccess":
+            MessageLookupByLibrary.simpleMessage("退单成功"),
+        "deliverySearchOrder":
+            MessageLookupByLibrary.simpleMessage("通过配送地点或订单编号搜索"),
+        "deliverySearchPerson": MessageLookupByLibrary.simpleMessage("按姓名搜索"),
+        "deliverySelectMealType": MessageLookupByLibrary.simpleMessage("请选择餐种"),
+        "deliverySelectPerson": MessageLookupByLibrary.simpleMessage("请选择人员"),
+        "deliverySelectPlace": MessageLookupByLibrary.simpleMessage("请选择送餐地点"),
+        "deliverySelectTeam": MessageLookupByLibrary.simpleMessage("选择车队"),
+        "deliverySelectTeamFail":
+            MessageLookupByLibrary.simpleMessage("获取车队失败"),
+        "deliverySelectTime": MessageLookupByLibrary.simpleMessage("请选择送餐时间"),
+        "deliverySelectedConditions":
+            MessageLookupByLibrary.simpleMessage("已选条件:"),
+        "deliverySelectedPeople": MessageLookupByLibrary.simpleMessage("已选择人员"),
+        "deliveryStartDelivery": MessageLookupByLibrary.simpleMessage("开始配送"),
+        "deliverySubmit": MessageLookupByLibrary.simpleMessage("提交"),
+        "deliverySubmitOrder": MessageLookupByLibrary.simpleMessage("订餐配送"),
+        "deliverySubmitOrderFail": MessageLookupByLibrary.simpleMessage("提交失败"),
+        "deliverySubmitOrderSuccess":
+            MessageLookupByLibrary.simpleMessage("提交成功"),
+        "deliverySubmitStatus": MessageLookupByLibrary.simpleMessage("提交状态"),
+        "deliverySuccess": MessageLookupByLibrary.simpleMessage("订单送达成功！"),
+        "deliveryTel": MessageLookupByLibrary.simpleMessage("联系电话"),
         "deliveryTime": MessageLookupByLibrary.simpleMessage("配送时间"),
+        "deliveryTotal": m3,
+        "deliveryType": MessageLookupByLibrary.simpleMessage("配送方式"),
+        "deliveryUploadFailed": MessageLookupByLibrary.simpleMessage("图片上传失败！"),
+        "deliveryUploading": MessageLookupByLibrary.simpleMessage("图片上传中..."),
+        "deliveryWaterService": MessageLookupByLibrary.simpleMessage("订水服务"),
+        "deliveryWaterServiceTips":
+            MessageLookupByLibrary.simpleMessage("选择配送站点和数量，我们将为您提供优质的饮用水服务"),
+        "delivery_canteen": MessageLookupByLibrary.simpleMessage("配送食堂"),
+        "delivery_site": MessageLookupByLibrary.simpleMessage("配送站点"),
+        "delivery_site_search":
+            MessageLookupByLibrary.simpleMessage("请输入配送站点名称查询"),
+        "delivery_site_search_clear_confirm":
+            MessageLookupByLibrary.simpleMessage("确定清除搜索内容吗？"),
+        "delivery_site_search_not_found":
+            MessageLookupByLibrary.simpleMessage("未找到匹配的配送站点"),
+        "delivery_site_search_placeholder":
+            MessageLookupByLibrary.simpleMessage("请输入配送站点名称查询"),
+        "departmentSubmitted": MessageLookupByLibrary.simpleMessage("部门已提交"),
         "dept": MessageLookupByLibrary.simpleMessage("部门"),
+        "dessert": MessageLookupByLibrary.simpleMessage("点心"),
         "diningIn": MessageLookupByLibrary.simpleMessage("堂食"),
         "diningService": MessageLookupByLibrary.simpleMessage("订餐服务"),
         "diningTime": MessageLookupByLibrary.simpleMessage("订餐时间"),
@@ -347,6 +495,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "dishes": MessageLookupByLibrary.simpleMessage("道菜"),
         "dragHereToRemove": MessageLookupByLibrary.simpleMessage("拖动此处删除"),
         "dragRemoveImage": MessageLookupByLibrary.simpleMessage("拖动删除图片"),
+        "duplicateOrderReception":
+            MessageLookupByLibrary.simpleMessage("重复接收订单"),
+        "earlyTea": MessageLookupByLibrary.simpleMessage("早茶"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
         "editToBeAuditedMessage":
             MessageLookupByLibrary.simpleMessage("修改成功，等待审核"),
@@ -387,16 +538,21 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("为了您的资金安全，首次登录请您尽快修改密码！"),
         "firstTripTime": MessageLookupByLibrary.simpleMessage("首班车"),
         "fixed": MessageLookupByLibrary.simpleMessage("已修复"),
+        "foodNameChooseError": MessageLookupByLibrary.simpleMessage("餐次名称不匹配"),
         "foodRecommend": MessageLookupByLibrary.simpleMessage("美食推荐"),
+        "foodType": MessageLookupByLibrary.simpleMessage("餐种"),
         "food_menu": MessageLookupByLibrary.simpleMessage("今日菜谱"),
         "forgetPassword": MessageLookupByLibrary.simpleMessage("忘记密码？"),
         "found": MessageLookupByLibrary.simpleMessage("招领"),
         "foundItem": MessageLookupByLibrary.simpleMessage("招领"),
         "foundItemList": MessageLookupByLibrary.simpleMessage("招领列表"),
         "gender": MessageLookupByLibrary.simpleMessage("性别"),
+        "getSystemDataError": MessageLookupByLibrary.simpleMessage("获取数据失败"),
         "goodHeartedColleague": MessageLookupByLibrary.simpleMessage("好心同事"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("商品信息"),
         "goodsTotal": MessageLookupByLibrary.simpleMessage("商品总额"),
+        "groupNotSubmitted": MessageLookupByLibrary.simpleMessage("班组未提交"),
+        "groupSubmitted": MessageLookupByLibrary.simpleMessage("班组已提交"),
         "hazard_description": MessageLookupByLibrary.simpleMessage("隐患描述"),
         "hazard_location": MessageLookupByLibrary.simpleMessage("发现地点"),
         "hazard_name": MessageLookupByLibrary.simpleMessage("隐患名称"),
@@ -412,13 +568,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("身份证号可用于找回密码，请尽快绑定！"),
         "imageUploading": MessageLookupByLibrary.simpleMessage("图片上传中..."),
         "images": MessageLookupByLibrary.simpleMessage("张图片"),
+        "indonesianFood": MessageLookupByLibrary.simpleMessage("印尼餐"),
         "information": MessageLookupByLibrary.simpleMessage("资讯类"),
         "inputConfirmPassword":
             MessageLookupByLibrary.simpleMessage("请再次输入新密码"),
         "inputDifferentPassword":
             MessageLookupByLibrary.simpleMessage("输入的两次密码不同"),
         "inputIdCard": MessageLookupByLibrary.simpleMessage("请输入您的身份证号"),
-        "inputMessage": m1,
+        "inputMessage": m4,
         "inputNewPassword": MessageLookupByLibrary.simpleMessage("请输入新密码"),
         "inputOldPassword": MessageLookupByLibrary.simpleMessage("请输入旧密码"),
         "inputOrderName": MessageLookupByLibrary.simpleMessage("请输入订单姓名"),
@@ -460,10 +617,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "lunch": MessageLookupByLibrary.simpleMessage("午餐"),
         "man": MessageLookupByLibrary.simpleMessage("男"),
         "manage": MessageLookupByLibrary.simpleMessage("管理"),
+        "mealDelivery": MessageLookupByLibrary.simpleMessage("报餐送餐"),
+        "mealDeliveryAccept": MessageLookupByLibrary.simpleMessage("手持机扫码接单"),
+        "mealDeliverySuccess": m5,
+        "mealTime": MessageLookupByLibrary.simpleMessage("餐次"),
+        "mealType": MessageLookupByLibrary.simpleMessage("餐别"),
         "message": MessageLookupByLibrary.simpleMessage("消息"),
         "mine": MessageLookupByLibrary.simpleMessage("我的"),
         "minePage": MessageLookupByLibrary.simpleMessage("我的"),
         "modifyAddress": MessageLookupByLibrary.simpleMessage("修改地址"),
+        "modifyPerson": MessageLookupByLibrary.simpleMessage("修改人员"),
         "monthly": MessageLookupByLibrary.simpleMessage("纬达贝月刊"),
         "monthlySales": MessageLookupByLibrary.simpleMessage("月销"),
         "moreFunction": MessageLookupByLibrary.simpleMessage("更多功能"),
@@ -486,13 +649,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "newProductRecommend": MessageLookupByLibrary.simpleMessage("新品推荐"),
         "newVersion": MessageLookupByLibrary.simpleMessage("发现新版本"),
         "news": MessageLookupByLibrary.simpleMessage("公司新闻"),
+        "nightSnack": MessageLookupByLibrary.simpleMessage("夜宵"),
         "noData": MessageLookupByLibrary.simpleMessage("暂无数据"),
         "noMoreData": MessageLookupByLibrary.simpleMessage("没有更多数据"),
         "noOrder": MessageLookupByLibrary.simpleMessage("暂无订单"),
+        "noPersonInfo": MessageLookupByLibrary.simpleMessage("暂无人员信息"),
         "no_food_menu_info": MessageLookupByLibrary.simpleMessage("暂无菜谱信息"),
         "no_food_menu_info_tips":
             MessageLookupByLibrary.simpleMessage("该日期暂无菜谱安排"),
         "no_more_info": MessageLookupByLibrary.simpleMessage("暂无详细信息"),
+        "normalOrder": MessageLookupByLibrary.simpleMessage("正常订单"),
         "notice": MessageLookupByLibrary.simpleMessage("公告"),
         "notifications": MessageLookupByLibrary.simpleMessage("通知公告"),
         "oldPassword": MessageLookupByLibrary.simpleMessage("旧密码"),
@@ -506,15 +672,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "operator": MessageLookupByLibrary.simpleMessage("操作人"),
         "optional": MessageLookupByLibrary.simpleMessage("（可选）"),
         "order": MessageLookupByLibrary.simpleMessage("点餐"),
+        "orderAllLoaded": MessageLookupByLibrary.simpleMessage("订单已全部装车"),
+        "orderCenterConfirmed": MessageLookupByLibrary.simpleMessage("订单中心已确认"),
         "orderCompleted": MessageLookupByLibrary.simpleMessage("订单已完成"),
         "orderDetail": MessageLookupByLibrary.simpleMessage("订单详情"),
         "orderInfo": MessageLookupByLibrary.simpleMessage("订单信息"),
         "orderName": MessageLookupByLibrary.simpleMessage("订单姓名"),
         "orderNo": MessageLookupByLibrary.simpleMessage("订单号"),
+        "orderNotConfirmed":
+            MessageLookupByLibrary.simpleMessage("非 (订单中心已确认 & 配餐中)"),
+        "orderNotFound": MessageLookupByLibrary.simpleMessage("没有查询到订单信息"),
+        "orderNum": MessageLookupByLibrary.simpleMessage("订餐份数"),
+        "orderNumUnit": MessageLookupByLibrary.simpleMessage("份"),
+        "orderPlacedBy": MessageLookupByLibrary.simpleMessage("下单人"),
+        "orderProgress": MessageLookupByLibrary.simpleMessage("订单进度"),
+        "orderRejected": MessageLookupByLibrary.simpleMessage("订单已驳回"),
         "orderStatus": MessageLookupByLibrary.simpleMessage("订单状态"),
         "orderTime": MessageLookupByLibrary.simpleMessage("下单时间"),
         "other": MessageLookupByLibrary.simpleMessage("其他"),
         "packOrderSuccess": MessageLookupByLibrary.simpleMessage("打包处理成功"),
+        "packageTypeError": MessageLookupByLibrary.simpleMessage("盒装饭不需要接收"),
         "password": MessageLookupByLibrary.simpleMessage("密码"),
         "passwordChangeFailed": MessageLookupByLibrary.simpleMessage("密码修改失败"),
         "passwordChangeSuccess": MessageLookupByLibrary.simpleMessage("密码修改成功"),
@@ -530,8 +707,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "pending": MessageLookupByLibrary.simpleMessage("待维修"),
         "pendingOrder": MessageLookupByLibrary.simpleMessage("待接单"),
         "pendingRepair": MessageLookupByLibrary.simpleMessage("待返修"),
+        "permissionDenied": MessageLookupByLibrary.simpleMessage("您没有取餐权限"),
+        "personList": MessageLookupByLibrary.simpleMessage("人员列表"),
         "personalInfo": MessageLookupByLibrary.simpleMessage("个人信息"),
-        "phone": MessageLookupByLibrary.simpleMessage("电话"),
+        "phone": MessageLookupByLibrary.simpleMessage("手机号"),
         "phoneNumber": MessageLookupByLibrary.simpleMessage("联系电话"),
         "photoAlbum": MessageLookupByLibrary.simpleMessage("相册"),
         "pickupCode": MessageLookupByLibrary.simpleMessage("货架"),
@@ -540,9 +719,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "pickupType": MessageLookupByLibrary.simpleMessage("取餐方式"),
         "pleaseAcceptOrder": MessageLookupByLibrary.simpleMessage("请先接单"),
         "pleaseCancelOrder": MessageLookupByLibrary.simpleMessage("请先取消订单"),
-        "pleaseFillIn": m2,
-        "pleaseInput": m3,
-        "pleaseSelect": m4,
+        "pleaseEnterAccount": m6,
+        "pleaseEnterPassword": m7,
+        "pleaseFillIn": m8,
+        "pleaseInput": m9,
+        "pleaseScanTheBarcode":
+            MessageLookupByLibrary.simpleMessage("请将条形码放入框内，即可自动扫描"),
+        "pleaseSelect": m10,
         "please_enter_hazard_description":
             MessageLookupByLibrary.simpleMessage("请描述发现隐患"),
         "please_enter_hazard_location":
@@ -565,6 +748,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请上传发现视频"),
         "process": MessageLookupByLibrary.simpleMessage("处理"),
         "processDescription": MessageLookupByLibrary.simpleMessage("流程说明"),
+        "processing": MessageLookupByLibrary.simpleMessage("处理中..."),
+        "processingScanResult":
+            MessageLookupByLibrary.simpleMessage("正在处理扫码结果"),
+        "processingScanResultError":
+            MessageLookupByLibrary.simpleMessage("处理异常"),
         "promo": MessageLookupByLibrary.simpleMessage("宣传片"),
         "promoDetail": MessageLookupByLibrary.simpleMessage("宣传片详情"),
         "promoList": MessageLookupByLibrary.simpleMessage("宣传片列表"),
@@ -578,9 +766,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "receivePlace": MessageLookupByLibrary.simpleMessage("领取地址"),
         "receiveTime": MessageLookupByLibrary.simpleMessage("拾取时间"),
         "received": MessageLookupByLibrary.simpleMessage("已收货"),
+        "recentlyScanned": MessageLookupByLibrary.simpleMessage("最近扫码"),
         "recommendPerson": MessageLookupByLibrary.simpleMessage("推荐人"),
         "recommendReason": MessageLookupByLibrary.simpleMessage("推荐理由"),
         "recommendTime": MessageLookupByLibrary.simpleMessage("推荐时间"),
+        "reduceOrder": MessageLookupByLibrary.simpleMessage("减餐"),
         "refresh": MessageLookupByLibrary.simpleMessage("刷新"),
         "refreshComplete": MessageLookupByLibrary.simpleMessage("刷新完成"),
         "refreshFailed": MessageLookupByLibrary.simpleMessage("刷新失败"),
@@ -591,6 +781,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "registerFailed": MessageLookupByLibrary.simpleMessage("注册失败"),
         "registerSuccess": MessageLookupByLibrary.simpleMessage("注册成功"),
         "registerText": MessageLookupByLibrary.simpleMessage("没有账号？立即注册"),
+        "related_account": MessageLookupByLibrary.simpleMessage("关联帐号"),
         "releaseLoadMore": MessageLookupByLibrary.simpleMessage("释放加载更多"),
         "reload": MessageLookupByLibrary.simpleMessage("重新加载"),
         "remaining": MessageLookupByLibrary.simpleMessage("剩余"),
@@ -640,6 +831,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "resetPassword": MessageLookupByLibrary.simpleMessage("重置密码"),
         "restaurant": MessageLookupByLibrary.simpleMessage("餐厅"),
         "returnPending": MessageLookupByLibrary.simpleMessage("待返修"),
+        "reward_details": MessageLookupByLibrary.simpleMessage("奖励细则"),
         "satisfaction": MessageLookupByLibrary.simpleMessage("满意度"),
         "saveAddress": MessageLookupByLibrary.simpleMessage("保存地址"),
         "saveAddressFail": MessageLookupByLibrary.simpleMessage("保存地址失败"),
@@ -647,13 +839,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "scanQRCode": MessageLookupByLibrary.simpleMessage("扫描二维码"),
         "scanQRCodeTips":
             MessageLookupByLibrary.simpleMessage("将二维码放入框内，即可自动扫描"),
+        "scanSettings": MessageLookupByLibrary.simpleMessage("扫码设置"),
+        "scanStatus": MessageLookupByLibrary.simpleMessage("扫码状态"),
         "search": MessageLookupByLibrary.simpleMessage("查询"),
         "searchMessage": MessageLookupByLibrary.simpleMessage("搜索消息"),
         "searchMyOrder": MessageLookupByLibrary.simpleMessage("搜索我的订单"),
         "secret": MessageLookupByLibrary.simpleMessage("保密"),
         "selectAddress": MessageLookupByLibrary.simpleMessage("选择收货地址"),
+        "selectAllOrDeselectAll": MessageLookupByLibrary.simpleMessage("全选/反选"),
         "selectByTime": MessageLookupByLibrary.simpleMessage("按时间选择"),
         "selectDate": MessageLookupByLibrary.simpleMessage("选择日期"),
+        "selectMealTimeAndFoodType":
+            MessageLookupByLibrary.simpleMessage("选择对应的餐次和餐种"),
         "selectRepairTime": MessageLookupByLibrary.simpleMessage("请选择维修时间"),
         "selectRepairType": MessageLookupByLibrary.simpleMessage("请选择维修类型"),
         "select_date": MessageLookupByLibrary.simpleMessage("选择日期"),
@@ -666,6 +863,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请上传发现照片"),
         "select_discover_time": MessageLookupByLibrary.simpleMessage("请选择发现时间"),
         "selected": MessageLookupByLibrary.simpleMessage("已选择"),
+        "selfPickup": MessageLookupByLibrary.simpleMessage("自取"),
         "serviceGuide": MessageLookupByLibrary.simpleMessage("服务指南"),
         "setDefault": MessageLookupByLibrary.simpleMessage("确定把该地址设置为默认吗？"),
         "shopWorkbench": MessageLookupByLibrary.simpleMessage("店铺工作台"),
@@ -676,6 +874,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "stopList": MessageLookupByLibrary.simpleMessage("站点列表"),
         "stopLocation": MessageLookupByLibrary.simpleMessage("停止定位"),
         "submit": MessageLookupByLibrary.simpleMessage("提交"),
+        "submitFail": MessageLookupByLibrary.simpleMessage("提交失败"),
         "submitOrder": MessageLookupByLibrary.simpleMessage("提交订单"),
         "submitSuccess": MessageLookupByLibrary.simpleMessage("提交成功"),
         "submit_hazard_report_content":
@@ -684,6 +883,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("提交失败"),
         "submit_hazard_report_success":
             MessageLookupByLibrary.simpleMessage("提交成功"),
+        "supplementOrder": MessageLookupByLibrary.simpleMessage("补餐"),
         "takePhoto": MessageLookupByLibrary.simpleMessage("拍摄"),
         "takeout": MessageLookupByLibrary.simpleMessage("打包"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("三个月"),
@@ -702,14 +902,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "total": MessageLookupByLibrary.simpleMessage("合计"),
         "tripNumber": MessageLookupByLibrary.simpleMessage("班次数"),
         "type": MessageLookupByLibrary.simpleMessage("类型"),
+        "unbind": MessageLookupByLibrary.simpleMessage("解除绑定"),
+        "unbindFail": MessageLookupByLibrary.simpleMessage("解除绑定失败"),
+        "unbindSuccess": MessageLookupByLibrary.simpleMessage("解除绑定成功"),
+        "unbound": MessageLookupByLibrary.simpleMessage("未绑定"),
         "unfixed": MessageLookupByLibrary.simpleMessage("未修复"),
         "unfixedReason": MessageLookupByLibrary.simpleMessage("请填写未修复原因"),
+        "unknown": MessageLookupByLibrary.simpleMessage("未知"),
+        "unknownName": MessageLookupByLibrary.simpleMessage("未知姓名"),
         "unknownStatus": MessageLookupByLibrary.simpleMessage("未知状态"),
         "unknown_dish": MessageLookupByLibrary.simpleMessage("未知菜品"),
         "unknown_error": MessageLookupByLibrary.simpleMessage("未知错误"),
         "unknown_status": MessageLookupByLibrary.simpleMessage("未知状态"),
         "unlike": MessageLookupByLibrary.simpleMessage("取消点赞"),
         "unread": MessageLookupByLibrary.simpleMessage("未读"),
+        "unreceived": MessageLookupByLibrary.simpleMessage("未收"),
+        "unreceivedOrder": MessageLookupByLibrary.simpleMessage("未取订单"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "updateAddressData": MessageLookupByLibrary.simpleMessage("更新区域数据"),
         "updateAppStore":
@@ -723,13 +931,19 @@ class MessageLookup extends MessageLookupByLibrary {
         "uploadNewFacePhoto": MessageLookupByLibrary.simpleMessage("上传新证件照"),
         "upload_images_failed":
             MessageLookupByLibrary.simpleMessage("图片上传失败，请重试"),
+        "usageInstructions": MessageLookupByLibrary.simpleMessage("使用说明"),
+        "useHandheldScannerToScanBarcode":
+            MessageLookupByLibrary.simpleMessage("使用手持机扫描条码"),
         "userFeedback": MessageLookupByLibrary.simpleMessage("用户反馈"),
         "userInfo": MessageLookupByLibrary.simpleMessage("个人信息"),
         "userName": MessageLookupByLibrary.simpleMessage("账号"),
         "userNamePlaceholder": MessageLookupByLibrary.simpleMessage("请输入您的账号"),
         "usernamePlaceholder": MessageLookupByLibrary.simpleMessage("请输入您的工号"),
         "viewOrder": MessageLookupByLibrary.simpleMessage("查看订单"),
+        "viewPerson": MessageLookupByLibrary.simpleMessage("查看人员"),
         "viewed": MessageLookupByLibrary.simpleMessage("已查看"),
+        "waitingForScan": MessageLookupByLibrary.simpleMessage("等待扫码..."),
+        "waterService": MessageLookupByLibrary.simpleMessage("20L"),
         "welcome": MessageLookupByLibrary.simpleMessage("欢迎来到IWIP后勤综合服务APP"),
         "woman": MessageLookupByLibrary.simpleMessage("女"),
         "workNo": MessageLookupByLibrary.simpleMessage("工号"),

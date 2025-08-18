@@ -730,10 +730,10 @@ class S {
     );
   }
 
-  /// `电话`
+  /// `手机号`
   String get phone {
     return Intl.message(
-      '电话',
+      '手机号',
       name: 'phone',
       desc: '',
       args: [],
@@ -2305,6 +2305,16 @@ class S {
     return Intl.message(
       '提交成功',
       name: 'submitSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交失败`
+  String get submitFail {
+    return Intl.message(
+      '提交失败',
+      name: 'submitFail',
       desc: '',
       args: [],
     );
@@ -4970,6 +4980,16 @@ class S {
     );
   }
 
+  /// `提交保洁服务`
+  String get cleaning_submit {
+    return Intl.message(
+      '提交保洁服务',
+      name: 'cleaning_submit',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `保洁订单`
   String get cleaning_order {
     return Intl.message(
@@ -5310,6 +5330,16 @@ class S {
     );
   }
 
+  /// `预约日期`
+  String get cleaning_date {
+    return Intl.message(
+      '预约日期',
+      name: 'cleaning_date',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `保洁地址不在保洁项目对应的区域，请重新选择！`
   String get cleaning_select_address_error {
     return Intl.message(
@@ -5415,6 +5445,16 @@ class S {
     return Intl.message(
       '备注',
       name: 'cleaning_remark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入特殊要求或备注信息（可选）`
+  String get cleaning_remark_hint {
+    return Intl.message(
+      '请输入特殊要求或备注信息（可选）',
+      name: 'cleaning_remark_hint',
       desc: '',
       args: [],
     );
@@ -5875,6 +5915,1656 @@ class S {
     return Intl.message(
       '张图片',
       name: 'images',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送站点`
+  String get delivery_site {
+    return Intl.message(
+      '配送站点',
+      name: 'delivery_site',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入配送站点名称查询`
+  String get delivery_site_search {
+    return Intl.message(
+      '请输入配送站点名称查询',
+      name: 'delivery_site_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入配送站点名称查询`
+  String get delivery_site_search_placeholder {
+    return Intl.message(
+      '请输入配送站点名称查询',
+      name: 'delivery_site_search_placeholder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定清除搜索内容吗？`
+  String get delivery_site_search_clear_confirm {
+    return Intl.message(
+      '确定清除搜索内容吗？',
+      name: 'delivery_site_search_clear_confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未找到匹配的配送站点`
+  String get delivery_site_search_not_found {
+    return Intl.message(
+      '未找到匹配的配送站点',
+      name: 'delivery_site_search_not_found',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `中国餐`
+  String get chineseFood {
+    return Intl.message(
+      '中国餐',
+      name: 'chineseFood',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `印尼餐`
+  String get indonesianFood {
+    return Intl.message(
+      '印尼餐',
+      name: 'indonesianFood',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `瓶装水`
+  String get bottleWater {
+    return Intl.message(
+      '瓶装水',
+      name: 'bottleWater',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `点心`
+  String get dessert {
+    return Intl.message(
+      '点心',
+      name: 'dessert',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `早茶`
+  String get earlyTea {
+    return Intl.message(
+      '早茶',
+      name: 'earlyTea',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `夜宵`
+  String get nightSnack {
+    return Intl.message(
+      '夜宵',
+      name: 'nightSnack',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `20L`
+  String get waterService {
+    return Intl.message(
+      '20L',
+      name: 'waterService',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `餐次`
+  String get mealTime {
+    return Intl.message(
+      '餐次',
+      name: 'mealTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送食堂`
+  String get delivery_canteen {
+    return Intl.message(
+      '配送食堂',
+      name: 'delivery_canteen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `餐种`
+  String get foodType {
+    return Intl.message(
+      '餐种',
+      name: 'foodType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `餐别`
+  String get mealType {
+    return Intl.message(
+      '餐别',
+      name: 'mealType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配送方式`
+  String get deliveryType {
+    return Intl.message(
+      '配送方式',
+      name: 'deliveryType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订餐份数`
+  String get orderNum {
+    return Intl.message(
+      '订餐份数',
+      name: 'orderNum',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `自取`
+  String get selfPickup {
+    return Intl.message(
+      '自取',
+      name: 'selfPickup',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已下单`
+  String get deliveryOrderPlaced {
+    return Intl.message(
+      '已下单',
+      name: 'deliveryOrderPlaced',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配餐中`
+  String get deliveryCooking {
+    return Intl.message(
+      '配餐中',
+      name: 'deliveryCooking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已打包`
+  String get deliveryPacked {
+    return Intl.message(
+      '已打包',
+      name: 'deliveryPacked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `送餐中`
+  String get deliveryDelivering {
+    return Intl.message(
+      '送餐中',
+      name: 'deliveryDelivering',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已送达`
+  String get deliveryDelivered {
+    return Intl.message(
+      '已送达',
+      name: 'deliveryDelivered',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已退单`
+  String get deliveryCancelled {
+    return Intl.message(
+      '已退单',
+      name: 'deliveryCancelled',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单进度`
+  String get orderProgress {
+    return Intl.message(
+      '订单进度',
+      name: 'orderProgress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `下单人`
+  String get orderPlacedBy {
+    return Intl.message(
+      '下单人',
+      name: 'orderPlacedBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `班组未提交`
+  String get groupNotSubmitted {
+    return Intl.message(
+      '班组未提交',
+      name: 'groupNotSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `班组已提交`
+  String get groupSubmitted {
+    return Intl.message(
+      '班组已提交',
+      name: 'groupSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `部门已提交`
+  String get departmentSubmitted {
+    return Intl.message(
+      '部门已提交',
+      name: 'departmentSubmitted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单中心已确认`
+  String get orderCenterConfirmed {
+    return Intl.message(
+      '订单中心已确认',
+      name: 'orderCenterConfirmed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `正常订单`
+  String get normalOrder {
+    return Intl.message(
+      '正常订单',
+      name: 'normalOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `补餐`
+  String get supplementOrder {
+    return Intl.message(
+      '补餐',
+      name: 'supplementOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `减餐`
+  String get reduceOrder {
+    return Intl.message(
+      '减餐',
+      name: 'reduceOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未审核`
+  String get deliveryNotAudited {
+    return Intl.message(
+      '未审核',
+      name: 'deliveryNotAudited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `审核通过`
+  String get deliveryAudited {
+    return Intl.message(
+      '审核通过',
+      name: 'deliveryAudited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `审核驳回`
+  String get deliveryAuditRejected {
+    return Intl.message(
+      '审核驳回',
+      name: 'deliveryAuditRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未开始配送`
+  String get deliveryNotStarted {
+    return Intl.message(
+      '未开始配送',
+      name: 'deliveryNotStarted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `复制成功`
+  String get copySuccess {
+    return Intl.message(
+      '复制成功',
+      name: 'copySuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `餐盒`
+  String get deliveryMealBox {
+    return Intl.message(
+      '餐盒',
+      name: 'deliveryMealBox',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `桶装`
+  String get deliveryBucket {
+    return Intl.message(
+      '桶装',
+      name: 'deliveryBucket',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `打包袋`
+  String get deliveryBag {
+    return Intl.message(
+      '打包袋',
+      name: 'deliveryBag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `驳回原因`
+  String get deliveryRejectReason {
+    return Intl.message(
+      '驳回原因',
+      name: 'deliveryRejectReason',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `份`
+  String get orderNumUnit {
+    return Intl.message(
+      '份',
+      name: 'orderNumUnit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `开始配送`
+  String get deliveryStartDelivery {
+    return Intl.message(
+      '开始配送',
+      name: 'deliveryStartDelivery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `打包`
+  String get deliveryPackage {
+    return Intl.message(
+      '打包',
+      name: 'deliveryPackage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `退单`
+  String get deliveryReturnOrder {
+    return Intl.message(
+      '退单',
+      name: 'deliveryReturnOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交`
+  String get deliverySubmit {
+    return Intl.message(
+      '提交',
+      name: 'deliverySubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `驳回`
+  String get deliveryReject {
+    return Intl.message(
+      '驳回',
+      name: 'deliveryReject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `驳回成功`
+  String get deliveryRejectSuccess {
+    return Intl.message(
+      '驳回成功',
+      name: 'deliveryRejectSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `驳回失败`
+  String get deliveryRejectFail {
+    return Intl.message(
+      '驳回失败',
+      name: 'deliveryRejectFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定退单吗？`
+  String get deliveryReturnOrderConfirm {
+    return Intl.message(
+      '确定退单吗？',
+      name: 'deliveryReturnOrderConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `退单成功`
+  String get deliveryReturnOrderSuccess {
+    return Intl.message(
+      '退单成功',
+      name: 'deliveryReturnOrderSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `退单失败`
+  String get deliveryReturnOrderFail {
+    return Intl.message(
+      '退单失败',
+      name: 'deliveryReturnOrderFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `取消`
+  String get deliveryCancel {
+    return Intl.message(
+      '取消',
+      name: 'deliveryCancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定`
+  String get deliveryConfirm {
+    return Intl.message(
+      '确定',
+      name: 'deliveryConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择车队`
+  String get deliverySelectTeam {
+    return Intl.message(
+      '选择车队',
+      name: 'deliverySelectTeam',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `获取车队失败`
+  String get deliverySelectTeamFail {
+    return Intl.message(
+      '获取车队失败',
+      name: 'deliverySelectTeamFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单种类`
+  String get deliveryOrderType {
+    return Intl.message(
+      '订单种类',
+      name: 'deliveryOrderType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交状态`
+  String get deliverySubmitStatus {
+    return Intl.message(
+      '提交状态',
+      name: 'deliverySubmitStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单状态`
+  String get deliveryOrderStatus {
+    return Intl.message(
+      '订单状态',
+      name: 'deliveryOrderStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已选条件:`
+  String get deliverySelectedConditions {
+    return Intl.message(
+      '已选条件:',
+      name: 'deliverySelectedConditions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `重置`
+  String get deliveryReset {
+    return Intl.message(
+      '重置',
+      name: 'deliveryReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单提交成功！`
+  String get deliveryOrderSuccess {
+    return Intl.message(
+      '订单提交成功！',
+      name: 'deliveryOrderSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `当前时间不可预订`
+  String get deliveryOrderNotAvailable {
+    return Intl.message(
+      '当前时间不可预订',
+      name: 'deliveryOrderNotAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `今日订餐`
+  String get deliveryOrderTitle {
+    return Intl.message(
+      '今日订餐',
+      name: 'deliveryOrderTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未绑定报餐送餐帐号，请先绑定帐号`
+  String get deliveryOrderNotBindAccount {
+    return Intl.message(
+      '未绑定报餐送餐帐号，请先绑定帐号',
+      name: 'deliveryOrderNotBindAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `绑定帐号`
+  String get deliveryBindAccount {
+    return Intl.message(
+      '绑定帐号',
+      name: 'deliveryBindAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `今日可选餐次`
+  String get deliveryOrderAvailable {
+    return Intl.message(
+      '今日可选餐次',
+      name: 'deliveryOrderAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `临时人员订餐`
+  String get deliveryOrderTemporary {
+    return Intl.message(
+      '临时人员订餐',
+      name: 'deliveryOrderTemporary',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `点击预订`
+  String get deliveryOrderSubmit {
+    return Intl.message(
+      '点击预订',
+      name: 'deliveryOrderSubmit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `温馨提示：请根据用餐时间选择合适的餐食类型，订单提交后不可更改`
+  String get deliveryOrderTips {
+    return Intl.message(
+      '温馨提示：请根据用餐时间选择合适的餐食类型，订单提交后不可更改',
+      name: 'deliveryOrderTips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无订餐权限，联系部门文员`
+  String get deliveryOrderNoPermission {
+    return Intl.message(
+      '暂无订餐权限，联系部门文员',
+      name: 'deliveryOrderNoPermission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `获取人员列表`
+  String get deliveryGetPersonList {
+    return Intl.message(
+      '获取人员列表',
+      name: 'deliveryGetPersonList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `获取人员列表失败`
+  String get deliveryGetPersonListFail {
+    return Intl.message(
+      '获取人员列表失败',
+      name: 'deliveryGetPersonListFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `获取送餐地点数据中...`
+  String get deliveryGetMealPlace {
+    return Intl.message(
+      '获取送餐地点数据中...',
+      name: 'deliveryGetMealPlace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `获取送餐地点数据失败`
+  String get deliveryGetMealPlaceFail {
+    return Intl.message(
+      '获取送餐地点数据失败',
+      name: 'deliveryGetMealPlaceFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `打包失败`
+  String get deliveryPackOrderFail {
+    return Intl.message(
+      '打包失败',
+      name: 'deliveryPackOrderFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `开始配送`
+  String get deliveryDeliverOrder {
+    return Intl.message(
+      '开始配送',
+      name: 'deliveryDeliverOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `开始配送失败`
+  String get deliveryDeliverOrderFail {
+    return Intl.message(
+      '开始配送失败',
+      name: 'deliveryDeliverOrderFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交成功`
+  String get deliverySubmitOrderSuccess {
+    return Intl.message(
+      '提交成功',
+      name: 'deliverySubmitOrderSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `提交失败`
+  String get deliverySubmitOrderFail {
+    return Intl.message(
+      '提交失败',
+      name: 'deliverySubmitOrderFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择人员`
+  String get deliverySelectPerson {
+    return Intl.message(
+      '请选择人员',
+      name: 'deliverySelectPerson',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择送餐地点`
+  String get deliverySelectPlace {
+    return Intl.message(
+      '请选择送餐地点',
+      name: 'deliverySelectPlace',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择送餐时间`
+  String get deliverySelectTime {
+    return Intl.message(
+      '请选择送餐时间',
+      name: 'deliverySelectTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订餐配送`
+  String get deliverySubmitOrder {
+    return Intl.message(
+      '订餐配送',
+      name: 'deliverySubmitOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `打包饭`
+  String get deliveryPackedMeal {
+    return Intl.message(
+      '打包饭',
+      name: 'deliveryPackedMeal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `盒装饭`
+  String get deliveryBoxedMeal {
+    return Intl.message(
+      '盒装饭',
+      name: 'deliveryBoxedMeal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `份数`
+  String get deliveryQuantity {
+    return Intl.message(
+      '份数',
+      name: 'deliveryQuantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择餐种`
+  String get deliverySelectMealType {
+    return Intl.message(
+      '请选择餐种',
+      name: 'deliverySelectMealType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已选择人员`
+  String get deliverySelectedPeople {
+    return Intl.message(
+      '已选择人员',
+      name: 'deliverySelectedPeople',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `创建订单`
+  String get deliveryCreateOrder {
+    return Intl.message(
+      '创建订单',
+      name: 'deliveryCreateOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订水服务`
+  String get deliveryWaterService {
+    return Intl.message(
+      '订水服务',
+      name: 'deliveryWaterService',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择配送站点和数量，我们将为您提供优质的饮用水服务`
+  String get deliveryWaterServiceTips {
+    return Intl.message(
+      '选择配送站点和数量，我们将为您提供优质的饮用水服务',
+      name: 'deliveryWaterServiceTips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `部门`
+  String get deliveryDept {
+    return Intl.message(
+      '部门',
+      name: 'deliveryDept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `按姓名搜索`
+  String get deliverySearchPerson {
+    return Intl.message(
+      '按姓名搜索',
+      name: 'deliverySearchPerson',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `全选/反选`
+  String get selectAllOrDeselectAll {
+    return Intl.message(
+      '全选/反选',
+      name: 'selectAllOrDeselectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `工号`
+  String get deliveryJobNumber {
+    return Intl.message(
+      '工号',
+      name: 'deliveryJobNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `部门名称`
+  String get deliveryDeptName {
+    return Intl.message(
+      '部门名称',
+      name: 'deliveryDeptName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `图片上传中...`
+  String get deliveryUploading {
+    return Intl.message(
+      '图片上传中...',
+      name: 'deliveryUploading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单已完成`
+  String get deliveryOrderCompleted {
+    return Intl.message(
+      '订单已完成',
+      name: 'deliveryOrderCompleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单提交失败`
+  String get deliveryOrderSubmitFail {
+    return Intl.message(
+      '订单提交失败',
+      name: 'deliveryOrderSubmitFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `加载中...`
+  String get deliveryLoading {
+    return Intl.message(
+      '加载中...',
+      name: 'deliveryLoading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `查看人员`
+  String get viewPerson {
+    return Intl.message(
+      '查看人员',
+      name: 'viewPerson',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `修改人员`
+  String get modifyPerson {
+    return Intl.message(
+      '修改人员',
+      name: 'modifyPerson',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `人员列表`
+  String get personList {
+    return Intl.message(
+      '人员列表',
+      name: 'personList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `共{count}人`
+  String deliveryTotal(Object count) {
+    return Intl.message(
+      '共$count人',
+      name: 'deliveryTotal',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `暂无人员信息`
+  String get noPersonInfo {
+    return Intl.message(
+      '暂无人员信息',
+      name: 'noPersonInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未知姓名`
+  String get unknownName {
+    return Intl.message(
+      '未知姓名',
+      name: 'unknownName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `联系电话`
+  String get deliveryTel {
+    return Intl.message(
+      '联系电话',
+      name: 'deliveryTel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `邮箱`
+  String get deliveryEmail {
+    return Intl.message(
+      '邮箱',
+      name: 'deliveryEmail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `职位`
+  String get deliveryPost {
+    return Intl.message(
+      '职位',
+      name: 'deliveryPost',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未知`
+  String get unknown {
+    return Intl.message(
+      '未知',
+      name: 'unknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `关闭`
+  String get close {
+    return Intl.message(
+      '关闭',
+      name: 'close',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单列表`
+  String get deliveryOrderList {
+    return Intl.message(
+      '订单列表',
+      name: 'deliveryOrderList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `通过配送地点或订单编号搜索`
+  String get deliverySearchOrder {
+    return Intl.message(
+      '通过配送地点或订单编号搜索',
+      name: 'deliverySearchOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `正在处理扫码结果`
+  String get processingScanResult {
+    return Intl.message(
+      '正在处理扫码结果',
+      name: 'processingScanResult',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `处理异常`
+  String get processingScanResultError {
+    return Intl.message(
+      '处理异常',
+      name: 'processingScanResultError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `取餐成功，剩余{count}份包裹未取`
+  String mealDeliverySuccess(Object count) {
+    return Intl.message(
+      '取餐成功，剩余$count份包裹未取',
+      name: 'mealDeliverySuccess',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `订单已全部装车`
+  String get orderAllLoaded {
+    return Intl.message(
+      '订单已全部装车',
+      name: 'orderAllLoaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未取订单`
+  String get unreceivedOrder {
+    return Intl.message(
+      '未取订单',
+      name: 'unreceivedOrder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未收`
+  String get unreceived {
+    return Intl.message(
+      '未收',
+      name: 'unreceived',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `没有查询到订单信息`
+  String get orderNotFound {
+    return Intl.message(
+      '没有查询到订单信息',
+      name: 'orderNotFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单已驳回`
+  String get orderRejected {
+    return Intl.message(
+      '订单已驳回',
+      name: 'orderRejected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `非 (订单中心已确认 & 配餐中)`
+  String get orderNotConfirmed {
+    return Intl.message(
+      '非 (订单中心已确认 & 配餐中)',
+      name: 'orderNotConfirmed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `重复接收订单`
+  String get duplicateOrderReception {
+    return Intl.message(
+      '重复接收订单',
+      name: 'duplicateOrderReception',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `您没有取餐权限`
+  String get permissionDenied {
+    return Intl.message(
+      '您没有取餐权限',
+      name: 'permissionDenied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `餐次名称不匹配`
+  String get foodNameChooseError {
+    return Intl.message(
+      '餐次名称不匹配',
+      name: 'foodNameChooseError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `盒装饭不需要接收`
+  String get packageTypeError {
+    return Intl.message(
+      '盒装饭不需要接收',
+      name: 'packageTypeError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `手持机扫码接单`
+  String get mealDeliveryAccept {
+    return Intl.message(
+      '手持机扫码接单',
+      name: 'mealDeliveryAccept',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `扫码状态`
+  String get scanStatus {
+    return Intl.message(
+      '扫码状态',
+      name: 'scanStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `处理中...`
+  String get processing {
+    return Intl.message(
+      '处理中...',
+      name: 'processing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `最近扫码`
+  String get recentlyScanned {
+    return Intl.message(
+      '最近扫码',
+      name: 'recentlyScanned',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `等待扫码...`
+  String get waitingForScan {
+    return Intl.message(
+      '等待扫码...',
+      name: 'waitingForScan',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `扫码设置`
+  String get scanSettings {
+    return Intl.message(
+      '扫码设置',
+      name: 'scanSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择对应的餐次和餐种`
+  String get selectMealTimeAndFoodType {
+    return Intl.message(
+      '选择对应的餐次和餐种',
+      name: 'selectMealTimeAndFoodType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `点击确认按钮查看未接收订单`
+  String get clickConfirmButtonToViewUnreceivedOrders {
+    return Intl.message(
+      '点击确认按钮查看未接收订单',
+      name: 'clickConfirmButtonToViewUnreceivedOrders',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `使用说明`
+  String get usageInstructions {
+    return Intl.message(
+      '使用说明',
+      name: 'usageInstructions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `使用手持机扫描条码`
+  String get useHandheldScannerToScanBarcode {
+    return Intl.message(
+      '使用手持机扫描条码',
+      name: 'useHandheldScannerToScanBarcode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单送达成功！`
+  String get deliverySuccess {
+    return Intl.message(
+      '订单送达成功！',
+      name: 'deliverySuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `订单送达失败！`
+  String get deliveryFail {
+    return Intl.message(
+      '订单送达失败！',
+      name: 'deliveryFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `图片上传失败！`
+  String get deliveryUploadFailed {
+    return Intl.message(
+      '图片上传失败！',
+      name: 'deliveryUploadFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `手持机扫码送达`
+  String get deliveryDeliver {
+    return Intl.message(
+      '手持机扫码送达',
+      name: 'deliveryDeliver',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请将条形码放入框内，即可自动扫描`
+  String get pleaseScanTheBarcode {
+    return Intl.message(
+      '请将条形码放入框内，即可自动扫描',
+      name: 'pleaseScanTheBarcode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `获取数据失败`
+  String get getSystemDataError {
+    return Intl.message(
+      '获取数据失败',
+      name: 'getSystemDataError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `报餐送餐`
+  String get mealDelivery {
+    return Intl.message(
+      '报餐送餐',
+      name: 'mealDelivery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `绑定报餐送餐账号，获取报餐送餐系统权限功能信息`
+  String get bindMealDeliveryAccount {
+    return Intl.message(
+      '绑定报餐送餐账号，获取报餐送餐系统权限功能信息',
+      name: 'bindMealDeliveryAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `绑定{name}账号`
+  String bindAccount(Object name) {
+    return Intl.message(
+      '绑定$name账号',
+      name: 'bindAccount',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `请输入{name}账号`
+  String pleaseEnterAccount(Object name) {
+    return Intl.message(
+      '请输入$name账号',
+      name: 'pleaseEnterAccount',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `账号`
+  String get account {
+    return Intl.message(
+      '账号',
+      name: 'account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入{name}密码`
+  String pleaseEnterPassword(Object name) {
+    return Intl.message(
+      '请输入$name密码',
+      name: 'pleaseEnterPassword',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `绑定`
+  String get bind {
+    return Intl.message(
+      '绑定',
+      name: 'bind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定要解除{name}账号的绑定吗？`
+  String confirmToUnbind(Object name) {
+    return Intl.message(
+      '确定要解除$name账号的绑定吗？',
+      name: 'confirmToUnbind',
+      desc: '',
+      args: [name],
+    );
+  }
+
+  /// `解除绑定`
+  String get unbind {
+    return Intl.message(
+      '解除绑定',
+      name: 'unbind',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `绑定成功`
+  String get bindSuccess {
+    return Intl.message(
+      '绑定成功',
+      name: 'bindSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `绑定失败`
+  String get bindFail {
+    return Intl.message(
+      '绑定失败',
+      name: 'bindFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `解除绑定成功`
+  String get unbindSuccess {
+    return Intl.message(
+      '解除绑定成功',
+      name: 'unbindSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `解除绑定失败`
+  String get unbindFail {
+    return Intl.message(
+      '解除绑定失败',
+      name: 'unbindFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `当前绑定: `
+  String get currentBound {
+    return Intl.message(
+      '当前绑定: ',
+      name: 'currentBound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `绑定第三方账号`
+  String get bindThirdPartyAccount {
+    return Intl.message(
+      '绑定第三方账号',
+      name: 'bindThirdPartyAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已绑定`
+  String get bound {
+    return Intl.message(
+      '已绑定',
+      name: 'bound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未绑定`
+  String get unbound {
+    return Intl.message(
+      '未绑定',
+      name: 'unbound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `打包方式`
+  String get deliveryPackageType {
+    return Intl.message(
+      '打包方式',
+      name: 'deliveryPackageType',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `奖励细则`
+  String get reward_details {
+    return Intl.message(
+      '奖励细则',
+      name: 'reward_details',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `关联帐号`
+  String get related_account {
+    return Intl.message(
+      '关联帐号',
+      name: 'related_account',
       desc: '',
       args: [],
     );

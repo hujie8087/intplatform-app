@@ -228,16 +228,17 @@ class _CleaningSubmitPageState extends State<CleaningSubmitPage>
           ),
         )
         .then((value) {
-          ProgressHUD.showSuccess('提交成功');
-          // 延迟2秒后关闭
-          Future.delayed(Duration(seconds: 1), () {
+          if (value.success) {
+            ProgressHUD.showSuccess(S.of(context).submitSuccess);
+            // 延迟2秒后关闭
+            Future.delayed(Duration(seconds: 1), () {
+              ProgressHUD.hide();
+              Navigator.pop(context, true);
+            });
+          } else {
             ProgressHUD.hide();
-            Navigator.pop(context, true);
-          });
-        })
-        .catchError((error) {
-          ProgressHUD.hide();
-          ProgressHUD.showError('提交失败');
+            ProgressHUD.showError(S.of(context).submitFail);
+          }
         });
   }
 
@@ -253,7 +254,10 @@ class _CleaningSubmitPageState extends State<CleaningSubmitPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('提交保洁服务', style: TextStyle(fontSize: 16.px)),
+        title: Text(
+          S.of(context).cleaning_submit,
+          style: TextStyle(fontSize: 16.px),
+        ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -360,7 +364,9 @@ class _CleaningSubmitPageState extends State<CleaningSubmitPage>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
-                                      '请选择地址',
+                                      S
+                                          .of(context)
+                                          .pleaseSelect(S.of(context).address),
                                       style: TextStyle(
                                         fontSize: 12.px,
                                         color: primaryColor,
@@ -378,14 +384,16 @@ class _CleaningSubmitPageState extends State<CleaningSubmitPage>
                     SizedBox(height: 16.px),
                     _buildSelectField(
                       context: context,
-                      label: '保洁项目',
+                      label: S.of(context).cleaning_project,
                       value:
                           model.selectedItem == null
-                              ? '请选择保洁项目'
+                              ? S
+                                  .of(context)
+                                  .pleaseSelect(S.of(context).cleaning_project)
                               : model.selectedItem?.projectDetails ??
                                   '' +
                                       '（${model.selectedItem?.chargePrice}元）' +
-                                      '（${model.selectedItem?.chargeType == 0 ? '深度保洁' : '专项保洁'}）',
+                                      '（${model.selectedItem?.chargeType == 0 ? S.of(context).cleaning_deep_cleaning : S.of(context).cleaning_special_cleaning}）',
                       onTap: () {
                         _selectItems(context);
                       },
@@ -398,10 +406,12 @@ class _CleaningSubmitPageState extends State<CleaningSubmitPage>
                     // 预约日期
                     _buildSelectField(
                       context: context,
-                      label: '预约日期',
+                      label: S.of(context).cleaning_date,
                       value:
                           model.selectedDate == null
-                              ? '请选择预约日期'
+                              ? S
+                                  .of(context)
+                                  .pleaseSelect(S.of(context).cleaning_date)
                               : '${model.selectedDate!.year}-${model.selectedDate!.month.toString().padLeft(2, '0')}-${model.selectedDate!.day.toString().padLeft(2, '0')}',
                       onTap: _selectDate,
                       icon: Icons.calendar_today,
@@ -412,11 +422,13 @@ class _CleaningSubmitPageState extends State<CleaningSubmitPage>
 
                     // 备注
                     _buildFormField(
-                      label: '备注',
+                      label: S.of(context).cleaning_remark,
                       controller: _remarkController,
                       icon: Icons.note,
                       maxLines: 5,
-                      hintText: '请输入特殊要求或备注信息（可选）',
+                      hintText: S
+                          .of(context)
+                          .pleaseInput(S.of(context).cleaning_remark),
                     ),
 
                     SizedBox(height: 32.px),

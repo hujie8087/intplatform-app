@@ -7,16 +7,21 @@ class DictModel {
   String? cssClass;
   String? isDefault;
   String? status;
+  String? dictLabelEn;
+  String? dictLabelId;
 
-  DictModel(
-      {this.dictCode,
-      this.dictSort,
-      this.dictLabel,
-      this.dictValue,
-      this.dictType,
-      this.cssClass,
-      this.isDefault,
-      this.status});
+  DictModel({
+    this.dictCode,
+    this.dictSort,
+    this.dictLabel,
+    this.dictValue,
+    this.dictType,
+    this.cssClass,
+    this.isDefault,
+    this.status,
+    this.dictLabelEn,
+    this.dictLabelId,
+  });
 
   DictModel.fromJson(Map<String, dynamic> json) {
     dictCode = json["dictCode"];
@@ -27,6 +32,8 @@ class DictModel {
     cssClass = json["cssClass"];
     isDefault = json["isDefault"];
     status = json["status"];
+    dictLabelEn = json["dictLabelEn"];
+    dictLabelId = json["dictLabelId"];
   }
 
   static List<DictModel> fromList(List<Map<String, dynamic>> list) {
@@ -43,6 +50,8 @@ class DictModel {
     _data["cssClass"] = cssClass;
     _data["isDefault"] = isDefault;
     _data["status"] = status;
+    _data["dictLabelEn"] = dictLabelEn;
+    _data["dictLabelId"] = dictLabelId;
     return _data;
   }
 }

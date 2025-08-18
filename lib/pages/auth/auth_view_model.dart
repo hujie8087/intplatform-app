@@ -41,6 +41,7 @@ class AuthViewModel with ChangeNotifier {
             success: (res) async {
               UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
               await SpUtils.saveModel('userInfo', userInfo);
+              await SpUtils.saveModel('mealUser', userInfo.mealUser ?? {});
               SpUtils.saveString(
                 Constants.SP_USER_NAME,
                 userInfo.user?.nickName ?? '',
@@ -56,6 +57,10 @@ class AuthViewModel with ChangeNotifier {
               SpUtils.saveInt(
                 Constants.SP_IS_LOGIN,
                 userInfo.user?.isLogin ?? 0,
+              );
+              SpUtils.saveModel(
+                Constants.SP_USER_PERMISSION,
+                userInfo.permissions ?? [],
               );
               getAddressData();
               completer.complete(true);

@@ -191,6 +191,7 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
           child: IgnorePointer(
             child: Stack(
               alignment: AlignmentDirectional.center,
+              clipBehavior: Clip.none,
               children: <Widget>[
                 AnimatedContainer(
                   duration: Duration(milliseconds: 600), // 动画持续时间

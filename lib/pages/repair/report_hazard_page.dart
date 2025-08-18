@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
+import 'package:logistics_app/pages/repair/safety_reward_page.dart';
 import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -32,6 +35,28 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
   // 选择的日期和时间
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
+  // 用户信息
+  UserInfoModel? userInfo;
+
+  // 获取用户信息
+  void _getUserInfo() async {
+    var userInfoData = await SpUtils.getModel('userInfo');
+    setState(() {
+      if (userInfoData != null) {
+        userInfo = UserInfoModel.fromJson(userInfoData);
+        _reporterController.text = userInfo!.user?.nickName ?? '';
+        _phoneController.text = userInfo!.user?.phonenumber ?? '';
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = DateTime.now();
+    _selectedTime = TimeOfDay.now();
+    _getUserInfo();
+  }
 
   @override
   void dispose() {
@@ -92,6 +117,26 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
 
     if (_selectedTime == null) {
       ProgressHUD.showError(S.current.select_discover_time);
+      return;
+    }
+
+    if (_reporterController.text.isEmpty) {
+      ProgressHUD.showError(S.current.please_enter_reporter_name);
+      return;
+    }
+
+    if (_phoneController.text.isEmpty) {
+      ProgressHUD.showError(S.current.please_enter_reporter_tel);
+      return;
+    }
+
+    if (_descriptionController.text.isEmpty) {
+      ProgressHUD.showError(S.current.please_enter_hazard_description);
+      return;
+    }
+
+    if (selectedAssets.isEmpty) {
+      ProgressHUD.showError(S.current.please_upload_hazard_photo);
       return;
     }
 
@@ -156,6 +201,27 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
           S.of(context).report_hazard,
           style: TextStyle(fontSize: 16.px),
         ),
+        // 增加一个奖励细则查看按钮
+        actions: [
+          TextButton(
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SafetyRewardPage()),
+                ),
+            child: Row(
+              children: [
+                Icon(Icons.info, size: 14.px, color: secondaryColor[600]),
+                SizedBox(width: 2.px),
+                Text(
+                  S.of(context).reward_details,
+                  style: TextStyle(fontSize: 12.px, color: secondaryColor[600]),
+                ),
+                SizedBox(width: 4.px),
+              ],
+            ),
+          ),
+        ],
         centerTitle: true,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -278,6 +344,12 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
                   controller: _descriptionController,
                   icon: Icons.description,
                   maxLines: 4,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return S.of(context).please_enter_hazard_description;
+                    }
+                    return null;
+                  },
                   hintText: S.of(context).please_enter_hazard_description,
                 ),
 
@@ -493,9 +565,10 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
                     color: Colors.black87,
                   ),
                 ),
+                // 必填
                 Text(
-                  ' ${S.of(context).optional}',
-                  style: TextStyle(color: Colors.grey[500], fontSize: 12.px),
+                  ' *',
+                  style: TextStyle(color: Colors.red, fontSize: 12.px),
                 ),
               ],
             ),

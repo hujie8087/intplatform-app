@@ -20,6 +20,7 @@ import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
+import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_view_model.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/my_address_page.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
@@ -353,13 +354,20 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                             localeName,
                             0.6,
                           ),
-                          // _commonItem(
-                          //     '清除缓存', Icons.delete_rounded, () {}, '', 0.7),
                           _commonItem(
                             S.of(context).contactUs,
                             Icons.info,
                             () {
                               RouteUtils.push(context, ContactUsPage());
+                            },
+                            '',
+                            0.8,
+                          ),
+                          _commonItem(
+                            S.of(context).related_account,
+                            Icons.account_box,
+                            () {
+                              RouteUtils.push(context, BindAccountPage());
                             },
                             '',
                             0.8,

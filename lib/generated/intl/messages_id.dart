@@ -20,15 +20,29 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'id';
 
-  static String m0(title) => "Hapus ${title} berhasil!";
+  static String m0(name) => "Hubungkan akun ${name}";
 
-  static String m1(title) => "Silakan masukkan ${title}";
+  static String m1(name) =>
+      "Apakah Anda yakin ingin memutuskan hubungan akun ${name}?";
 
-  static String m2(title) => "Isi ${title}";
+  static String m2(title) => "Hapus ${title} berhasil!";
 
-  static String m3(label) => "Silakan masukkan ${label}";
+  static String m3(count) => "Total ${count} Orang";
 
-  static String m4(title) => "Silakan pilih";
+  static String m4(title) => "Silakan masukkan ${title}";
+
+  static String m5(count) =>
+      "Pengambilan makanan berhasil, ${count} paket belum diambil";
+
+  static String m6(name) => "Silakan masukkan akun ${name}";
+
+  static String m7(name) => "Silakan masukkan kata sandi ${name}";
+
+  static String m8(title) => "Isi ${title}";
+
+  static String m9(label) => "Silakan masukkan ${label}";
+
+  static String m10(title) => "Silakan pilih ${title}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -40,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "acceptTime": MessageLookupByLibrary.simpleMessage("Waktu Penerimaan"),
         "accommodationProcess":
             MessageLookupByLibrary.simpleMessage("Proses Akomodasi"),
+        "account": MessageLookupByLibrary.simpleMessage("Akun"),
         "actualPayment": MessageLookupByLibrary.simpleMessage("Total bayar"),
         "addAddress": MessageLookupByLibrary.simpleMessage("Tambah alamat"),
         "address": MessageLookupByLibrary.simpleMessage("Alamat"),
@@ -57,7 +72,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "attention": MessageLookupByLibrary.simpleMessage("Perhatian"),
         "auditRejected":
             MessageLookupByLibrary.simpleMessage("Ditolak oleh Pemeriksa"),
+        "bind": MessageLookupByLibrary.simpleMessage("Hubungkan"),
+        "bindAccount": m0,
+        "bindFail": MessageLookupByLibrary.simpleMessage("Gagal menghubungkan"),
+        "bindMealDeliveryAccount": MessageLookupByLibrary.simpleMessage(
+            "Hubungkan akun pemesanan & pengantaran makanan untuk mendapatkan informasi hak akses sistem"),
+        "bindSuccess":
+            MessageLookupByLibrary.simpleMessage("Berhasil terhubung"),
+        "bindThirdPartyAccount":
+            MessageLookupByLibrary.simpleMessage("Hubungkan akun pihak ketiga"),
         "birthday": MessageLookupByLibrary.simpleMessage("Tanggal Lahir"),
+        "bottleWater": MessageLookupByLibrary.simpleMessage("Air Mineral"),
+        "bound": MessageLookupByLibrary.simpleMessage("Terhubung"),
         "breakfast": MessageLookupByLibrary.simpleMessage("Sarapan"),
         "busTimetable": MessageLookupByLibrary.simpleMessage("Jadwal Bus"),
         "busToday": MessageLookupByLibrary.simpleMessage("Hari Ini"),
@@ -103,12 +129,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "changeTheme": MessageLookupByLibrary.simpleMessage("Ganti Tema"),
         "checkUpdate": MessageLookupByLibrary.simpleMessage("Cek Update"),
         "checkout": MessageLookupByLibrary.simpleMessage("Checkout"),
+        "chineseFood": MessageLookupByLibrary.simpleMessage("Makanan Cina"),
         "chooseRoute": MessageLookupByLibrary.simpleMessage("Pilih Rute"),
         "cleaning_area":
             MessageLookupByLibrary.simpleMessage("Area Kebersihan"),
         "cleaning_basic_info":
             MessageLookupByLibrary.simpleMessage("Informasi Dasar"),
         "cleaning_contacts": MessageLookupByLibrary.simpleMessage("Kontak"),
+        "cleaning_date": MessageLookupByLibrary.simpleMessage("Tanggal"),
         "cleaning_deep_cleaning":
             MessageLookupByLibrary.simpleMessage("Deep Cleaning"),
         "cleaning_evaluate": MessageLookupByLibrary.simpleMessage("Ulasan"),
@@ -164,6 +192,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "cleaning_project":
             MessageLookupByLibrary.simpleMessage("Proyek Kebersihan"),
         "cleaning_remark": MessageLookupByLibrary.simpleMessage("Catatan"),
+        "cleaning_remark_hint": MessageLookupByLibrary.simpleMessage(
+            "Masukkan informasi tambahan (opsional)"),
         "cleaning_room_number":
             MessageLookupByLibrary.simpleMessage("Nomor Kamar"),
         "cleaning_search": MessageLookupByLibrary.simpleMessage("Cari"),
@@ -179,14 +209,20 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Detail Layanan"),
         "cleaning_special_cleaning":
             MessageLookupByLibrary.simpleMessage("Special Cleaning"),
+        "cleaning_submit":
+            MessageLookupByLibrary.simpleMessage("Pesanan Kebersihan"),
         "cleaning_tel": MessageLookupByLibrary.simpleMessage("Nomor Telepon"),
         "clear": MessageLookupByLibrary.simpleMessage("Bersihkan"),
         "clearCart":
             MessageLookupByLibrary.simpleMessage("Bersihkan keranjang"),
         "clearCartTips": MessageLookupByLibrary.simpleMessage(
             "Apakah Anda yakin ingin menghapus keranjang?"),
+        "clickConfirmButtonToViewUnreceivedOrders":
+            MessageLookupByLibrary.simpleMessage(
+                "Klik tombol konfirmasi untuk melihat pesanan belum diambil"),
         "clickRetry":
             MessageLookupByLibrary.simpleMessage("Klik untuk mencoba lagi"),
+        "close": MessageLookupByLibrary.simpleMessage("Tutup"),
         "companyNews":
             MessageLookupByLibrary.simpleMessage("Berita Perusahaan"),
         "completed": MessageLookupByLibrary.simpleMessage("Selesai"),
@@ -213,6 +249,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Konfirmasi kirim"),
         "confirmSubmitContent": MessageLookupByLibrary.simpleMessage(
             "Yakin ingin mengirim pesanan?"),
+        "confirmToUnbind": m1,
         "contact": MessageLookupByLibrary.simpleMessage("Hubungi"),
         "contactNumber": MessageLookupByLibrary.simpleMessage("Nomor Kontak"),
         "contactPerson": MessageLookupByLibrary.simpleMessage("Kontak"),
@@ -222,6 +259,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "contactUs": MessageLookupByLibrary.simpleMessage("Hubungi Kami"),
         "contentUpdating":
             MessageLookupByLibrary.simpleMessage("Konten Sedang Diperbarui..."),
+        "copySuccess":
+            MessageLookupByLibrary.simpleMessage("Berhasil Mengcopy"),
         "coupleRoom": MessageLookupByLibrary.simpleMessage("Kamar"),
         "coupleRoom_feedback":
             MessageLookupByLibrary.simpleMessage("Masalah Kamar"),
@@ -359,6 +398,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Employee"),
         "coupleRoom_room_view": MessageLookupByLibrary.simpleMessage("View"),
         "createTime": MessageLookupByLibrary.simpleMessage("Waktu Pemesanan"),
+        "currentBound":
+            MessageLookupByLibrary.simpleMessage("Sedang terhubung: "),
         "currentVersionIsLatest": MessageLookupByLibrary.simpleMessage(
             "Versi saat ini sudah terbaru"),
         "dangerPage": MessageLookupByLibrary.simpleMessage("Temukan Resiko"),
@@ -372,7 +413,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Hapus Perbaikan Berhasil"),
         "deleteRepairTips": MessageLookupByLibrary.simpleMessage(
             "Apakah Anda yakin ingin menghapus perbaikan ini?"),
-        "deleteSuccess": m0,
+        "deleteSuccess": m2,
         "deliver": MessageLookupByLibrary.simpleMessage("Kirim"),
         "deliverFailed":
             MessageLookupByLibrary.simpleMessage("Pengiriman Gagal"),
@@ -387,22 +428,186 @@ class MessageLookup extends MessageLookupByLibrary {
         "delivering": MessageLookupByLibrary.simpleMessage("Dalam Pengiriman"),
         "delivery": MessageLookupByLibrary.simpleMessage("Pengiriman"),
         "deliveryAddress": MessageLookupByLibrary.simpleMessage("Alamat"),
+        "deliveryAuditRejected":
+            MessageLookupByLibrary.simpleMessage("Ditolak"),
+        "deliveryAudited":
+            MessageLookupByLibrary.simpleMessage("Sudah Diverifikasi"),
+        "deliveryBag": MessageLookupByLibrary.simpleMessage("Pengemas"),
+        "deliveryBindAccount":
+            MessageLookupByLibrary.simpleMessage("Hubungi staf departemen"),
+        "deliveryBoxedMeal":
+            MessageLookupByLibrary.simpleMessage("Kotak Makan"),
+        "deliveryBucket": MessageLookupByLibrary.simpleMessage("Pembuat"),
+        "deliveryCancel": MessageLookupByLibrary.simpleMessage("Batal"),
+        "deliveryCancelled":
+            MessageLookupByLibrary.simpleMessage("Sudah Dibatalkan"),
+        "deliveryConfirm": MessageLookupByLibrary.simpleMessage("Konfirmasi"),
+        "deliveryCooking": MessageLookupByLibrary.simpleMessage("Memasak"),
+        "deliveryCreateOrder":
+            MessageLookupByLibrary.simpleMessage("Buat Pesanan"),
+        "deliveryDeliver": MessageLookupByLibrary.simpleMessage(
+            "Pemindaian dengan pemindaian QR Code"),
+        "deliveryDeliverOrder":
+            MessageLookupByLibrary.simpleMessage("Mulai Pengiriman"),
+        "deliveryDeliverOrderFail":
+            MessageLookupByLibrary.simpleMessage("Gagal mulai pengiriman"),
+        "deliveryDelivered":
+            MessageLookupByLibrary.simpleMessage("Sudah Diterima"),
+        "deliveryDelivering":
+            MessageLookupByLibrary.simpleMessage("Sedang Dikirim"),
+        "deliveryDept": MessageLookupByLibrary.simpleMessage("Departemen"),
+        "deliveryDeptName":
+            MessageLookupByLibrary.simpleMessage("Nama Departemen"),
+        "deliveryEmail": MessageLookupByLibrary.simpleMessage("Email"),
         "deliveryException":
             MessageLookupByLibrary.simpleMessage("Alasan Masalah Pengiriman"),
+        "deliveryFail":
+            MessageLookupByLibrary.simpleMessage("Pengiriman makanan gagal!"),
         "deliveryFee": MessageLookupByLibrary.simpleMessage("Biaya kirim"),
+        "deliveryGetMealPlace": MessageLookupByLibrary.simpleMessage(
+            "Mengambil data lokasi pengiriman..."),
+        "deliveryGetMealPlaceFail": MessageLookupByLibrary.simpleMessage(
+            "Gagal mengambil data lokasi pengiriman"),
+        "deliveryGetPersonList":
+            MessageLookupByLibrary.simpleMessage("Mengambil daftar orang"),
+        "deliveryGetPersonListFail": MessageLookupByLibrary.simpleMessage(
+            "Gagal mengambil daftar orang"),
         "deliveryInfo": MessageLookupByLibrary.simpleMessage("Info Pengiriman"),
+        "deliveryJobNumber":
+            MessageLookupByLibrary.simpleMessage("Nomor Pekerja"),
+        "deliveryLoading": MessageLookupByLibrary.simpleMessage("Memuat..."),
+        "deliveryMealBox": MessageLookupByLibrary.simpleMessage("Meja Makan"),
         "deliveryName": MessageLookupByLibrary.simpleMessage("Kurir"),
+        "deliveryNotAudited":
+            MessageLookupByLibrary.simpleMessage("Belum Diverifikasi"),
+        "deliveryNotStarted":
+            MessageLookupByLibrary.simpleMessage("Belum Dimulai"),
         "deliveryOrder":
             MessageLookupByLibrary.simpleMessage("Pesanan Pengiriman"),
+        "deliveryOrderAvailable":
+            MessageLookupByLibrary.simpleMessage("Hari ini pilihan makan"),
+        "deliveryOrderCompleted":
+            MessageLookupByLibrary.simpleMessage("Pesanan Selesai"),
         "deliveryOrderDetail":
             MessageLookupByLibrary.simpleMessage("Detail Pesanan Pengiriman"),
+        "deliveryOrderList":
+            MessageLookupByLibrary.simpleMessage("Daftar Pesanan"),
         "deliveryOrderNo":
             MessageLookupByLibrary.simpleMessage("Nomor Pesanan"),
+        "deliveryOrderNoPermission": MessageLookupByLibrary.simpleMessage(
+            "Tidak ada izin untuk memesan makanan, hubungi staf departemen"),
+        "deliveryOrderNotAvailable": MessageLookupByLibrary.simpleMessage(
+            "Waktu saat ini tidak dapat memesan"),
+        "deliveryOrderNotBindAccount": MessageLookupByLibrary.simpleMessage(
+            "Belum memiliki akun pemesanan makanan, silakan hubungi staf departemen"),
+        "deliveryOrderPlaced":
+            MessageLookupByLibrary.simpleMessage("Sudah Memesan"),
+        "deliveryOrderStatus":
+            MessageLookupByLibrary.simpleMessage("Status Pesanan"),
+        "deliveryOrderSubmit": MessageLookupByLibrary.simpleMessage("Pesan"),
+        "deliveryOrderSubmitFail":
+            MessageLookupByLibrary.simpleMessage("Pesanan Gagal Dikirim"),
+        "deliveryOrderSuccess":
+            MessageLookupByLibrary.simpleMessage("Pesanan Berhasil Dikirim!"),
+        "deliveryOrderTemporary": MessageLookupByLibrary.simpleMessage(
+            "Pesanan untuk orang sementara"),
+        "deliveryOrderTips": MessageLookupByLibrary.simpleMessage(
+            "Peringatan: Silakan pilih makanan yang sesuai dengan waktu makan, dan pesanan tidak dapat diubah setelah dikirim"),
+        "deliveryOrderTitle":
+            MessageLookupByLibrary.simpleMessage("Hari ini pesanan"),
+        "deliveryOrderType":
+            MessageLookupByLibrary.simpleMessage("Jenis Pesanan"),
+        "deliveryPackOrderFail":
+            MessageLookupByLibrary.simpleMessage("Gagal memasukkan pesanan"),
+        "deliveryPackage": MessageLookupByLibrary.simpleMessage("Pengemas"),
+        "deliveryPackageType":
+            MessageLookupByLibrary.simpleMessage("Metode Pengemasan"),
+        "deliveryPacked": MessageLookupByLibrary.simpleMessage("Sudah Dikemas"),
+        "deliveryPackedMeal":
+            MessageLookupByLibrary.simpleMessage("Di Bungkus "),
         "deliveryPhone": MessageLookupByLibrary.simpleMessage("Telepon"),
         "deliveryPhoto":
             MessageLookupByLibrary.simpleMessage("Foto Pengiriman"),
+        "deliveryPost": MessageLookupByLibrary.simpleMessage("Jabatan"),
+        "deliveryQuantity": MessageLookupByLibrary.simpleMessage("Pesanan"),
+        "deliveryReject": MessageLookupByLibrary.simpleMessage("Ditolak"),
+        "deliveryRejectFail":
+            MessageLookupByLibrary.simpleMessage("Ditolak Gagal"),
+        "deliveryRejectReason":
+            MessageLookupByLibrary.simpleMessage("Alasan Penolakan"),
+        "deliveryRejectSuccess":
+            MessageLookupByLibrary.simpleMessage("Ditolak Berhasil"),
+        "deliveryReset": MessageLookupByLibrary.simpleMessage("Atur Ulang"),
+        "deliveryReturnOrder":
+            MessageLookupByLibrary.simpleMessage("Pesanan Pengurangan"),
+        "deliveryReturnOrderConfirm": MessageLookupByLibrary.simpleMessage(
+            "Apakah Anda yakin ingin membatalkan pesanan ini?"),
+        "deliveryReturnOrderFail":
+            MessageLookupByLibrary.simpleMessage("Pesanan Pengurangan Gagal"),
+        "deliveryReturnOrderSuccess": MessageLookupByLibrary.simpleMessage(
+            "Pesanan Pengurangan Berhasil"),
+        "deliverySearchOrder": MessageLookupByLibrary.simpleMessage(
+            "Cari berdasarkan lokasi pengiriman atau nomor pesanan"),
+        "deliverySearchPerson":
+            MessageLookupByLibrary.simpleMessage("Cari berdasarkan nama"),
+        "deliverySelectMealType":
+            MessageLookupByLibrary.simpleMessage("Pilih Jenis Makanan"),
+        "deliverySelectPerson":
+            MessageLookupByLibrary.simpleMessage("Pilih Orang"),
+        "deliverySelectPlace":
+            MessageLookupByLibrary.simpleMessage("Pilih Lokasi"),
+        "deliverySelectTeam": MessageLookupByLibrary.simpleMessage("Pilih Tim"),
+        "deliverySelectTeamFail":
+            MessageLookupByLibrary.simpleMessage("Gagal Mengambil Tim"),
+        "deliverySelectTime":
+            MessageLookupByLibrary.simpleMessage("Pilih Waktu"),
+        "deliverySelectedConditions":
+            MessageLookupByLibrary.simpleMessage("Kondisi yang Dipilih:"),
+        "deliverySelectedPeople":
+            MessageLookupByLibrary.simpleMessage("Orang Sudah Dipilih"),
+        "deliveryStartDelivery":
+            MessageLookupByLibrary.simpleMessage("Mulai Pengiriman"),
+        "deliverySubmit": MessageLookupByLibrary.simpleMessage("Kirim"),
+        "deliverySubmitOrder": MessageLookupByLibrary.simpleMessage("Pesan"),
+        "deliverySubmitOrderFail":
+            MessageLookupByLibrary.simpleMessage("Pesanan Gagal Dikirim!"),
+        "deliverySubmitOrderSuccess":
+            MessageLookupByLibrary.simpleMessage("Pesanan Berhasil Dikirim!"),
+        "deliverySubmitStatus":
+            MessageLookupByLibrary.simpleMessage("Status Pengiriman"),
+        "deliverySuccess": MessageLookupByLibrary.simpleMessage(
+            "Pengiriman makanan berhasil!"),
+        "deliveryTel": MessageLookupByLibrary.simpleMessage("Nomor Telepon"),
         "deliveryTime": MessageLookupByLibrary.simpleMessage("Waktu kirim"),
+        "deliveryTotal": m3,
+        "deliveryType":
+            MessageLookupByLibrary.simpleMessage("Metode Pengiriman"),
+        "deliveryUploadFailed":
+            MessageLookupByLibrary.simpleMessage("Gagal mengunggah gambar!"),
+        "deliveryUploading":
+            MessageLookupByLibrary.simpleMessage("Mengunggah gambar..."),
+        "deliveryWaterService":
+            MessageLookupByLibrary.simpleMessage("Pesan air"),
+        "deliveryWaterServiceTips": MessageLookupByLibrary.simpleMessage(
+            "Pilih lokasi pengiriman dan jumlah, kami akan memberikan layanan air minum yang berkualitas"),
+        "delivery_canteen":
+            MessageLookupByLibrary.simpleMessage("Canteen Pengiriman"),
+        "delivery_site":
+            MessageLookupByLibrary.simpleMessage("Lokasi Pengiriman"),
+        "delivery_site_search": MessageLookupByLibrary.simpleMessage(
+            "Masukkan nama lokasi pengiriman untuk mencari"),
+        "delivery_site_search_clear_confirm":
+            MessageLookupByLibrary.simpleMessage(
+                "Apakah Anda yakin ingin menghapus konten pencarian?"),
+        "delivery_site_search_not_found": MessageLookupByLibrary.simpleMessage(
+            "Tidak ada lokasi pengiriman yang cocok"),
+        "delivery_site_search_placeholder":
+            MessageLookupByLibrary.simpleMessage(
+                "Masukkan nama lokasi pengiriman untuk mencari"),
+        "departmentSubmitted":
+            MessageLookupByLibrary.simpleMessage("Departemen Sudah Dikirim"),
         "dept": MessageLookupByLibrary.simpleMessage("Departemen"),
+        "dessert": MessageLookupByLibrary.simpleMessage("Dessert"),
         "diningIn": MessageLookupByLibrary.simpleMessage("Makan di tempat"),
         "diningService":
             MessageLookupByLibrary.simpleMessage("Layanan Pemesanan"),
@@ -418,6 +623,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Seret ke sini untuk menghapus"),
         "dragRemoveImage": MessageLookupByLibrary.simpleMessage(
             "Seret untuk menghapus gambar"),
+        "duplicateOrderReception":
+            MessageLookupByLibrary.simpleMessage("Menerima pesanan berulang"),
+        "earlyTea": MessageLookupByLibrary.simpleMessage("Pagi Teh"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "editToBeAuditedMessage": MessageLookupByLibrary.simpleMessage(
             "Berhasil diubah, menunggu verifikasi"),
@@ -462,8 +670,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "firstTripTime":
             MessageLookupByLibrary.simpleMessage("Perjalanan Pertama"),
         "fixed": MessageLookupByLibrary.simpleMessage("Diperbaiki"),
+        "foodNameChooseError":
+            MessageLookupByLibrary.simpleMessage("Nama makanan tidak cocok"),
         "foodRecommend":
             MessageLookupByLibrary.simpleMessage("Rekomendasi Makanan"),
+        "foodType": MessageLookupByLibrary.simpleMessage("Jenis Makanan"),
         "food_menu":
             MessageLookupByLibrary.simpleMessage("Menu Makan Hari Ini"),
         "forgetPassword":
@@ -473,10 +684,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "foundItemList":
             MessageLookupByLibrary.simpleMessage("Daftar Barang Ditemukan"),
         "gender": MessageLookupByLibrary.simpleMessage("Jenis Kelamin"),
+        "getSystemDataError":
+            MessageLookupByLibrary.simpleMessage("Gagal mendapatkan data"),
         "goodHeartedColleague":
             MessageLookupByLibrary.simpleMessage("Rekan Baik Hati"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("Info barang"),
         "goodsTotal": MessageLookupByLibrary.simpleMessage("Total barang"),
+        "groupNotSubmitted":
+            MessageLookupByLibrary.simpleMessage("Grup Belum Dikirim"),
+        "groupSubmitted":
+            MessageLookupByLibrary.simpleMessage("Grup Sudah Dikirim"),
         "hazard_description": MessageLookupByLibrary.simpleMessage("Deskripsi"),
         "hazard_location": MessageLookupByLibrary.simpleMessage("Lokasi"),
         "hazard_name": MessageLookupByLibrary.simpleMessage("Nama Masalah"),
@@ -493,6 +710,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "imageUploading":
             MessageLookupByLibrary.simpleMessage("Mengunggah gambar..."),
         "images": MessageLookupByLibrary.simpleMessage("Foto"),
+        "indonesianFood":
+            MessageLookupByLibrary.simpleMessage("Makanan Indonesia"),
         "information": MessageLookupByLibrary.simpleMessage("Informasi"),
         "inputConfirmPassword": MessageLookupByLibrary.simpleMessage(
             "Masukkan kata sandi baru kembali"),
@@ -500,7 +719,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Password Tidak Cocok"),
         "inputIdCard":
             MessageLookupByLibrary.simpleMessage("Masukkan nomor kartu Anda"),
-        "inputMessage": m1,
+        "inputMessage": m4,
         "inputNewPassword":
             MessageLookupByLibrary.simpleMessage("Masukkan kata sandi baru"),
         "inputOldPassword":
@@ -554,10 +773,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "lunch": MessageLookupByLibrary.simpleMessage("Makanan Siang"),
         "man": MessageLookupByLibrary.simpleMessage("Pria"),
         "manage": MessageLookupByLibrary.simpleMessage("Mengelola"),
+        "mealDelivery": MessageLookupByLibrary.simpleMessage(
+            "Pemesanan & Pengantaran Makanan"),
+        "mealDeliveryAccept": MessageLookupByLibrary.simpleMessage(
+            "Menerima pesanan dengan pemindaian QR Code"),
+        "mealDeliverySuccess": m5,
+        "mealTime": MessageLookupByLibrary.simpleMessage("Waktu Makan"),
+        "mealType": MessageLookupByLibrary.simpleMessage("Jenis Makanan"),
         "message": MessageLookupByLibrary.simpleMessage("Pesan"),
         "mine": MessageLookupByLibrary.simpleMessage("Milikku"),
         "minePage": MessageLookupByLibrary.simpleMessage("Milikku"),
         "modifyAddress": MessageLookupByLibrary.simpleMessage("Ubah alamat"),
+        "modifyPerson": MessageLookupByLibrary.simpleMessage("Ubah Orang"),
         "monthly": MessageLookupByLibrary.simpleMessage("Wedabay Monthly"),
         "monthlySales": MessageLookupByLibrary.simpleMessage("Bulanan"),
         "moreFunction": MessageLookupByLibrary.simpleMessage("Fitur Lainnya"),
@@ -586,16 +813,20 @@ class MessageLookup extends MessageLookupByLibrary {
         "newVersion":
             MessageLookupByLibrary.simpleMessage("Versi baru ditemukan"),
         "news": MessageLookupByLibrary.simpleMessage("Berita Perusahaan"),
+        "nightSnack": MessageLookupByLibrary.simpleMessage("Malam Snack"),
         "noData": MessageLookupByLibrary.simpleMessage("Tidak ada data"),
         "noMoreData":
             MessageLookupByLibrary.simpleMessage("Tidak ada data lagi"),
         "noOrder": MessageLookupByLibrary.simpleMessage("Tidak Ada Pesanan"),
+        "noPersonInfo":
+            MessageLookupByLibrary.simpleMessage("Tidak ada informasi orang"),
         "no_food_menu_info": MessageLookupByLibrary.simpleMessage(
             "Tidak ada informasi menu makan"),
         "no_food_menu_info_tips": MessageLookupByLibrary.simpleMessage(
             "Tanggal ini tidak memiliki rencana menu"),
         "no_more_info": MessageLookupByLibrary.simpleMessage(
             "Tidak ada informasi lebih lanjut"),
+        "normalOrder": MessageLookupByLibrary.simpleMessage("Pesanan Normal"),
         "notice": MessageLookupByLibrary.simpleMessage("Pengumuman"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifikasi"),
         "oldPassword": MessageLookupByLibrary.simpleMessage("Kata Sandi Lama"),
@@ -611,17 +842,34 @@ class MessageLookup extends MessageLookupByLibrary {
         "operator": MessageLookupByLibrary.simpleMessage("Operator"),
         "optional": MessageLookupByLibrary.simpleMessage("（Opsional）"),
         "order": MessageLookupByLibrary.simpleMessage("Pesan"),
+        "orderAllLoaded": MessageLookupByLibrary.simpleMessage(
+            "Semua pesanan telah dimuat ke dalam kendaraan"),
+        "orderCenterConfirmed": MessageLookupByLibrary.simpleMessage(
+            "Pesanan Center Sudah Dikonfirmasi"),
         "orderCompleted":
             MessageLookupByLibrary.simpleMessage("Pesanan Selesai"),
         "orderDetail": MessageLookupByLibrary.simpleMessage("Detail pesanan"),
         "orderInfo": MessageLookupByLibrary.simpleMessage("Info pesanan"),
         "orderName": MessageLookupByLibrary.simpleMessage("Nama Pesanan"),
         "orderNo": MessageLookupByLibrary.simpleMessage("No pesanan"),
+        "orderNotConfirmed": MessageLookupByLibrary.simpleMessage(
+            "Tidak (Pesanan Center telah dikonfirmasi & Sedang Memasak)"),
+        "orderNotFound":
+            MessageLookupByLibrary.simpleMessage("Tidak ada informasi pesanan"),
+        "orderNum": MessageLookupByLibrary.simpleMessage("Jumlah Pesanan"),
+        "orderNumUnit": MessageLookupByLibrary.simpleMessage("Pesanan"),
+        "orderPlacedBy": MessageLookupByLibrary.simpleMessage("Pemesan"),
+        "orderProgress":
+            MessageLookupByLibrary.simpleMessage("Progres Pesanan"),
+        "orderRejected":
+            MessageLookupByLibrary.simpleMessage("Pesanan telah ditolak"),
         "orderStatus": MessageLookupByLibrary.simpleMessage("Status Pesanan"),
         "orderTime": MessageLookupByLibrary.simpleMessage("Waktu pesan"),
         "other": MessageLookupByLibrary.simpleMessage("Lainnya"),
         "packOrderSuccess":
             MessageLookupByLibrary.simpleMessage("Pengemasan Berhasil"),
+        "packageTypeError": MessageLookupByLibrary.simpleMessage(
+            "Makanan dalam kotak tidak perlu diterima"),
         "password": MessageLookupByLibrary.simpleMessage("Kata Sandi"),
         "passwordChangeFailed":
             MessageLookupByLibrary.simpleMessage("Perubahan kata sandi gagal"),
@@ -646,6 +894,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Menunggu Konfirmasi"),
         "pendingRepair":
             MessageLookupByLibrary.simpleMessage("Menunggu Perbaikan"),
+        "permissionDenied": MessageLookupByLibrary.simpleMessage(
+            "Anda tidak memiliki izin untuk mengambil makanan"),
+        "personList": MessageLookupByLibrary.simpleMessage("Daftar Orang"),
         "personalInfo": MessageLookupByLibrary.simpleMessage("Info pribadi"),
         "phone": MessageLookupByLibrary.simpleMessage("Telepon"),
         "phoneNumber": MessageLookupByLibrary.simpleMessage("Nomor telepon"),
@@ -659,9 +910,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Harap Terima Pesanan"),
         "pleaseCancelOrder":
             MessageLookupByLibrary.simpleMessage("Harap Batalkan Pesanan"),
-        "pleaseFillIn": m2,
-        "pleaseInput": m3,
-        "pleaseSelect": m4,
+        "pleaseEnterAccount": m6,
+        "pleaseEnterPassword": m7,
+        "pleaseFillIn": m8,
+        "pleaseInput": m9,
+        "pleaseScanTheBarcode": MessageLookupByLibrary.simpleMessage(
+            "Silakan letakkan kode batang di dalam kotak, sistem akan memindai otomatis"),
+        "pleaseSelect": m10,
         "please_enter_hazard_description":
             MessageLookupByLibrary.simpleMessage("Deskripsi masalah"),
         "please_enter_hazard_location":
@@ -685,6 +940,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "process": MessageLookupByLibrary.simpleMessage("Proses"),
         "processDescription":
             MessageLookupByLibrary.simpleMessage("Deskripsi Proses"),
+        "processing": MessageLookupByLibrary.simpleMessage("Memproses..."),
+        "processingScanResult":
+            MessageLookupByLibrary.simpleMessage("Memproses hasil pemindaian"),
+        "processingScanResultError":
+            MessageLookupByLibrary.simpleMessage("Pengolahan gagal"),
         "promo": MessageLookupByLibrary.simpleMessage("Video Promosi"),
         "promoDetail": MessageLookupByLibrary.simpleMessage("Promo Detail"),
         "promoList": MessageLookupByLibrary.simpleMessage("Promo List"),
@@ -701,12 +961,16 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Alamat Pengambilan"),
         "receiveTime": MessageLookupByLibrary.simpleMessage("Waktu Ditemukan"),
         "received": MessageLookupByLibrary.simpleMessage("Diterima"),
+        "recentlyScanned":
+            MessageLookupByLibrary.simpleMessage("Pemindaian terakhir"),
         "recommendPerson":
             MessageLookupByLibrary.simpleMessage("Perekomendasi"),
         "recommendReason":
             MessageLookupByLibrary.simpleMessage("Alasan Rekomendasi"),
         "recommendTime":
             MessageLookupByLibrary.simpleMessage("Waktu Rekomendasi"),
+        "reduceOrder":
+            MessageLookupByLibrary.simpleMessage("Pesanan Pengurangan"),
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refreshComplete":
             MessageLookupByLibrary.simpleMessage("Refresh complete"),
@@ -721,6 +985,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Berhasil mendaftar"),
         "registerText": MessageLookupByLibrary.simpleMessage(
             "Tidak punya akun? Daftar sekarang"),
+        "related_account":
+            MessageLookupByLibrary.simpleMessage("Akun Terhubung"),
         "releaseLoadMore": MessageLookupByLibrary.simpleMessage(
             "Lepaskan untuk memuat lebih banyak"),
         "reload": MessageLookupByLibrary.simpleMessage("Muat ulang"),
@@ -793,6 +1059,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "restaurant": MessageLookupByLibrary.simpleMessage("Restoran"),
         "returnPending":
             MessageLookupByLibrary.simpleMessage("Menunggu Pengembalian"),
+        "reward_details":
+            MessageLookupByLibrary.simpleMessage("Rincian Hadiah"),
         "satisfaction": MessageLookupByLibrary.simpleMessage("Kepuasan"),
         "saveAddress": MessageLookupByLibrary.simpleMessage("Simpan alamat"),
         "saveAddressFail":
@@ -802,15 +1070,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "scanQRCode": MessageLookupByLibrary.simpleMessage("Pindai QR"),
         "scanQRCodeTips": MessageLookupByLibrary.simpleMessage(
             "Arahkan QR ke kotak untuk memindai"),
+        "scanSettings":
+            MessageLookupByLibrary.simpleMessage("Pengaturan pemindaian"),
+        "scanStatus": MessageLookupByLibrary.simpleMessage("Status pemindaian"),
         "search": MessageLookupByLibrary.simpleMessage("Cari"),
         "searchMessage": MessageLookupByLibrary.simpleMessage("Cari pesan"),
         "searchMyOrder":
             MessageLookupByLibrary.simpleMessage("Cari pesanan saya"),
         "secret": MessageLookupByLibrary.simpleMessage("Rahasia"),
         "selectAddress": MessageLookupByLibrary.simpleMessage("Pilih alamat"),
+        "selectAllOrDeselectAll":
+            MessageLookupByLibrary.simpleMessage("Pilih Semua/Hapus Semua"),
         "selectByTime":
             MessageLookupByLibrary.simpleMessage("Pilih berdasarkan Waktu"),
         "selectDate": MessageLookupByLibrary.simpleMessage("Pilih tanggal"),
+        "selectMealTimeAndFoodType": MessageLookupByLibrary.simpleMessage(
+            "Pilih waktu makan dan jenis makanan"),
         "selectRepairTime":
             MessageLookupByLibrary.simpleMessage("Pilih Waktu Perbaikan"),
         "selectRepairType":
@@ -826,6 +1101,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_discover_time":
             MessageLookupByLibrary.simpleMessage("Pilih waktu"),
         "selected": MessageLookupByLibrary.simpleMessage("Sudah dipilih"),
+        "selfPickup": MessageLookupByLibrary.simpleMessage("Ambil Sendiri"),
         "serviceGuide": MessageLookupByLibrary.simpleMessage("Panduan Layanan"),
         "setDefault": MessageLookupByLibrary.simpleMessage(
             "Apakah Anda yakin ingin menetapkan alamat ini sebagai default?"),
@@ -840,6 +1116,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "stopLocation":
             MessageLookupByLibrary.simpleMessage("Berhenti Melacak Lokasi"),
         "submit": MessageLookupByLibrary.simpleMessage("Kirim"),
+        "submitFail": MessageLookupByLibrary.simpleMessage("Gagal kirim"),
         "submitOrder": MessageLookupByLibrary.simpleMessage("Kirim pesanan"),
         "submitSuccess": MessageLookupByLibrary.simpleMessage("Berhasil kirim"),
         "submit_hazard_report_content": MessageLookupByLibrary.simpleMessage(
@@ -848,6 +1125,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Gagal mengirim"),
         "submit_hazard_report_success":
             MessageLookupByLibrary.simpleMessage("Berhasil mengirim"),
+        "supplementOrder":
+            MessageLookupByLibrary.simpleMessage("Pesanan Tambahan"),
         "takePhoto": MessageLookupByLibrary.simpleMessage("Ambil"),
         "takeout": MessageLookupByLibrary.simpleMessage("Bungkus"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("Tiga Bulan"),
@@ -869,9 +1148,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "tripNumber": MessageLookupByLibrary.simpleMessage("Jumlah Perjalanan"),
         "type": MessageLookupByLibrary.simpleMessage("Jenis"),
+        "unbind": MessageLookupByLibrary.simpleMessage("Putuskan"),
+        "unbindFail": MessageLookupByLibrary.simpleMessage("Gagal memutuskan"),
+        "unbindSuccess":
+            MessageLookupByLibrary.simpleMessage("Berhasil memutuskan"),
+        "unbound": MessageLookupByLibrary.simpleMessage("Belum terhubung"),
         "unfixed": MessageLookupByLibrary.simpleMessage("Belum Diperbaiki"),
         "unfixedReason": MessageLookupByLibrary.simpleMessage(
             "Silakan berikan alasan belum diperbaiki"),
+        "unknown": MessageLookupByLibrary.simpleMessage("Tidak Diketahui"),
+        "unknownName":
+            MessageLookupByLibrary.simpleMessage("Nama Tidak Diketahui"),
         "unknownStatus":
             MessageLookupByLibrary.simpleMessage("Status Tidak Diketahui"),
         "unknown_dish": MessageLookupByLibrary.simpleMessage("Lainnya"),
@@ -881,6 +1168,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Status Tidak Diketahui"),
         "unlike": MessageLookupByLibrary.simpleMessage("Batal Suka"),
         "unread": MessageLookupByLibrary.simpleMessage("Belum dibaca"),
+        "unreceived": MessageLookupByLibrary.simpleMessage("Belum diambil"),
+        "unreceivedOrder":
+            MessageLookupByLibrary.simpleMessage("Pesanan belum diambil"),
         "update": MessageLookupByLibrary.simpleMessage("Perbarui"),
         "updateAddressData":
             MessageLookupByLibrary.simpleMessage("Update Data Area"),
@@ -899,6 +1189,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unggah Foto Identitas Baru"),
         "upload_images_failed":
             MessageLookupByLibrary.simpleMessage("Gagal mengunggah gambar"),
+        "usageInstructions":
+            MessageLookupByLibrary.simpleMessage("Petunjuk penggunaan"),
+        "useHandheldScannerToScanBarcode": MessageLookupByLibrary.simpleMessage(
+            "Pemindaian dengan pemindaian QR Code"),
         "userFeedback":
             MessageLookupByLibrary.simpleMessage("Umpan Balik Pengguna"),
         "userInfo": MessageLookupByLibrary.simpleMessage("Informasi Pribadi"),
@@ -908,7 +1202,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "usernamePlaceholder": MessageLookupByLibrary.simpleMessage(
             "Silakan masukkan nomor karyawan Anda"),
         "viewOrder": MessageLookupByLibrary.simpleMessage("Lihat Pesanan"),
+        "viewPerson": MessageLookupByLibrary.simpleMessage("Lihat Orang"),
         "viewed": MessageLookupByLibrary.simpleMessage("Sudah Dilihat"),
+        "waitingForScan":
+            MessageLookupByLibrary.simpleMessage("Menunggu pemindaian..."),
+        "waterService": MessageLookupByLibrary.simpleMessage("20L"),
         "welcome":
             MessageLookupByLibrary.simpleMessage("Selamat datang di IWIP"),
         "woman": MessageLookupByLibrary.simpleMessage("Wanita"),

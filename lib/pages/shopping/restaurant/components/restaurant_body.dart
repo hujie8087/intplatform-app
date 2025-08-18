@@ -53,50 +53,74 @@ class _RestaurantBodyState extends State<RestaurantBody>
   int cartCount = 0;
 
   Future _fetchData() async {
-    DataUtils.getDetailById(
-      APIs.getRestaurantDetail + '/' + widget.id.toString(),
-      success: (data) {
-        restaurantDetail = RestaurantModel.fromJson(data['data']);
-        pickTypes = restaurantDetail?.pickupTypeIds ?? [];
-        setState(() {
-          foodViewModel.initCartData(widget.id);
-        });
-      },
-    );
-
-    DataUtils.getDetailById(
-      APIs.getRestaurantMenuList + '/' + widget.id.toString(),
-      success: (data) {
-        BaseListModel<FoodCategoryModel> result =
-            BaseListModel<FoodCategoryModel>.fromJson(
-              data,
-              (json) => FoodCategoryModel.fromJson(json),
-            );
-        categories = result.data ?? [];
-        if (categories.isNotEmpty) {
-          categoryOffsetMap[categories[0].id] = 0;
-          for (int i = 1; i < categories.length; i++) {
-            // 当前分类标题的高度
-            double headerHeight = 36.px;
-            // 当前分类下所有商品的总高度 (商品数量 * 单个商品高度)
-            double itemsHeight =
-                categories[i - 1].foodCommodityList.length * 100.px;
-            // 当前分类的偏移量 = 上一个分类的偏移量 + 上一个分类的标题高度 + 上一个分类商品列表的总高度
-            // 保留整数
-            categoryOffsetMap[categories[i].id] =
-                (categoryOffsetMap[categories[i - 1].id]! +
-                        headerHeight +
-                        itemsHeight -
-                        5)
-                    .toInt();
+    try {
+      DataUtils.getDetailById(
+        APIs.getRestaurantDetail + '/' + widget.id.toString(),
+        success: (data) {
+          if (mounted) {
+            restaurantDetail = RestaurantModel.fromJson(data['data']);
+            pickTypes = restaurantDetail?.pickupTypeIds ?? [];
+            setState(() {
+              foodViewModel.initCartData(widget.id);
+            });
           }
-        }
-        print(categoryOffsetMap);
+        },
+        fail: (code, msg) {
+          print('获取餐厅详情失败: $msg');
+        },
+      );
+
+      DataUtils.getDetailById(
+        APIs.getRestaurantMenuList + '/' + widget.id.toString(),
+        success: (data) {
+          if (mounted) {
+            BaseListModel<FoodCategoryModel> result =
+                BaseListModel<FoodCategoryModel>.fromJson(
+                  data,
+                  (json) => FoodCategoryModel.fromJson(json),
+                );
+            categories = result.data ?? [];
+            if (categories.isNotEmpty) {
+              categoryOffsetMap[categories[0].id] = 0;
+              for (int i = 1; i < categories.length; i++) {
+                // 当前分类标题的高度
+                double headerHeight = 36.px;
+                // 当前分类下所有商品的总高度 (商品数量 * 单个商品高度)
+                double itemsHeight =
+                    categories[i - 1].foodCommodityList.length * 100.px;
+                // 当前分类的偏移量 = 上一个分类的偏移量 + 上一个分类的标题高度 + 上一个分类商品列表的总高度
+                // 保留整数
+                categoryOffsetMap[categories[i].id] =
+                    (categoryOffsetMap[categories[i - 1].id]! +
+                            headerHeight +
+                            itemsHeight -
+                            5)
+                        .toInt();
+              }
+            }
+            print(categoryOffsetMap);
+            setState(() {
+              isLoading = false;
+            });
+          }
+        },
+        fail: (code, msg) {
+          print('获取菜单列表失败: $msg');
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        },
+      );
+    } catch (e) {
+      print('数据加载异常: $e');
+      if (mounted) {
         setState(() {
           isLoading = false;
         });
-      },
-    );
+      }
+    }
   }
 
   // 当前选中的菜单类型
@@ -182,26 +206,27 @@ class _RestaurantBodyState extends State<RestaurantBody>
         _circleAnimationController.reset(); // 重置动画
       }
     });
-    // 监听右边菜单滚动
+    // 监听右边菜单滚动 - 优化滚动性能
     _foodScrollController.addListener(() {
       final header = _foodScrollController.stickyHeaderScrollOffset.toInt();
-      categoryOffsetMap.forEach((id, offset) {
-        // 判断偏移量是否在当前分类的偏移量范围内
-        if (offset <= header && offset + 10 >= header) {
-          // 通过id查找到对应的分类的index
-          final newIndex = categories.indexWhere(
-            (category) => category.id == id,
-          );
-          if (newIndex != selectedCategoryIndex) {
+      // 使用更高效的查找方式
+      for (int i = 0; i < categories.length; i++) {
+        final category = categories[i];
+        final offset = categoryOffsetMap[category.id];
+        if (offset != null && offset <= header && offset + 10 >= header) {
+          if (i != selectedCategoryIndex) {
             // 使用 SchedulerBinding 来确保 setState 在下一帧调用
             SchedulerBinding.instance.addPostFrameCallback((_) {
-              setState(() {
-                selectedCategoryIndex = newIndex;
-              });
+              if (mounted) {
+                setState(() {
+                  selectedCategoryIndex = i;
+                });
+              }
             });
           }
+          break; // 找到匹配项后立即退出循环
         }
-      });
+      }
     });
   }
 
@@ -210,8 +235,10 @@ class _RestaurantBodyState extends State<RestaurantBody>
     _tabController.dispose();
     _foodScrollController.dispose();
     _pageScrollController.dispose();
+    _categoryScrollController.dispose();
     _buttonAnimationController.dispose();
     _circleAnimationController.dispose();
+    _removeOverlayEntry(); // 清理overlay
     super.dispose();
   }
 
@@ -302,7 +329,7 @@ class _RestaurantBodyState extends State<RestaurantBody>
       value: foodViewModel,
       child: SafeArea(
         top: true,
-        bottom: false,
+        bottom: true,
         child: Stack(
           children: [
             NestedScrollView(
@@ -623,7 +650,7 @@ class _RestaurantBodyState extends State<RestaurantBody>
                       },
                     ),
                   ),
-                  // 右边食物列表
+                  // 右边食物列表 - 使用优化的滚动视图
                   Expanded(
                     child: CustomScrollView(
                       physics:
@@ -633,15 +660,7 @@ class _RestaurantBodyState extends State<RestaurantBody>
                               )
                               : NeverScrollableScrollPhysics(),
                       controller: _categoryScrollController,
-                      slivers:
-                          categories
-                              .map(
-                                (category) => buildCategoryList(
-                                  category: category,
-                                  cartKey: cartKey,
-                                ),
-                              )
-                              .toList(),
+                      slivers: _buildOptimizedCategorySlivers(cartKey),
                     ),
                   ),
                 ],
@@ -649,7 +668,363 @@ class _RestaurantBodyState extends State<RestaurantBody>
     );
   }
 
-  // 菜品分类UI
+  // 优化的分类列表构建方法
+  List<Widget> _buildOptimizedCategorySlivers(GlobalKey cartKey) {
+    List<Widget> slivers = [];
+
+    for (int i = 0; i < categories.length; i++) {
+      final category = categories[i];
+      slivers.add(
+        SliverStickyHeader.builder(
+          controller: _foodScrollController,
+          builder: (context, state) {
+            return Container(
+              height: 32.px,
+              padding: EdgeInsets.symmetric(vertical: 4.px, horizontal: 10.px),
+              color: Colors.white,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                category.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14.px,
+                  color: (state.isPinned ? primaryColor : Colors.grey[700]!)
+                      .withOpacity(1.0 - state.scrollPercentage),
+                ),
+                textAlign: TextAlign.left,
+              ),
+            );
+          },
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              if (index == 0) {
+                // 第一个子项是商品列表
+                return buildOptimizedFoodList(
+                  foods: category.foodCommodityList,
+                  cartKey: cartKey,
+                );
+              } else if (index == 1 && categories.last.id == category.id) {
+                // 最后一个分类的底部提示
+                return Container(
+                  padding: EdgeInsets.symmetric(vertical: 12.px),
+                  margin: EdgeInsets.only(bottom: 36.px),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 50.px,
+                        height: 1.px,
+                        color: Colors.grey[300],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.px),
+                        child: Text(
+                          S.current.endOfList,
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 10.px,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 50.px,
+                        height: 1.px,
+                        color: Colors.grey[300],
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return null;
+            }, childCount: categories.last.id == category.id ? 2 : 1),
+          ),
+        ),
+      );
+    }
+
+    return slivers;
+  }
+
+  // 优化的菜品列表构建方法
+  Widget buildOptimizedFoodList({
+    required List<FoodModel> foods,
+    required GlobalKey cartKey,
+  }) {
+    if (foods.isEmpty) {
+      return Center(child: EmptyView(type: EmptyType.empty));
+    }
+
+    return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      padding: EdgeInsets.all(0),
+      itemCount: foods.length,
+      itemBuilder: (context, index) {
+        return _buildOptimizedFoodItem(foods[index], cartKey);
+      },
+    );
+  }
+
+  // 优化的单个菜品项构建方法
+  Widget _buildOptimizedFoodItem(FoodModel food, GlobalKey cartKey) {
+    return RepaintBoundary(
+      child: Container(
+        height: 100.px,
+        padding: EdgeInsets.all(8.px),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            bottom: BorderSide(width: 1, color: Colors.grey[200]!),
+          ),
+        ),
+        child: Row(
+          children: [
+            // 图片部分
+            _buildFoodImage(food),
+            SizedBox(width: 8.px),
+            // 内容部分
+            Expanded(child: _buildFoodContent(food, cartKey)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 构建菜品图片
+  Widget _buildFoodImage(FoodModel food) {
+    if (food.image != '') {
+      return RepaintBoundary(
+        child: Hero(
+          tag: 'food_image_${food.id}',
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => ImagePreview(
+                        imageUrl:
+                            food.image.indexOf('food') != -1
+                                ? APIs.foodPrefix + food.image
+                                : APIs.imagePrefix + food.image,
+                        tag: 'food_image_${food.id}',
+                      ),
+                ),
+              );
+            },
+            child: CachedNetworkImage(
+              imageUrl:
+                  food.image.indexOf('food') != -1
+                      ? APIs.foodPrefix + food.image
+                      : APIs.imagePrefix + food.image,
+              errorWidget: (context, url, error) => Icon(Icons.error),
+              fadeInDuration: Duration(milliseconds: 300), // 减少动画时间
+              height: 80.px,
+              width: 80.px,
+              fit: BoxFit.cover,
+              memCacheWidth: 160, // 优化内存缓存
+              memCacheHeight: 160,
+              maxWidthDiskCache: 320, // 磁盘缓存优化
+              maxHeightDiskCache: 320,
+              placeholder:
+                  (context, url) => Container(
+                    width: 80.px,
+                    height: 80.px,
+                    color: Colors.grey[200],
+                    child: Center(
+                      child: SizedBox(
+                        width: 20.px,
+                        height: 20.px,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.px,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            primaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return RepaintBoundary(
+        child: Image.asset(
+          'assets/images/empty/空.png',
+          width: 80.px,
+          height: 80.px,
+        ),
+      );
+    }
+  }
+
+  // 构建菜品内容
+  Widget _buildFoodContent(FoodModel food, GlobalKey cartKey) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                food.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold),
+              ),
+            ),
+            SizedBox(width: 8.px),
+            GestureDetector(
+              onTap: () => _addCount(food),
+              child: Column(
+                children: [
+                  Icon(Icons.thumb_up, color: primaryColor, size: 20.px),
+                  Text(
+                    food.count.toString(),
+                    style: TextStyle(fontSize: 10.px),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 3.px),
+        Text(
+          S.current.remaining + ':' + food.stock.toString(),
+          style: TextStyle(fontSize: 10.px),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              food.price.toString(),
+              style: TextStyle(
+                color: secondaryColor,
+                fontSize: 14.px,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            _buildFoodActions(food, cartKey),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // 构建菜品操作按钮
+  Widget _buildFoodActions(FoodModel food, GlobalKey cartKey) {
+    return Consumer<FoodViewModel>(
+      builder: (context, foodViewModel, child) {
+        final cartItem = foodViewModel.cartItems.firstWhere(
+          (item) => item.id == food.id,
+          orElse:
+              () => FoodModel(
+                id: food.id,
+                name: food.name,
+                image: food.image,
+                price: food.price,
+                stock: food.stock,
+                num: 0,
+                count: food.count,
+              ),
+        );
+
+        return Row(
+          children: [
+            if (cartItem.num > 0) ...[
+              _buildDecreaseButton(food),
+              SizedBox(width: 4.px),
+              _buildQuantityInput(food, cartItem.num),
+              SizedBox(width: 4.px),
+            ],
+            _buildAddButton(food, cartItem, cartKey),
+          ],
+        );
+      },
+    );
+  }
+
+  // 构建减少按钮
+  Widget _buildDecreaseButton(FoodModel food) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        shape: CircleBorder(),
+        padding: EdgeInsets.zero,
+        backgroundColor: primaryColor,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        minimumSize: Size(16.px, 16.px),
+      ),
+      onPressed: () {
+        foodViewModel.decreaseQuantity(food);
+      },
+      child: Icon(Icons.remove, color: Colors.white, size: 18.px),
+    );
+  }
+
+  // 构建数量输入框
+  Widget _buildQuantityInput(FoodModel food, int currentNum) {
+    return Container(
+      width: 38.px,
+      height: 20.px,
+      child: TextField(
+        textAlign: TextAlign.center,
+        keyboardType: TextInputType.numberWithOptions(
+          signed: false,
+          decimal: false,
+        ),
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        controller: TextEditingController(text: currentNum.toString()),
+        style: TextStyle(fontSize: 12.px),
+        decoration: InputDecoration(border: InputBorder.none),
+        onSubmitted: (value) {
+          int? val = int.tryParse(value);
+          if (val == null || val == '') {
+            val = 0;
+          }
+          if (val > food.stock) {
+            ProgressHUD.showText(S.current.exceedStock);
+            val = food.stock;
+          }
+          foodViewModel.updateQuantity(food, val);
+        },
+      ),
+    );
+  }
+
+  // 构建添加按钮
+  Widget _buildAddButton(
+    FoodModel food,
+    FoodModel cartItem,
+    GlobalKey cartKey,
+  ) {
+    final foodKey = GlobalKey();
+    return ElevatedButton(
+      key: foodKey,
+      style: ElevatedButton.styleFrom(
+        shape: CircleBorder(),
+        padding: EdgeInsets.zero,
+        backgroundColor: primaryColor,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        minimumSize: Size(16.px, 16.px),
+      ),
+      onPressed: () {
+        if (cartItem.num >= food.stock) {
+          ProgressHUD.showText(S.current.exceedStock);
+          return;
+        }
+        _addToCartAnimation(foodKey);
+        foodViewModel.addToCart(food);
+      },
+      child: Icon(Icons.add, color: Colors.white, size: 18.px),
+    );
+  }
+
+  // 菜品分类UI - 保留原有方法以兼容
   Widget buildCategoryList({
     required FoodCategoryModel category,
     required GlobalKey cartKey,
@@ -716,288 +1091,20 @@ class _RestaurantBodyState extends State<RestaurantBody>
     );
   }
 
-  // 菜品UI
+  // 菜品UI - 优化版本，减少内存占用和提高性能
   Widget buildFoodList({required List<FoodModel> foods}) {
-    // 为每一个菜品添加一个key
-    final foodKeys = foods.map((food) => GlobalKey()).toList();
-    return Container(
-      child:
-          foods.isEmpty
-              ? Center(child: EmptyView(type: EmptyType.empty))
-              : ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding: EdgeInsets.all(0),
-                itemCount: foods.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 100.px,
-                    padding: EdgeInsets.all(8.px),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                        bottom: BorderSide(width: 1, color: Colors.grey[200]!),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        if (foods[index].image != '')
-                          Hero(
-                            tag: 'food_image_${foods[index].id}',
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder:
-                                        (context) => ImagePreview(
-                                          imageUrl:
-                                              foods[index].image.indexOf(
-                                                        'food',
-                                                      ) !=
-                                                      -1
-                                                  ? APIs.foodPrefix +
-                                                      foods[index].image
-                                                  : APIs.imagePrefix +
-                                                      foods[index].image,
-                                          tag: 'food_image_${foods[index].id}',
-                                        ),
-                                  ),
-                                );
-                              },
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    foods[index].image.indexOf('food') != -1
-                                        ? APIs.foodPrefix + foods[index].image
-                                        : APIs.imagePrefix + foods[index].image,
-                                errorWidget:
-                                    (context, url, error) =>
-                                        Icon(Icons.error), // 加载失败时的图标
-                                fadeInDuration: Duration(milliseconds: 500),
-                                height: 80.px,
-                                width: 80.px,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        if (foods[index].image == '')
-                          Image.asset(
-                            'assets/images/empty/空.png',
-                            width: 80.px,
-                            height: 80.px,
-                          ),
-                        SizedBox(width: 8.px),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start, // 多行对齐用 start
-                                children: [
-                                  // 左边文字区域，设置可伸展、两行省略
-                                  Expanded(
-                                    child: Text(
-                                      foods[index].name,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 12.px,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 8.px), // 留点间距
-                                  // 右边点赞图标和数量
-                                  GestureDetector(
-                                    onTap: () {
-                                      _addCount(foods[index]);
-                                    },
-                                    child: Column(
-                                      children: [
-                                        Icon(
-                                          Icons.thumb_up,
-                                          color: primaryColor,
-                                          size: 20.px,
-                                        ),
-                                        Text(
-                                          foods[index].count.toString(),
-                                          style: TextStyle(fontSize: 10.px),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+    if (foods.isEmpty) {
+      return Center(child: EmptyView(type: EmptyType.empty));
+    }
 
-                              SizedBox(height: 3.px),
-                              Text(
-                                S.current.remaining +
-                                    ':' +
-                                    foods[index].stock.toString(),
-                                style: TextStyle(fontSize: 10.px),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    foods[index].price.toString(),
-                                    style: TextStyle(
-                                      color: secondaryColor,
-                                      fontSize: 14.px,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Consumer<FoodViewModel>(
-                                    builder: (context, foodViewModel, child) {
-                                      // 获取当前品在购物车中的数量
-                                      final cartItem = foodViewModel.cartItems
-                                          .firstWhere(
-                                            (item) =>
-                                                item.id == foods[index].id,
-                                            orElse:
-                                                () => FoodModel(
-                                                  id: foods[index].id,
-                                                  name: foods[index].name,
-                                                  image: foods[index].image,
-                                                  price: foods[index].price,
-                                                  stock: foods[index].stock,
-                                                  num: 0,
-                                                  count: foods[index].count,
-                                                ),
-                                          );
-
-                                      return Row(
-                                        children: [
-                                          // 只有当商品在购物车中时才显示减号按钮和数量
-                                          if (cartItem.num > 0) ...[
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                shape: CircleBorder(),
-                                                padding: EdgeInsets.zero,
-                                                backgroundColor: primaryColor,
-                                                tapTargetSize:
-                                                    MaterialTapTargetSize
-                                                        .shrinkWrap,
-                                                minimumSize: Size(16.px, 16.px),
-                                              ),
-                                              onPressed: () {
-                                                context
-                                                    .read<FoodViewModel>()
-                                                    .decreaseQuantity(
-                                                      foods[index],
-                                                    );
-                                              },
-                                              child: Icon(
-                                                Icons.remove,
-                                                color: Colors.white,
-                                                size: 18.px,
-                                              ),
-                                            ),
-                                            SizedBox(width: 4.px),
-                                            // 换成可输入的输入框
-                                            Container(
-                                              width: 28.px,
-                                              height: 20.px,
-                                              child: TextField(
-                                                // 文字居中
-                                                textAlign: TextAlign.center,
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter
-                                                      .digitsOnly, // 只允许输入数字
-                                                ],
-                                                controller:
-                                                    TextEditingController(
-                                                      text:
-                                                          cartItem
-                                                              .num.toString(),
-                                                    ),
-                                                style: TextStyle(
-                                                  fontSize: 12.px,
-                                                ),
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                ),
-                                                onSubmitted: (value) {
-                                                  int? val = int.tryParse(
-                                                    value,
-                                                  );
-                                                  // 如果输入的值为空，则设置为0
-                                                  if (val == null) {
-                                                    val = 0;
-                                                  }
-                                                  // 如果输入的值大于库存，则设置为库存
-                                                  if (val >
-                                                      foods[index].stock) {
-                                                    ProgressHUD.showText(
-                                                      S.current.exceedStock,
-                                                    );
-                                                    val = foods[index].stock;
-                                                  }
-                                                  context
-                                                      .read<FoodViewModel>()
-                                                      .updateQuantity(
-                                                        foods[index],
-                                                        val,
-                                                      );
-                                                },
-                                              ),
-                                            ),
-                                            SizedBox(width: 4.px),
-                                          ],
-                                          // 添加到购物车按钮
-                                          ElevatedButton(
-                                            key: foodKeys[index],
-                                            style: ElevatedButton.styleFrom(
-                                              shape: CircleBorder(),
-                                              padding: EdgeInsets.zero,
-                                              backgroundColor: primaryColor,
-                                              // 缩小按钮的点击区域至实际内容大小
-                                              tapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
-                                              minimumSize: Size(16.px, 16.px),
-                                            ),
-                                            onPressed: () {
-                                              // 判断是否超出库存
-                                              if (cartItem.num >=
-                                                  foods[index].stock) {
-                                                ProgressHUD.showText(
-                                                  S.current.exceedStock,
-                                                );
-                                                return;
-                                              }
-                                              _addToCartAnimation(
-                                                foodKeys[index],
-                                              );
-                                              context
-                                                  .read<FoodViewModel>()
-                                                  .addToCart(foods[index]);
-                                            },
-                                            child: Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                              size: 18.px,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+    return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      padding: EdgeInsets.all(0),
+      itemCount: foods.length,
+      itemBuilder: (context, index) {
+        return _buildOptimizedFoodItem(foods[index], GlobalKey());
+      },
     );
   }
 }

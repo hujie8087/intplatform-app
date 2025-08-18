@@ -546,4 +546,32 @@ class DataUtils {
       fail: fail,
     );
   }
+
+  // 绑定报餐送餐帐号
+  static void bindMealDeliveryAccount(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put(
+      '/system/user/userAuthorizeWithMeal',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 解绑报餐送餐帐号
+  static void revokeMealDeliveryAccount(
+    userId, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put(
+      '/system/user/revokeUserAuthorizeWithMeal?userId=$userId',
+      null,
+      success: success,
+      fail: fail,
+    );
+  }
 }

@@ -126,7 +126,6 @@ class FoodViewModel with ChangeNotifier {
         'items': cartItems.map((item) => item.toJson()).toList(),
       };
       await SpUtils.saveModel('cart_$restaurantId', cartData);
-      print('cart_$restaurantId: ${cartData}');
     } catch (e) {
       print('Error saving cart data: $e');
     }
@@ -139,10 +138,11 @@ class FoodViewModel with ChangeNotifier {
     if (existingItemIndex != -1) {
       cartItems[existingItemIndex].num = (cartItems[existingItemIndex].num) + 1;
     } else {
-      food.num = 1;
-      cartItems.add(food);
+      // clone一份，避免外部引用干扰
+      final newFood = FoodModel.fromJson(food.toJson());
+      newFood.num = 1;
+      cartItems.add(newFood);
     }
-
     calculateTotal();
     saveCartToStorage();
     notifyListeners();

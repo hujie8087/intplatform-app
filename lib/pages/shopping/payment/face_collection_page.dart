@@ -157,6 +157,7 @@ class _FaceCollectionPageState extends State<FaceCollectionPage> {
           Text(
             S.current.faceCollectionTips,
             style: TextStyle(color: secondaryColor, fontSize: 12.px),
+            textAlign: TextAlign.center,
           ),
           // 人脸采集说明
           Container(

@@ -20,15 +20,28 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(title) => "Delete ${title} success!";
+  static String m0(name) => "Bind ${name} account";
 
-  static String m1(title) => "Enter ${title}";
+  static String m1(name) => "Confirm to unbind ${name} account";
 
-  static String m2(title) => "Please fill in ${title}";
+  static String m2(title) => "Delete ${title} success!";
 
-  static String m3(label) => "Please enter ${label}";
+  static String m3(count) => "Total ${count} Person";
 
-  static String m4(title) => "Please select";
+  static String m4(title) => "Enter ${title}";
+
+  static String m5(count) =>
+      "Meal delivery successful, ${count} packages remaining";
+
+  static String m6(name) => "Please enter ${name} account";
+
+  static String m7(name) => "Please enter ${name} password";
+
+  static String m8(title) => "Please fill in ${title}";
+
+  static String m9(label) => "Please enter ${label}";
+
+  static String m10(title) => "Please select ${title}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -40,6 +53,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "acceptTime": MessageLookupByLibrary.simpleMessage("Accept time"),
         "accommodationProcess":
             MessageLookupByLibrary.simpleMessage("Accommodation process"),
+        "account": MessageLookupByLibrary.simpleMessage("Account"),
         "actualPayment": MessageLookupByLibrary.simpleMessage("Actual payment"),
         "addAddress": MessageLookupByLibrary.simpleMessage("Add address"),
         "address": MessageLookupByLibrary.simpleMessage("Address"),
@@ -57,7 +71,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "attention": MessageLookupByLibrary.simpleMessage("Attention"),
         "auditRejected":
             MessageLookupByLibrary.simpleMessage("Rejected by Review"),
+        "bind": MessageLookupByLibrary.simpleMessage("Bind"),
+        "bindAccount": m0,
+        "bindFail": MessageLookupByLibrary.simpleMessage("Bind failed"),
+        "bindMealDeliveryAccount": MessageLookupByLibrary.simpleMessage(
+            "Bind meal delivery account, get meal delivery system permission function information"),
+        "bindSuccess": MessageLookupByLibrary.simpleMessage("Bind success"),
+        "bindThirdPartyAccount":
+            MessageLookupByLibrary.simpleMessage("Bind third-party account"),
         "birthday": MessageLookupByLibrary.simpleMessage("Birthday"),
+        "bottleWater": MessageLookupByLibrary.simpleMessage("Bottle Water"),
+        "bound": MessageLookupByLibrary.simpleMessage("Bound"),
         "breakfast": MessageLookupByLibrary.simpleMessage("Breakfast"),
         "busTimetable": MessageLookupByLibrary.simpleMessage("Bus Timetable"),
         "busToday": MessageLookupByLibrary.simpleMessage("Today"),
@@ -104,11 +128,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "changeTheme": MessageLookupByLibrary.simpleMessage("Change theme"),
         "checkUpdate": MessageLookupByLibrary.simpleMessage("Check Update"),
         "checkout": MessageLookupByLibrary.simpleMessage("Checkout"),
+        "chineseFood": MessageLookupByLibrary.simpleMessage("Chinese Food"),
         "chooseRoute": MessageLookupByLibrary.simpleMessage("Choose Route"),
         "cleaning_area": MessageLookupByLibrary.simpleMessage("Cleaning Area"),
         "cleaning_basic_info":
             MessageLookupByLibrary.simpleMessage("Basic Info"),
         "cleaning_contacts": MessageLookupByLibrary.simpleMessage("Contacts"),
+        "cleaning_date": MessageLookupByLibrary.simpleMessage("Date"),
         "cleaning_deep_cleaning":
             MessageLookupByLibrary.simpleMessage("Deep Cleaning"),
         "cleaning_evaluate": MessageLookupByLibrary.simpleMessage("Evaluate"),
@@ -164,6 +190,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "cleaning_project":
             MessageLookupByLibrary.simpleMessage("Cleaning Project"),
         "cleaning_remark": MessageLookupByLibrary.simpleMessage("Remark"),
+        "cleaning_remark_hint": MessageLookupByLibrary.simpleMessage(
+            "Please enter additional information (optional)"),
         "cleaning_room_number":
             MessageLookupByLibrary.simpleMessage("Room Number"),
         "cleaning_search": MessageLookupByLibrary.simpleMessage("Search"),
@@ -179,13 +207,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Service Detail"),
         "cleaning_special_cleaning":
             MessageLookupByLibrary.simpleMessage("Special Cleaning"),
+        "cleaning_submit":
+            MessageLookupByLibrary.simpleMessage("Submit Cleaning Service"),
         "cleaning_tel": MessageLookupByLibrary.simpleMessage("Tel"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
         "clearCart": MessageLookupByLibrary.simpleMessage("Clear cart"),
         "clearCartTips":
             MessageLookupByLibrary.simpleMessage("Confirm to clear the cart?"),
+        "clickConfirmButtonToViewUnreceivedOrders":
+            MessageLookupByLibrary.simpleMessage(
+                "Click the confirm button to view the unreceived orders"),
         "clickRetry":
             MessageLookupByLibrary.simpleMessage("Click to try again"),
+        "close": MessageLookupByLibrary.simpleMessage("Close"),
         "companyNews": MessageLookupByLibrary.simpleMessage("Company News"),
         "completed": MessageLookupByLibrary.simpleMessage("Completed"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
@@ -209,6 +243,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirmSubmit": MessageLookupByLibrary.simpleMessage("Confirm submit"),
         "confirmSubmitContent":
             MessageLookupByLibrary.simpleMessage("Confirm to submit order?"),
+        "confirmToUnbind": m1,
         "contact": MessageLookupByLibrary.simpleMessage("Contact"),
         "contactNumber": MessageLookupByLibrary.simpleMessage("Contact Number"),
         "contactPerson": MessageLookupByLibrary.simpleMessage("Contact person"),
@@ -218,6 +253,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "contactUs": MessageLookupByLibrary.simpleMessage("Contact us"),
         "contentUpdating": MessageLookupByLibrary.simpleMessage(
             "Content is updating, please wait..."),
+        "copySuccess": MessageLookupByLibrary.simpleMessage("Copy Success"),
         "coupleRoom": MessageLookupByLibrary.simpleMessage("Room"),
         "coupleRoom_feedback":
             MessageLookupByLibrary.simpleMessage("Room Feedback"),
@@ -356,6 +392,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Employee"),
         "coupleRoom_room_view": MessageLookupByLibrary.simpleMessage("View"),
         "createTime": MessageLookupByLibrary.simpleMessage("Create time"),
+        "currentBound": MessageLookupByLibrary.simpleMessage("Current bound: "),
         "currentVersionIsLatest": MessageLookupByLibrary.simpleMessage(
             "You are using the latest version"),
         "dangerPage": MessageLookupByLibrary.simpleMessage("Hazards"),
@@ -369,7 +406,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Delete repair success"),
         "deleteRepairTips": MessageLookupByLibrary.simpleMessage(
             "Confirm to delete this repair order?"),
-        "deleteSuccess": m0,
+        "deleteSuccess": m2,
         "deliver": MessageLookupByLibrary.simpleMessage("Deliver"),
         "deliverFailed": MessageLookupByLibrary.simpleMessage("Deliver failed"),
         "deliverFailedTips": MessageLookupByLibrary.simpleMessage(
@@ -383,20 +420,171 @@ class MessageLookup extends MessageLookupByLibrary {
         "delivering": MessageLookupByLibrary.simpleMessage("Delivering"),
         "delivery": MessageLookupByLibrary.simpleMessage("Delivery"),
         "deliveryAddress": MessageLookupByLibrary.simpleMessage("Address"),
+        "deliveryAuditRejected":
+            MessageLookupByLibrary.simpleMessage("Audit Rejected"),
+        "deliveryAudited": MessageLookupByLibrary.simpleMessage("Audited"),
+        "deliveryBag": MessageLookupByLibrary.simpleMessage("Bag"),
+        "deliveryBindAccount":
+            MessageLookupByLibrary.simpleMessage("Bind Account"),
+        "deliveryBoxedMeal": MessageLookupByLibrary.simpleMessage("Boxed Meal"),
+        "deliveryBucket": MessageLookupByLibrary.simpleMessage("Bucket"),
+        "deliveryCancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "deliveryCancelled": MessageLookupByLibrary.simpleMessage("Cancelled"),
+        "deliveryConfirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+        "deliveryCooking": MessageLookupByLibrary.simpleMessage("Cooking"),
+        "deliveryDeliver": MessageLookupByLibrary.simpleMessage(
+            "Scan QR code with handheld device"),
+        "deliveryDeliverOrder":
+            MessageLookupByLibrary.simpleMessage("Start Delivery"),
+        "deliveryDeliverOrderFail":
+            MessageLookupByLibrary.simpleMessage("Start Delivery Failed"),
+        "deliveryDelivered": MessageLookupByLibrary.simpleMessage("Delivered"),
+        "deliveryDelivering":
+            MessageLookupByLibrary.simpleMessage("Delivering"),
+        "deliveryDept": MessageLookupByLibrary.simpleMessage("Department"),
+        "deliveryDeptName":
+            MessageLookupByLibrary.simpleMessage("Department Name"),
+        "deliveryEmail": MessageLookupByLibrary.simpleMessage("Email"),
         "deliveryException": MessageLookupByLibrary.simpleMessage("Exception"),
+        "deliveryFail":
+            MessageLookupByLibrary.simpleMessage("Delivery failed!"),
         "deliveryFee": MessageLookupByLibrary.simpleMessage("Delivery fee"),
+        "deliveryGetMealPlace":
+            MessageLookupByLibrary.simpleMessage("Getting Meal Place Data..."),
+        "deliveryGetMealPlaceFail":
+            MessageLookupByLibrary.simpleMessage("Get Meal Place Data Failed"),
+        "deliveryGetPersonList":
+            MessageLookupByLibrary.simpleMessage("Get Person List"),
+        "deliveryGetPersonListFail":
+            MessageLookupByLibrary.simpleMessage("Get Person List Failed"),
         "deliveryInfo":
             MessageLookupByLibrary.simpleMessage("View delivery info"),
+        "deliveryJobNumber": MessageLookupByLibrary.simpleMessage("Job Number"),
+        "deliveryLoading": MessageLookupByLibrary.simpleMessage("Loading..."),
+        "deliveryMealBox": MessageLookupByLibrary.simpleMessage("Meal Box"),
         "deliveryName": MessageLookupByLibrary.simpleMessage("Name"),
+        "deliveryNotAudited":
+            MessageLookupByLibrary.simpleMessage("Not Audited"),
+        "deliveryNotStarted":
+            MessageLookupByLibrary.simpleMessage("Not Started"),
         "deliveryOrder": MessageLookupByLibrary.simpleMessage("Delivery order"),
+        "deliveryOrderAvailable":
+            MessageLookupByLibrary.simpleMessage("Today\'s Available Meals"),
+        "deliveryOrderCompleted":
+            MessageLookupByLibrary.simpleMessage("Order Completed"),
         "deliveryOrderDetail":
             MessageLookupByLibrary.simpleMessage("Delivery order detail"),
+        "deliveryOrderList": MessageLookupByLibrary.simpleMessage("Order List"),
         "deliveryOrderNo":
             MessageLookupByLibrary.simpleMessage("Delivery order number"),
+        "deliveryOrderNoPermission": MessageLookupByLibrary.simpleMessage(
+            "No permission to order meals, contact department staff"),
+        "deliveryOrderNotAvailable": MessageLookupByLibrary.simpleMessage(
+            "Current time is not available for ordering"),
+        "deliveryOrderNotBindAccount": MessageLookupByLibrary.simpleMessage(
+            "Not bound to the meal delivery account, please bind the account first"),
+        "deliveryOrderPlaced":
+            MessageLookupByLibrary.simpleMessage("Order Placed"),
+        "deliveryOrderStatus":
+            MessageLookupByLibrary.simpleMessage("Order Status"),
+        "deliveryOrderSubmit":
+            MessageLookupByLibrary.simpleMessage("Submit Order"),
+        "deliveryOrderSubmitFail":
+            MessageLookupByLibrary.simpleMessage("Order Submit Failed"),
+        "deliveryOrderSuccess": MessageLookupByLibrary.simpleMessage(
+            "Order submitted successfully!"),
+        "deliveryOrderTemporary":
+            MessageLookupByLibrary.simpleMessage("Temporary Staff Order"),
+        "deliveryOrderTips": MessageLookupByLibrary.simpleMessage(
+            "Please select the appropriate meal type according to the meal time, and the order cannot be changed after submission"),
+        "deliveryOrderTitle":
+            MessageLookupByLibrary.simpleMessage("Today\'s Order"),
+        "deliveryOrderType": MessageLookupByLibrary.simpleMessage("Order Type"),
+        "deliveryPackOrderFail":
+            MessageLookupByLibrary.simpleMessage("Packing Failed"),
+        "deliveryPackage": MessageLookupByLibrary.simpleMessage("Package"),
+        "deliveryPackageType":
+            MessageLookupByLibrary.simpleMessage("Package Type"),
+        "deliveryPacked": MessageLookupByLibrary.simpleMessage("Packed"),
+        "deliveryPackedMeal":
+            MessageLookupByLibrary.simpleMessage("Packed Meal"),
         "deliveryPhone": MessageLookupByLibrary.simpleMessage("Tel"),
         "deliveryPhoto": MessageLookupByLibrary.simpleMessage("Delivery Photo"),
+        "deliveryPost": MessageLookupByLibrary.simpleMessage("Post"),
+        "deliveryReject": MessageLookupByLibrary.simpleMessage("Reject"),
+        "deliveryRejectFail":
+            MessageLookupByLibrary.simpleMessage("Reject Failed"),
+        "deliveryRejectReason":
+            MessageLookupByLibrary.simpleMessage("Reject Reason"),
+        "deliveryRejectSuccess":
+            MessageLookupByLibrary.simpleMessage("Reject Success"),
+        "deliveryReset": MessageLookupByLibrary.simpleMessage("Reset"),
+        "deliveryReturnOrder":
+            MessageLookupByLibrary.simpleMessage("Return Order"),
+        "deliveryReturnOrderConfirm":
+            MessageLookupByLibrary.simpleMessage("Confirm Return Order?"),
+        "deliveryReturnOrderFail":
+            MessageLookupByLibrary.simpleMessage("Return Order Failed"),
+        "deliveryReturnOrderSuccess":
+            MessageLookupByLibrary.simpleMessage("Return Order Success"),
+        "deliverySearchOrder": MessageLookupByLibrary.simpleMessage(
+            "Search by delivery location or order number"),
+        "deliverySearchPerson":
+            MessageLookupByLibrary.simpleMessage("Search by name"),
+        "deliverySelectPerson":
+            MessageLookupByLibrary.simpleMessage("Select Person"),
+        "deliverySelectPlace":
+            MessageLookupByLibrary.simpleMessage("Select Place"),
+        "deliverySelectTeam":
+            MessageLookupByLibrary.simpleMessage("Select Team"),
+        "deliverySelectTeamFail":
+            MessageLookupByLibrary.simpleMessage("Get Team Failed"),
+        "deliverySelectTime":
+            MessageLookupByLibrary.simpleMessage("Select Time"),
+        "deliverySelectedConditions":
+            MessageLookupByLibrary.simpleMessage("Selected Conditions:"),
+        "deliveryStartDelivery":
+            MessageLookupByLibrary.simpleMessage("Start Delivery"),
+        "deliverySubmit": MessageLookupByLibrary.simpleMessage("Submit"),
+        "deliverySubmitOrder":
+            MessageLookupByLibrary.simpleMessage("Submit Order"),
+        "deliverySubmitOrderFail":
+            MessageLookupByLibrary.simpleMessage("Submit Failed"),
+        "deliverySubmitOrderSuccess":
+            MessageLookupByLibrary.simpleMessage("Submit Success"),
+        "deliverySubmitStatus":
+            MessageLookupByLibrary.simpleMessage("Submit Status"),
+        "deliverySuccess":
+            MessageLookupByLibrary.simpleMessage("Delivery successful!"),
+        "deliveryTel": MessageLookupByLibrary.simpleMessage("Tel"),
         "deliveryTime": MessageLookupByLibrary.simpleMessage("Delivery time"),
+        "deliveryTotal": m3,
+        "deliveryType": MessageLookupByLibrary.simpleMessage("Delivery Type"),
+        "deliveryUploadFailed":
+            MessageLookupByLibrary.simpleMessage("Image upload failed!"),
+        "deliveryUploading":
+            MessageLookupByLibrary.simpleMessage("Uploading..."),
+        "deliveryWaterService":
+            MessageLookupByLibrary.simpleMessage("Water Service"),
+        "deliveryWaterServiceTips": MessageLookupByLibrary.simpleMessage(
+            "Select delivery site and quantity, we will provide you with优质的饮用水服务"),
+        "delivery_canteen":
+            MessageLookupByLibrary.simpleMessage("Delivery Canteen"),
+        "delivery_site": MessageLookupByLibrary.simpleMessage("Delivery Site"),
+        "delivery_site_search": MessageLookupByLibrary.simpleMessage(
+            "Please enter the delivery site name to search"),
+        "delivery_site_search_clear_confirm":
+            MessageLookupByLibrary.simpleMessage(
+                "Are you sure you want to clear the search content?"),
+        "delivery_site_search_not_found": MessageLookupByLibrary.simpleMessage(
+            "No matching delivery site found"),
+        "delivery_site_search_placeholder":
+            MessageLookupByLibrary.simpleMessage(
+                "Please enter the delivery site name to search"),
+        "departmentSubmitted":
+            MessageLookupByLibrary.simpleMessage("Department Submitted"),
         "dept": MessageLookupByLibrary.simpleMessage("Department"),
+        "dessert": MessageLookupByLibrary.simpleMessage("Dessert"),
         "diningIn": MessageLookupByLibrary.simpleMessage("Dining In"),
         "diningService": MessageLookupByLibrary.simpleMessage("Dining Service"),
         "diningTime": MessageLookupByLibrary.simpleMessage("Dining time"),
@@ -411,6 +599,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Drag here to remove"),
         "dragRemoveImage":
             MessageLookupByLibrary.simpleMessage("Drag to remove image"),
+        "duplicateOrderReception":
+            MessageLookupByLibrary.simpleMessage("Duplicate Order Reception"),
+        "earlyTea": MessageLookupByLibrary.simpleMessage("Early Tea"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "editToBeAuditedMessage": MessageLookupByLibrary.simpleMessage(
             "Modified successfully, pending review"),
@@ -454,8 +645,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "firstTripTime":
             MessageLookupByLibrary.simpleMessage("First Trip Time"),
         "fixed": MessageLookupByLibrary.simpleMessage("Fixed"),
+        "foodNameChooseError": MessageLookupByLibrary.simpleMessage(
+            "Meal time and food type do not match"),
         "foodRecommend":
             MessageLookupByLibrary.simpleMessage("Food Recommendation"),
+        "foodType": MessageLookupByLibrary.simpleMessage("Food Type"),
         "food_menu": MessageLookupByLibrary.simpleMessage("Food Menu"),
         "forgetPassword":
             MessageLookupByLibrary.simpleMessage("Forget password?"),
@@ -464,10 +658,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "foundItemList":
             MessageLookupByLibrary.simpleMessage("Found Item List"),
         "gender": MessageLookupByLibrary.simpleMessage("Gender"),
+        "getSystemDataError":
+            MessageLookupByLibrary.simpleMessage("Get data failed"),
         "goodHeartedColleague":
             MessageLookupByLibrary.simpleMessage("Kind Colleague"),
         "goodsInfo": MessageLookupByLibrary.simpleMessage("Goods info"),
         "goodsTotal": MessageLookupByLibrary.simpleMessage("Goods total"),
+        "groupNotSubmitted":
+            MessageLookupByLibrary.simpleMessage("Group Not Submitted"),
+        "groupSubmitted":
+            MessageLookupByLibrary.simpleMessage("Group Submitted"),
         "hazard_description":
             MessageLookupByLibrary.simpleMessage("Hazard Description"),
         "hazard_location":
@@ -486,6 +686,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "imageUploading":
             MessageLookupByLibrary.simpleMessage("Image uploading..."),
         "images": MessageLookupByLibrary.simpleMessage("Images"),
+        "indonesianFood":
+            MessageLookupByLibrary.simpleMessage("Indonesian Food"),
         "information": MessageLookupByLibrary.simpleMessage("Information"),
         "inputConfirmPassword": MessageLookupByLibrary.simpleMessage(
             "Please enter the new password again"),
@@ -493,7 +695,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The two passwords are different"),
         "inputIdCard": MessageLookupByLibrary.simpleMessage(
             "Please enter your ID card number"),
-        "inputMessage": m1,
+        "inputMessage": m4,
         "inputNewPassword":
             MessageLookupByLibrary.simpleMessage("Please enter a new password"),
         "inputOldPassword": MessageLookupByLibrary.simpleMessage(
@@ -544,10 +746,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "lunch": MessageLookupByLibrary.simpleMessage("Lunch"),
         "man": MessageLookupByLibrary.simpleMessage("Male"),
         "manage": MessageLookupByLibrary.simpleMessage("Manage"),
+        "mealDelivery": MessageLookupByLibrary.simpleMessage("Meal Delivery"),
+        "mealDeliveryAccept": MessageLookupByLibrary.simpleMessage(
+            "Scan QR code with handheld device"),
+        "mealDeliverySuccess": m5,
+        "mealTime": MessageLookupByLibrary.simpleMessage("Meal Time"),
+        "mealType": MessageLookupByLibrary.simpleMessage("Meal Type"),
         "message": MessageLookupByLibrary.simpleMessage("Message"),
         "mine": MessageLookupByLibrary.simpleMessage("Mine"),
         "minePage": MessageLookupByLibrary.simpleMessage("Mine"),
         "modifyAddress": MessageLookupByLibrary.simpleMessage("Modify address"),
+        "modifyPerson": MessageLookupByLibrary.simpleMessage("Modify Person"),
         "monthly": MessageLookupByLibrary.simpleMessage("Monthly"),
         "monthlySales": MessageLookupByLibrary.simpleMessage("Monthly Sales"),
         "moreFunction": MessageLookupByLibrary.simpleMessage("More Function"),
@@ -575,14 +784,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "newVersion":
             MessageLookupByLibrary.simpleMessage("New version available"),
         "news": MessageLookupByLibrary.simpleMessage("Company News"),
+        "nightSnack": MessageLookupByLibrary.simpleMessage("Night Snack"),
         "noData": MessageLookupByLibrary.simpleMessage("No data"),
         "noMoreData": MessageLookupByLibrary.simpleMessage("No more data"),
         "noOrder": MessageLookupByLibrary.simpleMessage("No order"),
+        "noPersonInfo": MessageLookupByLibrary.simpleMessage("No Person Info"),
         "no_food_menu_info":
             MessageLookupByLibrary.simpleMessage("No food menu info"),
         "no_food_menu_info_tips":
             MessageLookupByLibrary.simpleMessage("No food menu for this date"),
         "no_more_info": MessageLookupByLibrary.simpleMessage("No more info"),
+        "normalOrder": MessageLookupByLibrary.simpleMessage("Normal Order"),
         "notice": MessageLookupByLibrary.simpleMessage("Notice"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "oldPassword": MessageLookupByLibrary.simpleMessage("Old Password"),
@@ -598,17 +810,33 @@ class MessageLookup extends MessageLookupByLibrary {
         "operator": MessageLookupByLibrary.simpleMessage("Operator"),
         "optional": MessageLookupByLibrary.simpleMessage("(Optional)"),
         "order": MessageLookupByLibrary.simpleMessage("Order"),
+        "orderAllLoaded": MessageLookupByLibrary.simpleMessage(
+            "All orders have been loaded into the vehicle"),
+        "orderCenterConfirmed":
+            MessageLookupByLibrary.simpleMessage("Order Center Confirmed"),
         "orderCompleted":
             MessageLookupByLibrary.simpleMessage("Order Completed"),
         "orderDetail": MessageLookupByLibrary.simpleMessage("Order details"),
         "orderInfo": MessageLookupByLibrary.simpleMessage("Order info"),
         "orderName": MessageLookupByLibrary.simpleMessage("Order Name"),
         "orderNo": MessageLookupByLibrary.simpleMessage("Order No."),
+        "orderNotConfirmed": MessageLookupByLibrary.simpleMessage(
+            "Not (Order Center Confirmed & Cooking)"),
+        "orderNotFound":
+            MessageLookupByLibrary.simpleMessage("No order information found"),
+        "orderNum": MessageLookupByLibrary.simpleMessage("Order Number"),
+        "orderNumUnit": MessageLookupByLibrary.simpleMessage("Order"),
+        "orderPlacedBy":
+            MessageLookupByLibrary.simpleMessage("Order Placed By"),
+        "orderProgress": MessageLookupByLibrary.simpleMessage("Order Progress"),
+        "orderRejected": MessageLookupByLibrary.simpleMessage("Order Rejected"),
         "orderStatus": MessageLookupByLibrary.simpleMessage("Order Status"),
         "orderTime": MessageLookupByLibrary.simpleMessage("Order time"),
         "other": MessageLookupByLibrary.simpleMessage("Other"),
         "packOrderSuccess": MessageLookupByLibrary.simpleMessage(
             "Packing Completed Successfully"),
+        "packageTypeError": MessageLookupByLibrary.simpleMessage(
+            "Boxed meal does not need to be received"),
         "password": MessageLookupByLibrary.simpleMessage("Password"),
         "passwordChangeFailed":
             MessageLookupByLibrary.simpleMessage("Password change failed"),
@@ -632,6 +860,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "pending": MessageLookupByLibrary.simpleMessage("Pending"),
         "pendingOrder": MessageLookupByLibrary.simpleMessage("Pending"),
         "pendingRepair": MessageLookupByLibrary.simpleMessage("Pending Repair"),
+        "permissionDenied": MessageLookupByLibrary.simpleMessage(
+            "You do not have permission to pick up meals"),
+        "personList": MessageLookupByLibrary.simpleMessage("Person List"),
         "personalInfo": MessageLookupByLibrary.simpleMessage("Personal info"),
         "phone": MessageLookupByLibrary.simpleMessage("Phone"),
         "phoneNumber": MessageLookupByLibrary.simpleMessage("Phone number"),
@@ -645,9 +876,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please accept the order first"),
         "pleaseCancelOrder": MessageLookupByLibrary.simpleMessage(
             "Please cancel the order first"),
-        "pleaseFillIn": m2,
-        "pleaseInput": m3,
-        "pleaseSelect": m4,
+        "pleaseEnterAccount": m6,
+        "pleaseEnterPassword": m7,
+        "pleaseFillIn": m8,
+        "pleaseInput": m9,
+        "pleaseScanTheBarcode": MessageLookupByLibrary.simpleMessage(
+            "Please scan the barcode into the box, and it will be automatically scanned"),
+        "pleaseSelect": m10,
         "please_enter_hazard_description": MessageLookupByLibrary.simpleMessage(
             "Please describe discover hazard"),
         "please_enter_hazard_location": MessageLookupByLibrary.simpleMessage(
@@ -671,6 +906,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "process": MessageLookupByLibrary.simpleMessage("Process"),
         "processDescription":
             MessageLookupByLibrary.simpleMessage("Process description"),
+        "processing": MessageLookupByLibrary.simpleMessage("Processing..."),
+        "processingScanResult":
+            MessageLookupByLibrary.simpleMessage("Processing scan result"),
+        "processingScanResultError":
+            MessageLookupByLibrary.simpleMessage("Processing failed"),
         "promo": MessageLookupByLibrary.simpleMessage("Promotional Video"),
         "promoDetail": MessageLookupByLibrary.simpleMessage("Promo Detail"),
         "promoList": MessageLookupByLibrary.simpleMessage("Promo List"),
@@ -689,11 +929,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Receiving Address"),
         "receiveTime": MessageLookupByLibrary.simpleMessage("Found Time"),
         "received": MessageLookupByLibrary.simpleMessage("Received"),
+        "recentlyScanned":
+            MessageLookupByLibrary.simpleMessage("Recently Scanned"),
         "recommendPerson": MessageLookupByLibrary.simpleMessage("Recommender"),
         "recommendReason":
             MessageLookupByLibrary.simpleMessage("Recommendation Reason"),
         "recommendTime":
             MessageLookupByLibrary.simpleMessage("Recommendation Time"),
+        "reduceOrder": MessageLookupByLibrary.simpleMessage("Reduce Order"),
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refreshComplete":
             MessageLookupByLibrary.simpleMessage("Refresh complete"),
@@ -708,6 +951,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Register success"),
         "registerText":
             MessageLookupByLibrary.simpleMessage("No account? Register now"),
+        "related_account":
+            MessageLookupByLibrary.simpleMessage("Related Account"),
         "releaseLoadMore":
             MessageLookupByLibrary.simpleMessage("Release to load more"),
         "reload": MessageLookupByLibrary.simpleMessage("Reload"),
@@ -767,6 +1012,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "resetPassword": MessageLookupByLibrary.simpleMessage("Reset Password"),
         "restaurant": MessageLookupByLibrary.simpleMessage("Restaurant"),
         "returnPending": MessageLookupByLibrary.simpleMessage("Return Pending"),
+        "reward_details":
+            MessageLookupByLibrary.simpleMessage("Reward Details"),
         "satisfaction": MessageLookupByLibrary.simpleMessage("Satisfaction"),
         "saveAddress": MessageLookupByLibrary.simpleMessage("Save address"),
         "saveAddressFail":
@@ -776,6 +1023,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "scanQRCode": MessageLookupByLibrary.simpleMessage("Scan QR Code"),
         "scanQRCodeTips": MessageLookupByLibrary.simpleMessage(
             "Put the QR code in the box to scan automatically"),
+        "scanSettings": MessageLookupByLibrary.simpleMessage("Scan Settings"),
+        "scanStatus": MessageLookupByLibrary.simpleMessage("Scan Status"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "searchMessage": MessageLookupByLibrary.simpleMessage("Search message"),
         "searchMyOrder":
@@ -783,8 +1032,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "secret": MessageLookupByLibrary.simpleMessage("Secret"),
         "selectAddress":
             MessageLookupByLibrary.simpleMessage("Select delivery address"),
+        "selectAllOrDeselectAll":
+            MessageLookupByLibrary.simpleMessage("Select All/Deselect All"),
         "selectByTime": MessageLookupByLibrary.simpleMessage("Select by Time"),
         "selectDate": MessageLookupByLibrary.simpleMessage("Select date"),
+        "selectMealTimeAndFoodType": MessageLookupByLibrary.simpleMessage(
+            "Select the corresponding meal time and food type"),
         "selectRepairTime":
             MessageLookupByLibrary.simpleMessage("Please select repair time"),
         "selectRepairType":
@@ -801,6 +1054,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_discover_time":
             MessageLookupByLibrary.simpleMessage("Select Discover Time"),
         "selected": MessageLookupByLibrary.simpleMessage("Selected"),
+        "selfPickup": MessageLookupByLibrary.simpleMessage("Self Pickup"),
         "serviceGuide": MessageLookupByLibrary.simpleMessage("Service Guide"),
         "setDefault": MessageLookupByLibrary.simpleMessage(
             "Confirm to set this address as default?"),
@@ -812,6 +1066,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "stopList": MessageLookupByLibrary.simpleMessage("Stop List"),
         "stopLocation": MessageLookupByLibrary.simpleMessage("Stop location"),
         "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+        "submitFail": MessageLookupByLibrary.simpleMessage("Submit failed"),
         "submitOrder": MessageLookupByLibrary.simpleMessage("Submit order"),
         "submitSuccess": MessageLookupByLibrary.simpleMessage("Submit success"),
         "submit_hazard_report_content": MessageLookupByLibrary.simpleMessage(
@@ -820,6 +1075,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Submit Failed"),
         "submit_hazard_report_success":
             MessageLookupByLibrary.simpleMessage("Submit Success"),
+        "supplementOrder":
+            MessageLookupByLibrary.simpleMessage("Supplement Order"),
         "takePhoto": MessageLookupByLibrary.simpleMessage("Take photo"),
         "takeout": MessageLookupByLibrary.simpleMessage("Takeout"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("Three Months"),
@@ -841,9 +1098,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "tripNumber": MessageLookupByLibrary.simpleMessage("Trip Number"),
         "type": MessageLookupByLibrary.simpleMessage("Type"),
+        "unbind": MessageLookupByLibrary.simpleMessage("Unbind"),
+        "unbindFail": MessageLookupByLibrary.simpleMessage("Unbind failed"),
+        "unbindSuccess": MessageLookupByLibrary.simpleMessage("Unbind success"),
+        "unbound": MessageLookupByLibrary.simpleMessage("Unbound"),
         "unfixed": MessageLookupByLibrary.simpleMessage("Unfixed"),
         "unfixedReason": MessageLookupByLibrary.simpleMessage(
             "Please specify the reason for unfixed"),
+        "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
+        "unknownName": MessageLookupByLibrary.simpleMessage("Unknown Name"),
         "unknownStatus": MessageLookupByLibrary.simpleMessage("Unknown Status"),
         "unknown_dish": MessageLookupByLibrary.simpleMessage("Unknown Dish"),
         "unknown_error": MessageLookupByLibrary.simpleMessage("Unknown error"),
@@ -851,6 +1114,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Unknown Status"),
         "unlike": MessageLookupByLibrary.simpleMessage("Unlike"),
         "unread": MessageLookupByLibrary.simpleMessage("Unread"),
+        "unreceived": MessageLookupByLibrary.simpleMessage("Unreceived"),
+        "unreceivedOrder":
+            MessageLookupByLibrary.simpleMessage("Unreceived Order"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),
         "updateAddressData":
             MessageLookupByLibrary.simpleMessage("Update Address"),
@@ -869,6 +1135,10 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Upload New ID Photo"),
         "upload_images_failed": MessageLookupByLibrary.simpleMessage(
             "Image upload failed, please try again"),
+        "usageInstructions":
+            MessageLookupByLibrary.simpleMessage("Usage Instructions"),
+        "useHandheldScannerToScanBarcode": MessageLookupByLibrary.simpleMessage(
+            "Scan barcode with handheld device"),
         "userFeedback": MessageLookupByLibrary.simpleMessage("User Feedback"),
         "userInfo": MessageLookupByLibrary.simpleMessage("User information"),
         "userName": MessageLookupByLibrary.simpleMessage("Account"),
@@ -877,7 +1147,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "usernamePlaceholder":
             MessageLookupByLibrary.simpleMessage("Enter your employee number"),
         "viewOrder": MessageLookupByLibrary.simpleMessage("View order"),
+        "viewPerson": MessageLookupByLibrary.simpleMessage("View Person"),
         "viewed": MessageLookupByLibrary.simpleMessage("Viewed"),
+        "waitingForScan":
+            MessageLookupByLibrary.simpleMessage("Waiting for scan..."),
+        "waterService": MessageLookupByLibrary.simpleMessage("20L"),
         "welcome": MessageLookupByLibrary.simpleMessage("Welcome to IWIP"),
         "woman": MessageLookupByLibrary.simpleMessage("Female"),
         "workNo": MessageLookupByLibrary.simpleMessage("Work Number"),

@@ -4,6 +4,9 @@ import 'package:logistics_app/pages/accommodation/room/couple_room_page.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/auth/forget_password_page.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_order/meal_delivery_order_page.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_delivery_accept_page.dart';
+import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
@@ -48,6 +51,9 @@ import 'package:logistics_app/pages/accommodation/room/couple_feedback_page.dart
 import 'package:logistics_app/pages/accommodation/cleaning/cleaning_order_page.dart';
 import 'package:logistics_app/pages/accommodation/cleaning/cleaning_submit_page.dart';
 import 'package:logistics_app/pages/repair/report_hazard_page.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_form/meal_delivery_submit_page.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_form/meal_delivery_index_page.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_delivery_deliver_page.dart';
 
 /// 自动路由生成器
 /// 通过注解和反射自动注册路由，无需手动维护路由表
@@ -86,6 +92,10 @@ class AutoRouteGenerator {
     RoutePath.MyAddressPage: RouteConfig(
       builder: (context) => MyAddressPage(),
       name: 'MyAddressPage',
+    ),
+    RoutePath.BindAccountPage: RouteConfig(
+      builder: (context) => BindAccountPage(),
+      name: 'BindAccountPage',
     ),
 
     // 功能页面
@@ -277,6 +287,32 @@ class AutoRouteGenerator {
       builder: (context) => BusTimetablePage(),
       name: 'BusTimetablePage',
     ),
+
+    // 报餐送餐
+    RoutePath.MealDeliverySubmitPage: RouteConfig(
+      builder: (context) => MealDeliverySubmitPage(foodName: ''),
+      name: 'MealDeliverySubmitPage',
+    ),
+    RoutePath.MealDeliveryOrderPage: RouteConfig(
+      builder: (context) => MealDeliveryOrderPage(),
+      name: 'MealDeliveryOrderPage',
+    ),
+    RoutePath.MealDeliveryIndexPage: RouteConfig(
+      builder: (context) => MealDeliveryIndexPage(),
+      name: 'MealDeliveryIndexPage',
+    ),
+    RoutePath.MealDeliveryAcceptPage: RouteConfig(
+      builder: (context) => MealDeliveryAcceptPage(),
+      name: 'MealDeliveryAcceptPage',
+    ),
+    RoutePath.MealDeliveryDeliverPage: RouteConfig(
+      builder: (context) => MealDeliveryDeliverPage(),
+      name: 'MealDeliveryDeliverPage',
+    ),
+    // RoutePath.MealDeliveryScanPage: RouteConfig(
+    //   builder: (context) => MealDeliveryScanPage(),
+    //   name: 'MealDeliveryScanPage',
+    // ),
   };
 
   /// 生成路由
@@ -338,6 +374,7 @@ class RoutePath {
   static const String PersonInfoPage = '/person_info_page';
   static const String ContactUsPage = 'contact_us_page';
   static const String MyAddressPage = 'my_address_page';
+  static const String BindAccountPage = 'bind_account_page';
 
   // 功能页面
   static const String WebViewPage = '/web_view_page';
@@ -413,4 +450,12 @@ class RoutePath {
   // 其他
   static const String PublicListPage = 'public_list_page';
   static const String BusTimetablePage = 'bus_timetable_page';
+
+  // 报餐送餐
+  static const String MealDeliverySubmitPage = 'meal_delivery_submit_page';
+  static const String MealDeliveryOrderPage = 'meal_delivery_order_page';
+  static const String MealDeliveryDetailPage = 'meal_delivery_detail_page';
+  static const String MealDeliveryIndexPage = 'meal_delivery_index_page';
+  static const String MealDeliveryAcceptPage = 'meal_delivery_accept_page';
+  static const String MealDeliveryDeliverPage = 'meal_delivery_deliver_page';
 }
