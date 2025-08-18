@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">192.168.91.50</domain>
+        <domain includeSubdomains="true">192.168.90.30</domain>
+        <domain includeSubdomains="true">36.92.27.251:28080</domain>
+    </domain-config>
+    <!-- 全局允许明文通信 -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

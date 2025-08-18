@@ -1,0 +1,24 @@
+-keep class com.mob.**{*;}
+-dontwarn com.mob.**
+-keep class com.google.**{*;}
+-dontwarn com.google.**
+-dontwarn com.xiaomi.push.**
+-keep class com.xiaomi.push.** { *; }
+-dontwarn com.xiaomi.**
+-keep class com.xiaomi.**{*;}
+-keep class com.xiaomi.mipush.sdk.**{*;}
+-dontwarn com.xiaomi.mipush.sdk.**
+-ignorewarnings
+-keepattributes *Annotation* 
+-keepattributes Exceptions 
+-keepattributes InnerClasses 
+-keepattributes Signature 
+-keepattributes SourceFile,LineNumberTable 
+-keep class com.hianalytics.android.**{*;} 
+-keep class com.huawei.updatesdk.**{*;} 
+-keep class com.huawei.hms.**{*;}
+
+-keep class com.huawei.**{*;}
+-keep class com.huawei.hms.**{*;}
+-dontwarn com.huawei.hms.**
+-dontwarn com.huawei.**

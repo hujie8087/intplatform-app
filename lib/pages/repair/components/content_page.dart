@@ -1,0 +1,507 @@
+import 'package:badges/badges.dart' as badges;
+import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/empty_view.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
+import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
+import 'package:logistics_app/http/data/repair_utils.dart';
+import 'package:logistics_app/http/model/repair_view_model.dart';
+import 'package:logistics_app/http/model/rows_model.dart';
+import 'package:logistics_app/main.dart';
+import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
+import 'package:logistics_app/route/auto_route_generator.dart';
+import 'package:logistics_app/route/route_utils.dart';
+import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+class ContentPage extends StatefulWidget {
+  const ContentPage({Key? key, this.repairState}) : super(key: key);
+
+  final int? repairState;
+
+  @override
+  State<ContentPage> createState() => _HttpPageTestHeaderFollowPageState();
+}
+
+class _HttpPageTestHeaderFollowPageState extends State<ContentPage>
+    with TickerProviderStateMixin, RouteAware {
+  bool get wantKeepAlive => true;
+  AnimationController? animationController;
+  String imagePrefix = APIs.imagePrefix;
+
+  List<RepairViewModel> _dataArr = [];
+  int _pageNum = 1;
+  final int _pageSize = 10;
+  int _totalItems = 0;
+
+  late RefreshController _refreshController;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _refreshController = RefreshController();
+    _requestData(true);
+  }
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _requestData(bool isRefresh) async {
+    if (isRefresh) {
+      _pageNum = 1;
+      _dataArr.clear();
+    }
+    var params = {
+      'pageNum': _pageNum,
+      'pageSize': _pageSize,
+      'repairState': widget.repairState ?? null,
+      'appDelFlag': 0,
+    };
+    RepairUtils.getMyRepairList(
+      params,
+      success: (data) {
+        RowsModel<RepairViewModel> response = RowsModel.fromJson(
+          data,
+          (json) => RepairViewModel.fromJson(json),
+        );
+        if (isRefresh) {
+          _dataArr = response.rows ?? [];
+          _totalItems = response.total ?? 0;
+        } else {
+          _dataArr = [..._dataArr, ...response.rows ?? []];
+        }
+        _pageNum++;
+        setState(() {
+          if (_dataArr.length >= _totalItems) {
+            _refreshController.loadNoData();
+          } else {
+            _refreshController.loadComplete();
+          }
+        });
+      },
+      fail: (code, msg) {
+        _refreshController.refreshFailed();
+      },
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    _requestData(true);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: _body());
+  }
+
+  Widget _body() {
+    return SafeArea(
+      child: SmartRefreshWidget(
+        enablePullDown: true,
+        enablePullUp: true,
+        onRefresh: () {
+          _requestData(true).then((value) {
+            _refreshController.refreshCompleted();
+          });
+        },
+        onLoading: () {
+          _requestData(false).then((value) {
+            _refreshController.loadComplete();
+          });
+        },
+        controller: _refreshController,
+        child: Padding(padding: EdgeInsets.all(10), child: _repairView()),
+      ),
+    );
+  }
+
+  Widget _repairView() {
+    return Consumer(
+      builder: (context, model, child) {
+        if (_dataArr.isEmpty == true) {
+          return Center(child: EmptyView());
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: _dataArr.length,
+          padding: EdgeInsets.all(0),
+          itemBuilder: (context, index) {
+            final int count = _dataArr.length;
+            final Animation<double> animation = Tween<double>(
+              begin: 0.0,
+              end: 1.0,
+            ).animate(
+              CurvedAnimation(
+                parent: animationController!,
+                curve: Interval(
+                  (1 / count) * index,
+                  1.0,
+                  curve: Curves.fastOutSlowIn,
+                ),
+              ),
+            );
+            animationController?.forward();
+            return _repairItem(
+              listData: _dataArr[index],
+              callBack: () async {
+                // 跳转到详情页
+                final result = await RouteUtils.pushNamed(
+                  context,
+                  RoutePath.RepairRatingPage,
+                  arguments: {
+                    'repairId': _dataArr[index].id,
+                    'title': S.of(context).repairDetail,
+                    'isShowButton': _dataArr[index].repairState == 1,
+                  },
+                );
+                setState(() {
+                  if (result != null && result == 'submit') {
+                    _requestData(true);
+                  }
+                });
+              },
+              deleteCallBack: () => {_requestData(true)},
+              animation: animation,
+              animationController: animationController,
+              imagePrefix: APIs.imagePrefix,
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+String getRepairStateText(int? repairState) {
+  switch (repairState) {
+    case 0:
+      return S.current.pending;
+    case 1:
+      return S.current.repaired;
+    case 2:
+      return S.current.returnPending;
+    case 3:
+      return S.current.completed;
+    default:
+      return S.current.unknownStatus;
+  }
+}
+
+Color getRepairStateColor(int? repairState) {
+  if (repairState == 1 || repairState == 3) {
+    return primaryColor;
+  } else {
+    return secondaryColor;
+  }
+}
+
+class _repairItem extends StatelessWidget {
+  const _repairItem({
+    Key? key,
+    this.listData,
+    this.callBack,
+    this.deleteCallBack,
+    this.animationController,
+    required this.imagePrefix,
+    this.animation,
+  }) : super(key: key);
+
+  final RepairViewModel? listData;
+  final VoidCallback? callBack;
+  final VoidCallback? deleteCallBack;
+  final AnimationController? animationController;
+  final Animation<double>? animation;
+  final String imagePrefix;
+
+  @override
+  Widget build(BuildContext context) {
+    List<String> images = [];
+    if (listData?.repairPhoto != '') {
+      images = listData!.repairPhoto!.split(',');
+    }
+    return AnimatedBuilder(
+      animation: animationController!,
+      builder: (BuildContext context, Widget? child) {
+        return FadeTransition(
+          opacity: animation!,
+          child: Transform(
+            transform: Matrix4.translationValues(
+              0.0,
+              50.px * (1.0 - animation!.value),
+              0.0,
+            ),
+            child: Container(
+              margin: EdgeInsets.only(bottom: 10.px),
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(20.px),
+                child: InkWell(
+                  onTap: callBack,
+                  child: Ink(
+                    padding: EdgeInsets.only(
+                      left: 10.px,
+                      right: 10.px,
+                      top: 10.px,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.px),
+                    ),
+                    child: badges.Badge(
+                      showBadge: listData?.readStatus == '1',
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          listData?.repairArea ?? '',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 12.px,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          '/',
+                                          style: TextStyle(
+                                            fontSize: 12.px,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          listData?.roomNo ?? '',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 12.px,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 5.px),
+                                    Text(
+                                      listData?.createTime ?? '',
+                                      style: TextStyle(
+                                        fontSize: 12.px,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 10.px),
+                              // 维修状态
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 5.px,
+                                  vertical: 2.px,
+                                ),
+                                child: Text(
+                                  getRepairStateText(listData?.repairState),
+                                  style: TextStyle(
+                                    color: getRepairStateColor(
+                                      listData?.repairState,
+                                    ),
+                                    fontSize: 12.px,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          HtmlLineLimit(
+                            htmlContent: listData?.repairMessage ?? '',
+                          ),
+                          if (images.length > 0)
+                            GridView.builder(
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 6, // 每行显示6张图片
+                                    crossAxisSpacing: 8.0,
+                                    mainAxisSpacing: 8.0,
+                                  ),
+                              itemCount: images.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.px),
+                                  ),
+                                  child: Image.network(
+                                    imagePrefix + images[index],
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
+                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              OutlinedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder:
+                                        (context) => _dialogWidget(
+                                          context,
+                                          listData!,
+                                          () {
+                                            deleteCallBack!();
+                                          },
+                                        ),
+                                  );
+                                },
+                                style: OutlinedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.horizontal(
+                                      left: Radius.circular(12.px),
+                                      right: Radius.circular(12.px),
+                                    ),
+                                  ),
+                                  minimumSize: Size(72.px, 20.px),
+                                  side: BorderSide(
+                                    color: secondaryColor,
+                                    width: 1,
+                                  ),
+                                  // 设置边框颜色和宽度
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 0,
+                                    vertical: 0,
+                                  ), // 设置内边距
+                                ),
+                                child: Text(
+                                  S.of(context).deleteRepair,
+                                  style: TextStyle(
+                                    fontSize: 12.px,
+                                    color: secondaryColor,
+                                  ),
+                                ),
+                              ),
+                              if (listData?.repairState != 0 &&
+                                  listData?.rating == null)
+                                SizedBox(width: 10),
+                              if (listData?.repairState != 0 &&
+                                  listData?.rating == null)
+                                // 按钮调整到评价
+                                OutlinedButton(
+                                  onPressed: () {
+                                    RouteUtils.pushNamed(
+                                      context,
+                                      RoutePath.RepairRatingPage,
+                                      arguments: {
+                                        'repairId': listData?.id,
+                                        'title': S.of(context).evaluate,
+                                        'isShowButton': true,
+                                      },
+                                    );
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.horizontal(
+                                        left: Radius.circular(12.px),
+                                        right: Radius.circular(12.px),
+                                      ),
+                                    ),
+                                    minimumSize: Size(42.px, 20.px),
+                                    side: BorderSide(
+                                      color: primaryColor,
+                                      width: 1,
+                                    ),
+                                    // 设置边框颜色和宽度
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 0,
+                                      vertical: 0,
+                                    ), // 设置内边距
+                                  ),
+                                  child: Text(
+                                    S.of(context).evaluate,
+                                    style: TextStyle(
+                                      fontSize: 10.px,
+                                      color: primaryColor,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _dialogWidget(context, RepairViewModel listData, callback) {
+    final RepairViewModel data = listData;
+    data.appDelFlag = '1';
+    return AlertDialog(
+      title: Text(S.of(context).tip),
+      content: Text(S.of(context).deleteRepairTips),
+      actions: <Widget>[
+        TextButton(
+          child: Text(
+            S.of(context).cancel,
+            style: TextStyle(color: secondaryColor),
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          child: Text(
+            S.of(context).confirm,
+            style: TextStyle(color: primaryColor),
+          ),
+          onPressed: () {
+            RepairUtils.editRepairDetail(
+              data,
+              success: (data) {
+                callback();
+                Navigator.of(context).pop();
+                ProgressHUD.showSuccess(S.of(context).deleteRepairSuccess);
+              },
+              fail: (code, msg) {
+                ProgressHUD.showError(msg);
+                Navigator.of(context).pop();
+              },
+            );
+          },
+        ),
+      ],
+    );
+  }
+}

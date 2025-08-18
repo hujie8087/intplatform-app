@@ -1,0 +1,431 @@
+import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/cascade_tree_picker.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/model/address_form_model.dart';
+import 'package:logistics_app/http/model/my_address_view_model.dart';
+import 'package:logistics_app/pages/mine_page/my_address_page/my_address_model.dart';
+import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:provider/provider.dart';
+
+class EditAddressPage extends StatefulWidget {
+  EditAddressPage({Key? key, required this.id}) : super(key: key);
+  final int id;
+  @override
+  _EditAddressPageState createState() => _EditAddressPageState();
+}
+
+class _EditAddressPageState extends State<EditAddressPage>
+    with TickerProviderStateMixin {
+  var model = MyAddressModel();
+  List<dynamic> values = [];
+  String roomValue = S.current.pleaseSelect('');
+  int? selectRoomId;
+  String selectRoom = '';
+  int? selectAreaId;
+  String selectArea = '';
+  final _formKey = GlobalKey<FormState>();
+  bool isDefault = false;
+  final nameController = TextEditingController();
+  final telController = TextEditingController();
+  AddressModel? addressDetail;
+  List<dynamic>? buildingData;
+
+  Future<void> _fetchData() async {
+    // 模拟异步数据获取
+    if (widget.id.toString() != '') {
+      model.getMyAddressDetail(widget.id.toString()).then((value) {
+        if (value.success) {
+          setState(() {
+            nameController.text = value.data!.name ?? '';
+            telController.text = value.data!.tel ?? '';
+            selectRoom = value.data!.detailedAddress.toString().substring(
+              value.data!.detailedAddress.toString().lastIndexOf('/') + 1,
+            );
+            selectRoomId = int.parse(value.data!.region ?? '0');
+            roomValue = value.data!.detailedAddress.toString();
+            addressDetail = value.data;
+            if (value.data!.isDefault == '0') {
+              isDefault = true;
+            } else {
+              isDefault = false;
+            }
+          });
+        }
+      });
+
+      buildingData = await SpUtils.getModel('building');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+    // 获取楼栋信息
+    // model.getBuildingTreeModel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) {
+        return model;
+      },
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          title: Text(
+            S.of(context).modifyAddress,
+            style: TextStyle(fontSize: 16.px),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.white,
+        ),
+        body: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: EdgeInsets.only(top: 20.px, right: 15.px, left: 15.px),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(20.px)),
+              ),
+              padding: EdgeInsets.only(top: 20.px, right: 15.px, left: 15.px),
+              width: double.infinity,
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.only(bottom: 10.px),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                selectRoom,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.px,
+                                ),
+                              ),
+                              Text(
+                                roomValue,
+                                style: TextStyle(fontSize: 12.px),
+                              ),
+                            ],
+                          ),
+                        ),
+                        OutlinedButton(
+                          onPressed: () {
+                            CascadeTreePicker.show(
+                              context,
+                              data: buildingData ?? [],
+                              values: values,
+                              labelKey: 'title',
+                              valuesKey: 'id',
+                              title: S.of(context).selectAddress,
+                              clickCallBack: (selectItem, selectArr) {
+                                selectRoom = selectItem['title'];
+                                selectRoomId = selectItem['id'];
+                                selectAreaId = selectArr[0]['id'];
+                                selectArea = selectArr[0]['title'];
+                                setState(() {
+                                  values = selectArr;
+                                  List<Map<String, dynamic>> mappedSelectArr =
+                                      List<Map<String, dynamic>>.from(
+                                        selectArr,
+                                      );
+                                  roomValue = mappedSelectArr
+                                      .map((item) => item['title'])
+                                      .join('/');
+                                });
+                                Navigator.pop(context);
+                              },
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: secondaryColor, width: 1),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 5.px,
+                              vertical: 2.px,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                8.px,
+                              ), // 设置圆角半径
+                            ),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: Text(
+                            S.of(context).modifyAddress,
+                            style: TextStyle(
+                              color: secondaryColor,
+                              fontSize: 10.px,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // 输入框联系人
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10.px),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                width: 1,
+                                color: Color.fromARGB(10, 0, 0, 0),
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                S.of(context).contactPerson,
+                                style: TextStyle(
+                                  fontSize: 12.px,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Expanded(
+                                child: TextFormField(
+                                  style: TextStyle(fontSize: 12.px),
+                                  controller: nameController,
+                                  textAlign: TextAlign.right,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: S
+                                        .of(context)
+                                        .inputMessage(
+                                          S.of(context).contactPerson,
+                                        ),
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12.px,
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10.px,
+                                      vertical: 10.px,
+                                    ),
+                                  ),
+
+                                  // The validator receives the text that the user has entered.
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      ProgressHUD.showError(
+                                        S
+                                            .of(context)
+                                            .inputMessage(
+                                              S.of(context).contactPerson,
+                                            ),
+                                      );
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 10.px),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                width: 1,
+                                color: Color.fromARGB(10, 0, 0, 0),
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                S.of(context).contactPhone,
+                                style: TextStyle(
+                                  fontSize: 12.px,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Expanded(
+                                child: TextFormField(
+                                  style: TextStyle(fontSize: 12.px),
+                                  textAlign: TextAlign.right,
+                                  controller: telController,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: S
+                                        .of(context)
+                                        .inputMessage(
+                                          S.of(context).contactPhone,
+                                        ),
+                                    hintStyle: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12.px,
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10.px,
+                                      vertical: 10.px,
+                                    ),
+                                  ),
+                                  keyboardType: TextInputType.phone,
+                                  // The validator receives the text that the user has entered.
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      ProgressHUD.showError(
+                                        S
+                                            .of(context)
+                                            .inputMessage(
+                                              S.of(context).contactPhone,
+                                            ),
+                                      );
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                width: 1,
+                                color: Color.fromARGB(10, 0, 0, 0),
+                              ),
+                            ),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                S.of(context).isDefault,
+                                style: TextStyle(
+                                  fontSize: 12.px,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Transform.scale(
+                                scale: 1.5,
+                                child: Checkbox(
+                                  // 设置大小
+                                  value: isDefault,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      isDefault = !isDefault;
+                                    });
+                                  },
+                                  activeColor: primaryColor[500],
+                                  shape: CircleBorder(
+                                    side: BorderSide(
+                                      color: Colors.grey,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize
+                                          .shrinkWrap, // 去掉额外的边距
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 20.px),
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              minimumSize: WidgetStateProperty.all(
+                                Size(double.infinity, 26.px),
+                              ),
+                              backgroundColor: MaterialStateProperty.all(
+                                primaryColor[500],
+                              ),
+                              textStyle: MaterialStateProperty.all(
+                                TextStyle(fontSize: 14.px, color: Colors.white),
+                              ),
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.px),
+                                ),
+                              ),
+                            ),
+                            onPressed: () async {
+                              // Validate returns true if the form is valid, or false otherwise.
+                              if (_formKey.currentState!.validate()) {
+                                if (selectRoomId == null) {
+                                  ProgressHUD.showError(
+                                    S
+                                        .of(context)
+                                        .inputMessage(
+                                          S.of(context).selectAddress,
+                                        ),
+                                  );
+                                  return;
+                                }
+                                model.addressFormModel = AddressFormModel(
+                                  tel: telController.text,
+                                  name: nameController.text,
+                                  isDefault: isDefault ? '0' : '1',
+                                  region: selectRoomId.toString(),
+                                  roomNo: selectRoom,
+                                  area: selectArea,
+                                  areaId: selectAreaId,
+                                  detailedAddress: roomValue,
+                                  id: addressDetail?.id,
+                                );
+                                await model
+                                    .editAddress(model.addressFormModel)
+                                    .then((res) {
+                                      if (res.success) {
+                                        ProgressHUD.showSuccess(
+                                          S.of(context).saveAddressSuccess,
+                                        );
+                                        Navigator.pop(context, true);
+                                      } else {
+                                        ProgressHUD.showError(
+                                          res.errorMessage ??
+                                              S.of(context).saveAddressFail,
+                                        );
+                                      }
+                                    });
+                              }
+                            },
+                            child: Text(
+                              S.of(context).saveAddress,
+                              style: TextStyle(
+                                fontSize: 12.px,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "876588716398",
+    "project_id": "iwip-intplatform",
+    "storage_bucket": "iwip-intplatform.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876588716398:android:2cd25e72496060c248b17f",
+        "android_client_info": {
+          "package_name": "com.iwip.intplatform"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZTPUkHfH_T1MKYIPf_wBqtcSvnbSZgf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

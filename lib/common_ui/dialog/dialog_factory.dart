@@ -1,0 +1,188 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/dialog/parent_dialog.dart';
+import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
+
+///通用弹窗工具类
+class DialogFactory {
+  static DialogFactory instance = DialogFactory();
+
+  ///[touchOutsideDismiss]       是否可以点击空白处消失
+  ///[backgroundColor]           弹窗外部区域背景色
+  ///[borderRadius]              弹窗圆角
+  ///[width]                     宽度
+  ///[height]                    高度
+  ///[margin]                    外边距
+  ///[padding]                   内边距
+  ///[outsideOnTap]              弹窗外部区域点击事件
+  ///[dismissClick]              底部透明消失按钮事件
+  ///[showTransparenceButton]    是否显示底部透明消失按钮
+  ///[touchOutsideCloseKeyboard] 是否点击空白区域关闭软键盘
+  ///[child]                     弹窗子布局
+  Future showParentDialog(
+      {required BuildContext context,
+      bool? touchOutsideDismiss,
+      Color? backgroundColor,
+      double? borderRadius,
+      double? width,
+      double? height,
+      EdgeInsetsGeometry? margin,
+      EdgeInsetsGeometry? padding,
+      GestureTapCallback? outsideOnTap,
+      GestureTapCallback? dismissClick,
+      bool? showTransparenceButton,
+      bool? touchOutsideCloseKeyboard,
+      Color? bodyBgColor,
+      required Widget child}) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return ParentDialog(
+              bodyBgColor: bodyBgColor,
+              touchOutsideDismiss: touchOutsideDismiss,
+              touchOutsideCloseKeyboard: touchOutsideCloseKeyboard,
+              outsideBackgroundColor: backgroundColor,
+              borderRadius: borderRadius,
+              width: width,
+              height: height,
+              margin: margin,
+              padding: padding,
+              outsideOnTap: outsideOnTap,
+              childWidget: child,
+              dismissClick: dismissClick,
+              showTransparenceButton: showTransparenceButton);
+        });
+  }
+
+  ///检测新版本弹窗
+  Future showNeedUpdateDialog(
+      {required BuildContext context,
+      GestureTapCallback? dismissClick,
+      GestureTapCallback? confirmClick}) async {
+    showParentDialog(
+        context: context,
+        child: TipsCommonDialog(
+          title: "检测到新版本，请前往APPStore更新",
+          dialogContentType: DialogContentType.Normal,
+          dialogButtonType: DialogButtonType.DoubleButton,
+          titleStyle: TextStyle(fontSize: 12.px),
+          contentStyle: TextStyle(fontSize: 10.px),
+          leftTextStyle: TextStyle(fontSize: 12.px),
+          rightTextStyle: TextStyle(fontSize: 12.px),
+          rightOnTap: () {
+            confirmClick?.call();
+          },
+        ),
+        touchOutsideDismiss: false);
+  }
+
+  // 确认弹窗
+  // Future showConfirmDialog(
+  //     {required BuildContext context,
+  //     String? title,
+  //     String? content,
+  //     DialogContentType dialogContentType = DialogContentType.Normal,
+  //     GestureTapCallback? dismissClick,
+  //     GestureTapCallback? confirmClick}) async {
+  //   showParentDialog(
+  //       context: context,
+  //       child: TipsCommonDialog(
+  //         title: title,
+  //         content: content,
+  //         titleStyle: TextStyle(fontSize: 12.px),
+  //         contentStyle: TextStyle(fontSize: 10.px),
+  //         leftTextStyle: TextStyle(fontSize: 12.px),
+  //         rightTextStyle: TextStyle(fontSize: 12.px),
+  //         dialogContentType: dialogContentType,
+  //         dialogButtonType: DialogButtonType.DoubleButton,
+  //         leftOnTap: () {
+  //           Navigator.pop(context);
+  //           dismissClick?.call();
+  //         },
+  //         rightOnTap: () {
+  //           Navigator.pop(context);
+  //           confirmClick?.call();
+  //         },
+  //       ),
+  //       touchOutsideDismiss: false);
+  // }
+
+  // 带输入框的弹窗
+  Future showFieldDialog(
+      {required BuildContext context,
+      String? title,
+      Widget? customContentWidget,
+      GestureTapCallback? dismissClick,
+      GestureTapCallback? confirmClick}) async {
+    showParentDialog(
+        context: context,
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: TipsCommonDialog(
+          title: title,
+          titleStyle: TextStyle(fontSize: 12.px),
+          contentStyle: TextStyle(fontSize: 10.px),
+          leftTextStyle: TextStyle(fontSize: 12.px),
+          rightTextStyle: TextStyle(fontSize: 12.px),
+          customContentWidget: customContentWidget,
+          dialogContentType: DialogContentType.Normal,
+          dialogButtonType: DialogButtonType.DoubleButton,
+          leftOnTap: () {
+            Navigator.pop(context);
+            dismissClick?.call();
+          },
+          rightOnTap: () {
+            Navigator.pop(context);
+            confirmClick?.call();
+          },
+        ),
+        touchOutsideDismiss: false);
+  }
+
+  Future<T?> showConfirmDialog<T>({
+    required BuildContext context,
+    required String title,
+    required String content,
+    double? width,
+    VoidCallback? confirmClick,
+    VoidCallback? cancelClick,
+    String? confirmText,
+    String? cancelText,
+  }) {
+    return showDialog<T>(
+      context: context,
+      builder: (context) => Center(
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: 400,
+            minWidth: 280,
+          ),
+          child: AlertDialog(
+            title: Text(title, style: TextStyle(fontSize: 14.px)),
+            content: Text(content, style: TextStyle(fontSize: 12.px)),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  cancelClick?.call();
+                },
+                child: Text(cancelText ?? S.of(context).cancel,
+                    style: TextStyle(fontSize: 12.px, color: Colors.grey[600])),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  confirmClick?.call();
+                },
+                child: Text(confirmText ?? S.of(context).confirm,
+                    style: TextStyle(fontSize: 12.px, color: primaryColor)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
