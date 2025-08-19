@@ -4980,20 +4980,20 @@ class S {
     );
   }
 
-  /// `提交保洁服务`
+  /// `提交清洁服务`
   String get cleaning_submit {
     return Intl.message(
-      '提交保洁服务',
+      '提交清洁服务',
       name: 'cleaning_submit',
       desc: '',
       args: [],
     );
   }
 
-  /// `保洁订单`
+  /// `清洁订单`
   String get cleaning_order {
     return Intl.message(
-      '保洁订单',
+      '清洁订单',
       name: 'cleaning_order',
       desc: '',
       args: [],
@@ -5280,40 +5280,40 @@ class S {
     );
   }
 
-  /// `选择保洁项目`
+  /// `选择清洁项目`
   String get cleaning_select_cleaning_project {
     return Intl.message(
-      '选择保洁项目',
+      '选择清洁项目',
       name: 'cleaning_select_cleaning_project',
       desc: '',
       args: [],
     );
   }
 
-  /// `深度保洁`
+  /// `深度清洁`
   String get cleaning_deep_cleaning {
     return Intl.message(
-      '深度保洁',
+      '深度清洁',
       name: 'cleaning_deep_cleaning',
       desc: '',
       args: [],
     );
   }
 
-  /// `专项保洁`
+  /// `专项清洁`
   String get cleaning_special_cleaning {
     return Intl.message(
-      '专项保洁',
+      '专项清洁',
       name: 'cleaning_special_cleaning',
       desc: '',
       args: [],
     );
   }
 
-  /// `请选择保洁地址`
+  /// `请选择清洁地址`
   String get cleaning_select_address {
     return Intl.message(
-      '请选择保洁地址',
+      '请选择清洁地址',
       name: 'cleaning_select_address',
       desc: '',
       args: [],
@@ -5340,10 +5340,10 @@ class S {
     );
   }
 
-  /// `保洁地址不在保洁项目对应的区域，请重新选择！`
+  /// `清洁地址不在清洁项目对应的区域，请重新选择！`
   String get cleaning_select_address_error {
     return Intl.message(
-      '保洁地址不在保洁项目对应的区域，请重新选择！',
+      '清洁地址不在清洁项目对应的区域，请重新选择！',
       name: 'cleaning_select_address_error',
       desc: '',
       args: [],
@@ -5370,10 +5370,10 @@ class S {
     );
   }
 
-  /// `保洁订单详情`
+  /// `清洁订单详情`
   String get cleaning_order_detail {
     return Intl.message(
-      '保洁订单详情',
+      '清洁订单详情',
       name: 'cleaning_order_detail',
       desc: '',
       args: [],
@@ -5410,10 +5410,10 @@ class S {
     );
   }
 
-  /// `保洁项目`
+  /// `清洁项目`
   String get cleaning_project {
     return Intl.message(
-      '保洁项目',
+      '清洁项目',
       name: 'cleaning_project',
       desc: '',
       args: [],
