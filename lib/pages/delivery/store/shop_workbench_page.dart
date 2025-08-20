@@ -168,6 +168,7 @@ class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
             } else {
               _orders = [..._orders, ...rowsModel.rows ?? []];
             }
+            pageNum++;
             total = rowsModel.total ?? 0;
           });
         }
