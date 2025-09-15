@@ -7,6 +7,7 @@ import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/Register_page.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
 import 'package:logistics_app/pages/auth/forget_password_page.dart';
+import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -196,13 +197,15 @@ class _LoginFormState extends State<LoginForm> {
                                     'mobilePhoneId': token,
                                   });
                                 }
-                                RouteUtils.push(context, AppHomeScreen());
-                                // if (isLogin != 0) {
-                                //   RouteUtils.push(context, AppHomeScreen());
-                                // } else {
-                                //   RouteUtils.push(context,
-                                //       ChangePasswordPage(isFirstLogin: true));
-                                // }
+                                // RouteUtils.push(context, AppHomeScreen());
+                                if (model.isFirstLogin == true) {
+                                  RouteUtils.push(
+                                    context,
+                                    ChangePasswordPage(isFirstLogin: true),
+                                  );
+                                } else {
+                                  RouteUtils.push(context, AppHomeScreen());
+                                }
                                 ProgressHUD.showText(
                                   S.of(context).loginSuccess,
                                 );

@@ -121,7 +121,11 @@ class _MealDeliveryPhoneScanPageState extends State<MealDeliveryPhoneScanPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(data["deptName"]),
+          title: Text(data["deptName"], style: TextStyle(fontSize: 14.px)),
+          titlePadding: EdgeInsets.only(top: 10.px, left: 10.px, right: 10.px),
+          contentPadding: EdgeInsets.zero,
+          insetPadding: EdgeInsets.zero,
+          buttonPadding: EdgeInsets.zero,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children:
@@ -133,10 +137,11 @@ class _MealDeliveryPhoneScanPageState extends State<MealDeliveryPhoneScanPage> {
                       }
                     },
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(4.px),
                       child: Text(
                         '${entry.key}: ${entry.value}',
                         style: TextStyle(
+                          fontSize: 12.px,
                           color:
                               entry.key == 'phone' ? Colors.blue : Colors.black,
                           decoration:
@@ -152,9 +157,15 @@ class _MealDeliveryPhoneScanPageState extends State<MealDeliveryPhoneScanPage> {
           actions: [
             TextButton(
               onPressed: () {
+                setState(() {
+                  isProcessing = false; // 防止重复调用
+                });
                 Navigator.of(context).pop();
               },
-              child: Text('Close'),
+              child: Text(
+                S.of(context).close,
+                style: TextStyle(fontSize: 12.px),
+              ),
             ),
           ],
         );
@@ -167,7 +178,7 @@ class _MealDeliveryPhoneScanPageState extends State<MealDeliveryPhoneScanPage> {
     print('发起请求: $barcode');
     MealDeliveryUtils.receiveOrderMeal(
       {
-        "foodName": _selectedFoodNameValue,
+        "foodName": _selectedFoodNameValue?.dictValue ?? '',
         "foodType": _selectedFoodTypeValue,
         'orderNo': barcode,
       },
@@ -177,6 +188,12 @@ class _MealDeliveryPhoneScanPageState extends State<MealDeliveryPhoneScanPage> {
           ProgressHUD.showSuccess(
             S.of(context).mealDeliverySuccess(data['data']),
           );
+          setState(() {
+            // 间隔 1 秒后恢复
+            Future.delayed(Duration(seconds: 1)).then((_) {
+              isProcessing = false; // 防止重复调用
+            });
+          });
         } else if (data['code'] == 200 && data['msg'] == 'DisplayOrderInfo') {
           if (context.mounted) {
             Map<String, dynamic> dataInfo = Map<String, dynamic>.from(

@@ -115,6 +115,7 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
             data.deptName ?? '',
             style: TextStyle(fontSize: 14.px, fontWeight: FontWeight.bold),
           ),
+          titlePadding: EdgeInsets.only(top: 10.px, left: 10.px, right: 10.px),
           contentPadding: EdgeInsets.zero,
           insetPadding: EdgeInsets.zero,
           buttonPadding: EdgeInsets.zero,
@@ -129,7 +130,7 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
                       }
                     },
                     child: Padding(
-                      padding: EdgeInsets.all(8.px),
+                      padding: EdgeInsets.all(4.px),
                       child: Text(
                         '${entry.key}: ${entry.value}',
                         style: TextStyle(
@@ -149,6 +150,9 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
           actions: [
             TextButton(
               onPressed: () {
+                setState(() {
+                  isProcessing = false; // 防止重复调用
+                });
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
@@ -197,6 +201,7 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
 
   // 上传图片
   Future<void> _uploadImage({orderNo}) async {
+    print('orderNo: $orderNo');
     final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
     if (result != null) {
       ProgressHUD.showLoadingText(S.of(context).imageUploading);
@@ -210,15 +215,25 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
             parameters,
             success: (data) {
               ProgressHUD.showSuccess(S.of(context).deliverySuccess);
+              setState(() {
+                isProcessing = false; // 防止重复调用
+              });
             },
             fail: (code, msg) {
               ProgressHUD.showError(S.of(context).deliveryFail + ': $msg');
+              setState(() {
+                isProcessing = false; // 防止重复调用
+              });
             },
           );
         }
       } catch (e) {
         ProgressHUD.showError(S.of(context).deliveryUploadFailed + ': $e');
       }
+    } else {
+      setState(() {
+        isProcessing = false; // 防止重复调用
+      });
     }
   }
 
@@ -257,12 +272,15 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
                 print('isProcessing: $isProcessing');
                 if (barcode.rawValue != null && !isProcessing) {
                   controller?.stop();
-                  setState(() {
-                    isProcessing = true; // 防止重复调用
-                  });
-                  _submitBarcode(barcode.rawValue!).whenComplete(() {
-                    controller?.start();
-                  }); // 调用接口
+                  _submitBarcode(barcode.rawValue!)
+                      .whenComplete(() {
+                        controller?.start();
+                      })
+                      .then((_) {
+                        setState(() {
+                          isProcessing = false; // 防止重复调用
+                        });
+                      }); // 调用接口
                 }
               });
             },

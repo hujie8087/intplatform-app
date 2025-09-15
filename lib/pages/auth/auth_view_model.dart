@@ -17,6 +17,7 @@ class AuthViewModel with ChangeNotifier {
   String? inputPassword = "";
   String? confirmPassword = "";
   String? nickName = "";
+  bool? isFirstLogin = false;
   Future<bool> login() async {
     if (inputUserName?.trim().isEmpty == true) {
       ProgressHUD.showError(S.current.inputMessage(S.current.userName));
@@ -42,6 +43,7 @@ class AuthViewModel with ChangeNotifier {
               UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
               await SpUtils.saveModel('userInfo', userInfo);
               await SpUtils.saveModel('mealUser', userInfo.mealUser ?? {});
+              isFirstLogin = userInfo.user?.isLogin == 0;
               SpUtils.saveString(
                 Constants.SP_USER_NAME,
                 userInfo.user?.nickName ?? '',
@@ -62,6 +64,7 @@ class AuthViewModel with ChangeNotifier {
                 Constants.SP_USER_PERMISSION,
                 userInfo.permissions ?? [],
               );
+              print('isFirstLogin: $isFirstLogin');
               getAddressData();
               completer.complete(true);
             },

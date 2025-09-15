@@ -9,6 +9,7 @@ import 'package:logistics_app/http/model/base_list_model.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_service_model.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/phone_scan_page.dart';
 import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -32,6 +33,8 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
   UserInfoModel? userInfo;
   bool isBindAccount = false;
   bool isCanScan = false;
+  bool isTracking = false;
+  MealLocationServiceModel? locationService;
 
   @override
   void initState() {
@@ -414,6 +417,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
             data["deptName"],
             style: TextStyle(fontSize: 14.px, fontWeight: FontWeight.bold),
           ),
+          titlePadding: EdgeInsets.only(top: 10.px, left: 10.px, right: 10.px),
           contentPadding: EdgeInsets.zero,
           insetPadding: EdgeInsets.zero,
           buttonPadding: EdgeInsets.zero,
@@ -501,6 +505,30 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
     }
   }
 
+  // 处理位置事件
+  void _handleLocationEvent() {
+    if (isTracking) {
+      locationService?.stopTracking();
+      SpUtils.saveBool('isTracking', false);
+      setState(() {
+        isTracking = false;
+      });
+    } else {
+      if (_selectedFoodNameValue?.dictValue == '') {
+        ProgressHUD.showError('请选择餐次');
+        return;
+      }
+      locationService = MealLocationServiceModel(
+        foodName: _selectedFoodNameValue?.dictValue ?? '',
+      );
+      locationService?.startTracking();
+      SpUtils.saveBool('isTracking', true);
+      setState(() {
+        isTracking = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // 餐种选项列表
@@ -516,6 +544,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
           S.of(context).mealDeliveryAccept,
           style: TextStyle(fontSize: 16.px),
         ),
+
         actions: [
           // 手机摄像头扫码，相机图标
           if (isCanScan)
@@ -534,6 +563,29 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
           SizedBox(width: 10.px),
         ],
       ),
+
+      // 浮动按钮，根据配送状态显示
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: isTracking ? secondaryColor : primaryColor,
+        onPressed: () => _handleLocationEvent(),
+        icon: Icon(
+          isTracking ? Icons.location_on : Icons.location_off,
+          color: Colors.white,
+        ),
+        label: Text(
+          isTracking ? S.current.stopLocation : S.current.startLocation,
+          style: TextStyle(color: Colors.white),
+        ),
+        extendedPadding: EdgeInsets.symmetric(
+          horizontal: 10.px,
+          vertical: 2.px,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        isExtended: false,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body:
           !isBindAccount
               ? Container(
