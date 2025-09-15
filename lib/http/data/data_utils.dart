@@ -321,6 +321,16 @@ class DataUtils {
     );
   }
 
+  // 报餐送餐上传位置
+  static void uploadMealLocation(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      '/system/mdc/carInfo/saveLocation',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
   // 获取配送站点列表
   static void getDeliveryStationList({Success? success, Fail? fail}) {
     HttpUtils.get('/delivery/sourceMsg', null, success: success, fail: fail);

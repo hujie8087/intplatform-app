@@ -12,41 +12,37 @@ class _SafetyRewardPageState extends State<SafetyRewardPage> {
   final List<SafetyRewardItem> rewardItems = [
     SafetyRewardItem(
       sort: 1,
-      description: '员工提出安全合理化建议，园区采纳并付诸实施的，',
+      description: '员工提出安全合理化建议，园区采纳并付诸实施的奖励',
       price: '500-1000',
     ),
     SafetyRewardItem(
       sort: 2,
       description:
-          '积极开展多种形式的安全文化建设活动，对组织实施者奖励 元，安全活动中表现突出的单位或个人按照安环部批准的活动方案奖励标准执行',
+          '积极开展多种形式的安全文化建设活动，对组织实施者奖励，安全活动中表现突出的单位或个人按照安环部批准的活动方案奖励标准执行，奖励',
       price: '300-500',
     ),
-    SafetyRewardItem(
-      sort: 3,
-      description: '员工避免重大事故发生的奖励 元',
-      price: '500-5000',
-    ),
+    SafetyRewardItem(sort: 3, description: '员工避免重大事故发生的奖励', price: '500-5000'),
     SafetyRewardItem(
       sort: 4,
-      description: '员工发现举报重大安全隐患的奖励 元',
+      description: '员工发现举报重大安全隐患的奖励',
       price: '500-5000',
     ),
     SafetyRewardItem(
       sort: 5,
-      description: '员工发现举报重大安全事故的奖励 元',
+      description: '员工发现举报重大安全事故的奖励',
       price: '500-5000',
     ),
     SafetyRewardItem(
       sort: 6,
-      description: '员工发现举报 A 类以上违章违规行为的，',
+      description: '员工发现举报 A 类以上违章违规行为的奖励',
       price: '500',
     ),
-    SafetyRewardItem(sort: 7, description: '员工发现举报 B 类违章违规行为的，', price: '300'),
-    SafetyRewardItem(sort: 8, description: '员工发现举报 C 类违章违规行为的，', price: '200'),
-    SafetyRewardItem(sort: 9, description: '员工发现举报 D 类违章违规行为的，', price: '100'),
+    SafetyRewardItem(sort: 7, description: '员工发现举报 B 类违章违规行为的奖励', price: '300'),
+    SafetyRewardItem(sort: 8, description: '员工发现举报 C 类违章违规行为的奖励', price: '200'),
+    SafetyRewardItem(sort: 9, description: '员工发现举报 D 类违章违规行为的奖励', price: '100'),
     SafetyRewardItem(
       sort: 10,
-      description: '其他安全工作有突出贡献的奖励 100-5000 元',
+      description: '其他安全工作有突出贡献的奖励',
       price: '100-5000',
     ),
   ];
