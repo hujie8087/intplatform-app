@@ -584,4 +584,24 @@ class DataUtils {
       fail: fail,
     );
   }
+
+  // 获取图书列表
+  static void getBookList(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/other/books/list',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取图书详情
+  static void getBookDetail(id, {Success? success, Fail? fail}) {
+    HttpUtils.get('/other/books/$id', null, success: success, fail: fail);
+  }
+
+  // 点赞好人好事
+  static void likeGoodDeed(id, {Success? success, Fail? fail}) {
+    HttpUtils.get('/other/deeds/like/$id', null, success: success, fail: fail);
+  }
 }

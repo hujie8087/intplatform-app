@@ -4,7 +4,6 @@
 ///  description: 网络请求工具类（dio二次封装）
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/route/route_utils.dart';

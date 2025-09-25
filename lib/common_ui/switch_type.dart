@@ -37,7 +37,7 @@ class SwitchTypeView extends StatelessWidget {
               40.px * (1.0 - animation!.value),
               0.0,
             ),
-            child: ButtonBar(
+            child: OverflowBar(
               alignment: MainAxisAlignment.start,
               children:
                   listData

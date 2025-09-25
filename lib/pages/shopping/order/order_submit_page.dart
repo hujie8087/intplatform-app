@@ -129,7 +129,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
               (json) => DeliveryTimeModel.fromJson(json),
             ).data ??
             [];
-        setState(() {});
+        setState(() {
+          deliveryTimeOptions = filterTimeSlots(deliveryTimeOptions);
+        });
       },
     );
   }
@@ -178,6 +180,34 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
     }
 
     return descriptions.join('\n');
+  }
+
+  List<DeliveryTimeModel> filterTimeSlots(List<DeliveryTimeModel> slots) {
+    final now = DateTime.now();
+    final cutoff = now.add(const Duration(hours: 1)); // 当前时间 + 1小时
+
+    return slots.where((slot) {
+      // "16:00-16:30" => 取 "16:30"
+      final parts = slot.name?.split('-') ?? [];
+      if (parts.length != 2) return false;
+
+      final end = parts[1];
+      final endParts = end.split(':');
+      if (endParts.length != 2) return false;
+
+      final endHour = int.tryParse(endParts[0]) ?? 0;
+      final endMinute = int.tryParse(endParts[1]) ?? 0;
+
+      // 用今天的日期拼接结束时间
+      final endTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        endHour,
+        endMinute,
+      );
+      return endTime.isAfter(cutoff);
+    }).toList();
   }
 
   // 第一个页面

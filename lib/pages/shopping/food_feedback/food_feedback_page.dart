@@ -308,7 +308,7 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
         onPressed: onPressed,
         child: child,
         style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all<Color>(textColor),
+          foregroundColor: WidgetStateProperty.all<Color>(textColor),
         ),
       ),
     );

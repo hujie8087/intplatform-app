@@ -117,7 +117,7 @@ class _KTimeListPageState extends State<KTimeListPage>
                   await getPromoList(false);
                 },
                 child: GridView.builder(
-                  padding: EdgeInsets.all(16.px),
+                  padding: EdgeInsets.all(10.px),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     childAspectRatio: 0.75,
@@ -141,6 +141,7 @@ class _KTimeListPageState extends State<KTimeListPage>
         );
       },
       child: Container(
+        margin: EdgeInsets.only(bottom: 10.px, left: 4.px, right: 4.px),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12.px),
@@ -162,10 +163,16 @@ class _KTimeListPageState extends State<KTimeListPage>
                 children: [
                   AspectRatio(
                     aspectRatio: 1,
-                    child: Image.network(
-                      APIs.imageOnlinePrefix + (promo.img ?? ''),
-                      fit: BoxFit.cover,
-                    ),
+                    child:
+                        promo.img != null
+                            ? Image.network(
+                              APIs.imageOnlinePrefix + (promo.img ?? ''),
+                              fit: BoxFit.cover,
+                            )
+                            : Image.asset(
+                              'assets/images/logo.png',
+                              fit: BoxFit.contain,
+                            ),
                   ),
                   // 渐变遮罩
                   Positioned.fill(
@@ -225,7 +232,7 @@ class _KTimeListPageState extends State<KTimeListPage>
                       fontWeight: FontWeight.w500,
                       height: 1.3,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   SizedBox(height: 8.px),

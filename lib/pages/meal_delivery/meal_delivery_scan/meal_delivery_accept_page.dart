@@ -10,6 +10,7 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_service_model.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_manager.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/phone_scan_page.dart';
 import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -35,15 +36,39 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
   bool isCanScan = false;
   bool isTracking = false;
   MealLocationServiceModel? locationService;
+  final MealLocationManager _locationManager = MealLocationManager();
 
   @override
   void initState() {
     super.initState();
     _onFetchUserInfo();
+    _initializeLocationManager();
+  }
+
+  // 初始化定位管理器
+  Future<void> _initializeLocationManager() async {
+    await _locationManager.initialize();
+    _locationManager.addListener(_onLocationStateChanged);
+    _updateTrackingState();
+  }
+
+  // 定位状态变化回调
+  void _onLocationStateChanged() {
+    _updateTrackingState();
+  }
+
+  // 更新追踪状态
+  void _updateTrackingState() {
+    setState(() {
+      isTracking = _locationManager.isTracking;
+      locationService = _locationManager.locationService;
+    });
   }
 
   @override
   void dispose() {
+    // 移除监听器
+    _locationManager.removeListener(_onLocationStateChanged);
     // 确保释放资源
     super.dispose();
     if (Platform.isAndroid) {
@@ -506,26 +531,24 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
   }
 
   // 处理位置事件
-  void _handleLocationEvent() {
+  void _handleLocationEvent() async {
     if (isTracking) {
-      locationService?.stopTracking();
-      SpUtils.saveBool('isTracking', false);
-      setState(() {
-        isTracking = false;
-      });
+      // 停止追踪
+      await _locationManager.stopTracking();
     } else {
       if (_selectedFoodNameValue?.dictValue == '') {
         ProgressHUD.showError('请选择餐次');
         return;
       }
-      locationService = MealLocationServiceModel(
-        foodName: _selectedFoodNameValue?.dictValue ?? '',
-      );
-      locationService?.startTracking();
-      SpUtils.saveBool('isTracking', true);
-      setState(() {
-        isTracking = true;
-      });
+
+      final foodName = _selectedFoodNameValue?.dictValue ?? '';
+      // 开始追踪
+      final success = await _locationManager.startTracking(foodName);
+      if (success) {
+        ProgressHUD.showSuccess('定位追踪已启动');
+      } else {
+        ProgressHUD.showError('启动定位追踪失败');
+      }
     }
   }
 

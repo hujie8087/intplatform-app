@@ -336,11 +336,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 }
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(primaryColor[500]),
-                minimumSize: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(primaryColor[500]),
+                minimumSize: WidgetStateProperty.all(
                   Size(double.infinity, 32.px),
                 ),
-                shape: MaterialStateProperty.all(
+                shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.px),
                   ),

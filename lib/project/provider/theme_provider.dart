@@ -50,23 +50,23 @@ class ThemeProvider extends ChangeNotifier {
       {
         'label': '浅色',
         'value': _lightThemeColor,
-        'themeMode': ThemeMethod.themeLight
+        'themeMode': ThemeMethod.themeLight,
       },
       {
         'label': '深色',
         'value': _darkThemeColor,
-        'themeMode': ThemeMethod.themeDark
+        'themeMode': ThemeMethod.themeDark,
       },
       {
         'label': '蓝色',
         'value': _blueThemeColor,
-        'themeMode': ThemeMethod.themeBlue
+        'themeMode': ThemeMethod.themeBlue,
       },
       {
         'label': '紫色',
         'value': _purpleThemeColor,
-        'themeMode': ThemeMethod.themePurple
-      }
+        'themeMode': ThemeMethod.themePurple,
+      },
     ];
   }
 
@@ -168,7 +168,7 @@ class MyThemes {
       // 导航条在base_appbar页面配置（没使用base_appbar的按下面配置的）
       appBarTheme: AppBarTheme(
         // systemOverlayStyle: JhStatusBarUtils.getStatusBarStyle(isDark: isDarkMode),
-        color: isDarkMode ? KColors.kNavBgDarkColor : themeColor,
+        backgroundColor: isDarkMode ? KColors.kNavBgDarkColor : themeColor,
         iconTheme: const IconThemeData(color: Colors.white),
         // shadowColor: Colors.grey, // M3 设置阴影颜色
       ),
@@ -180,16 +180,19 @@ class MyThemes {
       // ),
       // 分割线
       dividerTheme: DividerThemeData(
-          color: isDarkMode ? KColors.kLineDarkColor : KColors.kLineColor),
-      // Tab指示器颜色
-      indicatorColor: isDarkMode ? darkPrimaryThemeColor : themeColor,
+        color: isDarkMode ? KColors.kLineDarkColor : KColors.kLineColor,
+      ),
       // 文字选择色（输入框选择文字等）
       textSelectionTheme: TextSelectionThemeData(
-        selectionColor: isDarkMode
-            ? darkPrimaryThemeColor.withAlpha(70)
-            : themeColor.withAlpha(70),
+        selectionColor:
+            isDarkMode
+                ? darkPrimaryThemeColor.withAlpha(70)
+                : themeColor.withAlpha(70),
         selectionHandleColor: isDarkMode ? darkPrimaryThemeColor : themeColor,
         cursorColor: isDarkMode ? darkPrimaryThemeColor : themeColor, // 光标
+      ),
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: isDarkMode ? darkPrimaryThemeColor : themeColor,
       ),
 
       // 主要用于Material背景色
@@ -216,7 +219,7 @@ class MyThemes {
       // 导航条在base_appbar页面配置（没使用base_appbar的按下面配置的）
       appBarTheme: AppBarTheme(
         // systemOverlayStyle: JhStatusBarUtils.getStatusBarStyle(isDark: isDarkMode),
-        color: isDarkMode ? KColors.kNavBgDarkColor : themeColor,
+        backgroundColor: isDarkMode ? KColors.kNavBgDarkColor : themeColor,
         iconTheme: const IconThemeData(color: Colors.white),
         // shadowColor: Colors.grey, // M3 设置阴影颜色
       ),
@@ -228,14 +231,14 @@ class MyThemes {
       // ),
       // 分割线
       dividerTheme: DividerThemeData(
-          color: isDarkMode ? KColors.kLineDarkColor : KColors.kLineColor),
-      // Tab指示器颜色
-      indicatorColor: isDarkMode ? darkPrimaryThemeColor : themeColor,
+        color: isDarkMode ? KColors.kLineDarkColor : KColors.kLineColor,
+      ),
       // 文字选择色（输入框选择文字等）
       textSelectionTheme: TextSelectionThemeData(
-        selectionColor: isDarkMode
-            ? darkPrimaryThemeColor.withAlpha(70)
-            : themeColor.withAlpha(70),
+        selectionColor:
+            isDarkMode
+                ? darkPrimaryThemeColor.withAlpha(70)
+                : themeColor.withAlpha(70),
         selectionHandleColor: isDarkMode ? darkPrimaryThemeColor : themeColor,
         cursorColor: isDarkMode ? darkPrimaryThemeColor : themeColor, // 光标
       ),
@@ -259,6 +262,9 @@ class MyThemes {
         brightness: isDarkMode ? Brightness.dark : Brightness.light,
         surfaceTint: Colors.transparent, // 影响 card 的配色，M3下是applySurfaceTint
         // outline: Colors.grey, // M3 设置OutlinedButton、TextField、Switch 边框颜色(尽量单独设置) ， Color(0xff79747e)
+      ),
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: isDarkMode ? darkPrimaryThemeColor : themeColor,
       ),
 
       /// M3设置主题色 方式二

@@ -273,11 +273,15 @@ class BusLineView extends StatelessWidget {
     if (listData!.lineType == 2) {
       // 往返，增加倒叙的原数组（重新复制后添加，删除第一个）
       final reversedList = listData!.carSiteList!.reversed.toList();
-      reversedList.removeAt(0); // 删除倒序的第一个，即原数组最后一个
+      if (reversedList.isNotEmpty) {
+        reversedList.removeAt(0); // 删除倒序的第一个，即原数组最后一个
+      }
       busSite.addAll(reversedList);
     } else if (listData!.lineType == 3) {
-      // 环线
-      busSite.add(listData!.carSiteList!.first);
+      if (listData!.carSiteList!.isNotEmpty) {
+        // 环线
+        busSite.add(listData!.carSiteList!.first);
+      }
     }
 
     String lastItem = busSite.isNotEmpty ? busSite.last.name ?? '' : '';
@@ -330,82 +334,88 @@ class BusLineView extends StatelessWidget {
                                       ),
                                       textAlign: TextAlign.left,
                                     ),
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            listData!.carSiteList![0].name ??
-                                                '',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14.px,
-                                              fontWeight: FontWeight.bold,
+                                    if (listData!.carSiteList!.isNotEmpty)
+                                      Expanded(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              listData!.carSiteList![0].name ??
+                                                  '',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14.px,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(width: 5),
-                                          Icon(
-                                            // 单箭头
-                                            Icons.arrow_forward_rounded,
-                                            color: Colors.red,
-                                            size: 20,
-                                          ),
-                                          SizedBox(width: 5),
-                                          Text(
-                                            lastItem,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14.px,
-                                              fontWeight: FontWeight.bold,
+                                            SizedBox(width: 5),
+                                            Icon(
+                                              // 单箭头
+                                              Icons.arrow_forward_rounded,
+                                              color: Colors.red,
+                                              size: 20,
                                             ),
-                                          ),
-                                        ],
+                                            SizedBox(width: 5),
+                                            Text(
+                                              lastItem,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14.px,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
                                   ],
                                 ),
                               ),
                               SizedBox(height: 5),
-                              Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/firstStation.png',
-                                          width: 20,
-                                        ),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          listData!
-                                                  .carDepartureTimeList![0]
-                                                  .departureTime ??
-                                              '',
-                                          style: TextStyle(color: Colors.grey),
-                                        ),
-                                        SizedBox(width: 15),
-                                        Image.asset(
-                                          'assets/images/endStation.png',
-                                          width: 20,
-                                        ),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          listData!
-                                                  .carDepartureTimeList![listData!
-                                                          .carDepartureTimeList!
-                                                          .length -
-                                                      1]
-                                                  .departureTime ??
-                                              '',
-                                          style: TextStyle(color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                              if (listData!.carDepartureTimeList!.isNotEmpty)
+                                Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/firstStation.png',
+                                            width: 20,
+                                          ),
+                                          SizedBox(width: 5),
+                                          Text(
+                                            listData!
+                                                    .carDepartureTimeList![0]
+                                                    .departureTime ??
+                                                '',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          SizedBox(width: 15),
+                                          Image.asset(
+                                            'assets/images/endStation.png',
+                                            width: 20,
+                                          ),
+                                          SizedBox(width: 5),
+                                          Text(
+                                            listData!
+                                                    .carDepartureTimeList![listData!
+                                                            .carDepartureTimeList!
+                                                            .length -
+                                                        1]
+                                                    .departureTime ??
+                                                '',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
                               Container(
                                 margin: EdgeInsets.only(
                                   left: 10,

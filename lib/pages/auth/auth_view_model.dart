@@ -64,7 +64,6 @@ class AuthViewModel with ChangeNotifier {
                 Constants.SP_USER_PERMISSION,
                 userInfo.permissions ?? [],
               );
-              print('isFirstLogin: $isFirstLogin');
               getAddressData();
               completer.complete(true);
             },

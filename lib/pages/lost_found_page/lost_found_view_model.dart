@@ -105,6 +105,87 @@ class LostFoundViewModel with ChangeNotifier {
     }
   }
 
+  // 获取我的发布列表
+  Future<void> getMyLostFoundList(bool isRefresh) async {
+    try {
+      if (isRefresh) {
+        list = null;
+        pageNum = 1;
+        isLoadComplete = false;
+      } else {
+        pageNum++;
+      }
+
+      var params = {
+        'pageNum': pageNum,
+        'pageSize': pageSize,
+        'createBy': createBy,
+      };
+
+      Loading.showLoading();
+
+      final completer = Completer<void>();
+
+      DataUtils.getPageList(
+        '/other/found/listByUser',
+        params,
+        success: (data) {
+          try {
+            RowsModel rowsModel = RowsModel.fromJson(
+              data,
+              (json) => FoundModel.fromJson(json),
+            );
+
+            if (rowsModel.rows != null) {
+              var foundList = data['rows'] as List;
+              List<FoundModel> rows =
+                  foundList.map((i) => FoundModel.fromJson(i)).toList();
+
+              if (list == null) {
+                list = rows;
+              } else {
+                list?.addAll(rows);
+              }
+
+              if (rowsModel.total == list?.length) {
+                isLoadComplete = true;
+              }
+            }
+
+            notifyListeners();
+            completer.complete();
+          } catch (e) {
+            print('数据处理错误: $e');
+            completer.completeError('数据处理失败: $e');
+          } finally {
+            Loading.dismissAll();
+          }
+        },
+        fail: (code, msg) {
+          print('接口请求失败: [$code] $msg');
+          completer.completeError('获取失败: $msg');
+          Loading.dismissAll();
+        },
+      );
+
+      await completer.future;
+    } catch (e) {
+      print('获取失物招领列表异常: $e');
+      // 确保加载状态被清除
+      Loading.dismissAll();
+      // 如果是刷新操作且发生错误，重置页码
+      if (isRefresh) {
+        pageNum = 1;
+      } else {
+        pageNum = pageNum > 1 ? pageNum - 1 : 1;
+      }
+      // 通知UI更新
+      notifyListeners();
+      // 重新抛出异常，让调用方处理
+      rethrow;
+    }
+  }
+
   // 删除失物招领
   Future<void> deleteLostFound(String id) async {
     try {

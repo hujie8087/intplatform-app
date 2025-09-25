@@ -1,10 +1,9 @@
-import 'dart:async';
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/plant_model.dart';
+import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class PlantDetailPage extends StatefulWidget {
@@ -21,9 +20,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
   PlantModel? plantData;
   List<String> picture = [];
   AnimationController? animationController;
-  ui.Image? woodImage;
-  late Animation<double> _swingAnim;
-  late AnimationController _controller;
+
   @override
   void initState() {
     animationController = AnimationController(
@@ -31,32 +28,8 @@ class _PlantDetailPageState extends State<PlantDetailPage>
       vsync: this,
     );
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
-
-    _swingAnim = Tween<double>(
-      begin: -10,
-      end: 10,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-    _loadWoodImage();
     // 获取植物数据
     getPlantData();
-  }
-
-  Future<void> _loadWoodImage() async {
-    final imageProvider = AssetImage('assets/images/wood.jpg');
-    final config = ImageConfiguration();
-    final completer = Completer<ui.Image>();
-    final stream = imageProvider.resolve(config);
-    final listener = ImageStreamListener((ImageInfo info, bool _) {
-      completer.complete(info.image);
-    });
-    stream.addListener(listener);
-    final image = await completer.future;
-    stream.removeListener(listener);
-    setState(() => woodImage = image);
   }
 
   void getPlantData() {
@@ -75,14 +48,12 @@ class _PlantDetailPageState extends State<PlantDetailPage>
   @override
   void dispose() {
     animationController?.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -111,146 +82,159 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                     pagination: const SwiperPagination(),
                   ),
                 ),
-                Stack(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(16.px),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomPaint(
-                            painter: WoodenBoardPainter(
-                              strokeWidth: 0.px,
-                              woodImage: woodImage,
-                            ),
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.all(8.px),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(8.px),
-                              ),
-                              child: CustomPaint(
-                                painter: WoodenBoardPainter(),
-                                child: Container(
-                                  padding: EdgeInsets.all(8.px),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.px),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // 主标题
-                                      Center(
-                                        child: Text(
-                                          plantData?.name ?? '暂无名称',
-                                          style: TextStyle(
-                                            fontSize: 28,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.red.shade700,
-                                          ),
-                                        ),
-                                      ),
-                                      const Divider(height: 20, thickness: 1.2),
-                                      // 别名
-                                      _labelRow(
-                                        '别名：',
-                                        plantData?.otherName ?? '暂无别名',
-                                      ),
-                                      _labelRow(
-                                        '科属：',
-                                        plantData?.peacockType ?? '暂无科属',
-                                      ),
-                                      _labelRow(
-                                        '特征：',
-                                        plantData?.feature ?? '暂无特征',
-                                      ),
-                                      _labelRow(
-                                        '习性：',
-                                        plantData?.habit ?? '暂无习性',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                // 植物基本信息卡片
+                Container(
+                  margin: EdgeInsets.all(12.px),
+                  padding: EdgeInsets.all(16.px),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12.px),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 植物名称
+                      Text(
+                        plantData?.name ?? '未知植物',
+                        style: TextStyle(
+                          fontSize: 16.px,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade700,
+                        ),
+                      ),
 
-                          AnimatedBuilder(
-                            animation: _swingAnim,
-                            builder:
-                                (_, __) => CustomPaint(
-                                  size: const Size(double.infinity, 60),
-                                  painter: SwingRopePainter(
-                                    offset: _swingAnim.value,
-                                  ),
-                                ),
-                          ),
-                          Transform.translate(
-                            offset: Offset(0, -20),
-                            child: CustomPaint(
-                              painter: WoodenBoardPainter(
-                                strokeWidth: 0.px,
-                                woodImage: woodImage,
-                              ),
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(8.px),
-                                ),
-                                padding: EdgeInsets.all(8.px),
-                                child: CustomPaint(
-                                  painter: WoodenBoardPainter(),
-                                  child: Container(
-                                    padding: EdgeInsets.all(8.px),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8.px),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // 主标题
-                                        Center(
-                                          child: Text(
-                                            '简介',
-                                            style: TextStyle(
-                                              fontSize: 28,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.red.shade700,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        const Divider(
-                                          height: 20,
-                                          thickness: 1.2,
-                                        ),
-                                        Text(
-                                          plantData?.introduce ?? '暂无描述',
+                      SizedBox(height: 4.px),
 
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      // 科属信息
+                      if (plantData?.peacockType != null &&
+                          plantData!.peacockType!.isNotEmpty)
+                        _buildInfoRow(
+                          icon: Icons.category,
+                          label: '科属',
+                          value: plantData!.peacockType!,
+                          color: Colors.blue.shade600,
+                        ),
+
+                      // 别名信息
+                      if (plantData?.otherName != null &&
+                          plantData!.otherName!.isNotEmpty)
+                        _buildInfoRow(
+                          icon: Icons.label,
+                          label: '别名',
+                          value: plantData!.otherName!,
+                          color: Colors.orange.shade600,
+                        ),
+
+                      // 编码信息
+                      if (plantData?.code != null &&
+                          plantData!.code!.isNotEmpty)
+                        _buildInfoRow(
+                          icon: Icons.qr_code,
+                          label: '编码',
+                          value: plantData!.code!,
+                          color: Colors.purple.shade600,
+                        ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 4.px),
+
+                // 形态特征
+                _buildInfoCard(
+                  context,
+                  '形态特征',
+                  [
+                    Text(
+                      plantData?.feature ?? '暂无描述',
+                      style: TextStyle(
+                        fontSize: 12.px,
+                        color: Colors.grey[600],
+                        height: 1.5,
                       ),
                     ),
                   ],
+                  0.2,
+                  animationController,
+                  Color.fromARGB(255, 232, 245, 233),
+                  true,
+                  Color.fromARGB(255, 46, 125, 50),
+                ),
+                SizedBox(height: 10.px),
+
+                // 生长习性
+                _buildInfoCard(
+                  context,
+                  '生长习性',
+                  [
+                    Text(
+                      plantData?.habit ?? '暂无描述',
+                      style: TextStyle(
+                        fontSize: 12.px,
+                        color: Colors.grey[600],
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                  0.4,
+                  animationController,
+                  Color.fromARGB(255, 227, 242, 253),
+                  false,
+                  Color.fromARGB(255, 21, 101, 192),
+                ),
+                SizedBox(height: 10.px),
+
+                // 分布区域
+                _buildInfoCard(
+                  context,
+                  '分布区域',
+                  [
+                    Text(
+                      plantData?.origin ?? '暂无描述',
+                      style: TextStyle(
+                        fontSize: 12.px,
+                        color: Colors.grey[600],
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                  0.6,
+                  animationController,
+                  Color.fromARGB(255, 255, 243, 224),
+                  true,
+                  Color.fromARGB(255, 230, 81, 0),
+                ),
+                SizedBox(height: 10.px),
+
+                // 植物简介
+                _buildInfoCard(
+                  context,
+                  '植物简介',
+                  [
+                    Text(
+                      plantData?.introduce ?? '暂无描述',
+                      style: TextStyle(
+                        fontSize: 12.px,
+                        color: Colors.grey[600],
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                  0.8,
+                  animationController,
+                  Color.fromARGB(255, 252, 228, 236),
+                  false,
+                  Color.fromARGB(255, 173, 20, 87),
                 ),
               ],
             ),
           ),
-
           Positioned(
             top: MediaQuery.of(context).padding.top,
             left: 6,
@@ -265,149 +249,127 @@ class _PlantDetailPageState extends State<PlantDetailPage>
     );
   }
 
-  Widget _labelRow(String label, String content) {
+  // 构建信息行
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.only(bottom: 8.px),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+          Icon(icon, size: 16.px, color: color),
+          SizedBox(width: 8.px),
+          Text(
+            '$label: ',
+            style: TextStyle(
+              fontSize: 12.px,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey[600],
+            ),
+          ),
           Expanded(
             child: Text(
-              content,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              value,
+              style: TextStyle(
+                fontSize: 12.px,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w400,
+                height: 1.5,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
       ),
     );
   }
-}
 
-class SwingRopePainter extends CustomPainter {
-  final double offset;
-  SwingRopePainter({required this.offset});
+  Widget _buildInfoCard(
+    BuildContext context,
+    String title,
+    List<Widget> children,
+    double index,
+    AnimationController? animationController,
+    Color? color,
+    bool? isRight,
+    Color? titleColor,
+  ) {
+    // 启动动画
+    animationController?.forward();
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.brown
-          ..strokeWidth = 5
-          ..style = PaintingStyle.stroke;
-
-    final centerX = size.width / 2;
-    final topY = 0.0;
-    final bottomY = size.height;
-
-    final leftX = centerX - 40;
-    final rightX = centerX + 40;
-
-    // 左绳弯曲
-    final leftPath = Path();
-    leftPath.moveTo(leftX, topY);
-    leftPath.quadraticBezierTo(leftX + offset, size.height / 2, leftX, bottomY);
-    canvas.drawPath(leftPath, paint);
-
-    // 右绳弯曲
-    final rightPath = Path();
-    rightPath.moveTo(rightX, topY);
-    rightPath.quadraticBezierTo(
-      rightX + offset,
-      size.height / 2,
-      rightX,
-      bottomY,
-    );
-    canvas.drawPath(rightPath, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant SwingRopePainter oldDelegate) =>
-      oldDelegate.offset != offset;
-}
-
-class WoodenBoardPainter extends CustomPainter {
-  final double strokeWidth;
-  final ui.Image? woodImage;
-
-  WoodenBoardPainter({this.strokeWidth = 3, this.woodImage});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final radius = 12.0;
-    final curveWidth = size.width * 2 / 3;
-    final leftFlat = (size.width - curveWidth) / 2;
-
-    // ✅ 构造路径
-    final path = Path();
-    path.moveTo(radius, size.height);
-    path.lineTo(size.width - radius, size.height);
-    path.arcToPoint(
-      Offset(size.width, size.height - radius),
-      radius: Radius.circular(radius),
-      clockwise: false,
-    );
-    path.lineTo(size.width, 40 + radius);
-    path.arcToPoint(
-      Offset(size.width - radius, 40),
-      radius: Radius.circular(radius),
-      clockwise: false,
-    );
-
-    path.lineTo(size.width - leftFlat, 40);
-    path.quadraticBezierTo(size.width / 2, -30, leftFlat, 40);
-    path.lineTo(radius, 40);
-    path.arcToPoint(
-      Offset(0, 40 + radius),
-      radius: Radius.circular(radius),
-      clockwise: false,
-    );
-    path.lineTo(0, size.height - radius);
-    path.arcToPoint(
-      Offset(radius, size.height),
-      radius: Radius.circular(radius),
-      clockwise: false,
-    );
-    path.close();
-
-    // ✅ 添加阴影（背景阴影偏移）
-    canvas.drawShadow(path, Colors.black45, 10.0, true);
-
-    // ✅ 背景木纹图
-    if (woodImage != null) {
-      canvas.save();
-      canvas.clipPath(path);
-      canvas.drawImageRect(
-        woodImage!,
-        Rect.fromLTWH(
-          0,
-          0,
-          woodImage!.width.toDouble(),
-          woodImage!.height.toDouble(),
+    final Animation<double> animation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: animationController!,
+        curve: Interval(
+          index * 0.15,
+          (index * 0.15) + 0.3,
+          curve: Curves.easeInOut,
         ),
-        Offset.zero & size,
-        Paint(),
-      );
-      canvas.restore();
-    }
-
-    // ✅ 凹槽效果（浅内描边）
-    final innerPaint =
-        Paint()
-          ..color = Colors.brown.withOpacity(0.8)
-          ..strokeWidth = 1
-          ..style = PaintingStyle.stroke;
-    canvas.drawPath(path, innerPaint);
-
-    // ✅ 主边框
-    final borderPaint =
-        Paint()
-          ..color = Colors.brown.shade700
-          ..strokeWidth = strokeWidth
-          ..style = PaintingStyle.stroke;
-    canvas.drawPath(path, borderPaint);
+      ),
+    );
+    return AnimatedBuilder(
+      animation: animationController,
+      builder: (BuildContext context, Widget? child) {
+        return FadeTransition(
+          opacity: animation,
+          child: Transform(
+            transform: Matrix4.translationValues(
+              0.0,
+              80.px * (1.0 - animation.value),
+              0.0,
+            ),
+            child: Container(
+              width: double.infinity,
+              child: Container(
+                margin: EdgeInsets.only(
+                  left: isRight == true ? 15.px : 0,
+                  right: isRight == true ? 0 : 15.px,
+                ),
+                decoration: BoxDecoration(
+                  color: color ?? Colors.white,
+                  borderRadius:
+                      isRight == true
+                          ? BorderRadius.only(
+                            topLeft: Radius.circular(10.px),
+                            bottomLeft: Radius.circular(10.px),
+                          )
+                          : BorderRadius.only(
+                            topRight: Radius.circular(10.px),
+                            bottomRight: Radius.circular(10.px),
+                          ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(12.px),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 14.px,
+                          fontWeight: FontWeight.bold,
+                          color: titleColor ?? primaryColor,
+                        ),
+                      ),
+                      // 分割线
+                      Divider(height: 4.px),
+                      SizedBox(height: 4.px),
+                      ...children,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

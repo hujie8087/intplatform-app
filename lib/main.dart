@@ -249,6 +249,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     return const Locale('zh', 'CN');
                   }
                 });
+                return null;
               },
               theme: ThemeData(
                 scaffoldBackgroundColor: backgroundColor,

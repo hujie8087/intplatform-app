@@ -59,12 +59,16 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
           'def1': _foodNameController.text,
           'content': _contentController.text,
         };
-        DataUtils.submitMessage(data, success: (response) {
-          ProgressHUD.showSuccess(S.of(context).submitSuccess);
-          Navigator.pop(context);
-        }, fail: (code, msg) {
-          ProgressHUD.showError(msg);
-        });
+        DataUtils.submitMessage(
+          data,
+          success: (response) {
+            ProgressHUD.showSuccess(S.of(context).submitSuccess);
+            Navigator.pop(context);
+          },
+          fail: (code, msg) {
+            ProgressHUD.showError(msg);
+          },
+        );
       } finally {
         if (mounted) {
           setState(() {
@@ -107,18 +111,16 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
   Widget _buildInfoCard() {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20.px))),
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(20.px)),
+      ),
       padding: EdgeInsets.only(top: 15.px, right: 12.px, left: 12.px),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             S.of(context).personalInfo,
-            style: TextStyle(
-              fontSize: 12.px,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 12.px),
           _buildTextField(
@@ -162,18 +164,16 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
   Widget _buildSuggestionCard() {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20.px))),
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(20.px)),
+      ),
       padding: EdgeInsets.only(top: 15.px, right: 12.px, left: 12.px),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             S.of(context).dishSuggestion,
-            style: TextStyle(
-              fontSize: 12.px,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 12.px),
           _buildTextField(
@@ -214,11 +214,15 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
       margin: EdgeInsets.only(bottom: 10.px),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: maxLines == 1
-            ? Border(
-                bottom:
-                    BorderSide(width: 1, color: Color.fromARGB(10, 0, 0, 0)))
-            : null,
+        border:
+            maxLines == 1
+                ? Border(
+                  bottom: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(10, 0, 0, 0),
+                  ),
+                )
+                : null,
         borderRadius: maxLines == 1 ? null : BorderRadius.circular(10),
       ),
       child: Row(
@@ -226,10 +230,7 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
             maxLines > 1 ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: 12.px, color: Colors.black),
-          ),
+          Text(label, style: TextStyle(fontSize: 12.px, color: Colors.black)),
           SizedBox(width: 10.px),
           Expanded(
             child: TextFormField(
@@ -242,26 +243,31 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
               textAlign: maxLines > 1 ? TextAlign.start : TextAlign.right,
               decoration: InputDecoration(
                 isDense: true,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8.px, horizontal: 8.px),
-                border: maxLines > 1
-                    ? OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.px),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      )
-                    : InputBorder.none,
-                enabledBorder: maxLines > 1
-                    ? OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.px),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      )
-                    : InputBorder.none,
-                focusedBorder: maxLines > 1
-                    ? OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.px),
-                        borderSide: BorderSide(color: primaryColor),
-                      )
-                    : InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 8.px,
+                  horizontal: 8.px,
+                ),
+                border:
+                    maxLines > 1
+                        ? OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.px),
+                          borderSide: BorderSide(color: Colors.grey[300]!),
+                        )
+                        : InputBorder.none,
+                enabledBorder:
+                    maxLines > 1
+                        ? OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.px),
+                          borderSide: BorderSide(color: Colors.grey[300]!),
+                        )
+                        : InputBorder.none,
+                focusedBorder:
+                    maxLines > 1
+                        ? OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.px),
+                          borderSide: BorderSide(color: primaryColor),
+                        )
+                        : InputBorder.none,
                 hintText: S.of(context).inputMessage(label),
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 10.px),
               ),
@@ -285,11 +291,12 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
     );
   }
 
-  Widget RaisedButton(
-      {required void Function() onPressed,
-      required Text child,
-      required Color color,
-      required Color textColor}) {
+  Widget RaisedButton({
+    required void Function() onPressed,
+    required Text child,
+    required Color color,
+    required Color textColor,
+  }) {
     return Container(
       width: double.infinity,
       height: 36.px,
@@ -303,7 +310,7 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
         onPressed: onPressed,
         child: child,
         style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all<Color>(textColor),
+          foregroundColor: WidgetStateProperty.all<Color>(textColor),
         ),
       ),
     );

@@ -453,6 +453,25 @@ class _FoodMenuPageState extends State<FoodMenuPage>
                       ),
                     ),
           ),
+          // 底部说明
+          Container(
+            padding: EdgeInsets.only(
+              left: 16.px,
+              right: 16.px,
+              top: 8.px,
+              bottom: 16.px,
+            ),
+            width: double.infinity,
+            child: Text(
+              '温馨提示：菜谱仅供参考，如有疑问请咨询食堂工作人员。',
+              style: TextStyle(fontSize: 12.px),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.px),
+              border: Border.all(color: Colors.grey[200]!),
+            ),
+          ),
         ],
       ),
     );

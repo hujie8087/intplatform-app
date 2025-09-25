@@ -355,13 +355,13 @@ class _EditAddressPageState extends State<EditAddressPage>
                               minimumSize: WidgetStateProperty.all(
                                 Size(double.infinity, 26.px),
                               ),
-                              backgroundColor: MaterialStateProperty.all(
+                              backgroundColor: WidgetStateProperty.all(
                                 primaryColor[500],
                               ),
-                              textStyle: MaterialStateProperty.all(
+                              textStyle: WidgetStateProperty.all(
                                 TextStyle(fontSize: 14.px, color: Colors.white),
                               ),
-                              shape: MaterialStateProperty.all(
+                              shape: WidgetStateProperty.all(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20.px),
                                 ),

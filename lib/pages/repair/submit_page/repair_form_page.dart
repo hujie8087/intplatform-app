@@ -545,13 +545,13 @@ class _RepairFormPage extends State<RepairFormPage>
           ),
         );
       },
-      onWillAccept: (data) {
+      onWillAcceptWithDetails: (data) {
         setState(() {
           isWillRemove = true;
         });
         return true;
       },
-      onAccept: (data) {
+      onAcceptWithDetails: (data) {
         setState(() {
           selectedAssets.remove(data);
           isWillRemove = false;
@@ -753,10 +753,10 @@ class _RepairFormPage extends State<RepairFormPage>
         onPressed: onPressed,
         child: child,
         style: ButtonStyle(
-          textStyle: MaterialStateProperty.all<TextStyle>(
+          textStyle: WidgetStateProperty.all<TextStyle>(
             TextStyle(fontSize: 14.px, color: textColor),
           ),
-          foregroundColor: MaterialStateProperty.all<Color>(textColor),
+          foregroundColor: WidgetStateProperty.all<Color>(textColor),
         ),
       ),
     );

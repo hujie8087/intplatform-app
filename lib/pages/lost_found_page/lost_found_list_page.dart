@@ -122,22 +122,41 @@ class _LostFoundListPageState extends State<LostFoundListPage>
           model.createBy = createBy;
           break;
       }
-      model
-          .getLostFoundModelList(true)
-          .then((value) {
-            setState(() {
-              if (model.isLoadComplete == true) {
-                _refreshController.loadNoData();
-              } else {
-                _refreshController.loadComplete();
-              }
+      if (current != 3) {
+        model
+            .getLostFoundModelList(true)
+            .then((value) {
+              setState(() {
+                if (model.isLoadComplete == true) {
+                  _refreshController.loadNoData();
+                } else {
+                  _refreshController.loadComplete();
+                }
+              });
+            })
+            .catchError((error) {
+              print('加载失败1111111: $error');
+              ProgressHUD.showError(error.toString());
+              _refreshController.loadFailed();
             });
-          })
-          .catchError((error) {
-            print('加载失败1111111: $error');
-            ProgressHUD.showError(error.toString());
-            _refreshController.loadFailed();
-          });
+      } else {
+        model
+            .getMyLostFoundList(true)
+            .then((value) {
+              setState(() {
+                if (model.isLoadComplete == true) {
+                  _refreshController.loadNoData();
+                } else {
+                  _refreshController.loadComplete();
+                }
+              });
+            })
+            .catchError((error) {
+              print('加载失败1111111: $error');
+              ProgressHUD.showError(error.toString());
+              _refreshController.loadFailed();
+            });
+      }
     });
   }
 
@@ -183,37 +202,77 @@ class _LostFoundListPageState extends State<LostFoundListPage>
                               enablePullUp: true,
                               onRefresh: () {
                                 //关闭刷新
-                                model
-                                    .getLostFoundModelList(true)
-                                    .then((value) {
-                                      _refreshController.refreshCompleted();
-                                      if (model.isLoadComplete == true) {
-                                        _refreshController.loadNoData();
-                                      } else {
-                                        _refreshController.loadComplete();
-                                      }
-                                      // 刷新完成
-                                      animationController?.forward();
-                                    })
-                                    .catchError((error) {
-                                      ProgressHUD.showError(error.toString());
-                                      _refreshController.refreshFailed();
-                                    });
+                                if (current != 3) {
+                                  model
+                                      .getLostFoundModelList(true)
+                                      .then((value) {
+                                        _refreshController.refreshCompleted();
+                                        if (model.isLoadComplete == true) {
+                                          _refreshController.loadNoData();
+                                        } else {
+                                          _refreshController.loadComplete();
+                                        }
+                                        // 刷新完成
+                                        animationController?.forward();
+                                      })
+                                      .catchError((error) {
+                                        ProgressHUD.showError(error.toString());
+                                        _refreshController.refreshFailed();
+                                      });
+                                } else {
+                                  model
+                                      .getMyLostFoundList(true)
+                                      .then((value) {
+                                        _refreshController.refreshCompleted();
+                                        if (model.isLoadComplete == true) {
+                                          _refreshController.loadNoData();
+                                        } else {
+                                          _refreshController.loadComplete();
+                                        }
+                                        // 刷新完成
+                                        animationController?.forward();
+                                      })
+                                      .catchError((error) {
+                                        ProgressHUD.showError(error.toString());
+                                        _refreshController.refreshFailed();
+                                      });
+                                  ;
+                                }
                               },
                               onLoading: () {
-                                model
-                                    .getLostFoundModelList(false)
-                                    .then((value) {
-                                      if (model.isLoadComplete == true) {
-                                        _refreshController.loadNoData();
-                                      } else {
-                                        _refreshController.loadComplete();
-                                      }
-                                    })
-                                    .catchError((error) {
-                                      ProgressHUD.showError(error.toString());
-                                      _refreshController.loadFailed();
-                                    });
+                                if (current != 3) {
+                                  model
+                                      .getLostFoundModelList(false)
+                                      .then((value) {
+                                        if (model.isLoadComplete == true) {
+                                          _refreshController.loadNoData();
+                                        } else {
+                                          _refreshController.loadComplete();
+                                        }
+                                      })
+                                      .catchError((error) {
+                                        ProgressHUD.showError(error.toString());
+                                        _refreshController.loadFailed();
+                                      });
+                                } else {
+                                  model
+                                      .getMyLostFoundList(false)
+                                      .then((value) {
+                                        _refreshController.refreshCompleted();
+                                        if (model.isLoadComplete == true) {
+                                          _refreshController.loadNoData();
+                                        } else {
+                                          _refreshController.loadComplete();
+                                        }
+                                        // 刷新完成
+                                        animationController?.forward();
+                                      })
+                                      .catchError((error) {
+                                        ProgressHUD.showError(error.toString());
+                                        _refreshController.refreshFailed();
+                                      });
+                                  ;
+                                }
                               },
                               controller: _refreshController,
                               child: LostFountListView(),
@@ -353,45 +412,7 @@ class LostFoundView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Container(
-                              height: 110.px,
-                              child: GridView.builder(
-                                // 禁止滚动
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                padding: EdgeInsets.zero,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 10,
-                                      mainAxisSpacing: 10,
-                                      childAspectRatio: 1,
-                                    ),
-                                itemCount:
-                                    listData?.photo?.split(',').length ?? 0,
-                                itemBuilder: (context, index) {
-                                  return Center(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        8.px,
-                                      ), // 圆角大小
-                                      child: Container(
-                                        width: 100.px,
-                                        height: 100.px,
-                                        child: Image.network(
-                                          APIs.imagePrefix +
-                                              (listData?.photo?.split(
-                                                    ',',
-                                                  )[index] ??
-                                                  ''),
-                                          fit: BoxFit.cover, // 保证图片铺满整个容器
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+                            _buildPhotoGrid(),
                             Row(
                               children: [
                                 Expanded(
@@ -413,57 +434,16 @@ class LostFoundView extends StatelessWidget {
                                             ),
                                           ),
                                           // 类型标签
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 8.px,
-                                              vertical: 5.px,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  listData?.def2 == '1'
-                                                      ? primaryColor[500]
-                                                      : secondaryColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(5.px),
-                                            ),
-                                            child: Text(
-                                              listData?.def2 == '1'
-                                                  ? S.current.found
-                                                  : S.current.lost,
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
+                                          _buildTypeTag(context),
                                         ],
                                       ),
                                       SizedBox(height: 8.px),
                                       if (listData?.def2 == '1' &&
                                           listData?.receivePlace != null)
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.location_on,
-                                              size: 14.px,
-                                              color: Colors.grey,
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
-                                              S.current.receivePlace,
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Text(
-                                              listData?.receivePlace ?? '',
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
+                                        _buildIconLabelValueRow(
+                                          icon: Icons.location_on,
+                                          label: S.current.receivePlace,
+                                          value: listData?.receivePlace ?? '',
                                         ),
                                       // 分割线
                                       if (listData?.def2 == '1' &&
@@ -473,185 +453,61 @@ class LostFoundView extends StatelessWidget {
                                           color: Colors.grey,
                                         ),
                                       if (listData?.def2 == '0')
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.access_time,
-                                              size: 14.px,
-                                              color: Colors.grey,
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
-                                              S.current.lostTime,
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Text(
-                                              listData?.foundTime ?? '',
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
+                                        _buildIconLabelValueRow(
+                                          icon: Icons.access_time,
+                                          label: S.current.lostTime,
+                                          value: listData?.foundTime ?? '',
                                         ),
                                       if (listData?.def2 == '1')
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.access_time,
-                                              size: 14.px,
-                                              color: Colors.grey,
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
-                                              S.current.receiveTime,
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Text(
-                                              listData?.foundTime ?? '',
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
+                                        _buildIconLabelValueRow(
+                                          icon: Icons.access_time,
+                                          label: S.current.receiveTime,
+                                          value: listData?.foundTime ?? '',
                                         ),
                                       SizedBox(height: 8.px),
 
                                       if (listData?.def2 == '1')
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.person,
-                                              size: 14.px,
-                                              color: Colors.grey,
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
+                                        _buildIconLabelValueRow(
+                                          icon: Icons.person,
+                                          label:
                                               S
                                                   .of(context)
                                                   .goodHeartedColleague,
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Text(
-                                              listData?.receiveName ?? '',
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
+                                          value: listData?.receiveName ?? '',
                                         ),
                                       if (listData?.def2 == '0')
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.person,
-                                              size: 14.px,
-                                              color: Colors.grey,
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
+                                        _buildIconLabelValueRow(
+                                          icon: Icons.person,
+                                          label:
                                               S.of(context).lostItemColleague,
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Text(
-                                              listData?.receiveName ?? '',
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
+                                          value: listData?.receiveName ?? '',
                                         ),
                                       SizedBox(height: 8.px),
                                       Row(
                                         children: [
-                                          Icon(
-                                            Icons.phone,
-                                            size: 14.px,
-                                            color: Colors.grey,
-                                          ),
-                                          SizedBox(width: 5),
-                                          Text(
-                                            S.of(context).contactNumber,
-                                            style: TextStyle(
-                                              fontSize: 12.px,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          Text(
-                                            listData?.tel ?? '',
-                                            style: TextStyle(
-                                              fontSize: 12.px,
-                                              color: Colors.grey,
-                                            ),
+                                          _buildIconLabelValueRow(
+                                            icon: Icons.phone,
+                                            label: S.of(context).contactNumber,
+                                            value: listData?.tel ?? '',
+                                            asInlineSpans: true,
                                           ),
                                         ],
                                       ),
                                       SizedBox(height: 8.px),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.location_on,
-                                            size: 14.px,
-                                            color: Colors.grey,
-                                          ),
-                                          SizedBox(width: 5),
-                                          Text(
-                                            S.of(context).lostPlace,
-                                            style: TextStyle(
-                                              fontSize: 12.px,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          Text(
-                                            listData?.foundPlace ?? '',
-                                            style: TextStyle(
-                                              fontSize: 12.px,
-                                              color: Colors.grey,
-                                            ),
-                                          ),
-                                        ],
+                                      _buildIconLabelValueRow(
+                                        icon: Icons.location_on,
+                                        label: S.of(context).lostPlace,
+                                        value: listData?.foundPlace ?? '',
                                       ),
                                       if (listData?.reviewStatus == 2)
                                         SizedBox(height: 8.px),
                                       if (listData?.reviewStatus == 2)
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.error,
-                                              size: 14.px,
-                                              color: Colors.red,
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
-                                              S.of(context).auditRejected,
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            Text(
-                                              listData?.def3 ?? '',
-                                              style: TextStyle(
-                                                fontSize: 12.px,
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ],
+                                        _buildIconLabelValueRow(
+                                          icon: Icons.error,
+                                          iconColor: Colors.red,
+                                          label: S.of(context).auditRejected,
+                                          value: listData?.def3 ?? '',
+                                          valueColor: Colors.red,
                                         ),
                                     ],
                                   ),
@@ -664,14 +520,14 @@ class LostFoundView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 // 领取
-                                if (listData?.isFound == '0')
+                                if (listData?.isFound == '0' &&
+                                    listData?.reviewStatus == 1)
                                   SizedBox(
-                                    height: 20.px,
+                                    height: 26.px,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: primaryColor,
+                                        backgroundColor: primaryColor[500],
                                         padding: EdgeInsets.all(0.px),
-                                        minimumSize: Size(40.px, 20.px),
                                       ),
                                       onPressed: () {
                                         // 弹出确认框
@@ -696,7 +552,10 @@ class LostFoundView extends StatelessWidget {
                                       },
                                       child: Text(
                                         S.of(context).receive,
-                                        style: TextStyle(fontSize: 10.px),
+                                        style: TextStyle(
+                                          fontSize: 10.px,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -706,15 +565,14 @@ class LostFoundView extends StatelessWidget {
                                     children: [
                                       SizedBox(width: 10.px),
                                       // 编辑按钮
-                                      if (listData?.reviewStatus == 2)
+                                      if (listData?.reviewStatus != 1)
                                         SizedBox(
-                                          height: 20.px,
+                                          height: 26.px,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
                                                   primaryColor[500],
                                               padding: EdgeInsets.all(0.px),
-                                              minimumSize: Size(40.px, 20.px),
                                             ),
                                             onPressed: () async {
                                               final result =
@@ -737,19 +595,21 @@ class LostFoundView extends StatelessWidget {
                                             },
                                             child: Text(
                                               S.of(context).edit,
-                                              style: TextStyle(fontSize: 10.px),
+                                              style: TextStyle(
+                                                fontSize: 10.px,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       // 删除按钮
                                       SizedBox(width: 10.px),
                                       SizedBox(
-                                        height: 20.px,
+                                        height: 26.px,
                                         child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: secondaryColor,
                                             padding: EdgeInsets.all(0.px),
-                                            minimumSize: Size(40.px, 20.px),
                                           ),
                                           onPressed: () {
                                             // 弹出确认框
@@ -778,7 +638,10 @@ class LostFoundView extends StatelessWidget {
                                           },
                                           child: Text(
                                             S.of(context).delete,
-                                            style: TextStyle(fontSize: 10.px),
+                                            style: TextStyle(
+                                              fontSize: 10.px,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -812,7 +675,7 @@ class LostFoundView extends StatelessWidget {
                                   ? S.of(context).toBeAudited
                                   : listData?.reviewStatus == 1
                                   ? listData?.isFound == '1'
-                                      ? S.of(context).toBeReceived
+                                      ? S.of(context).toBeReceivedSuccess
                                       : listData?.def2 == '1'
                                       ? S.of(context).toBeReceived
                                       : S.of(context).toBeFound
@@ -835,6 +698,95 @@ class LostFoundView extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+extension on LostFoundView {
+  // 图片九宫格
+  Widget _buildPhotoGrid() {
+    final List<String> photos =
+        (listData?.photo ?? '')
+            .split(',')
+            .where((e) => e.trim().isNotEmpty)
+            .toList();
+    if (photos.isEmpty) {
+      return SizedBox.shrink();
+    }
+    return Container(
+      height: 110.px,
+      child: GridView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 1,
+        ),
+        itemCount: photos.length,
+        itemBuilder: (context, index) {
+          final String url = APIs.imagePrefix + photos[index];
+          return Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.px),
+              child: Container(
+                width: 100.px,
+                height: 100.px,
+                child: Image.network(url, fit: BoxFit.cover),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // 类型标签
+  Widget _buildTypeTag(BuildContext context) {
+    final bool isFound = listData?.def2 == '1';
+    final Color? bg = isFound ? primaryColor[500] : secondaryColor;
+    final String text = isFound ? S.current.found : S.current.lost;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 5.px),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(5.px),
+      ),
+      child: Text(text, style: TextStyle(fontSize: 12.px, color: Colors.white)),
+    );
+  }
+
+  // 通用的图标 + 标签 + 值
+  Widget _buildIconLabelValueRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    Color iconColor = Colors.grey,
+    Color labelColor = Colors.black,
+    Color valueColor = Colors.grey,
+    bool asInlineSpans = false,
+  }) {
+    if (asInlineSpans) {
+      return Row(
+        children: [
+          Icon(icon, size: 14.px, color: iconColor),
+          SizedBox(width: 5),
+          Text(label, style: TextStyle(fontSize: 12.px, color: labelColor)),
+          SizedBox(width: 5),
+          Text(value, style: TextStyle(fontSize: 12.px, color: valueColor)),
+        ],
+      );
+    }
+    return Row(
+      children: [
+        Icon(icon, size: 14.px, color: iconColor),
+        SizedBox(width: 5),
+        Text(label, style: TextStyle(fontSize: 12.px, color: labelColor)),
+        SizedBox(width: 5),
+        Text(value, style: TextStyle(fontSize: 12.px, color: valueColor)),
+      ],
     );
   }
 }

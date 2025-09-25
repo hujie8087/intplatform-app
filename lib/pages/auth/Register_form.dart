@@ -176,13 +176,11 @@ class _RegisterFormState extends State<RegisterForm> {
                       },
                       child: Text('注册', style: TextStyle(color: Colors.white)),
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                          primaryColor,
-                        ),
-                        textStyle: MaterialStateProperty.all(
+                        backgroundColor: WidgetStateProperty.all(primaryColor),
+                        textStyle: WidgetStateProperty.all(
                           TextStyle(fontSize: 16, color: Colors.white),
                         ),
-                        shape: MaterialStateProperty.all(
+                        shape: WidgetStateProperty.all(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
