@@ -5,8 +5,8 @@ import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart'
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/good_deed_model.dart';
-import 'package:logistics_app/pages/goodDeeds/good_deeds_detail_page.dart';
 import 'package:logistics_app/pages/goodDeeds/good_deed_submit_page.dart';
+import 'package:logistics_app/pages/goodDeeds/good_deeds_detail_page.dart';
 import 'package:logistics_app/pages/goodDeeds/my_good_deed_Page.dart';
 import 'package:logistics_app/route/route_annotation.dart';
 import 'package:logistics_app/route/route_utils.dart';
@@ -154,6 +154,7 @@ class _GoodDeedsListPageState extends State<GoodDeedsListPage>
         },
         // 带文字的图标
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.add, size: 24.px),
             Text(S.of(context).publish, style: TextStyle(fontSize: 10.px)),
