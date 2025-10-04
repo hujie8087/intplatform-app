@@ -198,7 +198,7 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
                                     ),
                           ),
                         ),
-                        if (!_isInitialized)
+                        if (!_isInitialized && _promo?.img != null)
                           Positioned.fill(
                             child: Image.network(
                               APIs.imageOnlinePrefix + (_promo?.img ?? ''),

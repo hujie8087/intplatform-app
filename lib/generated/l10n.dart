@@ -144,9 +144,9 @@ class S {
     return Intl.message('注册失败', name: 'registerFailed', desc: '', args: []);
   }
 
-  /// `确认密码`
+  /// `请再次输入密码`
   String get confirmPassword {
-    return Intl.message('确认密码', name: 'confirmPassword', desc: '', args: []);
+    return Intl.message('请再次输入密码', name: 'confirmPassword', desc: '', args: []);
   }
 
   /// `注册`
@@ -5577,6 +5577,101 @@ class S {
   /// `发布失败`
   String get publish_failed {
     return Intl.message('发布失败', name: 'publish_failed', desc: '', args: []);
+  }
+
+  /// `回复反馈`
+  String get reply_to_feedback {
+    return Intl.message('回复反馈', name: 'reply_to_feedback', desc: '', args: []);
+  }
+
+  /// `未填写`
+  String get not_filled {
+    return Intl.message('未填写', name: 'not_filled', desc: '', args: []);
+  }
+
+  /// `回复内容`
+  String get reply_content {
+    return Intl.message('回复内容', name: 'reply_content', desc: '', args: []);
+  }
+
+  /// `待回复`
+  String get reply_status {
+    return Intl.message('待回复', name: 'reply_status', desc: '', args: []);
+  }
+
+  /// `已回复`
+  String get replied {
+    return Intl.message('已回复', name: 'replied', desc: '', args: []);
+  }
+
+  /// `回复时间`
+  String get reply_time {
+    return Intl.message('回复时间', name: 'reply_time', desc: '', args: []);
+  }
+
+  /// `暂无内容`
+  String get no_content {
+    return Intl.message('暂无内容', name: 'no_content', desc: '', args: []);
+  }
+
+  /// `我想吃`
+  String get i_want_to_eat {
+    return Intl.message('我想吃', name: 'i_want_to_eat', desc: '', args: []);
+  }
+
+  /// `我想说`
+  String get i_want_to_say {
+    return Intl.message('我想说', name: 'i_want_to_say', desc: '', args: []);
+  }
+
+  /// `反馈详情`
+  String get feedback_detail {
+    return Intl.message('反馈详情', name: 'feedback_detail', desc: '', args: []);
+  }
+
+  /// `反馈内容`
+  String get feedback_content {
+    return Intl.message('反馈内容', name: 'feedback_content', desc: '', args: []);
+  }
+
+  /// `未知时间`
+  String get unknown_time {
+    return Intl.message('未知时间', name: 'unknown_time', desc: '', args: []);
+  }
+
+  /// `刚刚`
+  String get just_now {
+    return Intl.message('刚刚', name: 'just_now', desc: '', args: []);
+  }
+
+  /// `小时前`
+  String get hours_ago {
+    return Intl.message('小时前', name: 'hours_ago', desc: '', args: []);
+  }
+
+  /// `天前`
+  String get days_ago {
+    return Intl.message('天前', name: 'days_ago', desc: '', args: []);
+  }
+
+  /// `分钟前`
+  String get minutes_ago {
+    return Intl.message('分钟前', name: 'minutes_ago', desc: '', args: []);
+  }
+
+  /// `提交失败`
+  String get submit_failed {
+    return Intl.message('提交失败', name: 'submit_failed', desc: '', args: []);
+  }
+
+  /// `处理状态`
+  String get processing_status {
+    return Intl.message('处理状态', name: 'processing_status', desc: '', args: []);
+  }
+
+  /// `回复人`
+  String get reply_person {
+    return Intl.message('回复人', name: 'reply_person', desc: '', args: []);
   }
 }
 

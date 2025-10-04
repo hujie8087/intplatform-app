@@ -58,6 +58,7 @@ import 'package:logistics_app/pages/library/library_list_page.dart';
 import 'package:logistics_app/pages/library/library_detail_page.dart';
 import 'package:logistics_app/pages/goodDeeds/good_deeds_list_page.dart';
 import 'package:logistics_app/pages/goodDeeds/my_good_deed_Page.dart';
+import 'package:logistics_app/pages/shopping/my_feedback/my_feedback_list_page.dart';
 
 /// 自动路由生成器
 /// 通过注解和反射自动注册路由，无需手动维护路由表
@@ -250,6 +251,10 @@ class AutoRouteGenerator {
     RoutePath.FoodMenuPage: RouteConfig(
       builder: (context) => FoodMenuPage(),
       name: 'FoodMenuPage',
+    ),
+    RoutePath.MyFeedbackListPage: RouteConfig(
+      builder: (context) => MyFeedbackListPage(),
+      name: 'MyFeedbackListPage',
     ),
 
     // 支付相关
@@ -457,6 +462,7 @@ class RoutePath {
   static const String FoodFeedbackPage = 'food_feedback_page';
   static const String FoodRecommendPage = 'food_recommend_page';
   static const String FoodMenuPage = 'food_menu_page';
+  static const String MyFeedbackListPage = 'my_feedback_list_page';
 
   // 支付相关
   static const String PaymentQRCodePage = 'payment_qr_code_page';

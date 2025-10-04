@@ -16,25 +16,28 @@ class GuideTypeViewModel {
   String? deleteTime;
   int? approvalStatus;
   String? file;
+  String? url;
 
-  GuideTypeViewModel(
-      {this.createBy,
-      this.createTime,
-      this.updateBy,
-      this.updateTime,
-      this.remark,
-      this.id,
-      this.title,
-      this.content,
-      this.img,
-      this.isLogin,
-      this.sort,
-      this.status,
-      this.delFlag,
-      this.deleteBy,
-      this.deleteTime,
-      this.approvalStatus,
-      this.file});
+  GuideTypeViewModel({
+    this.createBy,
+    this.createTime,
+    this.updateBy,
+    this.updateTime,
+    this.remark,
+    this.id,
+    this.title,
+    this.content,
+    this.img,
+    this.isLogin,
+    this.sort,
+    this.status,
+    this.delFlag,
+    this.deleteBy,
+    this.deleteTime,
+    this.approvalStatus,
+    this.file,
+    this.url,
+  });
 
   GuideTypeViewModel.fromJson(Map<String, dynamic> json) {
     createBy = json['createBy'];
@@ -54,6 +57,7 @@ class GuideTypeViewModel {
     deleteTime = json['deleteTime'];
     approvalStatus = json['approvalStatus'];
     file = json['file'];
+    url = json['url'];
   }
 
   Map<String, dynamic> toJson() {
@@ -75,6 +79,7 @@ class GuideTypeViewModel {
     data['deleteTime'] = this.deleteTime;
     data['approvalStatus'] = this.approvalStatus;
     data['file'] = this.file;
+    data['url'] = this.url;
     return data;
   }
 }

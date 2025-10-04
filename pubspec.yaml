@@ -46,8 +46,10 @@ dependencies:
   flutter_datetime_picker_plus: ^2.1.0
   flutter_downloader: ^1.12.0
   flutter_html: ^3.0.0-beta.2
+  flutter_html_iframe: ^3.0.0
   flutter_html_video: ^3.0.0-beta.2
   flutter_image_compress: ^2.4.0
+  flutter_launcher_icons: ^0.14.4
   flutter_local_notifications: ^18.0.1
   flutter_localization: ^0.2.1
   flutter_localizations:
@@ -94,7 +96,9 @@ dependencies:
   timeline_tile: ^2.0.0
   url_launcher: ^6.2.5
   video_player: ^2.8.6
+  web: ^1.1.1
   webview_flutter: ^4.8.0
+  webview_flutter_web: ^0.2.3+4
   wechat_assets_picker: ^9.1.0
   wechat_camera_picker: ^4.3.1
 
@@ -150,7 +154,15 @@ flutter:
 flutter_icons:
   android: true
   ios: true
+  web:
+    generate: true
+    image_path: 'assets/icon/icon.png'
+    background_color: '#ffffff' # 可选：Web图标背景色
+    theme_color: '#2196f3' # 可选：Web应用主题色
   image_path: 'assets/icon/icon.png'
+  adaptive_icon_background: '#ffffff' # Android自适应图标背景色
+  remove_alpha_ios: true # iOS去掉透明通道
+  min_sdk_android: 21 # 确保安卓低版本兼容
 flutter_intl:
   enabled: true
   class_name: S

@@ -45,6 +45,9 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
   }
 
   void _submitFeedback() async {
+    // 防止重复提交
+    if (_isLoading) return;
+
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -62,18 +65,32 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
         DataUtils.submitMessage(
           data,
           success: (response) {
-            ProgressHUD.showSuccess(S.of(context).submitSuccess);
-            Navigator.pop(context);
+            if (mounted) {
+              ProgressHUD.showSuccess(S.of(context).submitSuccess);
+              // 延迟返回上一页
+              Future.delayed(Duration(seconds: 1), () {
+                setState(() {
+                  _isLoading = false;
+                });
+                Navigator.pop(context);
+              });
+            }
           },
           fail: (code, msg) {
-            ProgressHUD.showError(msg);
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+              ProgressHUD.showError(msg);
+            }
           },
         );
-      } finally {
+      } catch (e) {
         if (mounted) {
           setState(() {
             _isLoading = false;
           });
+          ProgressHUD.showError(S.of(context).submit_failed);
         }
       }
     }
@@ -279,19 +296,29 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
 
   Widget _buildSubmitButton() {
     return RaisedButton(
-      onPressed: _isLoading ? () {} : _submitFeedback,
-      color: primaryColor[700] ?? primaryColor,
+      onPressed: _isLoading ? null : _submitFeedback,
+      color: _isLoading ? Colors.grey : (primaryColor[700] ?? primaryColor),
       textColor: Colors.white,
-      child: Text(
-        S.of(context).confirmSubmit,
-        style: TextStyle(fontSize: 12.px),
-      ),
+      child:
+          _isLoading
+              ? SizedBox(
+                width: 16.px,
+                height: 16.px,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+              : Text(
+                S.of(context).confirmSubmit,
+                style: TextStyle(fontSize: 12.px),
+              ),
     );
   }
 
   Widget RaisedButton({
-    required void Function() onPressed,
-    required Text child,
+    required void Function()? onPressed,
+    required Widget child,
     required Color color,
     required Color textColor,
   }) {

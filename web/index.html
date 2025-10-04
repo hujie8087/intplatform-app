@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <!--
+  <head>
+    <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
 
@@ -14,25 +14,72 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
-  <base href="$FLUTTER_BASE_HREF">
+    <base href="$FLUTTER_BASE_HREF" />
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="A new Flutter project." />
 
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="logistics_app">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <!-- iOS meta tags & icons -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="logistics_app" />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.ico" />
 
-  <title>logistics_app</title>
-  <link rel="manifest" href="manifest.json">
-</head>
-<body>
-  <script src="flutter_bootstrap.js" async></script>
-</body>
+    <title>logistics_app</title>
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- 禁止视频下载 & 禁用右键/快捷键 -->
+    <style>
+      /* 屏蔽默认的下载按钮样式（大多数自定义控件生效） */
+      video::-internal-media-controls-download-button {
+        display: none;
+      }
+      video::-webkit-media-controls-enclosure {
+        overflow: hidden;
+      }
+      video::-webkit-media-controls-panel {
+        width: calc(100% + 30px);
+      }
+    </style>
+    <script>
+      // 禁用右键和常见的保存快捷键
+      document.addEventListener(
+        'contextmenu',
+        function (e) {
+          e.preventDefault()
+        },
+        { capture: true }
+      )
+      document.addEventListener(
+        'keydown',
+        function (e) {
+          // Ctrl/Cmd+S、Ctrl/Cmd+P、Ctrl/Cmd+Shift+I、F12、Ctrl/Cmd+U
+          if (
+            (e.ctrlKey || e.metaKey) &&
+            ['s', 'p', 'u'].includes(e.key.toLowerCase())
+          ) {
+            e.preventDefault()
+          }
+          if (
+            (e.ctrlKey || e.metaKey) &&
+            e.shiftKey &&
+            e.key.toLowerCase() === 'i'
+          ) {
+            e.preventDefault()
+          }
+          if (e.key === 'F12') {
+            e.preventDefault()
+          }
+        },
+        { capture: true }
+      )
+    </script>
+  </head>
+  <body>
+    <script src="flutter_bootstrap.js" async></script>
+  </body>
 </html>

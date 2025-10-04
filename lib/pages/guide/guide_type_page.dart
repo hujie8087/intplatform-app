@@ -8,6 +8,7 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/guide_type_view_model.dart';
+import 'package:logistics_app/pages/guide/components/iframe_view_widget.dart';
 import 'package:logistics_app/pages/news/monthly_page/monthly_detail_page.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:path/path.dart' as path;
@@ -31,6 +32,7 @@ class GuideTypePage extends StatefulWidget {
 class _GuideTypePageState extends State<GuideTypePage> {
   GuideTypeViewModel? guideTypeDetail;
   List<FileModel> fileList = [];
+  bool _isLoading = true;
 
   Future<void> openWordFile(String fileUrl) async {
     try {
@@ -72,6 +74,7 @@ class _GuideTypePageState extends State<GuideTypePage> {
       success: (data) {
         guideTypeDetail = GuideTypeViewModel.fromJson(data['data']);
         setState(() {
+          _isLoading = false;
           if (guideTypeDetail?.file != null) {
             fileList =
                 guideTypeDetail?.file
@@ -84,6 +87,11 @@ class _GuideTypePageState extends State<GuideTypePage> {
           }
         });
       },
+      fail: (code, msg) {
+        setState(() {
+          _isLoading = false;
+        });
+      },
     );
   }
 
@@ -91,6 +99,69 @@ class _GuideTypePageState extends State<GuideTypePage> {
   void initState() {
     _fetchData();
     super.initState();
+  }
+
+  // 构建附件列表项
+  Widget _buildFileItem(int index) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 8.px),
+      child: InkWell(
+        onTap: () {
+          if (fileList[index].fileUrl?.endsWith('.pdf') ?? false) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => MonthlyDetailPage(
+                      pdfUrl:
+                          fileList[index].fileUrl != null
+                              ? APIs.imagePrefix + fileList[index].fileUrl!
+                              : '',
+                      title: fileList[index].fileName ?? '',
+                    ),
+              ),
+            );
+          } else {
+            openWordFile(APIs.imagePrefix + fileList[index].fileUrl!);
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 8.px),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(6.px),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                fileList[index].fileUrl?.endsWith('.pdf') ?? false
+                    ? Icons.picture_as_pdf
+                    : Icons.description,
+                color:
+                    fileList[index].fileUrl?.endsWith('.pdf') ?? false
+                        ? Colors.red
+                        : Colors.blue,
+                size: 20.px,
+              ),
+              SizedBox(width: 8.px),
+              Expanded(
+                child: Text(
+                  fileList[index].fileName ?? '',
+                  style: TextStyle(fontSize: 14.px),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 16.px,
+                color: Colors.grey.shade600,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -104,184 +175,209 @@ class _GuideTypePageState extends State<GuideTypePage> {
         ),
       ),
       body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/guide_bg.png'),
-              fit: BoxFit.fill,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(10.px),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      guideTypeDetail?.title ?? '',
-                      style: TextStyle(
-                        fontSize: 18.px,
-                        fontWeight: FontWeight.bold,
-                      ),
+        child:
+            guideTypeDetail?.url != null
+                ? IframeViewWidget(url: guideTypeDetail?.url ?? '')
+                : Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/guide_bg.png'),
+                      fit: BoxFit.fill,
                     ),
-                    SizedBox(height: 10.px),
-                    Text(
-                      guideTypeDetail?.createTime ?? '',
-                      style: TextStyle(fontSize: 12.px, color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
-              // 修改 Expanded 为 Flexible
-              Flexible(
-                child: SingleChildScrollView(
-                  controller: ScrollController(
-                    keepScrollOffset: true,
-                    initialScrollOffset: 0,
                   ),
-                  physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics(),
-                  ),
-                  child: Column(
-                    children: [
-                      Html(
-                        data:
-                            guideTypeDetail?.approvalStatus == 4
-                                ? guideTypeDetail?.content
-                                : S.of(context).contentUpdating,
-                        style: {
-                          'body': Style(
-                            fontSize: FontSize(12.px),
-                            padding: HtmlPaddings.zero,
-                          ),
-                        },
-                        shrinkWrap: false, // **确保 Html 可以滚动**
-                        extensions: [
-                          TagExtension(
-                            tagsToExtend: {"img"},
-                            builder: (context) {
-                              final attributes = context.attributes;
-                              final imageUrl = attributes["src"] ?? "";
-                              return GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context.buildContext!,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (context) => ImagePreviewScreen(
-                                            imageUrl: imageUrl,
-                                          ),
-                                    ),
-                                  );
-                                },
-                                child: CachedNetworkImage(
-                                  imageUrl: imageUrl,
-                                  fit: BoxFit.cover,
-                                  placeholder:
-                                      (context, url) => const Center(
-                                        child: CircularProgressIndicator(),
+                  child:
+                      _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // 标题和创建时间区域
+                                Container(
+                                  padding: EdgeInsets.all(16.px),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        guideTypeDetail?.title ?? '',
+                                        style: TextStyle(
+                                          fontSize: 18.px,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                  errorWidget:
-                                      (context, url, error) => const Icon(
-                                        Icons.error,
-                                        color: Colors.red,
+                                      SizedBox(height: 10.px),
+                                      Text(
+                                        guideTypeDetail?.createTime ?? '',
+                                        style: TextStyle(
+                                          fontSize: 12.px,
+                                          color: Colors.grey,
+                                        ),
                                       ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20.px),
-                      // 展示附件,附件格式为PDF或word文档
-                      if (guideTypeDetail?.approvalStatus == 4 &&
-                          guideTypeDetail?.file != null)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(width: 8.px),
-                            Container(
-                              height: 30.px,
-                              child: Text(
-                                S.of(context).attachment,
-                                style: TextStyle(
-                                  fontSize: 14.px,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10.px),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    height: 200.px,
-                                    child: ListView.builder(
-                                      itemCount: fileList.length,
-                                      itemBuilder: (context, index) {
-                                        return InkWell(
-                                          onTap: () {
-                                            if (fileList[index].fileUrl
-                                                    ?.endsWith('.pdf') ??
-                                                false) {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder:
-                                                      (
-                                                        context,
-                                                      ) => MonthlyDetailPage(
-                                                        pdfUrl:
-                                                            fileList[index]
-                                                                        .fileUrl !=
-                                                                    null
-                                                                ? APIs.imagePrefix +
-                                                                    fileList[index]
-                                                                        .fileUrl!
-                                                                : '',
-                                                        title:
-                                                            fileList[index]
-                                                                .fileName ??
-                                                            '',
-                                                      ),
-                                                ),
-                                              );
-                                            } else {
-                                              openWordFile(
-                                                APIs.imagePrefix +
-                                                    fileList[index].fileUrl!,
-                                              );
-                                            }
-                                          },
-                                          child: Container(
-                                            height: 30.px,
-                                            child: Text(
-                                              fileList[index].fileName ?? '',
-                                              style: TextStyle(fontSize: 14.px),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                                // 内容区域
+                                Container(
+                                  padding: EdgeInsets.all(16.px),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // HTML内容
+                                      if (guideTypeDetail?.content != null)
+                                        Container(
+                                          width: double.infinity,
+                                          child: Html(
+                                            data:
+                                                guideTypeDetail
+                                                            ?.approvalStatus ==
+                                                        4
+                                                    ? guideTypeDetail?.content
+                                                    : S
+                                                        .of(context)
+                                                        .contentUpdating,
+                                            style: {
+                                              'body': Style(
+                                                fontSize: FontSize(14.px),
+                                                padding: HtmlPaddings.zero,
+                                                margin: Margins.zero,
+                                              ),
+                                              'p': Style(
+                                                margin: Margins.only(
+                                                  bottom: 8.px,
+                                                ),
+                                              ),
+                                            },
+                                            shrinkWrap: true,
+                                            extensions: [
+                                              TagExtension(
+                                                tagsToExtend: {"img"},
+                                                builder: (context) {
+                                                  final attributes =
+                                                      context.attributes;
+                                                  final imageUrl =
+                                                      attributes["src"] ?? "";
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context.buildContext!,
+                                                        MaterialPageRoute(
+                                                          builder:
+                                                              (context) =>
+                                                                  ImagePreviewScreen(
+                                                                    imageUrl:
+                                                                        imageUrl,
+                                                                  ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: imageUrl,
+                                                      fit: BoxFit.cover,
+                                                      placeholder:
+                                                          (
+                                                            context,
+                                                            url,
+                                                          ) => Container(
+                                                            height: 200.px,
+                                                            child: const Center(
+                                                              child:
+                                                                  CircularProgressIndicator(),
+                                                            ),
+                                                          ),
+                                                      errorWidget:
+                                                          (
+                                                            context,
+                                                            url,
+                                                            error,
+                                                          ) => Container(
+                                                            height: 200.px,
+                                                            child: const Center(
+                                                              child: Icon(
+                                                                Icons.error,
+                                                                color:
+                                                                    Colors.red,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                      SizedBox(height: 20.px),
+
+                                      // 附件区域
+                                      if (guideTypeDetail?.approvalStatus ==
+                                              4 &&
+                                          guideTypeDetail?.file != null)
+                                        Container(
+                                          width: double.infinity,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                S.of(context).attachment,
+                                                style: TextStyle(
+                                                  fontSize: 16.px,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              SizedBox(height: 12.px),
+                                              Container(
+                                                constraints: BoxConstraints(
+                                                  maxHeight:
+                                                      fileList.length > 6
+                                                          ? 200.px
+                                                          : double.infinity,
+                                                ),
+                                                child:
+                                                    fileList.length > 6
+                                                        ? ListView.builder(
+                                                          shrinkWrap: true,
+                                                          itemCount:
+                                                              fileList.length,
+                                                          itemBuilder: (
+                                                            context,
+                                                            index,
+                                                          ) {
+                                                            return _buildFileItem(
+                                                              index,
+                                                            );
+                                                          },
+                                                        )
+                                                        : Column(
+                                                          children:
+                                                              fileList
+                                                                  .asMap()
+                                                                  .entries
+                                                                  .map(
+                                                                    (
+                                                                      entry,
+                                                                    ) => _buildFileItem(
+                                                                      entry.key,
+                                                                    ),
+                                                                  )
+                                                                  .toList(),
+                                                        ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                      SizedBox(height: 20.px),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      SizedBox(height: 20.px),
-                    ],
-                  ),
+                          ),
                 ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

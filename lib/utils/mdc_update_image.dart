@@ -1,0 +1,76 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:dio/dio.dart' as dio;
+import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/upload_image_model.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+
+Future<List<String>> uploadMealDeliveryFile(
+  List<AssetEntity> selectedAssets,
+) async {
+  List<String> fileUrl = [];
+  List<File> files = [];
+  final formData = dio.FormData();
+
+  try {
+    for (var asset in selectedAssets) {
+      final file = await asset.file;
+      if (file != null) {
+        files.add(file);
+      }
+    }
+
+    if (files.isEmpty) {
+      throw Exception('没有有效的图片文件可上传');
+    }
+
+    for (var file in files) {
+      formData.files.add(
+        MapEntry(
+          'files',
+          await dio.MultipartFile.fromFile(
+            file.path,
+            filename: file.path.split('/').last,
+          ),
+        ),
+      );
+    }
+
+    // 使用 Completer 处理异步回调
+    final completer = Completer<Map<String, dynamic>>();
+
+    // 上传图片
+    DataUtils.uploadMealDeliveryFile(
+      formData,
+      success: (data) {
+        completer.complete(data);
+      },
+      fail: (code, msg) {
+        completer.completeError(
+          'Upload failed with code: $code, message: $msg',
+        );
+      },
+    );
+
+    final data = await completer.future;
+    final response = UploadImageModel.fromJson(data);
+
+    if (response.data != null && response.data!.isNotEmpty) {
+      for (var item in response.data!) {
+        if (item.url != null) {
+          fileUrl.add(item.url!);
+        }
+      }
+    }
+
+    if (fileUrl.isEmpty) {
+      throw Exception('图片上传成功但未返回有效的URL');
+    }
+
+    return fileUrl;
+  } catch (e) {
+    print('图片上传异常: $e');
+    rethrow; // 重新抛出异常，让调用方知道上传失败
+  }
+}

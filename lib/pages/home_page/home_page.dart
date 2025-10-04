@@ -8,6 +8,9 @@ import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/app_resource_model.dart';
 import 'package:logistics_app/pages/home_page/message_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/my_address_page.dart';
@@ -47,11 +50,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Timer? _timer;
   PageController _pageController = PageController();
   AnimationController? animationController;
+  List<AppResourceModel> _bannerList = [];
 
   final List<SwitchType> buttonLabels = [
     SwitchType(S.current.notifications, 0),
     SwitchType(S.current.news, 1),
   ];
+
+  // 获取轮播图数据
+  Future<void> getBannerList() async {
+    DataUtils.getPageList(
+      '/other/appResource/list/app',
+      {'resourceType': '0', 'resourceKey': "HOME_BANNER", 'status': 0},
+      success: (data) {
+        if (data != null) {
+          var bannerList = data['data'] as List;
+          List<AppResourceModel> rows =
+              bannerList.map((i) => AppResourceModel.fromJson(i)).toList();
+          setState(() {
+            _bannerList = rows;
+          });
+        }
+      },
+    );
+  }
+
+  @override
   void initState() {
     animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -63,6 +87,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         curve: Interval(0, 0.3, curve: Curves.fastOutSlowIn),
       ),
     );
+    getBannerList();
     scrollController.addListener(() {
       if (scrollController.offset >= 50) {
         if (topBarOpacity != 1.0) {
@@ -143,7 +168,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   controller: scrollController,
                   child: Column(
                     children: [
-                      _Banner(),
+                      _Banner(_bannerList),
                       _Announcement(),
                       _FunctionArea(),
                       SwitchTypeView(
@@ -503,7 +528,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // 广告图轮播
-  Widget _Banner() {
+  Widget _Banner(List<AppResourceModel> bannerList) {
     return AnimatedBuilder(
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -519,12 +544,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               width: double.infinity,
               height: 180.px,
               child: Swiper(
-                itemCount: 2,
+                itemCount: bannerList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return Image.asset(
-                    'assets/images/banner.jpg',
-                    fit: BoxFit.fill,
-                  );
+                  return bannerList[index].content != null
+                      ? Image.network(
+                        "${APIs.imagePrefix + (bannerList[index].content ?? '')}",
+                        fit: BoxFit.fill,
+                      )
+                      : Image.asset(
+                        'assets/images/banner.jpg',
+                        fit: BoxFit.fill,
+                      );
                 },
                 autoplay: true,
                 indicatorLayout: PageIndicatorLayout.COLOR,

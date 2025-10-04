@@ -1,3 +1,4 @@
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
@@ -6,7 +7,6 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
 class RegisterForm extends StatefulWidget {
@@ -78,7 +78,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 fontWeight: FontWeight.bold,
               ),
               decoration: InputDecoration(
-                hintText: '请输入您的帐号',
+                hintText: S.of(context).usernamePlaceholder,
                 prefixIcon: Icon(Icons.person_2_outlined, color: primaryColor),
                 border: InputBorder.none,
               ),
@@ -99,7 +99,7 @@ class _RegisterFormState extends State<RegisterForm> {
               obscureText: true,
               controller: _passwordController,
               decoration: InputDecoration(
-                hintText: '请输入您的密码',
+                hintText: S.of(context).passwordPlaceholder,
                 prefixIcon: Icon(Icons.lock, color: primaryColor),
                 border: InputBorder.none,
               ),
@@ -120,7 +120,7 @@ class _RegisterFormState extends State<RegisterForm> {
               obscureText: true,
               controller: _confirmController,
               decoration: InputDecoration(
-                hintText: '请确认您的密码',
+                hintText: S.of(context).confirmPassword,
                 prefixIcon: Icon(Icons.lock, color: primaryColor),
                 border: InputBorder.none,
               ),
@@ -148,7 +148,9 @@ class _RegisterFormState extends State<RegisterForm> {
                             .register()
                             .then((value) async {
                               if (value) {
-                                showToast("注册成功");
+                                ProgressHUD.showSuccess(
+                                  S.of(context).registerSuccess,
+                                );
                                 model.login().then((val) async {
                                   var token =
                                       await SpUtils.getString('fCMToken') ?? '';
@@ -166,7 +168,9 @@ class _RegisterFormState extends State<RegisterForm> {
                               }
                             })
                             .catchError((e) {
-                              showToast("网络连接错误${e}");
+                              ProgressHUD.showError(
+                                S.of(context).networkError + ":${e}",
+                              );
                             })
                             .whenComplete(() {
                               setState(() {

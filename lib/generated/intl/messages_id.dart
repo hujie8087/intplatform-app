@@ -508,6 +508,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Versi saat ini sudah terbaru",
     ),
     "dangerPage": MessageLookupByLibrary.simpleMessage("Temukan Resiko"),
+    "days_ago": MessageLookupByLibrary.simpleMessage("Hari Yang Lalu"),
     "defaultValue": MessageLookupByLibrary.simpleMessage("Default"),
     "delete": MessageLookupByLibrary.simpleMessage("Hapus"),
     "deleteAddress": MessageLookupByLibrary.simpleMessage(
@@ -822,6 +823,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "feedback": MessageLookupByLibrary.simpleMessage("Umpan balik"),
     "feedbackContent": MessageLookupByLibrary.simpleMessage("Isi umpan balik"),
     "feedbackTitle": MessageLookupByLibrary.simpleMessage("Judul umpan balik"),
+    "feedback_content": MessageLookupByLibrary.simpleMessage(
+      "Konten Umpan Balik",
+    ),
+    "feedback_detail": MessageLookupByLibrary.simpleMessage(
+      "Detail Umpan Balik",
+    ),
     "firstLoginTips": MessageLookupByLibrary.simpleMessage(
       "Untuk keamanan, segera ubah password setelah login pertama!",
     ),
@@ -869,7 +876,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "head": MessageLookupByLibrary.simpleMessage("Pemilik"),
     "hello": MessageLookupByLibrary.simpleMessage("Halo"),
     "homePage": MessageLookupByLibrary.simpleMessage("Beranda"),
+    "hours_ago": MessageLookupByLibrary.simpleMessage("Jam Yang Lalu"),
     "iWantToEat": MessageLookupByLibrary.simpleMessage("Ingin makan"),
+    "i_want_to_eat": MessageLookupByLibrary.simpleMessage("Saya Ingin Makan"),
+    "i_want_to_say": MessageLookupByLibrary.simpleMessage(
+      "Saya Ingin Berbicara",
+    ),
     "id": MessageLookupByLibrary.simpleMessage("Indonesia"),
     "idCard": MessageLookupByLibrary.simpleMessage("Nomor Kartu"),
     "idCardTips": MessageLookupByLibrary.simpleMessage(
@@ -912,6 +924,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "isDefault": MessageLookupByLibrary.simpleMessage("Apakah default"),
     "itemName": MessageLookupByLibrary.simpleMessage("Nama barang"),
     "items": MessageLookupByLibrary.simpleMessage("pcs"),
+    "just_now": MessageLookupByLibrary.simpleMessage("Baru Saja"),
     "kTimeDetail": MessageLookupByLibrary.simpleMessage("K Time Detail"),
     "kTimeList": MessageLookupByLibrary.simpleMessage("K Time"),
     "lastTripTime": MessageLookupByLibrary.simpleMessage("Perjalanan Terakhir"),
@@ -994,6 +1007,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "message": MessageLookupByLibrary.simpleMessage("Pesan"),
     "mine": MessageLookupByLibrary.simpleMessage("Milikku"),
     "minePage": MessageLookupByLibrary.simpleMessage("Milikku"),
+    "minutes_ago": MessageLookupByLibrary.simpleMessage("Menit Yang Lalu"),
     "modifyAddress": MessageLookupByLibrary.simpleMessage("Ubah alamat"),
     "modifyPerson": MessageLookupByLibrary.simpleMessage("Ubah Orang"),
     "monthly": MessageLookupByLibrary.simpleMessage("Wedabay Monthly"),
@@ -1039,6 +1053,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "noPersonInfo": MessageLookupByLibrary.simpleMessage(
       "Tidak ada informasi orang",
     ),
+    "no_content": MessageLookupByLibrary.simpleMessage("Tidak Ada Konten"),
     "no_description": MessageLookupByLibrary.simpleMessage(
       "Tidak ada deskripsi",
     ),
@@ -1052,6 +1067,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Tidak ada informasi lebih lanjut",
     ),
     "normalOrder": MessageLookupByLibrary.simpleMessage("Pesanan Normal"),
+    "not_filled": MessageLookupByLibrary.simpleMessage("Belum Lengkap"),
     "notice": MessageLookupByLibrary.simpleMessage("Pengumuman"),
     "notifications": MessageLookupByLibrary.simpleMessage("Notifikasi"),
     "oldPassword": MessageLookupByLibrary.simpleMessage("Kata Sandi Lama"),
@@ -1215,6 +1231,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "processingScanResultError": MessageLookupByLibrary.simpleMessage(
       "Pengolahan gagal",
     ),
+    "processing_status": MessageLookupByLibrary.simpleMessage(
+      "Status Pengolahan",
+    ),
     "promo": MessageLookupByLibrary.simpleMessage("Video Promosi"),
     "promoDetail": MessageLookupByLibrary.simpleMessage("Promo Detail"),
     "promoList": MessageLookupByLibrary.simpleMessage("Promo List"),
@@ -1339,6 +1358,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "repairTime": MessageLookupByLibrary.simpleMessage("Waktu Pemrosesan"),
     "repairType": MessageLookupByLibrary.simpleMessage("Jenis Perbaikan"),
     "repaired": MessageLookupByLibrary.simpleMessage("Diperbaiki"),
+    "replied": MessageLookupByLibrary.simpleMessage("Sudah Dibalas"),
+    "reply_content": MessageLookupByLibrary.simpleMessage("Konten Balasan"),
+    "reply_person": MessageLookupByLibrary.simpleMessage("Orang yang Membalas"),
+    "reply_status": MessageLookupByLibrary.simpleMessage("Menunggu Balasan"),
+    "reply_time": MessageLookupByLibrary.simpleMessage("Waktu Balasan"),
+    "reply_to_feedback": MessageLookupByLibrary.simpleMessage(
+      "Membalas umpan balik",
+    ),
     "report_hazard": MessageLookupByLibrary.simpleMessage("Temukan Masalah"),
     "reporter": MessageLookupByLibrary.simpleMessage("Pengirim"),
     "reporter_name": MessageLookupByLibrary.simpleMessage("Nama"),
@@ -1430,6 +1457,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "submitFail": MessageLookupByLibrary.simpleMessage("Gagal kirim"),
     "submitOrder": MessageLookupByLibrary.simpleMessage("Kirim pesanan"),
     "submitSuccess": MessageLookupByLibrary.simpleMessage("Berhasil kirim"),
+    "submit_failed": MessageLookupByLibrary.simpleMessage("Gagal Mengirim"),
     "submit_hazard_report_content": MessageLookupByLibrary.simpleMessage(
       "Apakah Anda yakin ingin mengirim laporan masalah ini?",
     ),
@@ -1490,6 +1518,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "unknown_status": MessageLookupByLibrary.simpleMessage(
       "Status Tidak Diketahui",
+    ),
+    "unknown_time": MessageLookupByLibrary.simpleMessage(
+      "Waktu Tidak Diketahui",
     ),
     "unknown_title": MessageLookupByLibrary.simpleMessage(
       "Judul Tidak Diketahui",

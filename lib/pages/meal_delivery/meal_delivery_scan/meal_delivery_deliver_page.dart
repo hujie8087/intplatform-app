@@ -14,9 +14,9 @@ import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_locati
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_manager.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/phone_scan_deliver_page.dart';
 import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
-import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
+import 'package:logistics_app/utils/mdc_update_image.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -304,7 +304,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
     if (result != null) {
       ProgressHUD.showLoadingText(S.of(context).deliveryUploading);
       try {
-        final fileUrl = await uploadImages(result);
+        final fileUrl = await uploadMealDeliveryFile(result);
         ProgressHUD.hide();
         if (fileUrl.isNotEmpty) {
           final parameters = {'orderNo': orderNo, 'imageUrl': fileUrl[0]};

@@ -303,7 +303,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 if ((_formKey.currentState as FormState).validate()) {
                   if (widget.isFirstLogin) {
                     //验证通过提交数据
-                    DataUtils.editUserInfo(
+                    DataUtils.updateUserFirstPwd(
                       {
                         'password': _newPasswordController.text,
                         'card': _idCardController.text,
@@ -322,6 +322,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     //验证通过提交数据
                     DataUtils.updateUserPwd(
                       {
+                        'userName': userName,
                         'newPassword': _newPasswordController.text,
                         'oldPassword': _oldPasswordController.text,
                       },

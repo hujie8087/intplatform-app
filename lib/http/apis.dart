@@ -4,27 +4,27 @@
 class APIs {
   /// url 前缀
   // 正式环境
-  static const String apiPrefix =
-      'https://api.iwipwedabay.com/api/intplatform/app';
-  static const String imagePrefix =
-      'https://web.iwipwedabay.com/static/intplatform';
+  // static const String apiPrefix =
+  //     'https://api.iwipwedabay.com/api/intplatform/app';
+  // static const String imagePrefix =
+  //     'https://web.iwipwedabay.com/static/intplatform';
   // 餐饮图片资源前缀
   static const String foodPrefix = 'https://web.iwipwedabay.com/static/';
-  static const String imageOnlinePrefix =
-      'https://web.iwipwedabay.com/static/intplatform';
+  // static const String imageOnlinePrefix =
+  //     'https://web.iwipwedabay.com/static/intplatform';
 
   // 测试环境
   // static const String apiPrefix =
   //     'https://test.iwipwedabay.com/intplatform-stage-api'; // 外网
-  // static const String imageOnlinePrefix =
-  //     'http://192.168.90.30/static/intplatform';
-  // static const String imagePrefix =
-  //     'http://192.168.91.50:9000/intplatform/'; // 图片外网地址
+  static const String imageOnlinePrefix =
+      'http://192.168.90.30/static/intplatform';
+  static const String imagePrefix =
+      'http://192.168.91.50:9000/intplatform/'; // 图片外网地址
   // static const String imagePrefix =
   //     'http://test.iwipwedabay.com/static/intplatform/'; // 图片外网地址
 
   // 韩栋本地环境
-  // static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
+  static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
 
   // 垂豪本地环境
   // static const String apiPrefix = 'http://10.40.11.44:8081'; // 外网
@@ -34,6 +34,9 @@ class APIs {
 
   // 黄丹虹本地环境
   // static const String apiPrefix = 'http://10.40.10.31:10200'; // 外网
+
+  // 谢家豪本地环境
+  //   static const String apiPrefix = 'http://10.40.11.166:10200'; // 外网
 
   // 测试环境box
   // static const String apiPrefix = 'http://192.168.91.50:10200'; // 外网
@@ -79,6 +82,9 @@ class APIs {
 
   // 用户修改密码
   static const String updateUserPwd = '/system/user/profile/updatePwd';
+
+  // 用户第一次修改密码
+  static const String updateUserFirstPwd = '/system/user/firstEdit';
 
   // 获取数据字典
   static const String getDictDataList = '/system/dict/data/type/';

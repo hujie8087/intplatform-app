@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
@@ -11,6 +12,7 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 @AppRoute(path: 'monthly_list_page', name: '纬达贝月刊')
 class MonthlyListPage extends StatefulWidget {
@@ -144,17 +146,29 @@ class _MonthlyListPageState extends State<MonthlyListPage>
               index: index,
               callBack:
                   () => {
-                    // 打开pdf
-                    RouteUtils.push(
-                      context,
-                      MonthlyDetailPage(
-                        pdfUrl:
-                            _list[index].file != null
-                                ? APIs.imageOnlinePrefix + _list[index].file!
-                                : '',
-                        title: _list[index].noticeTitle ?? '',
-                      ),
-                    ),
+                    if (kIsWeb)
+                      {
+                        launchUrl(
+                          Uri.parse(
+                            APIs.imageOnlinePrefix + _list[index].file!,
+                          ),
+                        ),
+                      }
+                    else
+                      {
+                        // 打开pdf
+                        RouteUtils.push(
+                          context,
+                          MonthlyDetailPage(
+                            pdfUrl:
+                                _list[index].file != null
+                                    ? APIs.imageOnlinePrefix +
+                                        _list[index].file!
+                                    : '',
+                            title: _list[index].noticeTitle ?? '',
+                          ),
+                        ),
+                      },
                   },
               animation: animation,
               animationController: animationController,

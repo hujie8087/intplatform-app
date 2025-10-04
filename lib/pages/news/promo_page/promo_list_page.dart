@@ -5,7 +5,6 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
-import 'package:logistics_app/pages/lost_found_page/lost_found_list_page.dart';
 import 'package:logistics_app/pages/news/promo_page/promo_detail_page.dart';
 import 'package:logistics_app/route/route_annotation.dart';
 import 'package:logistics_app/route/route_utils.dart';
@@ -117,7 +116,6 @@ class _PromoListPageState extends State<PromoListPage>
                   await getPromoList(false);
                 },
                 child: ListView.builder(
-                  padding: EdgeInsets.all(16.px),
                   itemCount: promoList.length,
                   itemBuilder: (context, index) {
                     final promo = promoList[index];
@@ -133,7 +131,6 @@ class _PromoListPageState extends State<PromoListPage>
       margin: EdgeInsets.only(bottom: 16.px),
       elevation: 2,
       clipBehavior: Clip.hardEdge,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.px)),
       child: InkWell(
         onTap: () {
           // 跳转到视频播放页面
@@ -142,67 +139,24 @@ class _PromoListPageState extends State<PromoListPage>
             PromoDetailPage(noticeId: promo.noticeId.toString()),
           );
         },
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
           children: [
-            Expanded(
-              child: // 视频信息
-                  Padding(
-                padding: EdgeInsets.all(12.px),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      promo.noticeTitle ?? '',
-                      style: TextStyle(
-                        fontSize: 14.px,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    HtmlLineLimit(htmlContent: promo.noticeContent ?? ''),
-                    SizedBox(height: 4.px),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.remove_red_eye,
-                          size: 16.px,
-                          color: Colors.grey[600],
-                        ),
-                        SizedBox(width: 4.px),
-                        Text(
-                          '${promo.papeView ?? 0}',
-                          style: TextStyle(
-                            fontSize: 12.px,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          promo.createTime ?? '',
-                          style: TextStyle(
-                            fontSize: 12.px,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
             // 视频缩略图
             Container(
-              width: 100.px,
-              height: 100.px,
+              width: double.infinity,
+              height: 180.px,
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    APIs.imageOnlinePrefix + (promo.img ?? ''),
-                    fit: BoxFit.cover,
-                  ),
+                  promo.img != null
+                      ? Image.network(
+                        APIs.imageOnlinePrefix + (promo.img ?? ''),
+                        fit: BoxFit.cover,
+                      )
+                      : Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.cover,
+                      ),
                   // 播放按钮
                   Center(
                     child: Container(
@@ -217,6 +171,31 @@ class _PromoListPageState extends State<PromoListPage>
                         size: 20.px,
                       ),
                     ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10.px),
+              child: Row(
+                children: [
+                  Text(
+                    promo.noticeTitle ?? '',
+                    style: TextStyle(fontSize: 14.px),
+                  ),
+                  Spacer(),
+                  Icon(Icons.remove_red_eye, size: 14.px, color: Colors.grey),
+                  SizedBox(width: 4.px),
+                  Text(
+                    '${promo.papeView ?? 0}',
+                    style: TextStyle(fontSize: 12.px, color: Colors.grey),
+                  ),
+                  SizedBox(width: 20.px),
+                  Icon(Icons.access_time, size: 14.px, color: Colors.grey),
+                  SizedBox(width: 4.px),
+                  Text(
+                    promo.createTime!.substring(0, 10),
+                    style: TextStyle(fontSize: 12.px, color: Colors.grey),
                   ),
                 ],
               ),

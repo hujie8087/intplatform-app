@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 
 class MealLocationServiceModel {
   StreamSubscription<Position>? _positionStream;
@@ -19,11 +20,11 @@ class MealLocationServiceModel {
         {'lng': longitude, 'lat': latitude, 'foodName': foodName},
         success: (data) {
           print("位置上传成功");
-          // ProgressHUD.showSuccess('位置上传成功');
+          ProgressHUD.showSuccess('位置上传成功');
         },
         fail: (code, msg) {
           print("位置上传失败: $code, $msg");
-          // ProgressHUD.showError('位置上传失败');
+          ProgressHUD.showError('位置上传失败');
         },
       );
     } catch (e) {
