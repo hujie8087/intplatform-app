@@ -10,11 +10,13 @@ import 'package:logistics_app/http/model/base_list_model.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/meal_delivery_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_service_model.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_manager.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/phone_scan_deliver_page.dart';
 import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
-import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
+import 'package:logistics_app/utils/mdc_update_image.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,15 +40,41 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
   UserInfoModel? userInfo;
   bool isBindAccount = false;
   bool isCanScan = false;
+  bool isTracking = false;
+  MealLocationServiceModel? locationService;
+  final MealLocationManager _locationManager = MealLocationManager();
 
   @override
   void initState() {
     super.initState();
     _onFetchUserInfo();
+    _initializeLocationManager();
+  }
+
+  // 初始化定位管理器
+  Future<void> _initializeLocationManager() async {
+    await _locationManager.initialize();
+    _locationManager.addListener(_onLocationStateChanged);
+    _updateTrackingState();
+  }
+
+  // 定位状态变化回调
+  void _onLocationStateChanged() {
+    _updateTrackingState();
+  }
+
+  // 更新追踪状态
+  void _updateTrackingState() {
+    setState(() {
+      isTracking = _locationManager.isTracking;
+      locationService = _locationManager.locationService;
+    });
   }
 
   @override
   void dispose() {
+    // 移除监听器
+    _locationManager.removeListener(_onLocationStateChanged);
     // 确保释放资源
     super.dispose();
     if (Platform.isAndroid) {
@@ -276,7 +304,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
     if (result != null) {
       ProgressHUD.showLoadingText(S.of(context).deliveryUploading);
       try {
-        final fileUrl = await uploadImages(result);
+        final fileUrl = await uploadMealDeliveryFile(result);
         ProgressHUD.hide();
         if (fileUrl.isNotEmpty) {
           final parameters = {'orderNo': orderNo, 'imageUrl': fileUrl[0]};
@@ -293,6 +321,29 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
         }
       } catch (e) {
         ProgressHUD.showError(S.of(context).deliveryUploadFailed + ': $e');
+      }
+    }
+  }
+
+  // 处理位置事件
+  void _handleLocationEvent() async {
+    if (isTracking) {
+      // 停止追踪
+      await _locationManager.stopTracking();
+      ProgressHUD.showSuccess('定位追踪已停止');
+    } else {
+      if (_selectedFoodNameValue?.dictValue == '') {
+        ProgressHUD.showError('请选择餐次');
+        return;
+      }
+
+      final foodName = _selectedFoodNameValue?.dictValue ?? '';
+      // 开始追踪
+      final success = await _locationManager.startTracking(foodName);
+      if (success) {
+        ProgressHUD.showSuccess('定位追踪已启动');
+      } else {
+        ProgressHUD.showError('启动定位追踪失败');
       }
     }
   }
@@ -329,6 +380,29 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
           SizedBox(width: 10.px),
         ],
       ),
+
+      // 浮动按钮，根据配送状态显示
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: isTracking ? secondaryColor : primaryColor,
+        onPressed: () => _handleLocationEvent(),
+        icon: Icon(
+          isTracking ? Icons.location_on : Icons.location_off,
+          color: Colors.white,
+        ),
+        label: Text(
+          isTracking ? S.current.stopLocation : S.current.startLocation,
+          style: TextStyle(color: Colors.white),
+        ),
+        extendedPadding: EdgeInsets.symmetric(
+          horizontal: 10.px,
+          vertical: 2.px,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        isExtended: false,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SingleChildScrollView(
         child:
             !isBindAccount

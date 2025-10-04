@@ -54,6 +54,11 @@ import 'package:logistics_app/pages/repair/report_hazard_page.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_form/meal_delivery_submit_page.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_form/meal_delivery_index_page.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_delivery_deliver_page.dart';
+import 'package:logistics_app/pages/library/library_list_page.dart';
+import 'package:logistics_app/pages/library/library_detail_page.dart';
+import 'package:logistics_app/pages/goodDeeds/good_deeds_list_page.dart';
+import 'package:logistics_app/pages/goodDeeds/my_good_deed_Page.dart';
+import 'package:logistics_app/pages/shopping/my_feedback/my_feedback_list_page.dart';
 
 /// 自动路由生成器
 /// 通过注解和反射自动注册路由，无需手动维护路由表
@@ -138,6 +143,26 @@ class AutoRouteGenerator {
     RoutePath.LostFoundDetailPage: RouteConfig(
       builder: (context) => LostFoundDetailPage(),
       name: 'LostFoundDetailPage',
+    ),
+
+    // 图书馆
+    RoutePath.LibraryListPage: RouteConfig(
+      builder: (context) => LibraryListPage(),
+      name: 'LibraryListPage',
+    ),
+
+    RoutePath.LibraryDetailPage: RouteConfig(
+      builder: (context) => LibraryDetailPage(noticeId: ''),
+      name: 'LibraryDetailPage',
+    ),
+
+    RoutePath.GoodDeedsListPage: RouteConfig(
+      builder: (context) => GoodDeedsListPage(),
+      name: 'GoodDeedsListPage',
+    ),
+    RoutePath.MyGoodDeedsPage: RouteConfig(
+      builder: (context) => MyGoodDeedsPage(),
+      name: 'MyGoodDeedsPage',
     ),
 
     // 报修相关
@@ -226,6 +251,10 @@ class AutoRouteGenerator {
     RoutePath.FoodMenuPage: RouteConfig(
       builder: (context) => FoodMenuPage(),
       name: 'FoodMenuPage',
+    ),
+    RoutePath.MyFeedbackListPage: RouteConfig(
+      builder: (context) => MyFeedbackListPage(),
+      name: 'MyFeedbackListPage',
     ),
 
     // 支付相关
@@ -394,6 +423,12 @@ class RoutePath {
   static const String LostFoundListPage = 'lost_found_list_page';
   static const String LostFoundDetailPage = 'lost_found_detail_page';
 
+  // 图书馆
+  static const String LibraryListPage = 'library_list_page';
+  static const String LibraryDetailPage = 'library_detail_page';
+  static const String GoodDeedsListPage = 'good_deeds_list_page';
+  static const String MyGoodDeedsPage = 'my_good_deeds_page';
+
   // 视频模块
   static const String FilmScreenPage = 'film_screen_page';
   static const String FilmDownloadPage = 'film_download_page';
@@ -427,6 +462,7 @@ class RoutePath {
   static const String FoodFeedbackPage = 'food_feedback_page';
   static const String FoodRecommendPage = 'food_recommend_page';
   static const String FoodMenuPage = 'food_menu_page';
+  static const String MyFeedbackListPage = 'my_feedback_list_page';
 
   // 支付相关
   static const String PaymentQRCodePage = 'payment_qr_code_page';

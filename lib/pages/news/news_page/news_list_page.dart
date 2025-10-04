@@ -364,12 +364,13 @@ class NewsDataView extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(width: 10.px),
-                                  Image.network(
-                                    APIs.imageOnlinePrefix + listData!.img!,
-                                    width: 100.px,
-                                    height: 125.px,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  if (listData?.img != null)
+                                    Image.network(
+                                      APIs.imageOnlinePrefix + listData!.img!,
+                                      width: 100.px,
+                                      height: 125.px,
+                                      fit: BoxFit.cover,
+                                    ),
                                 ],
                               ),
                             ),

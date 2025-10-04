@@ -109,25 +109,10 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        elevation: _showTitle ? 1 : 0,
-        backgroundColor: _showTitle ? Colors.white : Colors.transparent,
-        title: AnimatedOpacity(
-          opacity: _showTitle ? 1.0 : 0.0,
-          duration: Duration(milliseconds: 200),
-          child: Text(
-            _promo?.noticeTitle ?? '',
-            style: TextStyle(fontSize: 16.px, color: Colors.black),
-          ),
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: _showTitle ? Colors.black : Colors.white,
-          ),
-          onPressed: () => Navigator.pop(context),
+        title: Text(
+          _promo?.noticeTitle ?? '',
+          style: TextStyle(fontSize: 16.px, color: Colors.black),
         ),
       ),
       body:
@@ -138,48 +123,20 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 视频播放器
-                    Stack(
-                      children: [
-                        AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: Container(
-                            color: Colors.black,
-                            child:
-                                _isInitialized
-                                    ? Chewie(controller: _chewieController!)
-                                    : Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                          ),
-                        ),
-                        if (!_isInitialized)
-                          Positioned.fill(
-                            child: Image.network(
-                              APIs.imageOnlinePrefix + (_promo?.img ?? ''),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                      ],
-                    ),
-
-                    // 内容区域
                     Container(
-                      padding: EdgeInsets.all(16.px),
+                      padding: EdgeInsets.all(10.px),
+                      // 标题
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 标题
                           Text(
                             _promo?.noticeTitle ?? '',
                             style: TextStyle(
-                              fontSize: 20.px,
+                              fontSize: 18.px,
                               fontWeight: FontWeight.bold,
                               height: 1.4,
                             ),
                           ),
                           SizedBox(height: 16.px),
-
                           // 信息栏
                           Container(
                             padding: EdgeInsets.symmetric(
@@ -222,36 +179,63 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
                               ],
                             ),
                           ),
-
-                          SizedBox(height: 20.px),
-
-                          // 描述内容
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8.px),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
-                                  blurRadius: 10,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            padding: EdgeInsets.all(16.px),
-                            child: Html(
-                              data: _promo?.noticeContent ?? '',
-                              style: {
-                                "body": Style(
-                                  fontSize: FontSize(14.px),
-                                  lineHeight: LineHeight(1.6),
-                                ),
-                              },
-                            ),
-                          ),
                         ],
                       ),
                     ),
+                    SizedBox(height: 16.px),
+                    // 视频播放器
+                    Column(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: Container(
+                            color: Colors.black,
+                            child:
+                                _isInitialized
+                                    ? Chewie(controller: _chewieController!)
+                                    : Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                          ),
+                        ),
+                        if (!_isInitialized && _promo?.img != null)
+                          Positioned.fill(
+                            child: Image.network(
+                              APIs.imageOnlinePrefix + (_promo?.img ?? ''),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                      ],
+                    ),
+
+                    // 内容区域
+                    SizedBox(height: 20.px),
+
+                    // 描述内容
+                    if (_promo?.noticeContent != null)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.px),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        padding: EdgeInsets.all(16.px),
+                        child: Html(
+                          data: _promo?.noticeContent ?? '',
+                          style: {
+                            "body": Style(
+                              fontSize: FontSize(14.px),
+                              lineHeight: LineHeight(1.6),
+                            ),
+                          },
+                        ),
+                      ),
                   ],
                 ),
               ),

@@ -1,6 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:logistics_app/common_ui/image_preview_page.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:logistics_app/pages/news/news_page/news_content.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -75,13 +76,7 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
   </html>
   ''';
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          noticeDetail?.noticeTitle ?? '',
-          style: TextStyle(fontSize: 16.px),
-          textAlign: TextAlign.left,
-        ),
-      ),
+      appBar: AppBar(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -117,25 +112,17 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
           ),
           if (noticeDetail?.noticeContent != null)
             Expanded(
-              child: WebViewWidget(
-                controller:
-                    WebViewController()
-                      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                      ..addJavaScriptChannel(
-                        'ImageChannel',
-                        onMessageReceived: (message) {
-                          final imageUrl = message.message;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (_) => ImagePreviewPage(imageUrl: imageUrl),
-                            ),
-                          );
-                        },
+              child:
+                  kIsWeb
+                      ? SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(horizontal: 12.px),
+                        child: Html(
+                          data: fixHtmlImageUrls(
+                            noticeDetail?.noticeContent ?? '',
+                          ),
+                        ),
                       )
-                      ..loadHtmlString(htmlContent),
-              ),
+                      : NewsContent(htmlContent: htmlContent),
             ),
         ],
       ),

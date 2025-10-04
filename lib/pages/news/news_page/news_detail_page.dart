@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:logistics_app/common_ui/image_preview_page.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
+import 'package:logistics_app/pages/news/news_page/news_content.dart';
 import 'package:logistics_app/route/route_annotation.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter/foundation.dart';
 
 @AppRoute(path: 'news_detail_page', name: '公司新闻详情页')
 class NewsDetailPage extends StatefulWidget {
@@ -58,7 +59,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         img { max-width: 100%; height: auto; }
-        body { font-family: sans-serif; padding: 16px; }
+        body { font-family: sans-serif; margin: 0; padding: 0; }
       </style>
     <script>
       function setupImageClick() {
@@ -73,14 +74,17 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     </script>
     </head>
     <body>
+      <iframe src="https://v.xiumi.us/stage/v5/7E5i1/650622255" style="width:100%;height:100vh;border:none;"></iframe>
+      <div style="padding: 16px;">
       ${fixHtmlImageUrls(noticeModel?.noticeContent ?? "<p>No content</p>")}
+      </div>
     </body>
   </html>
   ''';
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          noticeModel?.noticeTitle ?? '',
+          '',
           style: TextStyle(fontSize: 16.px),
           textAlign: TextAlign.left,
         ),
@@ -119,25 +123,17 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           SizedBox(height: 10.px),
           if (noticeModel?.noticeContent != null)
             Expanded(
-              child: WebViewWidget(
-                controller:
-                    WebViewController()
-                      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                      ..addJavaScriptChannel(
-                        'ImageChannel',
-                        onMessageReceived: (message) {
-                          final imageUrl = message.message;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (_) => ImagePreviewPage(imageUrl: imageUrl),
-                            ),
-                          );
-                        },
+              child:
+                  kIsWeb
+                      ? SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(horizontal: 12.px),
+                        child: Html(
+                          data: fixHtmlImageUrls(
+                            noticeModel?.noticeContent ?? '',
+                          ),
+                        ),
                       )
-                      ..loadHtmlString(htmlContent),
-              ),
+                      : NewsContent(htmlContent: htmlContent),
             ),
         ],
       ),

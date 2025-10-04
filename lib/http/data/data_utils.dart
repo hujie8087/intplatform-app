@@ -67,6 +67,20 @@ class DataUtils {
     HttpUtils.put(APIs.updateUserPwd, parameters, success: success, fail: fail);
   }
 
+  // 用户第一次修改密码
+  static void updateUserFirstPwd<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put(
+      APIs.updateUserFirstPwd,
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
   // 储存用户设置token
   static void setUserToken<T>(parameters, {Success? success, Fail? fail}) {
     HttpUtils.put(APIs.addToken, parameters, success: success, fail: fail);
@@ -111,6 +125,15 @@ class DataUtils {
   // 上传文件
   static void uploadFile<T>(FormData formData, {Success? success, Fail? fail}) {
     HttpUtils.post('/file/upload', formData, success: success, fail: fail);
+  }
+
+  // 报餐送餐上传文件
+  static void uploadMealDeliveryFile<T>(
+    FormData formData, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.post('/file/mdc/upload', formData, success: success, fail: fail);
   }
 
   // 上传文件
@@ -583,5 +606,25 @@ class DataUtils {
       success: success,
       fail: fail,
     );
+  }
+
+  // 获取图书列表
+  static void getBookList(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/other/books/list',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取图书详情
+  static void getBookDetail(id, {Success? success, Fail? fail}) {
+    HttpUtils.get('/other/books/$id', null, success: success, fail: fail);
+  }
+
+  // 点赞好人好事
+  static void likeGoodDeed(id, {Success? success, Fail? fail}) {
+    HttpUtils.get('/other/deeds/like/$id', null, success: success, fail: fail);
   }
 }

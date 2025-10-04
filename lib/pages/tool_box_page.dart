@@ -342,7 +342,10 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
       if (appMenuList.isEmpty) {
         await getAppMenu();
       }
-      getMyRepairUnreadCount();
+      if (permission != null &&
+          permission!.contains('commonality:repair:listApp')) {
+        getMyRepairUnreadCount();
+      }
     } else {
       if (appMenuList.isEmpty) {
         await getAppMenu();
@@ -443,7 +446,10 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
         permission!.contains('commonality:repair:unfinishedCountApp')) {
       getRepairUnfinishedCount();
     }
-    if (token != '' && token.isNotEmpty) {
+    if (token != '' &&
+        token.isNotEmpty &&
+        permission != null &&
+        permission!.contains('commonality:repair:listApp')) {
       getMyRepairUnreadCount();
     }
   }

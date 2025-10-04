@@ -45,6 +45,9 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
   }
 
   void _submitSuggestion() async {
+    // 防止重复提交
+    if (_isLoading) return;
+
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
@@ -59,17 +62,35 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
           'def1': _foodNameController.text,
           'content': _contentController.text,
         };
-        DataUtils.submitMessage(data, success: (response) {
-          ProgressHUD.showSuccess(S.of(context).submitSuccess);
-          Navigator.pop(context);
-        }, fail: (code, msg) {
-          ProgressHUD.showError(msg);
-        });
-      } finally {
+        DataUtils.submitMessage(
+          data,
+          success: (response) {
+            if (mounted) {
+              ProgressHUD.showSuccess(S.of(context).submitSuccess);
+              // 延迟返回上一页
+              Future.delayed(Duration(seconds: 1), () {
+                setState(() {
+                  _isLoading = false;
+                });
+                Navigator.pop(context);
+              });
+            }
+          },
+          fail: (code, msg) {
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+              ProgressHUD.showError(msg);
+            }
+          },
+        );
+      } catch (e) {
         if (mounted) {
           setState(() {
             _isLoading = false;
           });
+          ProgressHUD.showError(S.of(context).submit_failed);
         }
       }
     }
@@ -107,18 +128,16 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
   Widget _buildInfoCard() {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20.px))),
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(20.px)),
+      ),
       padding: EdgeInsets.only(top: 15.px, right: 12.px, left: 12.px),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             S.of(context).personalInfo,
-            style: TextStyle(
-              fontSize: 12.px,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 12.px),
           _buildTextField(
@@ -162,18 +181,16 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
   Widget _buildSuggestionCard() {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(20.px))),
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(20.px)),
+      ),
       padding: EdgeInsets.only(top: 15.px, right: 12.px, left: 12.px),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             S.of(context).dishSuggestion,
-            style: TextStyle(
-              fontSize: 12.px,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 12.px, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 12.px),
           _buildTextField(
@@ -214,11 +231,15 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
       margin: EdgeInsets.only(bottom: 10.px),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: maxLines == 1
-            ? Border(
-                bottom:
-                    BorderSide(width: 1, color: Color.fromARGB(10, 0, 0, 0)))
-            : null,
+        border:
+            maxLines == 1
+                ? Border(
+                  bottom: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(10, 0, 0, 0),
+                  ),
+                )
+                : null,
         borderRadius: maxLines == 1 ? null : BorderRadius.circular(10),
       ),
       child: Row(
@@ -226,10 +247,7 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
             maxLines > 1 ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: 12.px, color: Colors.black),
-          ),
+          Text(label, style: TextStyle(fontSize: 12.px, color: Colors.black)),
           SizedBox(width: 10.px),
           Expanded(
             child: TextFormField(
@@ -242,26 +260,31 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
               textAlign: maxLines > 1 ? TextAlign.start : TextAlign.right,
               decoration: InputDecoration(
                 isDense: true,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 8.px, horizontal: 8.px),
-                border: maxLines > 1
-                    ? OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.px),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      )
-                    : InputBorder.none,
-                enabledBorder: maxLines > 1
-                    ? OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.px),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      )
-                    : InputBorder.none,
-                focusedBorder: maxLines > 1
-                    ? OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.px),
-                        borderSide: BorderSide(color: primaryColor),
-                      )
-                    : InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 8.px,
+                  horizontal: 8.px,
+                ),
+                border:
+                    maxLines > 1
+                        ? OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.px),
+                          borderSide: BorderSide(color: Colors.grey[300]!),
+                        )
+                        : InputBorder.none,
+                enabledBorder:
+                    maxLines > 1
+                        ? OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.px),
+                          borderSide: BorderSide(color: Colors.grey[300]!),
+                        )
+                        : InputBorder.none,
+                focusedBorder:
+                    maxLines > 1
+                        ? OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.px),
+                          borderSide: BorderSide(color: primaryColor),
+                        )
+                        : InputBorder.none,
                 hintText: S.of(context).inputMessage(label),
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 10.px),
               ),
@@ -275,21 +298,32 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
 
   Widget _buildSubmitButton() {
     return RaisedButton(
-      onPressed: _isLoading ? () {} : _submitSuggestion,
-      color: primaryColor[700] ?? primaryColor,
+      onPressed: _isLoading ? null : _submitSuggestion,
+      color: _isLoading ? Colors.grey : (primaryColor[700] ?? primaryColor),
       textColor: Colors.white,
-      child: Text(
-        S.of(context).confirmSubmit,
-        style: TextStyle(fontSize: 12.px),
-      ),
+      child:
+          _isLoading
+              ? SizedBox(
+                width: 16.px,
+                height: 16.px,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+              : Text(
+                S.of(context).confirmSubmit,
+                style: TextStyle(fontSize: 12.px),
+              ),
     );
   }
 
-  Widget RaisedButton(
-      {required void Function() onPressed,
-      required Text child,
-      required Color color,
-      required Color textColor}) {
+  Widget RaisedButton({
+    required void Function()? onPressed,
+    required Widget child,
+    required Color color,
+    required Color textColor,
+  }) {
     return Container(
       width: double.infinity,
       height: 36.px,
@@ -303,7 +337,7 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
         onPressed: onPressed,
         child: child,
         style: ButtonStyle(
-          foregroundColor: MaterialStateProperty.all<Color>(textColor),
+          foregroundColor: WidgetStateProperty.all<Color>(textColor),
         ),
       ),
     );

@@ -60,7 +60,9 @@ class _CoupleRoomPageState extends State<CoupleRoomPage> {
       {'username': userName},
       success: (data) {
         setState(() {
-          currentUser = CoupleStaffListModel.fromJson(data['rows'][0]);
+          if (data['rows'].isNotEmpty) {
+            currentUser = CoupleStaffListModel.fromJson(data['rows'][0]);
+          }
         });
       },
     );
@@ -739,13 +741,13 @@ void showBookRoomDialog(
                     },
 
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
+                      backgroundColor: WidgetStateProperty.all(
                         primaryColor[500],
                       ),
-                      minimumSize: MaterialStateProperty.all(
+                      minimumSize: WidgetStateProperty.all(
                         Size(double.infinity, 40.px),
                       ),
-                      shape: MaterialStateProperty.all(
+                      shape: WidgetStateProperty.all(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.px),
                         ),

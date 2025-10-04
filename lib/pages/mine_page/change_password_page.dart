@@ -303,7 +303,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 if ((_formKey.currentState as FormState).validate()) {
                   if (widget.isFirstLogin) {
                     //验证通过提交数据
-                    DataUtils.editUserInfo(
+                    DataUtils.updateUserFirstPwd(
                       {
                         'password': _newPasswordController.text,
                         'card': _idCardController.text,
@@ -322,6 +322,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     //验证通过提交数据
                     DataUtils.updateUserPwd(
                       {
+                        'userName': userName,
                         'newPassword': _newPasswordController.text,
                         'oldPassword': _oldPasswordController.text,
                       },
@@ -336,11 +337,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 }
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(primaryColor[500]),
-                minimumSize: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(primaryColor[500]),
+                minimumSize: WidgetStateProperty.all(
                   Size(double.infinity, 32.px),
                 ),
-                shape: MaterialStateProperty.all(
+                shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16.px),
                   ),

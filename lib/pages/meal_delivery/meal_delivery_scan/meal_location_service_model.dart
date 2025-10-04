@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:geolocator/geolocator.dart';
-import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 
 class MealLocationServiceModel {
   StreamSubscription<Position>? _positionStream;
@@ -59,34 +59,38 @@ class MealLocationServiceModel {
     if (Platform.isAndroid) {
       locationSettings = AndroidSettings(
         // 降低精度要求，提高获取速度
-        accuracy: LocationAccuracy.medium,
+        accuracy: LocationAccuracy.high,
         // 减少距离过滤器，更快响应
         distanceFilter: 10,
         // 使用系统默认的定位管理器
-        forceLocationManager: false,
+        // forceLocationManager: true,
         // 缩短更新间隔
-        intervalDuration: const Duration(seconds: 5),
-        // 添加超时设置
-        timeLimit: const Duration(seconds: 30),
-        // 启用后台定位
+        intervalDuration: const Duration(seconds: 30),
+        // 启用后台定位和前台服务
         foregroundNotificationConfig: const ForegroundNotificationConfig(
           notificationText: "正在获取位置信息",
           notificationTitle: "定位服务",
+          notificationIcon: AndroidResource(
+            name: 'ic_launcher',
+            defType: 'mipmap',
+          ),
         ),
+        // 后台定位配置（通过前台服务实现）
       );
     } else if (Platform.isIOS || Platform.isMacOS) {
       locationSettings = AppleSettings(
-        accuracy: LocationAccuracy.medium,
+        accuracy: LocationAccuracy.high,
         activityType: ActivityType.fitness,
         distanceFilter: 10,
-        pauseLocationUpdatesAutomatically: true,
-        showBackgroundLocationIndicator: false,
+        // 允许后台定位
+        pauseLocationUpdatesAutomatically: false,
+        showBackgroundLocationIndicator: true,
         // iOS超时设置
         timeLimit: const Duration(seconds: 120),
       );
     } else {
       locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.medium,
+        accuracy: LocationAccuracy.high,
         distanceFilter: 10,
       );
     }
@@ -99,7 +103,7 @@ class MealLocationServiceModel {
       Position? currentPosition = await Geolocator.getCurrentPosition(
         locationSettings: locationSettings,
       ).timeout(
-        const Duration(seconds: 120),
+        const Duration(seconds: 60),
         onTimeout: () {
           print("⚠️ 获取当前位置超时，使用流式定位");
           throw TimeoutException('获取位置超时', const Duration(seconds: 15));
@@ -161,16 +165,16 @@ class MealLocationServiceModel {
       LocationSettings lowAccuracySettings;
       if (Platform.isAndroid) {
         lowAccuracySettings = AndroidSettings(
-          accuracy: LocationAccuracy.low,
-          distanceFilter: 100,
+          accuracy: LocationAccuracy.medium,
+          distanceFilter: 20,
           forceLocationManager: false,
-          intervalDuration: const Duration(seconds: 3),
+          intervalDuration: const Duration(seconds: 10),
           timeLimit: const Duration(seconds: 20),
         );
       } else {
         lowAccuracySettings = LocationSettings(
-          accuracy: LocationAccuracy.low,
-          distanceFilter: 100,
+          accuracy: LocationAccuracy.medium,
+          distanceFilter: 20,
         );
       }
 

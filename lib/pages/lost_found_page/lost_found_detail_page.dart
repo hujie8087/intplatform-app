@@ -314,7 +314,7 @@ class _LostFoundDetailPageState extends State<LostFoundDetailPage> {
                     child: ElevatedButton(
                       onPressed: _submit,
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
+                        backgroundColor: WidgetStateProperty.all<Color>(
                           Colors.teal,
                         ),
                       ),

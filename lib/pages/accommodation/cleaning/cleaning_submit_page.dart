@@ -441,13 +441,13 @@ class _CleaningSubmitPageState extends State<CleaningSubmitPage>
                           _submitOrder(context);
                         },
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
+                          backgroundColor: WidgetStateProperty.all(
                             primaryColor[500],
                           ),
-                          minimumSize: MaterialStateProperty.all(
+                          minimumSize: WidgetStateProperty.all(
                             Size(double.infinity, 36.px),
                           ),
-                          shape: MaterialStateProperty.all(
+                          shape: WidgetStateProperty.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.px),
                             ),

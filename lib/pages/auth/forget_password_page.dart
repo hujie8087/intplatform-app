@@ -32,10 +32,7 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.black,
-          ),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -45,9 +42,10 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
         child: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage('assets/images/forgetPassword_bg.png'),
-                fit: BoxFit.fitWidth,
-                alignment: Alignment.bottomCenter),
+              image: AssetImage('assets/images/forgetPassword_bg.png'),
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.bottomCenter,
+            ),
           ),
           child: Column(
             children: [
@@ -58,9 +56,10 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                 child: Text(
                   S.of(context).resetPassword,
                   style: TextStyle(
-                      fontSize: 24.px,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 24.px,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -76,9 +75,10 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                         autofocus: true,
                         cursorColor: primaryColor,
                         style: TextStyle(
-                            fontSize: 14.px,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
+                          fontSize: 14.px,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                         decoration: InputDecoration(
                           hintText: S.of(context).inputWorkNumber,
                           prefixIcon: Icon(
@@ -97,9 +97,10 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                         controller: _cardController,
                         focusNode: _cardFocusNode,
                         style: TextStyle(
-                            fontSize: 14.px,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
+                          fontSize: 14.px,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                         decoration: InputDecoration(
                           hintText: S.of(context).inputIdCard,
                           prefixIcon: Icon(
@@ -117,15 +118,13 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                         controller: _passwordController,
                         focusNode: _passwordFocusNode,
                         style: TextStyle(
-                            fontSize: 14.px,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
+                          fontSize: 14.px,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                         decoration: InputDecoration(
                           hintText: S.of(context).inputNewPassword,
-                          prefixIcon: Icon(
-                            Icons.lock,
-                            color: primaryColor,
-                          ),
+                          prefixIcon: Icon(Icons.lock, color: primaryColor),
                           border: InputBorder.none,
                         ),
                         obscureText: true,
@@ -142,15 +141,13 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                         controller: _confirmPasswordController,
                         focusNode: _confirmPasswordFocusNode,
                         style: TextStyle(
-                            fontSize: 14.px,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
+                          fontSize: 14.px,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
                         decoration: InputDecoration(
                           hintText: S.of(context).inputConfirmPassword,
-                          prefixIcon: Icon(
-                            Icons.lock,
-                            color: primaryColor,
-                          ),
+                          prefixIcon: Icon(Icons.lock, color: primaryColor),
                           border: InputBorder.none,
                         ),
                         obscureText: true,
@@ -164,36 +161,38 @@ class _ForgetPasswordPageState extends State<ForgetPasswordPage> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          model.forgetPassword(
-                            context,
-                            {
-                              'userName': _usernameController.text,
-                              'card': _cardController.text,
-                              'newPassword': _passwordController.text,
-                              'confirmPassword':
-                                  _confirmPasswordController.text,
-                            },
-                          );
+                          model.forgetPassword(context, {
+                            'userName': _usernameController.text,
+                            'card': _cardController.text,
+                            'newPassword': _passwordController.text,
+                            'confirmPassword': _confirmPasswordController.text,
+                          });
                         },
                         child: Text(
                           S.of(context).confirm,
-                          style:
-                              TextStyle(fontSize: 16.px, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 16.px,
+                            color: Colors.white,
+                          ),
                         ),
                         style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(primaryColor[500]),
-                          textStyle: MaterialStateProperty.all(
-                              TextStyle(fontSize: 14.px, color: Colors.white)),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.px))),
+                          backgroundColor: WidgetStateProperty.all(
+                            primaryColor[500],
+                          ),
+                          textStyle: WidgetStateProperty.all(
+                            TextStyle(fontSize: 14.px, color: Colors.white),
+                          ),
+                          shape: WidgetStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.px),
+                            ),
+                          ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

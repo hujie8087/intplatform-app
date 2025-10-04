@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -30,16 +29,17 @@ class SmartRefreshWidget extends StatelessWidget {
   //被刷新的子组件
   final Widget child;
 
-  const SmartRefreshWidget(
-      {super.key,
-      this.enablePullDown,
-      this.enablePullUp,
-      this.header,
-      this.footer,
-      this.onRefresh,
-      this.onLoading,
-      required this.controller,
-      required this.child});
+  const SmartRefreshWidget({
+    super.key,
+    this.enablePullDown,
+    this.enablePullUp,
+    this.header,
+    this.footer,
+    this.onRefresh,
+    this.onLoading,
+    required this.controller,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {

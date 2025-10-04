@@ -23,17 +23,15 @@ Future<String> uploadImages(AssetEntity selectedAsset) async {
     return '';
   }
   ;
-  if (file != null) {
-    formData.files.add(
-      MapEntry(
-        'file',
-        await dio.MultipartFile.fromFile(
-          file.path,
-          filename: file.path.split('/').last,
-        ),
+  formData.files.add(
+    MapEntry(
+      'file',
+      await dio.MultipartFile.fromFile(
+        file.path,
+        filename: file.path.split('/').last,
       ),
-    );
-  }
+    ),
+  );
   // 使用 Completer 处理异步回调
   final completer = Completer<Map<String, dynamic>>();
   // 上传图片
@@ -49,11 +47,7 @@ Future<String> uploadImages(AssetEntity selectedAsset) async {
   );
   try {
     final data = await completer.future;
-    if (data != null) {
-      return data['data']['url'];
-    } else {
-      return '';
-    }
+    return data['data']['url'];
   } catch (e) {
     print(e);
     return '';
@@ -211,11 +205,11 @@ class _FaceCollectionPageState extends State<FaceCollectionPage> {
                 minimumSize: WidgetStateProperty.all(
                   Size(double.infinity, 26.px),
                 ),
-                backgroundColor: MaterialStateProperty.all(primaryColor[500]),
-                textStyle: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(primaryColor[500]),
+                textStyle: WidgetStateProperty.all(
                   TextStyle(fontSize: 14.px, color: Colors.white),
                 ),
-                shape: MaterialStateProperty.all(
+                shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.px),
                   ),

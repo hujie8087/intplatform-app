@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -23,6 +23,7 @@ import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:quick_actions/quick_actions.dart';
 
 import 'firebase_options.dart';
 import 'generated/l10n.dart';
@@ -162,10 +163,63 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  final QuickActions quickActions = const QuickActions();
+  String? _pendingShortcut;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    quickActions.setShortcutItems([
+      const ShortcutItem(type: "qrcode", localizedTitle: "付款码", icon: "qrcode"),
+      const ShortcutItem(
+        type: "shopping",
+        localizedTitle: "在线点餐",
+        icon: "cart",
+      ),
+      const ShortcutItem(type: "bus", localizedTitle: "公交时刻表", icon: "bus"),
+    ]);
+
+    quickActions.initialize((String shortcutType) {
+      // 如果 context 还没准备好，先缓存
+      if (!mounted) {
+        _pendingShortcut = shortcutType;
+        return;
+      }
+      _handleShortcut(shortcutType);
+    });
+
+    // 应用启动完成后，检查是否有待处理的 shortcut
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_pendingShortcut != null) {
+        _handleShortcut(_pendingShortcut!);
+        _pendingShortcut = null;
+      }
+    });
+  }
+
+  void _handleShortcut(String shortcutType) {
+    print("iOS快捷键触发: $shortcutType");
+    switch (shortcutType) {
+      case "qrcode":
+        print("跳转到付款码页面");
+        RouteUtils.navigatorKey.currentState?.pushNamed(
+          RoutePath.PaymentQRCodePage,
+        );
+        break;
+      case "shopping":
+        print("跳转到在线点餐页面");
+        RouteUtils.navigatorKey.currentState?.pushNamed(
+          RoutePath.ShoppingScreenPage,
+        );
+        break;
+      case "bus":
+        print("跳转到公交时刻表页面");
+        RouteUtils.navigatorKey.currentState?.pushNamed(
+          RoutePath.RouteQueryPage,
+        );
+        break;
+    }
   }
 
   @override
@@ -249,6 +303,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                     return const Locale('zh', 'CN');
                   }
                 });
+                return null;
               },
               theme: ThemeData(
                 scaffoldBackgroundColor: backgroundColor,

@@ -33,7 +33,9 @@ class _CoupleOrderPageState extends State<CoupleOrderPage> {
       {'username': userName},
       success: (data) {
         setState(() {
-          currentUser = CoupleStaffListModel.fromJson(data['rows'][0]);
+          if (data['rows'].isNotEmpty) {
+            currentUser = CoupleStaffListModel.fromJson(data['rows'][0]);
+          }
         });
       },
     );
