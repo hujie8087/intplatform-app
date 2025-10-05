@@ -1,23 +1,23 @@
 class AppResourceModel {
   String? createBy;
   String? createTime;
-  Null updateBy;
-  Null updateTime;
-  Null remark;
-  Null startQueryTime;
-  Null endQueryTime;
+  String? updateBy;
+  String? updateTime;
+  String? remark;
+  String? startQueryTime;
+  String? endQueryTime;
   int? id;
   String? resourceType;
   String? resourceKey;
   String? resourceName;
-  Null contentType;
+  String? contentType;
   String? content;
   int? sortOrder;
   int? status;
-  Null startTime;
-  Null endTime;
+  String? startTime;
+  String? endTime;
   int? platform;
-  Null extInfo;
+  String? extInfo;
 
   AppResourceModel({
     this.createBy,
@@ -44,8 +44,6 @@ class AppResourceModel {
   AppResourceModel.fromJson(Map<String, dynamic> json) {
     createBy = json['createBy'];
     createTime = json['createTime'];
-    updateBy = json['updateBy'];
-    updateTime = json['updateTime'];
     remark = json['remark'];
     startQueryTime = json['startQueryTime'];
     endQueryTime = json['endQueryTime'];

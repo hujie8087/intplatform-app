@@ -108,7 +108,7 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: Text(
-          S.of(context).companyNews,
+          S.of(context).myFeedback,
           style: TextStyle(fontSize: 16.px),
         ),
         centerTitle: true,

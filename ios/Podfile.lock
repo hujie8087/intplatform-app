@@ -117,6 +117,8 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.4.0)
+  - quick_actions_ios (0.0.1):
+    - Flutter
   - restart_app (0.0.1):
     - Flutter
   - saver_gallery (0.0.1):
@@ -167,6 +169,7 @@ DEPENDENCIES:
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
+  - quick_actions_ios (from `.symlinks/plugins/quick_actions_ios/ios`)
   - restart_app (from `.symlinks/plugins/restart_app/ios`)
   - saver_gallery (from `.symlinks/plugins/saver_gallery/ios`)
   - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
@@ -231,6 +234,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   photo_manager:
     :path: ".symlinks/plugins/photo_manager/ios"
+  quick_actions_ios:
+    :path: ".symlinks/plugins/quick_actions_ios/ios"
   restart_app:
     :path: ".symlinks/plugins/restart_app/ios"
   saver_gallery:
@@ -282,6 +287,7 @@ SPEC CHECKSUMS:
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   photo_manager: 81954a1bf804b6e882d0453b3b6bc7fad7b47d3d
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
+  quick_actions_ios: 56f3cbaa71e94f212838d1f9fe354bd0734779bf
   restart_app: 806659942bf932f6ce51c5372f91ce5e81c8c14a
   saver_gallery: 76172dc4bf6b40e66d694948ada9ff402304dd87
   SDWebImage: 9f177d83116802728e122410fb25ad88f5c7608a
