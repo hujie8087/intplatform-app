@@ -15,12 +15,11 @@ import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_locati
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/phone_scan_deliver_page.dart';
 import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:logistics_app/utils/hj_bottom_sheet.dart';
 import 'package:logistics_app/utils/mdc_update_image.dart';
+import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class MealDeliveryDeliverPage extends StatefulWidget {
   @override
@@ -36,7 +35,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
   DictModel? _selectedFoodNameValue; // 餐次
   String _selectedFoodTypeValue = ''; // 餐种
   List<DictModel> foodTypeList = [];
-  List<AssetEntity> selectedAssets = [];
+  // List<AssetEntity> selectedAssets = [];
   UserInfoModel? userInfo;
   bool isBindAccount = false;
   bool isCanScan = false;
@@ -116,7 +115,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
   // 处理Honeywell手持机扫码结果
   Future<void> _processHoneywellScan(String barcode) async {
     try {
-      ProgressHUD.showText(S.of(context).processingScanResult + ': $barcode');
+      // ProgressHUD.showText(S.of(context).processingScanResult + ': $barcode');
       print('Honeywell扫码结果: $barcode');
       // 调用接口处理条形码
       await _submitBarcode(barcode);
@@ -288,7 +287,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
             _uploadImage(orderNo: orderNo);
           } else if (orderDetail.orderStatus == '4') {
             showOrderInfo(context, orderDetail);
-            ProgressHUD.showError(S.of(context).deliveryDelivered);
+            // ProgressHUD.showError(S.of(context).deliveryDelivered);
           }
         }
       },
@@ -300,11 +299,13 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
 
   // 上传图片
   Future<void> _uploadImage({orderNo}) async {
-    final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
+    // final result = await HJBottomSheet.wxPicker(context, [], 1);
+    final result = await Picker.assetsCamera(context: context);
+    print('result: $result');
     if (result != null) {
       ProgressHUD.showLoadingText(S.of(context).deliveryUploading);
       try {
-        final fileUrl = await uploadMealDeliveryFile(result);
+        final fileUrl = await uploadMealDeliveryFile([result]);
         ProgressHUD.hide();
         if (fileUrl.isNotEmpty) {
           final parameters = {'orderNo': orderNo, 'imageUrl': fileUrl[0]};

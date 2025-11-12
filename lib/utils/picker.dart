@@ -26,13 +26,14 @@ class Picker {
   static Future<List<AssetEntity>?> assets({
     required BuildContext context,
     List<AssetEntity>? selectedAssets,
+    RequestType? requestType,
     int? maxAssets,
   }) async {
     print('maxAssets: $maxAssets');
     final List<AssetEntity>? result = await AssetPicker.pickAssets(
       context,
       pickerConfig: AssetPickerConfig(
-        requestType: RequestType.image,
+        requestType: requestType ?? RequestType.image,
         textDelegate: AssetPickerTextDelegate(),
         maxAssets: maxAssets ?? 6,
         selectedAssets: selectedAssets,

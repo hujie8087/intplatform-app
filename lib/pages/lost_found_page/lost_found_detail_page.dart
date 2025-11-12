@@ -601,6 +601,7 @@ class _LostFoundDetailPageState extends State<LostFoundDetailPage> {
                       context,
                       selectedAssets,
                       3 - uploadedImagesList.length, // 剩余可选数量
+                      RequestType.image,
                     );
                     if (result != null) {
                       selectedAssets = result;

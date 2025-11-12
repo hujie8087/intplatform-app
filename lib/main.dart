@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -45,11 +45,35 @@ void main() async {
   HttpUtils.initDio();
   // notifyInit();
   String languageCode = await SpUtils.getString('locale') ?? 'zh';
-  runApp(OverlaySupport.global(child: MyApp(languageCode: languageCode)));
+  runApp(
+    OverlaySupport.global(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 750),
+          child: MyApp(languageCode: languageCode),
+        ),
+      ),
+    ),
+  );
 }
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
+
+/// 通过原生方法获取设备ID
+Future<String> getDeviceId() async {
+  final deviceInfo = DeviceInfoPlugin();
+
+  if (Platform.isAndroid) {
+    final info = await deviceInfo.androidInfo;
+    return info.id ?? 'unknown'; // Android ID
+  } else if (Platform.isIOS) {
+    final info = await deviceInfo.iosInfo;
+    return info.identifierForVendor ?? 'unknown'; // iOS 设备标识
+  } else {
+    return 'unsupported-platform';
+  }
+}
 
 Future<void> initializeFirebase() async {
   if (Platform.isAndroid) {
@@ -59,6 +83,11 @@ Future<void> initializeFirebase() async {
 
     if (availability != GooglePlayServicesAvailability.success) {
       print("Google Play 服务不可用: $availability");
+      final deviceId = await getDeviceId();
+      print('deviceId: $deviceId');
+      if (deviceId.isNotEmpty) {
+        SpUtils.saveString(Constants.SP_DEVICE_TOKEN, deviceId);
+      }
       return; // 跳过 Firebase 初始化
     }
   }
@@ -269,7 +298,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             child: MaterialApp(
               builder: (context, child) {
                 // 初始化屏幕适配
-                ScreenAdapterHelper.init(context);
+                ScreenAdapterHelper.init(context, maxWidth: 500);
                 return child!;
               },
               onGenerateTitle: (context) {

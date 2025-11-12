@@ -824,5 +824,6 @@
   "minutes_ago": "Minutes Ago",
   "submit_failed": "Submit Failed",
   "processing_status": "Processing Status",
-  "reply_person": "Reply Person"
+  "reply_person": "Reply Person",
+  "warningPage": "SOS"
 }

@@ -10,6 +10,9 @@ import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer audioPlayer = AudioPlayer();
 
 class MealDeliveryPhoneScanPage extends StatefulWidget {
   MealDeliveryPhoneScanPage(this.foodTypeList);
@@ -546,10 +549,12 @@ class _MealDeliveryPhoneScanPageState extends State<MealDeliveryPhoneScanPage> {
                     onDetect: (BarcodeCapture capture) {
                       Future.delayed(Duration(milliseconds: 100)).then((
                         ignore,
-                      ) {
+                      ) async {
                         final barcode = capture.barcodes.first; // 获取第一个条形码
                         print('扫描到的条形码: ${barcode.rawValue}');
                         print('isProcessing: $isProcessing');
+                        // 播放提示音
+                        await audioPlayer.play(AssetSource('qrcode.mp3'));
                         if (barcode.rawValue != null && !isProcessing) {
                           controller?.stop();
                           setState(() {

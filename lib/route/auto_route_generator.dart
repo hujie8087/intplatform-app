@@ -20,6 +20,9 @@ import 'package:logistics_app/pages/repair/my_repair_page/repair_rating_page.dar
 import 'package:logistics_app/pages/repair/my_repair_page/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_order_page/repair_order_page.dart';
 import 'package:logistics_app/pages/shopping/food_menu_page.dart';
+import 'package:logistics_app/pages/sos/chat_list_page.dart';
+import 'package:logistics_app/pages/sos/chat_screen_page.dart';
+import 'package:logistics_app/pages/sos/sos_index_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/pages/news/promo_page/promo_list_page.dart';
 import 'package:logistics_app/pages/news/ktime_page/ktime_list_page.dart';
@@ -342,6 +345,16 @@ class AutoRouteGenerator {
     //   builder: (context) => MealDeliveryScanPage(),
     //   name: 'MealDeliveryScanPage',
     // ),
+
+    // 报警相关
+    RoutePath.SosIndexPage: RouteConfig(
+      builder: (context) => SosIndexPage(),
+      name: 'SosIndexPage',
+    ),
+    RoutePath.ChatListPage: RouteConfig(
+      builder: (context) => ChatListPage(),
+      name: 'ChatListPage',
+    ),
   };
 
   /// 生成路由
@@ -494,4 +507,9 @@ class RoutePath {
   static const String MealDeliveryIndexPage = 'meal_delivery_index_page';
   static const String MealDeliveryAcceptPage = 'meal_delivery_accept_page';
   static const String MealDeliveryDeliverPage = 'meal_delivery_deliver_page';
+
+  // SOS相关
+  static const String SosIndexPage = 'sos_index_page';
+  static const String ChatListPage = 'chat_list_page';
+  static const String ChatScreenPage = 'chat_screen_page';
 }

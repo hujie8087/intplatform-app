@@ -220,6 +220,7 @@ class _FaceCollectionPageState extends State<FaceCollectionPage> {
                   context,
                   selectedAssets,
                   1,
+                  RequestType.image,
                 );
                 if (result != null) {
                   final res = await uploadImages(result[0]);

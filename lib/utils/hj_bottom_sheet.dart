@@ -12,6 +12,7 @@ class HJBottomSheet {
     BuildContext context,
     List<AssetEntity>? selectedAssets,
     int? maxAssets,
+    RequestType? requestType,
   ) {
     return Picker.showModalSheet(
       context,
@@ -37,6 +38,7 @@ class HJBottomSheet {
               final result = Picker.assets(
                 context: context,
                 maxAssets: maxAssets ?? 6,
+                requestType: requestType ?? RequestType.image,
               );
               result.then((value) {
                 Navigator.pop(context, value);

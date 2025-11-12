@@ -638,6 +638,7 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
                           context,
                           selectedAssets,
                           6,
+                          RequestType.image,
                         );
                         if (result != null) {
                           selectedAssets = result;

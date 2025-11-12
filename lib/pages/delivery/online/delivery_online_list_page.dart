@@ -284,7 +284,12 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
 
   // 上传图片
   Future<void> _uploadImage({id, deliveryAddress, nick}) async {
-    final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
+    final result = await HJBottomSheet.wxPicker(
+      context,
+      selectedAssets,
+      1,
+      RequestType.image,
+    );
     if (result != null) {
       final fileUrl = await uploadImages(result);
       if (fileUrl.isNotEmpty) {

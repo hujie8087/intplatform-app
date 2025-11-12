@@ -828,5 +828,6 @@
   "minutes_ago": "Menit Yang Lalu",
   "submit_failed": "Gagal Mengirim",
   "processing_status": "Status Pengolahan",
-  "reply_person": "Orang yang Membalas"
+  "reply_person": "Orang yang Membalas",
+  "warningPage": "SOS"
 }

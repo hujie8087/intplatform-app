@@ -40,7 +40,12 @@ class _MealDeliveryDetailPageState extends State<MealDeliveryDetailPage> {
 
   // 上传图片
   Future<void> _uploadImage({orderNo, nick}) async {
-    final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
+    final result = await HJBottomSheet.wxPicker(
+      context,
+      selectedAssets,
+      1,
+      RequestType.image,
+    );
     if (result != null) {
       ProgressHUD.showLoadingText(S.of(context).deliveryUploading);
       final fileUrl = await uploadImages(result);

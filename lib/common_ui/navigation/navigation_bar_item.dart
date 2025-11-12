@@ -53,7 +53,10 @@ class NavigationBarItemState extends State<NavigationBarItem>
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    double screenWidth =
+        MediaQuery.of(context).size.width > 750
+            ? 750
+            : MediaQuery.of(context).size.width;
     int tabCount = widget.tabIconsList.length;
     int grooveIndex = widget.grooveIndex; // 想让凹槽居中第2个tab
     double itemWidth = screenWidth / tabCount;

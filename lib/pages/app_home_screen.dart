@@ -17,6 +17,7 @@ import 'package:logistics_app/pages/home_page/home_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_page.dart';
 import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:logistics_app/pages/repair/report_hazard_page.dart';
+import 'package:logistics_app/pages/sos/sos_index_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -78,9 +79,17 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             labelName: '', // 先设为空，在build中设置
           ),
           TabIconData(
+            imagePath: 'assets/images/tab_warn.png',
+            selectedImagePath: 'assets/images/tab_warn1.png',
+            index: 3,
+            isSelected: false,
+            animationController: animationController,
+            labelName: '', // 先设为空，在build中设置
+          ),
+          TabIconData(
             imagePath: 'assets/images/tab_4.png',
             selectedImagePath: 'assets/images/tab_4s1.png',
-            index: 3,
+            index: 4,
             isSelected: false,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
@@ -96,7 +105,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       _tabIconsList[0].labelName = S.of(context).homePage;
       _tabIconsList[1].labelName = S.of(context).dangerPage;
       _tabIconsList[2].labelName = S.of(context).toolPage;
-      _tabIconsList[3].labelName = S.of(context).minePage;
+      _tabIconsList[3].labelName = S.of(context).warningPage;
+      _tabIconsList[4].labelName = S.of(context).minePage;
     }
   }
 
@@ -297,6 +307,11 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           });
           break;
         case 3:
+          setState(() {
+            tabBody = SosIndexPage();
+          });
+          break;
+        case 4:
           await isLogin();
           setState(() {
             tabBody = MinePage();

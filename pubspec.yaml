@@ -23,6 +23,7 @@ environment:
 dependencies:
   android_intent_plus: ^5.3.0
   animations: ^2.0.3
+  audioplayers: ^6.5.1
   badges: ^3.1.2
   cached_network_image: ^3.4.1
   chewie: ^1.5.0
@@ -43,6 +44,9 @@ dependencies:
   flutter_barrage: ^0.5.5
   flutter_bloc: ^9.1.1
   flutter_cache_manager: ^3.1.2
+  flutter_chat_core: ^2.8.0
+  flutter_chat_types: ^3.6.2
+  flutter_chat_ui: ^2.9.0
   flutter_datetime_picker_plus: ^2.1.0
   flutter_downloader: ^1.12.0
   flutter_html: ^3.0.0-beta.2
@@ -70,15 +74,18 @@ dependencies:
   get: ^4.6.5
   google_api_availability: ^5.0.1
   grouped_list: ^5.1.2
+  hive: ^2.2.3
   http: ^1.4.0
   image: ^4.0.17
   image_picker: ^0.8.4+4
   intl: ^0.20.0
+  just_audio: ^0.10.5
   mobile_scanner: ^7.0.0-beta.8
   oktoast: ^3.3.1
   overlay_support: ^2.1.0
   package_info_plus: ^8.3.0
   path: ^1.9.0
+  path_provider: ^2.1.5
   permission_handler: ^11.4.0
   photo_view: ^0.15.0
   provider: ^6.1.1
@@ -87,6 +94,7 @@ dependencies:
   qr_flutter: ^4.1.0
   quick_actions: ^1.1.0
   recase: ^4.1.0
+  record: ^6.1.2
   restart_app: ^1.2.1
   saver_gallery: ^3.0.1
   shared_preferences: ^2.0.15
@@ -97,6 +105,7 @@ dependencies:
   url_launcher: ^6.2.5
   video_player: ^2.8.6
   web: ^1.1.1
+  web_socket_channel: ^3.0.3
   webview_flutter: ^4.8.0
   webview_flutter_web: ^0.2.3+4
   wechat_assets_picker: ^9.1.0
@@ -123,6 +132,7 @@ flutter:
     - assets/images/
     - assets/images/south-all.webp
     - assets/images/empty/
+    - assets/qrcode.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

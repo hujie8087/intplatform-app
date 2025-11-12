@@ -828,5 +828,6 @@
   "minutes_ago": "分钟前",
   "submit_failed": "提交失败",
   "processing_status": "处理状态",
-  "reply_person": "回复人"
+  "reply_person": "回复人",
+  "warningPage": "SOS报警"
 }

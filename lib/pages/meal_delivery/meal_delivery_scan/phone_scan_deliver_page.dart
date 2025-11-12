@@ -4,13 +4,15 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/meal_delivery_utils.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/meal_delivery_model.dart';
-import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
-import 'package:logistics_app/utils/hj_bottom_sheet.dart';
+import 'package:logistics_app/utils/mdc_update_image.dart';
+import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final AudioPlayer audioPlayer = AudioPlayer();
 
 class PhoneScanDeliverPage extends StatefulWidget {
   PhoneScanDeliverPage(this.foodTypeList);
@@ -25,9 +27,7 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
   bool isProcessing = false; // 防止重复调用接口
   DictModel? _selectedFoodNameValue; // 餐次
   String _selectedFoodTypeValue = ''; // 餐种
-  List<AssetEntity> selectedAssets = [];
   String languageCode = 'zh';
-
   @override
   void initState() {
     super.initState();
@@ -152,6 +152,7 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
               onPressed: () {
                 setState(() {
                   isProcessing = false; // 防止重复调用
+                  controller?.start();
                 });
                 Navigator.of(context).pop();
               },
@@ -189,7 +190,6 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
             _uploadImage(orderNo: orderDetail.orderNo);
           } else if (orderDetail.orderStatus == '4') {
             showOrderInfo(context, orderDetail);
-            ProgressHUD.showError(S.of(context).deliveryDelivered);
           }
         }
       },
@@ -202,11 +202,12 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
   // 上传图片
   Future<void> _uploadImage({orderNo}) async {
     print('orderNo: $orderNo');
-    final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
+    // final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
+    final result = await Picker.assetsCamera(context: context);
     if (result != null) {
       ProgressHUD.showLoadingText(S.of(context).imageUploading);
       try {
-        final fileUrl = await uploadImages(result);
+        final fileUrl = await uploadMealDeliveryFile([result]);
         ProgressHUD.hide();
         if (fileUrl.isNotEmpty) {
           final parameters = {'orderNo': orderNo, 'imageUrl': fileUrl[0]};
@@ -216,6 +217,7 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
             success: (data) {
               ProgressHUD.showSuccess(S.of(context).deliverySuccess);
               setState(() {
+                controller?.start();
                 isProcessing = false; // 防止重复调用
               });
             },
@@ -233,6 +235,7 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
     } else {
       setState(() {
         isProcessing = false; // 防止重复调用
+        controller?.start();
       });
     }
   }
@@ -265,24 +268,23 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
           // 扫描器
           MobileScanner(
             controller: controller,
-            onDetect: (BarcodeCapture capture) {
-              Future.delayed(Duration(milliseconds: 100)).then((ignore) {
-                final barcode = capture.barcodes.first; // 获取第一个条形码
-                print('扫描到的条形码: ${barcode.rawValue}');
-                print('isProcessing: $isProcessing');
-                if (barcode.rawValue != null && !isProcessing) {
-                  controller?.stop();
-                  _submitBarcode(barcode.rawValue!)
-                      .whenComplete(() {
-                        controller?.start();
-                      })
-                      .then((_) {
-                        setState(() {
-                          isProcessing = false; // 防止重复调用
-                        });
-                      }); // 调用接口
-                }
-              });
+            onDetect: (BarcodeCapture capture) async {
+              print('isProcessing: $isProcessing');
+              if (isProcessing) return;
+              final barcode = capture.barcodes.first;
+              final value = barcode.rawValue;
+
+              if (value == null) return;
+              // 播放提示音
+              await audioPlayer.play(AssetSource('qrcode.mp3'));
+              setState(() => isProcessing = true);
+              await controller?.stop();
+              try {
+                // 处理扫码结果（比如调用接口）
+                await _submitBarcode(value);
+              } catch (e) {
+                print("处理扫码异常: $e");
+              }
             },
           ),
           // 顶部居中的按钮组

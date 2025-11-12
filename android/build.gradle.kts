@@ -6,6 +6,7 @@ allprojects {
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
         maven { url = uri("https://maven.aliyun.com/repository/jcenter") }
+        maven { url = uri("https://maven.baidu.com") }
     }
 }
 val newBuildDir: Directory = rootProject.layout.buildDirectory.dir("../../build").get()

@@ -120,123 +120,128 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
               ? Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
                 controller: _scrollController,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10.px),
-                      // 标题
-                      child: Column(
-                        children: [
-                          Text(
-                            _promo?.noticeTitle ?? '',
-                            style: TextStyle(
-                              fontSize: 18.px,
-                              fontWeight: FontWeight.bold,
-                              height: 1.4,
-                            ),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 750),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(10.px),
+                          // 标题
+                          child: Column(
+                            children: [
+                              Text(
+                                _promo?.noticeTitle ?? '',
+                                style: TextStyle(
+                                  fontSize: 18.px,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.4,
+                                ),
+                              ),
+                              SizedBox(height: 16.px),
+                              // 信息栏
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: 8.px,
+                                  horizontal: 12.px,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(8.px),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.access_time,
+                                      size: 16.px,
+                                      color: Colors.grey[600],
+                                    ),
+                                    SizedBox(width: 4.px),
+                                    Text(
+                                      _promo?.createTime ?? '',
+                                      style: TextStyle(
+                                        fontSize: 12.px,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    SizedBox(width: 16.px),
+                                    Icon(
+                                      Icons.remove_red_eye,
+                                      size: 16.px,
+                                      color: Colors.grey[600],
+                                    ),
+                                    SizedBox(width: 4.px),
+                                    Text(
+                                      '${_promo?.papeView ?? 0}',
+                                      style: TextStyle(
+                                        fontSize: 12.px,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 16.px),
-                          // 信息栏
+                        ),
+                        SizedBox(height: 16.px),
+                        // 视频播放器
+                        Column(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: Container(
+                                color: Colors.black,
+                                child:
+                                    _isInitialized
+                                        ? Chewie(controller: _chewieController!)
+                                        : Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                              ),
+                            ),
+                            if (!_isInitialized && _promo?.img != null)
+                              Positioned.fill(
+                                child: Image.network(
+                                  APIs.imageOnlinePrefix + (_promo?.img ?? ''),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                          ],
+                        ),
+
+                        // 内容区域
+                        SizedBox(height: 20.px),
+
+                        // 描述内容
+                        if (_promo?.noticeContent != null)
                           Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 8.px,
-                              horizontal: 12.px,
-                            ),
                             decoration: BoxDecoration(
-                              color: Colors.grey[100],
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(8.px),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.access_time,
-                                  size: 16.px,
-                                  color: Colors.grey[600],
-                                ),
-                                SizedBox(width: 4.px),
-                                Text(
-                                  _promo?.createTime ?? '',
-                                  style: TextStyle(
-                                    fontSize: 12.px,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                SizedBox(width: 16.px),
-                                Icon(
-                                  Icons.remove_red_eye,
-                                  size: 16.px,
-                                  color: Colors.grey[600],
-                                ),
-                                SizedBox(width: 4.px),
-                                Text(
-                                  '${_promo?.papeView ?? 0}',
-                                  style: TextStyle(
-                                    fontSize: 12.px,
-                                    color: Colors.grey[600],
-                                  ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 2),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16.px),
-                    // 视频播放器
-                    Column(
-                      children: [
-                        AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: Container(
-                            color: Colors.black,
-                            child:
-                                _isInitialized
-                                    ? Chewie(controller: _chewieController!)
-                                    : Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                          ),
-                        ),
-                        if (!_isInitialized && _promo?.img != null)
-                          Positioned.fill(
-                            child: Image.network(
-                              APIs.imageOnlinePrefix + (_promo?.img ?? ''),
-                              fit: BoxFit.cover,
+                            padding: EdgeInsets.all(16.px),
+                            child: Html(
+                              data: _promo?.noticeContent ?? '',
+                              style: {
+                                "body": Style(
+                                  fontSize: FontSize(14.px),
+                                  lineHeight: LineHeight(1.6),
+                                ),
+                              },
                             ),
                           ),
                       ],
                     ),
-
-                    // 内容区域
-                    SizedBox(height: 20.px),
-
-                    // 描述内容
-                    if (_promo?.noticeContent != null)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.px),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        padding: EdgeInsets.all(16.px),
-                        child: Html(
-                          data: _promo?.noticeContent ?? '',
-                          style: {
-                            "body": Style(
-                              fontSize: FontSize(14.px),
-                              lineHeight: LineHeight(1.6),
-                            ),
-                          },
-                        ),
-                      ),
-                  ],
+                  ),
                 ),
               ),
     );

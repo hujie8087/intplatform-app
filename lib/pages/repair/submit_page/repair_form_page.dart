@@ -664,6 +664,7 @@ class _RepairFormPage extends State<RepairFormPage>
                       context,
                       selectedAssets,
                       6,
+                      RequestType.image,
                     );
                     if (result != null) {
                       selectedAssets = result;

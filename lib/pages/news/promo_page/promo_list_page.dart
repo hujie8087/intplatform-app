@@ -115,12 +115,17 @@ class _PromoListPageState extends State<PromoListPage>
                 onLoading: () async {
                   await getPromoList(false);
                 },
-                child: ListView.builder(
-                  itemCount: promoList.length,
-                  itemBuilder: (context, index) {
-                    final promo = promoList[index];
-                    return _buildPromoCard(promo);
-                  },
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 750),
+                    child: ListView.builder(
+                      itemCount: promoList.length,
+                      itemBuilder: (context, index) {
+                        final promo = promoList[index];
+                        return _buildPromoCard(promo);
+                      },
+                    ),
+                  ),
                 ),
               ),
     );

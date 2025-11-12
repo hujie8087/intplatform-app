@@ -123,17 +123,22 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           SizedBox(height: 10.px),
           if (noticeModel?.noticeContent != null)
             Expanded(
-              child:
-                  kIsWeb
-                      ? SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(horizontal: 12.px),
-                        child: Html(
-                          data: fixHtmlImageUrls(
-                            noticeModel?.noticeContent ?? '',
-                          ),
-                        ),
-                      )
-                      : NewsContent(htmlContent: htmlContent),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 750),
+                  child:
+                      kIsWeb
+                          ? SingleChildScrollView(
+                            padding: EdgeInsets.symmetric(horizontal: 12.px),
+                            child: Html(
+                              data: fixHtmlImageUrls(
+                                noticeModel?.noticeContent ?? '',
+                              ),
+                            ),
+                          )
+                          : NewsContent(htmlContent: htmlContent),
+                ),
+              ),
             ),
         ],
       ),

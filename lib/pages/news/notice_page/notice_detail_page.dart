@@ -57,6 +57,7 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
       <style>
         img { max-width: 100%; height: auto; }
         body { font-family: sans-serif; padding: 16px; }
+        .notice-content { width: 100%; max-width: 750px; margin: 0 auto; }
       </style>
     <script>
       function setupImageClick() {
@@ -71,7 +72,9 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
     </script>
     </head>
     <body>
+      <div class="notice-content">
       ${fixHtmlImageUrls(noticeDetail?.noticeContent ?? "<p>No content</p>")}
+      </div>
     </body>
   </html>
   ''';
@@ -112,17 +115,22 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
           ),
           if (noticeDetail?.noticeContent != null)
             Expanded(
-              child:
-                  kIsWeb
-                      ? SingleChildScrollView(
-                        padding: EdgeInsets.symmetric(horizontal: 12.px),
-                        child: Html(
-                          data: fixHtmlImageUrls(
-                            noticeDetail?.noticeContent ?? '',
-                          ),
-                        ),
-                      )
-                      : NewsContent(htmlContent: htmlContent),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 750),
+                  child:
+                      kIsWeb
+                          ? SingleChildScrollView(
+                            padding: EdgeInsets.symmetric(horizontal: 12.px),
+                            child: Html(
+                              data: fixHtmlImageUrls(
+                                noticeDetail?.noticeContent ?? '',
+                              ),
+                            ),
+                          )
+                          : NewsContent(htmlContent: htmlContent),
+                ),
+              ),
             ),
         ],
       ),

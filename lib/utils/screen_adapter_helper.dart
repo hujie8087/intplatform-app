@@ -18,13 +18,19 @@ class ScreenAdapterHelper {
   static late double pixelRatio;
   static late double ratio;
 
-  static void init(BuildContext context,
-      {double designWidth = 375.0, double designHeight = 812.0}) {
+  static void init(
+    BuildContext context, {
+    double designWidth = 375.0,
+    double designHeight = 812.0,
+    double maxWidth = 500.0,
+  }) {
     _mediaQueryData = MediaQuery.of(context);
     screenWidth = _mediaQueryData.size.width;
     screenHeight = _mediaQueryData.size.height;
     pixelRatio = _mediaQueryData.devicePixelRatio;
-    ratio = screenWidth / designWidth;
+    // 限制最大宽度（比如 Web/PC 端）
+    final limitedWidth = screenWidth > maxWidth ? maxWidth : screenWidth;
+    ratio = limitedWidth / designWidth;
   }
 
   static double getPx(double size) {

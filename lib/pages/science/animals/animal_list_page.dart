@@ -73,6 +73,7 @@ class _AnimalListPageState extends State<AnimalListPage>
       context,
       selectedAssets,
       1,
+      RequestType.image,
     );
     if (pickedFile != null && pickedFile.isNotEmpty) {
       final imageFile = await pickedFile[0].file;

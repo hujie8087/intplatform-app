@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:crypto/crypto.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Utils {
@@ -62,22 +63,52 @@ class Utils {
   }
 
   // 完全相对时间显示
-  static String formatTimestampToRelativeTime(timeStamp) {
-    var difference = DateTime.now()
-        .difference(DateTime.fromMillisecondsSinceEpoch(timeStamp * 1000));
+  static String formatRelativeTime(String? timeString) {
+    if (timeString == null || timeString.isEmpty) {
+      return '';
+    }
 
-    if (difference.inDays > 365) {
-      return '${difference.inDays ~/ 365}年前';
-    } else if (difference.inDays > 30) {
-      return '${difference.inDays ~/ 30}个月前';
-    } else if (difference.inDays > 0) {
-      return '${difference.inDays}天前';
-    } else if (difference.inHours > 0) {
-      return '${difference.inHours}小时前';
-    } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}分钟前';
-    } else {
-      return '刚刚';
+    try {
+      // 解析时间字符串
+      DateTime messageTime;
+
+      // 尝试不同的时间格式
+      if (timeString.contains('T')) {
+        // ISO 8601格式 (如: 2025-10-13T18:40:56)
+        messageTime = DateTime.parse(timeString);
+      } else if (timeString.contains('-') && timeString.contains(':')) {
+        // 常规格式 (如: 2025-10-13 18:40:56)
+        messageTime = DateTime.parse(timeString).toLocal();
+      } else if (timeString.contains('/')) {
+        // 斜杠格式 (如: 2025/10/13 18:40:56)
+        messageTime = DateFormat('yyyy/MM/dd HH:mm:ss').parse(timeString);
+      } else {
+        // 如果无法解析，返回原字符串
+        return timeString;
+      }
+      print('messageTime:$messageTime');
+      final now = DateTime.now().toLocal();
+      print('now:$now');
+      final difference = now.difference(messageTime);
+      print('difference:$difference');
+
+      // 根据时间差返回相对时间
+      if (difference.inDays > 365) {
+        return '${(difference.inDays / 365).floor()}年前';
+      } else if (difference.inDays > 30) {
+        return '${(difference.inDays / 30).floor()}个月前';
+      } else if (difference.inDays > 0) {
+        return '${difference.inDays}天前';
+      } else if (difference.inHours > 0) {
+        return '${difference.inHours}小时前';
+      } else if (difference.inMinutes > 0) {
+        return '${difference.inMinutes}分钟前';
+      } else {
+        return '刚刚';
+      }
+    } catch (e) {
+      // 如果解析失败，返回原字符串
+      return timeString;
     }
   }
 
@@ -97,10 +128,11 @@ class Utils {
       currentYearStr = 'MM-DD hh:mm';
       lastYearStr = 'YY-MM-DD hh:mm';
       return CustomStamp_str(
-          timestamp: timeStamp,
-          date: lastYearStr,
-          toInt: false,
-          formatType: formatType);
+        timestamp: timeStamp,
+        date: lastYearStr,
+        toInt: false,
+        formatType: formatType,
+      );
     }
     print('distance: $distance');
     if (distance <= 60) {
@@ -112,25 +144,28 @@ class Utils {
     } else if (DateTime.fromMillisecondsSinceEpoch(time * 1000).year ==
         DateTime.fromMillisecondsSinceEpoch(timeStamp * 1000).year) {
       return CustomStamp_str(
-          timestamp: timeStamp,
-          date: currentYearStr,
-          toInt: false,
-          formatType: formatType);
+        timestamp: timeStamp,
+        date: currentYearStr,
+        toInt: false,
+        formatType: formatType,
+      );
     } else {
       return CustomStamp_str(
-          timestamp: timeStamp,
-          date: lastYearStr,
-          toInt: false,
-          formatType: formatType);
+        timestamp: timeStamp,
+        date: lastYearStr,
+        toInt: false,
+        formatType: formatType,
+      );
     }
   }
 
   // 时间戳转时间
-  static String CustomStamp_str(
-      {int? timestamp, // 为空则显示当前时间
-      String? date, // 显示格式，比如：'YY年MM月DD日 hh:mm:ss'
-      bool toInt = true, // 去除0开头
-      String? formatType}) {
+  static String CustomStamp_str({
+    int? timestamp, // 为空则显示当前时间
+    String? date, // 显示格式，比如：'YY年MM月DD日 hh:mm:ss'
+    bool toInt = true, // 去除0开头
+    String? formatType,
+  }) {
     timestamp ??= (DateTime.now().millisecondsSinceEpoch / 1000).round();
     String timeStr =
         (DateTime.fromMillisecondsSinceEpoch(timestamp * 1000)).toString();
@@ -245,7 +280,10 @@ class Utils {
   }
 
   static String appSign(
-      Map<String, dynamic> params, String appkey, String appsec) {
+    Map<String, dynamic> params,
+    String appkey,
+    String appsec,
+  ) {
     params['appkey'] = appkey;
     var searchParams = Uri(queryParameters: params).query;
     var sortedParams = searchParams.split('&')..sort();
@@ -259,8 +297,10 @@ class Utils {
   }
 
   static List<int> generateRandomBytes(int minLength, int maxLength) {
-    return List<int>.generate(random.nextInt(maxLength - minLength + 1),
-        (_) => random.nextInt(0x60) + 0x20);
+    return List<int>.generate(
+      random.nextInt(maxLength - minLength + 1),
+      (_) => random.nextInt(0x60) + 0x20,
+    );
   }
 
   static String base64EncodeRandomString(int minLength, int maxLength) {
