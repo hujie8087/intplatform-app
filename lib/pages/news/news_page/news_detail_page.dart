@@ -74,7 +74,6 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     </script>
     </head>
     <body>
-      <iframe src="https://v.xiumi.us/stage/v5/7E5i1/650622255" style="width:100%;height:100vh;border:none;"></iframe>
       <div style="padding: 16px;">
       ${fixHtmlImageUrls(noticeModel?.noticeContent ?? "<p>No content</p>")}
       </div>
