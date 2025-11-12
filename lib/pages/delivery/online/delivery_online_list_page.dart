@@ -217,8 +217,8 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
 
   // 获取订单类型
   Future<void> _fetchOrderStatus() async {
-    var userInfo = await SpUtils.getModel('userInfo');
-    userName = userInfo != null ? userInfo['user']['userName'] : '';
+    var userInfo = await SpUtils.getModel('thirdUserInfo');
+    userName = userInfo != null ? userInfo['account'] : '';
     DataUtils.getDictDataList(
       'delivery_staff_type',
       success: (data) {
@@ -856,7 +856,7 @@ class OrderCard extends StatelessWidget {
                         vertical: 4.px,
                         horizontal: 8.px,
                       ),
-                      minimumSize: Size(42.px, 20.px),
+                      minimumSize: Size(42.px, 24.px),
                     ),
                     onPressed: () {
                       DataUtils.cancelOrder(
@@ -889,7 +889,7 @@ class OrderCard extends StatelessWidget {
                         vertical: 4.px,
                         horizontal: 8.px,
                       ),
-                      minimumSize: Size(42.px, 20.px),
+                      minimumSize: Size(42.px, 24.px),
                     ),
                     onPressed: onAccept,
                     child: Text(
@@ -902,7 +902,7 @@ class OrderCard extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
-                      minimumSize: Size(32.px, 16.px),
+                      minimumSize: Size(32.px, 24.px),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -925,12 +925,12 @@ class OrderCard extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondaryColor,
-                      minimumSize: Size(32.px, 16.px),
+                      minimumSize: Size(32.px, 24.px),
                     ),
                     onPressed: acceptOrder,
                     child: Text(
                       S.current.acceptOrder,
-                      style: TextStyle(fontSize: 12.px),
+                      style: TextStyle(fontSize: 12.px, color: Colors.white),
                     ),
                   ),
               ],

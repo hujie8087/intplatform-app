@@ -15,7 +15,7 @@ description: IWIP后勤综合服务平台
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.13+1
+version: 1.0.14+1
 
 environment:
   sdk: ^3.7.0
@@ -95,6 +95,7 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^28.2.7
   timeline_tile: ^2.0.0
   url_launcher: ^6.2.5
+  uuid: ^4.5.2
   video_player: ^2.8.6
   web: ^1.1.1
   webview_flutter: ^4.8.0

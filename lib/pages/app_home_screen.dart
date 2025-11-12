@@ -22,7 +22,6 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:pub_semver/pub_semver.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
@@ -111,17 +110,16 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     } else {
       // 用Completer来等待回调
       final completer = Completer<bool>();
-      DataUtils.getUserInfo(
+      DataUtils.getThirdUserInfo(
         success: (res) async {
-          UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
-          await SpUtils.saveModel('userInfo', userInfo);
-          SpUtils.saveString(
-            Constants.SP_USER_NAME,
-            userInfo.user?.nickName ?? '',
+          ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
+            res['data'],
           );
+          await SpUtils.saveModel('thirdUserInfo', userInfo);
+          SpUtils.saveString(Constants.SP_USER_NAME, userInfo.name ?? '');
           SpUtils.saveString(
             Constants.SP_USER_DEPT,
-            userInfo.user?.dept?.deptName ?? '',
+            userInfo.formatOrganizeName ?? '',
           );
           completer.complete(true);
         },
@@ -145,40 +143,37 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   Future checkUpdate(BuildContext context) async {
     //获取当前app的版本code
     String versionCode = await DeviceUtils.version();
-    String versionName = await DeviceUtils.version();
     String downloadUrlPre = APIs.imagePrefix;
     DataUtils.getAppLastVersion(
       success: (data) async {
         UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
-        //线上版本的code
-        Version oldVersion = Version.parse(versionName);
-        Version newVersion = Version.parse(updateModel.versionName);
-        SpUtils.saveString('plantAccessToken', data['data']['def1'] ?? '');
-        SpUtils.saveString('animalAccessToken', data['data']['def2'] ?? '');
-        try {
-          //如果当前版本小于线上版本，需要更新
-          if (oldVersion == newVersion) {
-            SpUtils.saveString(
-              Constants.SP_NEW_APP_VERSION,
-              updateModel.versionName,
-            );
-          } else {
-            SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
-          }
-          if (oldVersion < newVersion) {
+
+        if (updateModel.update == true) {
+          //线上版本的code
+          try {
             if (Platform.isAndroid) {
               // checkUpdateFlutterXUpdate(updateModel, downloadUrlPre);
               // downloadApk(downloadUrlPre + updateModel.apkUrl);
               _updateDialog = UpdateDialog.showUpdate(
                 context,
-                title: '发现新版本 v${newVersion}',
-                updateContent: updateModel.updateLog ?? '',
+                title: '发现新版本 v${updateModel.versionName ?? ''}',
+                updateContent: updateModel.content ?? '',
                 themeColor: Color.fromRGBO(255, 101, 50, 1),
                 updateButtonText: S.of(context).updateNow,
                 topImage: Image.asset('assets/images/bg_update_top.png'),
                 isForce: true,
                 onUpdate: () async {
-                  downloadApk(downloadUrlPre + updateModel.apkUrl);
+                  if (updateModel.updateType == 3) {
+                    final url = Uri.parse(updateModel.url ?? '');
+                    // 替换为外部的链接
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  } else {
+                    downloadApk(downloadUrlPre + (updateModel.url ?? ''));
+                  }
                 },
                 progress: _progress,
               );
@@ -186,7 +181,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
               UpdateDialog.showUpdate(
                 context,
                 title: S.of(context).updateAppStore,
-                updateContent: updateModel.updateLog ?? '',
+                updateContent: updateModel.content ?? '',
                 themeColor: Color.fromRGBO(255, 101, 50, 1),
                 updateButtonText: S.of(context).updateNow,
                 topImage: Image.asset('assets/images/bg_update_top.png'),
@@ -204,9 +199,9 @@ class _AppHomeScreenState extends State<AppHomeScreen>
                 },
               );
             }
+          } catch (e) {
+            SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
           }
-        } catch (e) {
-          SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
         }
       },
     );

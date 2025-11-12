@@ -23,7 +23,7 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   bool _isLoading = false;
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
 
   @override
   void initState() {
@@ -32,14 +32,16 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
   }
 
   Future<void> _fetchData() async {
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     if (userInfoData != null) {
-      userInfo = UserInfoModel.fromJson(userInfoData);
+      userInfo = ThirdUserInfoModel.fromJson(userInfoData);
     } else {
-      DataUtils.getUserInfo(
+      DataUtils.getThirdUserInfo(
         success: (res) async {
-          UserInfoModel userInfoModel = UserInfoModel.fromJson(res['data']);
-          await SpUtils.saveModel('userInfo', userInfoModel);
+          ThirdUserInfoModel userInfoModel = ThirdUserInfoModel.fromJson(
+            res['data'],
+          );
+          await SpUtils.saveModel('thirdUserInfo', userInfoModel);
           userInfo = userInfoModel;
           setState(() {});
         },
@@ -77,7 +79,7 @@ class _ModifyPaymentPasswordPageState extends State<ModifyPaymentPasswordPage> {
       {
         'oriPassword': _oldPasswordController.text,
         'newPassword': _newPasswordController.text,
-        'uniqueId': userInfo?.user?.userName,
+        'uniqueId': userInfo?.account,
         "pwdType": "1",
       },
       success: (data) {

@@ -27,7 +27,7 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
   int _page = 1;
   List<ComplaintMessageModel> _list = [];
   int _total = 0;
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
 
   late RefreshController _refreshController;
 
@@ -43,11 +43,11 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
   }
 
   void getUserInfo() async {
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     if (userInfoData != null) {
-      userInfo = UserInfoModel.fromJson(userInfoData);
+      userInfo = ThirdUserInfoModel.fromJson(userInfoData);
       setState(() {
-        print(userInfo?.user);
+        print(userInfo?.account);
         getMyFeedbackModelList(true);
       });
     }
@@ -61,11 +61,7 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
     try {
       DataUtils.getPageList(
         '/other/ComplaintMessage/list',
-        {
-          'pageNum': _page,
-          'pageSize': 10,
-          'createBy': userInfo?.user?.userName,
-        },
+        {'pageNum': _page, 'pageSize': 10, 'createBy': userInfo?.account},
         success: (data) {
           if (data != null) {
             var noticeList = data['rows'] as List;

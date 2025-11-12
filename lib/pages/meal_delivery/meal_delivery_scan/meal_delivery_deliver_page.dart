@@ -102,6 +102,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
       setState(() {
         userInfo = UserInfoModel.fromJson(userInfoData);
         isBindAccount = userInfo?.mealUser != null;
+        print('isBindAccount: $isBindAccount');
         if (isBindAccount) {
           isCanScan =
               userInfo?.mealUser?.roles?.any(
@@ -414,7 +415,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
                     bottom: 15.px,
                   ),
                   width: double.infinity,
-                  height: 110.px,
+                  height: 120.px,
                   margin: EdgeInsets.symmetric(
                     vertical: 50.px,
                     horizontal: 30.px,
@@ -430,6 +431,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
                   // 未绑定帐号权限，请先绑定帐号
                   child: Column(
                     children: [
+                      SizedBox(height: 10.px),
                       Text(
                         S.of(context).deliveryOrderNotBindAccount,
                         style: TextStyle(fontSize: 14.px, color: Colors.grey),
@@ -437,6 +439,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
                       SizedBox(height: 10.px),
                       // 绑定帐号
                       Container(
+                        height: 32.px,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,

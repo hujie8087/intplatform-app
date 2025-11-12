@@ -23,7 +23,7 @@ class MyGoodDeedsPage extends StatefulWidget {
 class _MyGoodDeedsPageState extends State<MyGoodDeedsPage>
     with TickerProviderStateMixin {
   AnimationController? animationController;
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
   int _page = 1;
   List<GoodDeedModel> _list = [];
   int _total = 0;
@@ -48,10 +48,10 @@ class _MyGoodDeedsPageState extends State<MyGoodDeedsPage>
 
   // 获取用户信息
   void getUserInfo() async {
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     if (userInfoData != null) {
       setState(() {
-        userInfo = UserInfoModel.fromJson(userInfoData);
+        userInfo = ThirdUserInfoModel.fromJson(userInfoData);
         getDeedsList(true);
       });
     }
@@ -67,7 +67,7 @@ class _MyGoodDeedsPageState extends State<MyGoodDeedsPage>
       Map<String, dynamic> params = {
         'pageNum': _page,
         'pageSize': 10,
-        'createBy': userInfo?.user?.userName,
+        'createBy': userInfo?.account,
       };
 
       // 添加搜索关键词

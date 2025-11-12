@@ -59,7 +59,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         img { max-width: 100%; height: auto; }
-        body { font-family: sans-serif; margin: 0; padding: 0; }
+        body { font-family: sans-serif; margin: 0; padding: 0; font-family: 'PingFang SC';}
+        p { font-size: 12px; font-family: 'PingFang SC'; }
+        h1 { font-size: 16px; font-family: 'PingFang SC'; }
+        h2 { font-size: 14px; font-family: 'PingFang SC'; }
+        h3 { font-size: 12px; font-family: 'PingFang SC'; }
       </style>
     <script>
       function setupImageClick() {
@@ -74,7 +78,6 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     </script>
     </head>
     <body>
-      <iframe src="https://v.xiumi.us/stage/v5/7E5i1/650622255" style="width:100%;height:100vh;border:none;"></iframe>
       <div style="padding: 16px;">
       ${fixHtmlImageUrls(noticeModel?.noticeContent ?? "<p>No content</p>")}
       </div>
@@ -131,6 +134,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                           data: fixHtmlImageUrls(
                             noticeModel?.noticeContent ?? '',
                           ),
+                          // 字体大小
+                          style: {
+                            "body": Style(fontSize: FontSize(12.px)),
+                            "p": Style(fontSize: FontSize(12.px)),
+                          },
                         ),
                       )
                       : NewsContent(htmlContent: htmlContent),

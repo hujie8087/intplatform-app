@@ -75,7 +75,7 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
   final TextEditingController _phoneController = TextEditingController();
   int? selectedPickupType; // 默认取餐方式
   RestaurantModel? restaurantDetail;
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
   RepairDataModel model = RepairDataModel();
   bool _isLoading = false;
 
@@ -87,9 +87,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
         setState(() {});
       },
     );
-    var user = await SpUtils.getModel('userInfo');
-    userInfo = UserInfoModel.fromJson(user);
-    _phoneController.text = userInfo?.user?.phonenumber ?? '';
+    var user = await SpUtils.getModel('thirdUserInfo');
+    userInfo = ThirdUserInfoModel.fromJson(user);
+    _phoneController.text = userInfo?.tel ?? '';
     model.getMyAddressList(1, 10000);
     _getDeliveryTime();
     _getDeliveryFee();
@@ -647,7 +647,7 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                       ),
                       SizedBox(width: 8.px),
                       Text(
-                        userInfo?.user?.userName ??
+                        userInfo?.account ??
                             S
                                 .of(context)
                                 .pleaseFillIn(S.of(context).employeeNumber),
@@ -668,7 +668,7 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                       ),
                       SizedBox(width: 6.px),
                       Text(
-                        userInfo?.user?.nickName ??
+                        userInfo?.name ??
                             S.of(context).pleaseFillIn(S.of(context).name),
                         style: TextStyle(
                           fontSize: 12.px,
@@ -1061,9 +1061,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
       content: S.of(context).confirmSubmitContent,
       confirmClick: () {
         Map<String, dynamic> parameters = {
-          'name': userInfo?.user?.nickName,
+          'name': userInfo?.name,
           'tel': _phoneController.text,
-          'nick': userInfo?.user?.userName,
+          'nick': userInfo?.account,
           'canteenId': restaurantDetail?.id,
           'canteenName': restaurantDetail?.name,
           'totalPrice': widget.totalPrice,

@@ -251,7 +251,7 @@ class _MealDeliveryIndexPageState extends State<MealDeliveryIndexPage>
                         bottom: 15.px,
                       ),
                       width: double.infinity,
-                      height: 110.px,
+                      height: 120.px,
                       margin: EdgeInsets.symmetric(
                         vertical: 50.px,
                         horizontal: 30.px,

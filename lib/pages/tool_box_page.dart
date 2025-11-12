@@ -246,7 +246,8 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
                     if (article.status == 1) {
                       return false;
                     } else if (article.permissions != null) {
-                      return permission!.contains(article.permissions);
+                      return permission!.contains('*:*:*') ||
+                          permission!.contains(article.permissions);
                     }
                     return true;
                   }) // 过滤 `iconArticles`
@@ -335,16 +336,18 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
             : null;
     if (userInfoData != null && token != '') {
       permission = userInfoData?.permissions;
-      if (permission != null &&
-          permission!.contains('commonality:repair:unfinishedCountApp')) {
-        getRepairUnfinishedCount();
+      if (permission != null) {
+        if (permission!.contains('*:*:*') ||
+            permission!.contains('commonality:repair:unfinishedCountApp')) {
+          getRepairUnfinishedCount();
+        }
+        if (permission!.contains('*:*:*') ||
+            permission!.contains('commonality:repair:listApp')) {
+          getMyRepairUnreadCount();
+        }
       }
       if (appMenuList.isEmpty) {
         await getAppMenu();
-      }
-      if (permission != null &&
-          permission!.contains('commonality:repair:listApp')) {
-        getMyRepairUnreadCount();
       }
     } else {
       if (appMenuList.isEmpty) {
@@ -443,13 +446,15 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     // 当从其他页面返回时触发
     print("页面重新进入，触发请求...");
     if (permission != null &&
-        permission!.contains('commonality:repair:unfinishedCountApp')) {
+        (permission!.contains('*:*:*') ||
+            permission!.contains('commonality:repair:unfinishedCountApp'))) {
       getRepairUnfinishedCount();
     }
     if (token != '' &&
         token.isNotEmpty &&
         permission != null &&
-        permission!.contains('commonality:repair:listApp')) {
+        (permission!.contains('*:*:*') ||
+            permission!.contains('commonality:repair:listApp'))) {
       getMyRepairUnreadCount();
     }
   }

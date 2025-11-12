@@ -35,25 +35,25 @@ class _CoupleRoomPageState extends State<CoupleRoomPage> {
 
   // 当前登录用户
   CoupleStaffListModel? currentUser;
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
 
   Future<void> _fetchData() async {
     // 模拟异步数据获取
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     // 更新状态
     setState(() {
       if (userInfoData != null) {
-        userInfo = UserInfoModel.fromJson(userInfoData);
-        _fetchCurrentUser(userInfo?.user?.userName ?? '');
+        userInfo = ThirdUserInfoModel.fromJson(userInfoData);
+        _fetchCurrentUser(userInfo?.account ?? '');
       }
     });
   }
 
   Future<void> _fetchCurrentUser(String userName) async {
-    var userInfoData = await SpUtils.getModel('userInfo');
-    userInfo = UserInfoModel.fromJson(userInfoData);
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
+    userInfo = ThirdUserInfoModel.fromJson(userInfoData);
     if (userInfoData != null) {
-      userName = userInfo?.user?.userName ?? '';
+      userName = userInfo?.account ?? '';
     }
 
     DataUtils.getCoupleStaffList(

@@ -34,8 +34,13 @@ class DataUtils {
   }
 
   // 刷新token
-  static void updateToken<T>({Success? success, Fail? fail}) {
-    HttpUtils.post(APIs.updateToken, null, success: success, fail: fail);
+  static void updateToken<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.put(
+      APIs.updateToken + '?refreshToken=${parameters['refreshToken']}',
+      parameters,
+      success: success,
+      fail: fail,
+    );
   }
 
   static void logout<T>({Success? success, Fail? fail}) {
@@ -45,6 +50,21 @@ class DataUtils {
   // 获取用户信息
   static void getUserInfo<T>({Success? success, Fail? fail}) {
     HttpUtils.get(APIs.getUserInfo, null, success: success, fail: fail);
+  }
+
+  // 获取第三方用户信息
+  static void getThirdUserInfo<T>({Success? success, Fail? fail}) {
+    HttpUtils.get(APIs.getThirdUserInfo, null, success: success, fail: fail);
+  }
+
+  // 登录成功回调
+  static void putLoginUser<T>(parameters, {Success? success, Fail? fail}) {
+    return HttpUtils.post(
+      APIs.putLoginUser,
+      parameters,
+      success: success,
+      fail: fail,
+    );
   }
 
   // 获取用户消费信息
@@ -59,7 +79,7 @@ class DataUtils {
 
   // 编辑用户信息
   static void editUserInfo(parameters, {Success? success, Fail? fail}) {
-    HttpUtils.post(APIs.editUser, parameters, success: success, fail: fail);
+    HttpUtils.put(APIs.editUser, parameters, success: success, fail: fail);
   }
 
   // 用户修改密码
@@ -570,6 +590,16 @@ class DataUtils {
     );
   }
 
+  // 修改保洁订单
+  static void editCleaningOrder(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.put(
+      '/maintenance/clean/order',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
   // 提交隐患报告
   static void submitHazardReport(parameters, {Success? success, Fail? fail}) {
     HttpUtils.post(
@@ -596,12 +626,12 @@ class DataUtils {
 
   // 解绑报餐送餐帐号
   static void revokeMealDeliveryAccount(
-    userId, {
+    username, {
     Success? success,
     Fail? fail,
   }) {
     HttpUtils.put(
-      '/system/user/revokeUserAuthorizeWithMeal?userId=$userId',
+      '/system/user/revokeUserAuthorizeWithMeal?username=$username',
       null,
       success: success,
       fail: fail,

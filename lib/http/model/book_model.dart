@@ -14,7 +14,7 @@ class BookModel {
   String? publisher;
   String? publicationDate;
   String? edition;
-  String? size;
+  int? size;
   double? discountedPrice;
   double? originalPrice;
   String? museumDate;
@@ -71,7 +71,7 @@ class BookModel {
     publisher = json['publisher'];
     publicationDate = json['publicationDate'];
     edition = json['edition'];
-    size = json['size'];
+    size = json['size'] ?? 0;
     discountedPrice = json['discountedPrice'];
     originalPrice = json['originalPrice'];
     museumDate = json['museumDate'];

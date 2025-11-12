@@ -23,6 +23,7 @@ class _BindAccountPageState extends State<BindAccountPage> {
   final List<ThirdPartySystem> _systems = [];
   bool _isLoading = true;
   UserInfoModel? userInfo;
+  ThirdUserInfoModel? thirdUserInfo;
 
   @override
   void initState() {
@@ -37,11 +38,15 @@ class _BindAccountPageState extends State<BindAccountPage> {
     try {
       // 模拟异步数据获取
       var userInfoData = await SpUtils.getModel('userInfo');
+      var thirdUserInfoData = await SpUtils.getModel('thirdUserInfo');
       // 更新状态
       setState(() {
         if (userInfoData != null) {
           userInfo = UserInfoModel.fromJson(userInfoData);
           _getSystems(userInfo!);
+        }
+        if (thirdUserInfoData != null) {
+          thirdUserInfo = ThirdUserInfoModel.fromJson(thirdUserInfoData);
         }
         _isLoading = false;
       });
@@ -360,31 +365,32 @@ class _BindAccountPageState extends State<BindAccountPage> {
     final completer = Completer<bool>();
     DataUtils.bindMealDeliveryAccount(
       {
-        'userId': userInfo!.user?.userId,
-        'username': account,
+        'userId': thirdUserInfo?.id,
+        'username': thirdUserInfo?.account,
+        'mealName': account,
         'password': password,
       },
       success: (data) {
         ProgressHUD.showSuccess(S.of(context).bindSuccess);
-        DataUtils.getUserInfo(
-          success: (res) async {
-            UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
-            await SpUtils.saveModel('userInfo', userInfo);
-            SpUtils.saveString(
-              Constants.SP_USER_NAME,
-              userInfo.user?.nickName ?? '',
+        DataUtils.putLoginUser(
+          {'username': thirdUserInfo?.account, 'password': ''},
+          success: (res) {
+            DataUtils.getUserInfo(
+              success: (res) async {
+                UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
+                await SpUtils.saveModel('userInfo', userInfo);
+                await SpUtils.saveModel(
+                  Constants.SP_USER_PERMISSION,
+                  userInfo.permissions ?? [],
+                );
+                completer.complete(true);
+              },
+              fail: (code, msg) {
+                completer.complete(false);
+              },
             );
-            SpUtils.saveString(
-              Constants.SP_USER_DEPT,
-              userInfo.user?.dept?.deptName ?? '',
-            );
-            setState(() {
-              _getSystems(userInfo);
-              completer.complete(true);
-            });
           },
           fail: (code, msg) {
-            ProgressHUD.showError(msg);
             completer.complete(false);
           },
         );
@@ -397,7 +403,7 @@ class _BindAccountPageState extends State<BindAccountPage> {
     final completer = Completer<bool>();
     // 模拟解绑操作
     DataUtils.revokeMealDeliveryAccount(
-      userInfo!.user?.userId,
+      thirdUserInfo?.account,
       success: (data) {
         ProgressHUD.showSuccess(S.of(context).unbindSuccess);
         DataUtils.getUserInfo(

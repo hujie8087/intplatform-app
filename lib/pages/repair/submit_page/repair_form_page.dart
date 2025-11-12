@@ -146,7 +146,7 @@ class _RepairFormPage extends State<RepairFormPage>
     animationController!.forward();
     // 获取用户地址列表数据
     model.getMyAddressList(1, 10000);
-    sendMessage();
+    // sendMessage();
   }
 
   // 第一个页面
@@ -450,6 +450,7 @@ class _RepairFormPage extends State<RepairFormPage>
                                               ) {
                                                 ProgressHUD.hide();
                                                 if (res.success) {
+                                                  sendMessage();
                                                   showDialog(
                                                     barrierDismissible: false,
                                                     context: context,

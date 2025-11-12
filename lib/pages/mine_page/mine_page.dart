@@ -14,7 +14,9 @@ import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/data/shopping_utils.dart';
 import 'package:logistics_app/http/model/app_check_update_model.dart';
+import 'package:logistics_app/http/model/card_info_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
@@ -50,9 +52,10 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
   Animation<double>? offsetAnimation;
   String version = '';
   String localeName = '中文';
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
   AnimationController? animationController;
   List<Widget> listViews = <Widget>[];
+  CardInfoModel? cardInfo;
 
   @override
   void initState() {
@@ -75,7 +78,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
 
   Future<void> _fetchData() async {
     // 模拟异步数据获取
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     version = await DeviceUtils.version();
     var languageCode = await SpUtils.getString('locale');
     // 更新状态
@@ -88,9 +91,25 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
         localeName = '中文';
       }
       if (userInfoData != null) {
-        userInfo = UserInfoModel.fromJson(userInfoData);
+        userInfo = ThirdUserInfoModel.fromJson(userInfoData);
+        _getUserConsumeInfo(userInfo?.account ?? '');
       }
     });
+  }
+
+  // 获取用户消费卡信息
+  Future _getUserConsumeInfo(String userName) async {
+    ShoppingUtils.getCardInfo(
+      {'uniqueId': userInfo?.account},
+      success: (data) {
+        setState(() {
+          cardInfo = CardInfoModel.fromJson(data['data']);
+        });
+      },
+      fail: (code, msg) {
+        ProgressHUD.showError(msg);
+      },
+    );
   }
 
   Future _changeLocale(value, context) async {
@@ -178,31 +197,39 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
         UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
         //线上版本的code
         Version oldVersion = Version.parse(versionName);
-        Version newVersion = Version.parse(updateModel.versionName);
+        Version newVersion = Version.parse(updateModel.versionName ?? '');
         try {
           //如果当前版本小于线上版本，需要更新
           if (oldVersion == newVersion) {
             SpUtils.saveString(
               Constants.SP_NEW_APP_VERSION,
-              updateModel.versionName,
+              updateModel.versionName ?? '',
             );
           } else {
             SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
           }
           if (oldVersion < newVersion) {
             if (Platform.isAndroid) {
-              // checkUpdateFlutterXUpdate(updateModel, downloadUrlPre);
-              // downloadApk(downloadUrlPre + updateModel.apkUrl);
               _updateDialog = UpdateDialog.showUpdate(
                 context,
                 title: '${S.current.newVersion} v${newVersion}',
-                updateContent: updateModel.updateLog ?? '',
+                updateContent: updateModel.content ?? '',
                 themeColor: Color.fromRGBO(255, 101, 50, 1),
                 updateButtonText: S.of(context).updateNow,
                 topImage: Image.asset('assets/images/bg_update_top.png'),
                 isForce: true,
                 onUpdate: () async {
-                  downloadApk(downloadUrlPre + updateModel.apkUrl);
+                  if (updateModel.updateType == 3) {
+                    final url = Uri.parse(updateModel.url ?? '');
+                    // 替换为外部的链接
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  } else {
+                    downloadApk(downloadUrlPre + (updateModel.url ?? ''));
+                  }
                 },
                 progress: _progress,
               );
@@ -210,7 +237,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
               UpdateDialog.showUpdate(
                 context,
                 title: S.of(context).updateAppStore,
-                updateContent: updateModel.updateLog ?? '',
+                updateContent: updateModel.content ?? '',
                 themeColor: Color.fromRGBO(255, 101, 50, 1),
                 updateButtonText: S.of(context).updateNow,
                 topImage: Image.asset('assets/images/bg_update_top.png'),
@@ -484,7 +511,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      userInfo?.user?.nickName ?? '',
+                                      userInfo?.name ?? '',
                                       style: TextStyle(
                                         fontSize: 14.px,
                                         fontWeight: FontWeight.bold,
@@ -493,7 +520,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                                     ),
                                     SizedBox(height: 5.px),
                                     Text(
-                                      userInfo?.user?.userName ?? '',
+                                      userInfo?.account ?? '',
                                       style: TextStyle(
                                         fontSize: 14.px,
                                         fontWeight: FontWeight.bold,
@@ -502,7 +529,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                                     ),
                                     SizedBox(height: 5.px),
                                     Text(
-                                      userInfo?.user?.dept?.deptName ?? '',
+                                      userInfo?.formatOrganizeName ?? '',
                                       style: TextStyle(
                                         fontSize: 12.px,
                                         color: Colors.white,
@@ -527,7 +554,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                             ),
                             SizedBox(width: 5.px),
                             Text(
-                              userInfo?.user?.money ?? '',
+                              cardInfo?.balance ?? '',
                               style: TextStyle(
                                 fontSize: 24.px,
                                 letterSpacing: -1,
