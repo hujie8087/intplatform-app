@@ -63,10 +63,10 @@ class _LostFoundListPageState extends State<LostFoundListPage>
 
   // 获取用户信息
   void getUserInfo() async {
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     if (userInfoData != null) {
       setState(() {
-        userName = UserInfoModel.fromJson(userInfoData).user?.userName ?? '';
+        userName = ThirdUserInfoModel.fromJson(userInfoData).account ?? '';
         createBy = userName;
       });
     }

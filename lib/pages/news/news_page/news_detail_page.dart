@@ -59,7 +59,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         img { max-width: 100%; height: auto; }
-        body { font-family: sans-serif; margin: 0; padding: 0; }
+        body { font-family: sans-serif; margin: 0; padding: 0; font-family: 'PingFang SC';}
+        p { font-size: 12px; font-family: 'PingFang SC'; }
+        h1 { font-size: 16px; font-family: 'PingFang SC'; }
+        h2 { font-size: 14px; font-family: 'PingFang SC'; }
+        h3 { font-size: 12px; font-family: 'PingFang SC'; }
       </style>
     <script>
       function setupImageClick() {
@@ -122,22 +126,22 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           SizedBox(height: 10.px),
           if (noticeModel?.noticeContent != null)
             Expanded(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 750),
-                  child:
-                      kIsWeb
-                          ? SingleChildScrollView(
-                            padding: EdgeInsets.symmetric(horizontal: 12.px),
-                            child: Html(
-                              data: fixHtmlImageUrls(
-                                noticeModel?.noticeContent ?? '',
-                              ),
-                            ),
-                          )
-                          : NewsContent(htmlContent: htmlContent),
-                ),
-              ),
+              child:
+                  kIsWeb
+                      ? SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(horizontal: 12.px),
+                        child: Html(
+                          data: fixHtmlImageUrls(
+                            noticeModel?.noticeContent ?? '',
+                          ),
+                          // 字体大小
+                          style: {
+                            "body": Style(fontSize: FontSize(12.px)),
+                            "p": Style(fontSize: FontSize(12.px)),
+                          },
+                        ),
+                      )
+                      : NewsContent(htmlContent: htmlContent),
             ),
         ],
       ),

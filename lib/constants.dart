@@ -16,6 +16,12 @@ class Constants {
   //token缓存
   static const String SP_TOKEN = "SP_TOKEN";
 
+  //refreshToken缓存
+  static const String SP_REFRESH_TOKEN = "SP_REFRESH_TOKEN";
+
+  //登录code缓存
+  static const String SP_LOGIN_CODE = "SP_LOGIN_CODE";
+
   //当前最新的版本号
   static const String SP_NEW_APP_VERSION = "SP_NEW_APP_VERSION";
 
@@ -30,6 +36,9 @@ class Constants {
 
   // 用户设备TOKEN
   static const String SP_DEVICE_TOKEN = 'SP_DEVICE_TOKEN';
+
+  // 用户FCM TOKEN
+  static const String SP_FCM_TOKEN = 'SP_FCM_TOKEN';
 
   // 用户权限标识
   static const String SP_USER_PERMISSION = 'SP_USER_PERMISSION';

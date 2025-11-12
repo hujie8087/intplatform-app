@@ -97,6 +97,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
         userInfo = UserInfoModel.fromJson(userInfoData);
         isBindAccount = userInfo?.mealUser != null;
         if (isBindAccount) {
+          print('role: ${userInfo?.mealUser?.roles?.join(',')}');
           isCanScan =
               userInfo?.mealUser?.roles?.any(
                 (role) => role.toLowerCase().contains("driver"),
@@ -619,7 +620,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
                   bottom: 15.px,
                 ),
                 width: double.infinity,
-                height: 110.px,
+                height: 120.px,
                 margin: EdgeInsets.symmetric(
                   vertical: 50.px,
                   horizontal: 30.px,
@@ -634,7 +635,9 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
                 ),
                 // 未绑定帐号权限，请先绑定帐号
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    SizedBox(height: 10.px),
                     Text(
                       S.of(context).deliveryOrderNotBindAccount,
                       style: TextStyle(fontSize: 14.px, color: Colors.grey),
@@ -642,6 +645,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
                     SizedBox(height: 10.px),
                     // 绑定帐号
                     Container(
+                      height: 32.px,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
@@ -649,7 +653,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
                             borderRadius: BorderRadius.circular(5.px),
                           ),
                           padding: EdgeInsets.symmetric(
-                            horizontal: 10.px,
+                            horizontal: 5.px,
                             vertical: 5.px,
                           ),
                         ),

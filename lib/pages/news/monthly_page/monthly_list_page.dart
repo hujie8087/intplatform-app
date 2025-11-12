@@ -13,6 +13,7 @@ import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:logistics_app/utils/utils.dart';
 
 @AppRoute(path: 'monthly_list_page', name: '纬达贝月刊')
 class MonthlyListPage extends StatefulWidget {
@@ -194,6 +195,28 @@ class MonthlyDataView extends StatelessWidget {
   final int? index;
   final AnimationController? animationController;
   final Animation<double>? animation;
+
+  String formatTime(String? time) {
+    // 根据发布时间,转化为'今天','昨天','前天','一周前',超过一周则显示具体时间
+    if (time == null || time.isEmpty) return '';
+    DateTime dateTime = DateTime.parse(time);
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(dateTime);
+    print('difference: ${difference.inDays}');
+    switch (difference.inDays) {
+      case 0:
+        return '今天';
+      case 1:
+        return '昨天';
+      case 2:
+        return '前天';
+      case < 7:
+        return '一周前';
+      default:
+        return time;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -215,33 +238,34 @@ class MonthlyDataView extends StatelessWidget {
                 child: InkWell(
                   onTap: callBack,
                   child: Ink(
-                    padding: EdgeInsets.all(10.px),
+                    padding: EdgeInsets.all(15.px),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
                       children: [
-                        // 展示图片
-                        listData?.img != null
-                            ? Image.network(
-                              APIs.imageOnlinePrefix + listData!.img!,
-                              width: 100,
-                              height: 100,
-                            )
-                            : SizedBox(),
                         Expanded(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // 时间
+                              Text(
+                                formatTime(listData?.createTime),
+                                style: TextStyle(
+                                  fontSize: 12.px,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              SizedBox(height: 10.px),
                               Row(
                                 children: [
                                   // 文件下载
                                   Text(
                                     listData?.noticeTitle ?? '',
                                     style: TextStyle(
-                                      fontSize: 16.px,
+                                      fontSize: 14.px,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -251,29 +275,9 @@ class MonthlyDataView extends StatelessWidget {
                               SizedBox(height: 10.px),
                               Row(
                                 children: [
-                                  Icon(
-                                    Icons.access_time,
-                                    size: 16.px,
-                                    color: Colors.grey,
-                                  ),
-                                  SizedBox(width: 4.px),
+                                  // 阅读次数
                                   Text(
-                                    listData?.createTime ?? '',
-                                    style: TextStyle(
-                                      fontSize: 12.px,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10.px),
-                                  Icon(
-                                    // 查看次数图标
-                                    Icons.remove_red_eye,
-                                    size: 16.px,
-                                    color: Colors.grey,
-                                  ),
-                                  SizedBox(width: 4.px),
-                                  Text(
-                                    listData?.papeView.toString() ?? '0',
+                                    '阅读: ${listData?.papeView.toString() ?? '0'}',
                                     style: TextStyle(
                                       fontSize: 12.px,
                                       color: Colors.grey,
@@ -284,6 +288,22 @@ class MonthlyDataView extends StatelessWidget {
                             ],
                           ),
                         ),
+                        // 展示图片
+                        if (listData?.img != null)
+                          Container(
+                            width: 60.px,
+                            height: 60.px,
+                            margin: EdgeInsets.only(top: 15.px),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  APIs.imagePrefix + listData!.img!,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

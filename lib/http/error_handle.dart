@@ -24,6 +24,10 @@ class ExceptionHandle {
   static const int receive_timeout_error = 1006;
   static const int cancel_error = 1007;
   static const int unknown_error = 9999;
+  static const int error = 10001;
+  static const int token_expired = 10002; // token过期
+  static const int refresh_token_invalid = 10003;
+  static const int refresh_token_expired = 10004; // refresh token过期
 
   static final Map<int, NetError> _errorMap = <int, NetError>{
     net_error: NetError(net_error, '网络异常，请检查你的网络！'),
@@ -35,6 +39,7 @@ class ExceptionHandle {
     receive_timeout_error: NetError(receive_timeout_error, '响应超时！'),
     cancel_error: NetError(cancel_error, '取消请求'),
     unknown_error: NetError(unknown_error, '未知异常'),
+    error: NetError(error, '服务器异常，请稍后重试！'),
   };
 
   static NetError handleException(dynamic error) {

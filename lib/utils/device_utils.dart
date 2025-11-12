@@ -4,10 +4,15 @@
 ///  description:  设备信息工具类
 
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:uuid/uuid.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DeviceUtils {
+  static final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
+
   static bool get isDesktop => !isWeb && (isWindows || isLinux || isMacOS);
 
   static bool get isMobile => isAndroid || isIOS;
@@ -66,7 +71,36 @@ class DeviceUtils {
     return packageInfo.installerStore;
   }
 
-/* 使用
+  /// 获取设备唯一ID（兼容 Web、Android、iOS）
+  static Future<String> getUniqueId() async {
+    // 如果缓存里已经有，就直接返回
+    final cachedId = await SpUtils.getString('device_unique_id');
+    if (cachedId != null && cachedId.isNotEmpty) {
+      return cachedId;
+    }
+
+    String uniqueId = '';
+
+    if (kIsWeb) {
+      // Web 无法读取设备号，生成并持久化一个 UUID
+      uniqueId = const Uuid().v4();
+    } else if (Platform.isAndroid) {
+      final info = await _deviceInfo.androidInfo;
+      uniqueId = '${info.id}-${info.device}-${info.model}-${info.product}';
+    } else if (Platform.isIOS) {
+      final info = await _deviceInfo.iosInfo;
+      uniqueId = info.identifierForVendor ?? const Uuid().v4();
+    } else {
+      // 其他平台（如 Windows、macOS、Linux）
+      uniqueId = const Uuid().v4();
+    }
+
+    // 缓存保存，确保下次一致
+    await SpUtils.saveString('device_unique_id', uniqueId);
+    return uniqueId;
+  }
+
+  /* 使用
 
   void _getPackageInfo() async {
     PackageInfo packageInfo = await DeviceUtils.getPackageInfo();

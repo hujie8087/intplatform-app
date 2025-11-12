@@ -393,7 +393,7 @@ class Roles {
     flag = json['flag'];
     menuIds = json['menuIds'];
     deptIds = json['deptIds'];
-    permissions = json['permissions'].cast<String>();
+    permissions = (json['permissions'] as List?)?.cast<String>() ?? [];
     admin = json['admin'];
   }
 
@@ -421,6 +421,52 @@ class Roles {
     data['deptIds'] = this.deptIds;
     data['permissions'] = this.permissions;
     data['admin'] = this.admin;
+    return data;
+  }
+}
+
+class ThirdUserInfoModel {
+  int? id;
+  String? account;
+  String? avatar;
+  String? name;
+  int? sex;
+  String? tel;
+  String? postName;
+  String? formatOrganizeName;
+
+  ThirdUserInfoModel({
+    this.id,
+    this.account,
+    this.avatar,
+    this.name,
+    this.sex,
+    this.tel,
+    this.postName,
+    this.formatOrganizeName,
+  });
+
+  ThirdUserInfoModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    account = json['account'];
+    avatar = json['avatar'];
+    name = json['name'];
+    sex = json['sex'];
+    tel = json['tel'];
+    postName = json['postName'];
+    formatOrganizeName = json['formatOrganizeName'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['account'] = this.account;
+    data['avatar'] = this.avatar;
+    data['name'] = this.name;
+    data['sex'] = this.sex;
+    data['tel'] = this.tel;
+    data['postName'] = this.postName;
+    data['formatOrganizeName'] = this.formatOrganizeName;
     return data;
   }
 }

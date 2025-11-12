@@ -3,9 +3,12 @@
 ///  Created by iotjin on 2020/07/07.
 ///  description: 网络请求工具类（dio二次封装）
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 
@@ -17,6 +20,7 @@ import 'log_utils.dart';
 
 typedef Success<T> = Function(T data);
 typedef Fail = Function(int code, String msg);
+bool isRefreshing = false;
 
 // 日志开关
 const bool isOpenLog = true;
@@ -29,6 +33,8 @@ class HttpUtils {
 
     /// 统一添加身份验证请求头
     interceptors.add(AuthInterceptor());
+
+    // 添加公共请求头信息
 
     /// 打印Log(生产模式去除)
     if (!LogUtils.inProduction && isOpenAllLog) {
@@ -191,31 +197,88 @@ class HttpUtils {
       url,
       data: data,
       queryParameters: queryParameters,
-      onSuccess: (result) {
+      onSuccess: (result) async {
         if (!LogUtils.inProduction && isOpenLog) {
           print('---------- HttpUtils response ----------');
-          print(result.toString());
+          print(result.toString() + url);
         }
-        if (result['code'] == ExceptionHandle.success ||
-            result['code'] == '1') {
+        dynamic resultData = result;
+        if (result is String) {
+          resultData = jsonDecode(result);
+        }
+        if (resultData['code'] == ExceptionHandle.success ||
+            resultData['code'].toString() == '1') {
           // ProgressHUD.hide();
           success?.call(result);
-        } else if ((result['code'] == ExceptionHandle.unauthorized)) {
+        }
+        // 未授权或刷新token无效，重新登录
+        else if ((resultData['code'] == ExceptionHandle.unauthorized ||
+            resultData['code'] == ExceptionHandle.refresh_token_invalid)) {
           ProgressHUD.showText('请登录您的帐号');
 
           SpUtils.remove(Constants.SP_USER_NAME);
           SpUtils.remove(Constants.SP_USER_DEPT);
           SpUtils.remove(Constants.SP_TOKEN);
+          SpUtils.remove(Constants.SP_REFRESH_TOKEN);
           RouteUtils.navigateToLogin();
-        } else if ((result['status'] == ExceptionHandle.not_found)) {
-          ProgressHUD.showText('无法连接服务器');
-        } else {
-          // 其他状态，弹出错误提示信息
-          ProgressHUD.showText(result['msg'] ?? '请求失败');
-          fail?.call(result['code'], result['msg'] ?? '请求失败');
+        }
+        // token过期，刷新token
+        else if (resultData['code'] == ExceptionHandle.token_expired) {
+          // 防止多个接口同时 token 过期造成重复刷新
+          if (!isRefreshing) {
+            isRefreshing = true;
+            String refreshToken =
+                await SpUtils.getString(Constants.SP_REFRESH_TOKEN) ?? '';
+
+            DataUtils.updateToken(
+              {'refreshToken': refreshToken},
+              success: (data) async {
+                isRefreshing = false;
+
+                // 假设新 token 存在 data['token']
+                final newToken = data['token'];
+                await SpUtils.saveString(Constants.SP_TOKEN, newToken);
+
+                // 重新执行上一次请求
+                var retryResult = await DioUtils.instance.request(
+                  method,
+                  url,
+                  data: data,
+                  queryParameters: queryParameters,
+                  onSuccess: success,
+                  onError: fail,
+                );
+
+                return retryResult;
+              },
+              fail: (code, msg) {
+                isRefreshing = false;
+
+                // 刷新失败 -> 跳转登录
+                ProgressHUD.showText('登录已过期，请重新登录');
+                SpUtils.remove(Constants.SP_USER_NAME);
+                SpUtils.remove(Constants.SP_TOKEN);
+                SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+                RouteUtils.navigateToLogin();
+              },
+            );
+          } else if ((resultData['status'] == ExceptionHandle.not_found)) {
+            ProgressHUD.showText('无法连接服务器');
+            fail?.call(ExceptionHandle.not_found, '无法连接服务器');
+          } else {
+            // 其他状态，弹出错误提示信息
+            ProgressHUD.showText(
+              resultData['msg'] ?? resultData['message'] ?? '请求失败',
+            );
+            fail?.call(
+              resultData['code'],
+              resultData['msg'] ?? resultData['message'] ?? '请求失败',
+            );
+          }
         }
       },
       onError: (code, msg) {
+        isRefreshing = false;
         if (loadingText != null && loadingText.isNotEmpty) {
           ProgressHUD.hide();
         }

@@ -277,8 +277,8 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
             _buildDetailRow(S.of(context).version, bookModel!.edition!),
 
           // 尺寸
-          if (bookModel?.size != null && bookModel!.size!.isNotEmpty)
-            _buildDetailRow(S.of(context).size, bookModel!.size!),
+          if (bookModel?.size != null && bookModel!.size! > 0)
+            _buildDetailRow(S.of(context).size, bookModel!.size!.toString()),
 
           // 类型编号
           if (bookModel?.typeNo != null && bookModel!.typeNo!.isNotEmpty)

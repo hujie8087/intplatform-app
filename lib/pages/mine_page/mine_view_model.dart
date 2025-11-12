@@ -58,12 +58,14 @@ class MineViewModel with ChangeNotifier {
         updateModel = UpdateInfoData.fromJson(data['data']);
         //线上版本的code
         Version oldVersion = Version.parse(versionName);
-        Version newVersion = Version.parse(updateModel!.versionName);
+        Version newVersion = Version.parse(updateModel!.versionName ?? '');
         try {
           //如果当前版本小于线上版本，需要更新
           if (oldVersion == newVersion) {
             SpUtils.saveString(
-                Constants.SP_NEW_APP_VERSION, updateModel?.versionName ?? '');
+              Constants.SP_NEW_APP_VERSION,
+              updateModel?.versionName ?? '',
+            );
           } else {
             SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
           }

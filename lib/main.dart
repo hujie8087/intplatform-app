@@ -13,6 +13,7 @@ import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/firebase_service.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/error_handle.dart';
 import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/http/log_utils.dart';
 import 'package:logistics_app/route/auto_route_generator.dart';
@@ -115,56 +116,8 @@ void initXUpdate() async {
   if (Platform.isAndroid) {
     WidgetsFlutterBinding.ensureInitialized();
     await FlutterDownloader.initialize(debug: true);
-    // FlutterXUpdate.init(
-    //   ///是否输出日志
-    //   debug: true,
-
-    //   ///是否使用post请求
-    //   isPost: false,
-
-    //   ///post请求是否是上传json
-    //   isPostJson: false,
-
-    //   ///请求响应超时时间
-    //   timeout: 25000,
-
-    //   ///是否开启自动模式
-    //   isWifiOnly: false,
-
-    //   ///是否开启自动模式
-    //   isAutoMode: false,
-
-    //   ///需要设置的公共参数
-    //   supportSilentInstall: false,
-
-    //   ///在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
-    //   enableRetry: false,
-    // ).then((value) {
-    //   FlutterXUpdate.setCustomParseHandler(
-    //     onUpdateParse: (String? json) async {
-    //       print("更新解析: $json");
-    //       return customParseJson(json!);
-    //     },
-    //   );
-    //   print("初始化更新模块成功");
-    // }).catchError((error) {
-    //   print("初始化更新模块出错: $error");
-    // });
   }
 }
-
-// UpdateEntity customParseJson(String json) {
-//   AppInfo appInfo = AppInfo.fromJson(json);
-//   print(appInfo);
-//   return UpdateEntity(
-//       hasUpdate: appInfo.hasUpdate,
-//       isIgnorable: appInfo.isIgnorable,
-//       versionCode: appInfo.versionCode,
-//       versionName: appInfo.versionName,
-//       updateContent: appInfo.updateLog,
-//       downloadUrl: appInfo.apkUrl,
-//       apkSize: appInfo.apkSize);
-// }
 
 /// 设计尺寸
 Size get designSize {
@@ -270,7 +223,27 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Future<void> _checkAndRefreshToken() async {
-    DataUtils.updateToken();
+    String refreshToken = await SpUtils.getString(Constants.SP_REFRESH_TOKEN);
+    DataUtils.updateToken(
+      {'refreshToken': refreshToken},
+      success: (data) async {
+        var token = data['data']['accessToken'];
+        var refreshToken = data['data']['refreshToken'];
+        await SpUtils.saveString(Constants.SP_TOKEN, token ?? "");
+        await SpUtils.saveString(
+          Constants.SP_REFRESH_TOKEN,
+          refreshToken ?? "",
+        );
+      },
+      fail: (code, msg) {
+        print('refreshToken fail: $code, $msg');
+        if (code == ExceptionHandle.refresh_token_invalid) {
+          SpUtils.remove(Constants.SP_TOKEN);
+          SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+          RouteUtils.navigateToLogin();
+        }
+      },
+    );
   }
 
   @override

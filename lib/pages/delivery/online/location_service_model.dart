@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:geolocator/geolocator.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/utils/native_location_service.dart';
 
 class LocationServiceModel {
-  StreamSubscription<Position>? _positionStream;
   final String deliveryNo;
-  late LocationSettings locationSettings;
 
   LocationServiceModel({required this.deliveryNo});
   // 发送位置到服务器
@@ -32,59 +29,40 @@ class LocationServiceModel {
 
   // 启动位置监听
   void startTracking() async {
-    // 检查并请求权限
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        print("用户永久拒绝定位权限");
-        return;
+    if (await NativeLocationService.isLocationAvailable()) {
+      if (await NativeLocationService.requestLocationPermission()) {
+        bool success = await NativeLocationService.startRealTimeLocation();
+        if (success) {
+          print("位置监听启动成功");
+          NativeLocationService.setRealTimeLocationCallback(
+            onUpdate: (location) {
+              print(
+                "位置更新111: ${location['latitude']}, ${location['longitude']}",
+              );
+              _uploadLocation(location['latitude'], location['longitude']);
+            },
+            onProviderEnabled: (provider) {
+              print("定位提供者启用: $provider");
+            },
+            onProviderDisabled: (provider) {
+              print("定位提供者禁用: $provider");
+            },
+            onStatusChanged: (status) {
+              print("定位状态变化: ${status['provider']} -> ${status['status']}");
+            },
+            onStopped: () {
+              print("位置监听停止");
+            },
+          );
+        } else {
+          print("位置监听启动失败");
+        }
       }
     }
-    if (permission == LocationPermission.deniedForever) {
-      print("❌ 用户永久拒绝了定位权限，无法继续");
-      return;
-    }
-    if (Platform.isAndroid) {
-      locationSettings = AndroidSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 30,
-        forceLocationManager: true,
-        intervalDuration: const Duration(seconds: 10),
-      );
-    } else if (Platform.isIOS || Platform.isMacOS) {
-      locationSettings = AppleSettings(
-        accuracy: LocationAccuracy.high,
-        activityType: ActivityType.fitness,
-        distanceFilter: 30,
-        pauseLocationUpdatesAutomatically: true,
-        // Only set to true if our app will be started up in the background.
-        showBackgroundLocationIndicator: false,
-      );
-    } else {
-      locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 30,
-      );
-    }
-    print('123456');
-    // 监听位置变化
-    _positionStream = Geolocator.getPositionStream(
-      locationSettings: locationSettings,
-    ).listen((Position position) {
-      if (position != null) {
-        print("实时位置: ${position.latitude}, ${position.longitude}");
-        _uploadLocation(position.latitude, position.longitude);
-      } else {
-        print("无法获取位置");
-      }
-    });
   }
 
   // 停止监听
   void stopTracking() {
-    _positionStream?.cancel();
-    print("停止上传位置");
-    _positionStream = null;
+    NativeLocationService.stopRealTimeLocation();
   }
 }

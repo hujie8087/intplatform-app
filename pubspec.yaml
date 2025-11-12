@@ -103,6 +103,7 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^28.2.7
   timeline_tile: ^2.0.0
   url_launcher: ^6.2.5
+  uuid: ^4.5.2
   video_player: ^2.8.6
   web: ^1.1.1
   web_socket_channel: ^3.0.3

@@ -70,7 +70,7 @@ class FirebaseService {
     try {
       final fCMToken = await _firebaseMessaging.getToken();
       print("fCMToken: $fCMToken");
-      SpUtils.saveString(Constants.SP_DEVICE_TOKEN, fCMToken ?? '');
+      SpUtils.saveString(Constants.SP_FCM_TOKEN, fCMToken ?? '');
     } catch (e) {
       print("获取Firebase Cloud 消息传递令牌失败: $e");
     }

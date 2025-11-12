@@ -56,8 +56,11 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
       <style>
         img { max-width: 100%; height: auto; }
-        body { font-family: sans-serif; padding: 16px; }
-        .notice-content { width: 100%; max-width: 750px; margin: 0 auto; }
+        body { font-family: sans-serif; margin: 0; padding: 0; font-family: 'PingFang SC';}
+        p { font-size: 12px; font-family: 'PingFang SC'; }
+        h1 { font-size: 16px; font-family: 'PingFang SC'; }
+        h2 { font-size: 14px; font-family: 'PingFang SC'; }
+        h3 { font-size: 12px; font-family: 'PingFang SC'; }
       </style>
     <script>
       function setupImageClick() {
@@ -72,9 +75,7 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
     </script>
     </head>
     <body>
-      <div class="notice-content">
       ${fixHtmlImageUrls(noticeDetail?.noticeContent ?? "<p>No content</p>")}
-      </div>
     </body>
   </html>
   ''';
@@ -115,22 +116,21 @@ class _NoticeDetailPageState extends State<NoticeDetailPage> {
           ),
           if (noticeDetail?.noticeContent != null)
             Expanded(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 750),
-                  child:
-                      kIsWeb
-                          ? SingleChildScrollView(
-                            padding: EdgeInsets.symmetric(horizontal: 12.px),
-                            child: Html(
-                              data: fixHtmlImageUrls(
-                                noticeDetail?.noticeContent ?? '',
-                              ),
-                            ),
-                          )
-                          : NewsContent(htmlContent: htmlContent),
-                ),
-              ),
+              child:
+                  kIsWeb
+                      ? SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(horizontal: 12.px),
+                        child: Html(
+                          data: fixHtmlImageUrls(
+                            noticeDetail?.noticeContent ?? '',
+                          ),
+                        ),
+                      )
+                      : Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12.px),
+                        color: Colors.white,
+                        child: NewsContent(htmlContent: htmlContent),
+                      ),
             ),
         ],
       ),

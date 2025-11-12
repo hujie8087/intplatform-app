@@ -37,7 +37,7 @@ class MainActivity : FlutterActivity() {
     private var locationListener: LocationListener? = null
     private var realTimeLocationListener: LocationListener? = null
     private var isRealTimeTracking = false
-    private var realTimeUpdateInterval: Long = 1000 // 默认1秒更新间隔
+    private var realTimeUpdateInterval: Long = 100000 // 默认1秒更新间隔
     private lateinit var nativeLocationService: NativeLocationService
 // 权限请求码
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001
@@ -53,10 +53,10 @@ class MainActivity : FlutterActivity() {
 
         // 初始化主通道
         methodChannel = MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL)
-        
+
         // 初始化定位通道
         locationChannel = MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, LOCATION_CHANNEL)
-        
+
         // 初始化原生定位服务
         nativeLocationService = NativeLocationService(this)
         nativeLocationService.setMethodChannel(locationChannel)

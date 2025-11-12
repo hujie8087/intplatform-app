@@ -36,16 +36,16 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   // 用户信息
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
 
   // 获取用户信息
   void _getUserInfo() async {
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     setState(() {
       if (userInfoData != null) {
-        userInfo = UserInfoModel.fromJson(userInfoData);
-        _reporterController.text = userInfo!.user?.nickName ?? '';
-        _phoneController.text = userInfo!.user?.phonenumber ?? '';
+        userInfo = ThirdUserInfoModel.fromJson(userInfoData);
+        _reporterController.text = userInfo!.name ?? '';
+        _phoneController.text = userInfo!.tel ?? '';
       }
     });
   }

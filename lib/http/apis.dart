@@ -45,10 +45,14 @@ class APIs {
   static const String register = '/auth/register';
 
   /// 登录接口
-  static const String login = '/auth/appLogin';
+  // static const String login = '/auth/appLogin';
+  static const String login =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/sso/home/sso/login';
 
   // 刷新token
-  static const String updateToken = '/auth/refresh';
+  // static const String updateToken = '/auth/refresh';
+  static const String updateToken =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/sso/home/sso/refreshToken';
 
   // 忘记密码
   static const String forgetPassword = '/system/user/resetPwdByCard';
@@ -58,12 +62,20 @@ class APIs {
 
   // 获取用户信息
   static const String getUserInfo = '/system/user/getInfo';
+  // 获取第三方用户信息
+  static const String getThirdUserInfo =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/user/findInfo';
+
+  // 登录成功回调
+  static const String putLoginUser = '/auth/putLoginUser';
 
   // 获取用户消费信息
   static const String getUserConsumeInfo = '/system/user/info/';
 
   // 编辑用户信息
-  static const String editUser = '/system/user/edit';
+  // static const String editUser = '/system/user/edit';
+  static const String editUser =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/user/put';
 
   // 储存用户设备token
   static const String addToken = '/system/user/addToken';
@@ -81,10 +93,14 @@ class APIs {
   static const String getSimpleDict = '/mock/dict';
 
   // 用户修改密码
-  static const String updateUserPwd = '/system/user/profile/updatePwd';
+  // static const String updateUserPwd = '/system/user/profile/updatePwd';
+  static const String updateUserPwd =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/user/putUserPassword';
 
   // 用户第一次修改密码
-  static const String updateUserFirstPwd = '/system/user/firstEdit';
+  // static const String updateUserFirstPwd = '/system/user/firstEdit';
+  static const String updateUserFirstPwd =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/sso/home/sso/resetFirstPassword';
 
   // 获取数据字典
   static const String getDictDataList = '/system/dict/data/type/';
@@ -96,7 +112,9 @@ class APIs {
   static const String getNoticeDetail = '/system/notice';
 
   // 获取APP最新版本
-  static const String getAppLastVersion = '/other/app/getNewApp';
+  // static const String getAppLastVersion = '/other/app/getNewApp';
+  static const String getAppLastVersion =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/portal/home/clientVersion/check';
 
   // 获取区域楼栋最新版本
   static const String getBuildingVersion = '/maintenance/building/version';

@@ -8,6 +8,7 @@ import 'package:logistics_app/http/model/parse_qrcode_model.dart';
 import 'package:logistics_app/http/model/qr_code_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/shopping/payment/qr_scanner_page.dart';
+import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,7 +26,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
   bool _isLoading = false;
   QrCodeModel? _qrCodeData;
 
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
   String? version;
   TextEditingController _passwordController = TextEditingController();
   final List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
@@ -40,12 +41,13 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
     setState(() {
       _isLoading = true;
     });
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
+    var deviceUniqueId = await DeviceUtils.getUniqueId();
     if (userInfoData != null) {
-      userInfo = UserInfoModel.fromJson(userInfoData);
+      userInfo = ThirdUserInfoModel.fromJson(userInfoData);
     }
     ShoppingUtils.getPayQrCode(
-      {'uniqueId': userInfo?.user?.userName},
+      {'uniqueId': userInfo?.account, 'phoneId': deviceUniqueId},
       success: (data) {
         _qrCodeData = QrCodeModel.fromJson(data['data']);
         setState(() {
@@ -171,7 +173,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                     ShoppingUtils.verifyPayPassword(
                       {
                         'oriPassword': password,
-                        'uniqueId': userInfo?.user?.userName,
+                        'uniqueId': userInfo?.account,
                         'pwdType': '1',
                       },
                       success: (msg) {
@@ -184,7 +186,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                               //交易类型 1:充值消费 3:充值 5:消费
                               {
                                 'sign': parseQrCodeData.sign,
-                                'uniqueId': userInfo?.user?.userName,
+                                'uniqueId': userInfo?.account,
                                 'otpType': '5',
                                 'queryType': '2',
                                 'eWalletNum': ' 1',
@@ -263,7 +265,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                     ShoppingUtils.verifyPayPassword(
                       {
                         'oriPassword': password,
-                        'uniqueId': userInfo?.user?.userName,
+                        'uniqueId': userInfo?.account,
                         'pwdType': '1',
                       },
                       success: (data) {
@@ -276,7 +278,7 @@ class _PaymentQRCodePageState extends State<PaymentQRCodePage> {
                               //交易类型 1:充值消费 3:充值 5:消费
                               {
                                 'sign': parseQrCodeData.sign,
-                                'uniqueId': userInfo?.user?.userName,
+                                'uniqueId': userInfo?.account,
                                 'otpType': '5',
                                 'queryType': '2',
                                 'eWalletNum': ' 1',

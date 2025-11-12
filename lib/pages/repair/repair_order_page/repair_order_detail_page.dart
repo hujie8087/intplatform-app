@@ -20,10 +20,8 @@ import 'package:photo_view/photo_view_gallery.dart';
 class RepairOrderDetailPage extends StatefulWidget {
   final RepairViewModel order;
 
-  const RepairOrderDetailPage({
-    Key? key,
-    required this.order,
-  }) : super(key: key);
+  const RepairOrderDetailPage({Key? key, required this.order})
+    : super(key: key);
 
   @override
   _RepairOrderDetailPageState createState() => _RepairOrderDetailPageState();
@@ -36,29 +34,29 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
   int selectedStatus = 1;
   List<RepairTypeModel> repairTypes = [];
   List<String> images = [];
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
 
   // 获取维修类型
   Future<void> _getRepairType() async {
-    var params = {
-      'pageNum': 1,
-      'pageSize': 1000,
-      'status': '0',
-    };
+    var params = {'pageNum': 1, 'pageSize': 1000, 'status': '0'};
 
-    RepairUtils.getRepairType(params, success: (data) {
-      setState(() {
-        repairTypes = (data['rows'] as List)
-            .map((type) => RepairTypeModel.fromJson(type))
-            .toList();
-      });
-    });
+    RepairUtils.getRepairType(
+      params,
+      success: (data) {
+        setState(() {
+          repairTypes =
+              (data['rows'] as List)
+                  .map((type) => RepairTypeModel.fromJson(type))
+                  .toList();
+        });
+      },
+    );
   }
 
   Future<void> _getUserInfo() async {
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     if (userInfoData != null) {
-      userInfo = UserInfoModel.fromJson(userInfoData);
+      userInfo = ThirdUserInfoModel.fromJson(userInfoData);
     }
   }
 
@@ -114,35 +112,37 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
         widget.order.repairTime = selectedRepairTime;
         widget.order.repairNote = _noteController.text;
         widget.order.repairState = selectedStatus;
-        widget.order.engineerId = userInfo?.user?.userId;
-        widget.order.engineer = userInfo?.user?.nickName;
+        widget.order.engineerId = userInfo?.id;
+        widget.order.engineer = userInfo?.name;
         RepairUtils.editRepairDetail(
           widget.order,
           success: (data) {
             ProgressHUD.showSuccess(S.of(context).submitSuccess);
-            DataUtils.getUserInfoByUsername(widget.order.createBy,
-                success: (data) {
-              if (data['msg'] != null) {
-                DataUtils.sendOneMessage(
-                  {
-                    'title': S.of(context).repairOrderProcessed,
-                    'body':
-                        widget.order.repairArea! + "/" + widget.order.roomNo!,
-                    'type': "1",
-                    'payload': '',
-                    'userName': widget.order.createBy,
-                    'equipmentToken': data['msg']
-                  },
-                  success: (data) {
-                    // ProgressHUD.showSuccess('提交成功');
-                    Navigator.pop(context, true);
-                  },
-                  fail: (code, msg) {
-                    ProgressHUD.showError(msg);
-                  },
-                );
-              }
-            });
+            DataUtils.getUserInfoByUsername(
+              widget.order.createBy,
+              success: (data) {
+                if (data['msg'] != null) {
+                  DataUtils.sendOneMessage(
+                    {
+                      'title': S.of(context).repairOrderProcessed,
+                      'body':
+                          widget.order.repairArea! + "/" + widget.order.roomNo!,
+                      'type': "1",
+                      'payload': '',
+                      'userName': widget.order.createBy,
+                      'equipmentToken': data['msg'],
+                    },
+                    success: (data) {
+                      // ProgressHUD.showSuccess('提交成功');
+                      Navigator.pop(context, true);
+                    },
+                    fail: (code, msg) {
+                      ProgressHUD.showError(msg);
+                    },
+                  );
+                }
+              },
+            );
           },
           fail: (code, msg) {
             ProgressHUD.showError(msg);
@@ -156,8 +156,10 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.of(context).repairOrderProcess,
-            style: TextStyle(fontSize: 16.px)),
+        title: Text(
+          S.of(context).repairOrderProcess,
+          style: TextStyle(fontSize: 16.px),
+        ),
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -167,156 +169,186 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
           children: [
             // 订单基本信息卡片
             Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.px),
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.px),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 8.px,
+                  right: 8.px,
+                  top: 8.px,
+                  bottom: 4.px,
                 ),
-                child: Padding(
-                    padding: EdgeInsets.only(
-                      left: 8.px,
-                      right: 8.px,
-                      top: 8.px,
-                      bottom: 4.px,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildInfoRow(
+                      label: S.of(context).orderNo,
+                      value: widget.order.repairNo,
+                      icon: Icon(
+                        Icons.info_outline,
+                        size: 16.px,
+                        color: Colors.grey,
+                      ),
                     ),
-                    child: Column(
+                    _buildInfoRow(
+                      label: S.of(context).repairRoomNo,
+                      value: widget.order.roomNo,
+                      icon: Icon(Icons.home, size: 16.px, color: Colors.grey),
+                    ),
+                    _buildInfoRow(
+                      label: S.of(context).repairArea,
+                      value: widget.order.repairArea,
+                      icon: Icon(
+                        Icons.location_on,
+                        size: 16.px,
+                        color: Colors.grey,
+                      ),
+                    ),
+
+                    _buildInfoRow(
+                      label: S.of(context).repairPerson,
+                      value: widget.order.repairPerson,
+                      icon: Icon(Icons.person, size: 16.px, color: Colors.grey),
+                    ),
+                    _buildInfoRow(
+                      label: S.of(context).repairTel,
+                      value: widget.order.tel,
+                      icon: Icon(Icons.phone, size: 16.px, color: Colors.grey),
+                    ),
+                    _buildInfoRow(
+                      label: S.of(context).createTime,
+                      value: widget.order.createTime,
+                      icon: Icon(
+                        Icons.access_time,
+                        size: 16.px,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    _buildInfoRow(
+                      label: S.of(context).repairMessage,
+                      value: widget.order.repairMessage,
+                      icon: Icon(
+                        Icons.message,
+                        size: 16.px,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    if (widget.order.repairState == 2)
+                      _buildInfoRow(
+                        label: S.of(context).repairFeedback,
+                        value: widget.order.repairMessage,
+                        icon: Icon(
+                          Icons.feedback,
+                          size: 16.px,
+                          color: Colors.grey,
+                        ),
+                        labelColor: secondaryColor,
+                      ),
+
+                    // 报修图片
+                    if (images.length > 0)
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildInfoRow(
-                              label: S.of(context).orderNo,
-                              value: widget.order.repairNo,
-                              icon: Icon(Icons.info_outline,
-                                  size: 16.px, color: Colors.grey)),
-                          _buildInfoRow(
-                              label: S.of(context).repairRoomNo,
-                              value: widget.order.roomNo,
-                              icon: Icon(Icons.home,
-                                  size: 16.px, color: Colors.grey)),
-                          _buildInfoRow(
-                              label: S.of(context).repairArea,
-                              value: widget.order.repairArea,
-                              icon: Icon(Icons.location_on,
-                                  size: 16.px, color: Colors.grey)),
-
-                          _buildInfoRow(
-                              label: S.of(context).repairPerson,
-                              value: widget.order.repairPerson,
-                              icon: Icon(Icons.person,
-                                  size: 16.px, color: Colors.grey)),
-                          _buildInfoRow(
-                              label: S.of(context).repairTel,
-                              value: widget.order.tel,
-                              icon: Icon(Icons.phone,
-                                  size: 16.px, color: Colors.grey)),
-                          _buildInfoRow(
-                              label: S.of(context).createTime,
-                              value: widget.order.createTime,
-                              icon: Icon(Icons.access_time,
-                                  size: 16.px, color: Colors.grey)),
-                          _buildInfoRow(
-                              label: S.of(context).repairMessage,
-                              value: widget.order.repairMessage,
-                              icon: Icon(Icons.message,
-                                  size: 16.px, color: Colors.grey)),
-                          if (widget.order.repairState == 2)
-                            _buildInfoRow(
-                                label: S.of(context).repairFeedback,
-                                value: widget.order.repairMessage,
-                                icon: Icon(Icons.feedback,
-                                    size: 16.px, color: Colors.grey),
-                                labelColor: secondaryColor),
-
-                          // 报修图片
-                          if (images.length > 0)
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.image,
-                                        size: 16.px, color: Colors.grey),
-                                    SizedBox(height: 4.px),
-                                    Text(
-                                      S.of(context).repairImage,
-                                      style: TextStyle(
-                                        fontSize: 12.px,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.image,
+                                size: 16.px,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 4.px),
+                              Text(
+                                S.of(context).repairImage,
+                                style: TextStyle(
+                                  fontSize: 12.px,
+                                  color: Colors.grey[600],
                                 ),
-                                SizedBox(
-                                  height: 4.px,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4.px),
+                          GridView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3, // 每行显示3张图片
+                                  crossAxisSpacing: 8.px,
+                                  mainAxisSpacing: 8.px,
                                 ),
-                                GridView.builder(
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3, // 每行显示3张图片
-                                    crossAxisSpacing: 8.px,
-                                    mainAxisSpacing: 8.px,
-                                  ),
-                                  itemCount: images.length,
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PhotoViewGallery(
-                                                      pageOptions: images
-                                                          .map(
-                                                            (item) =>
-                                                                PhotoViewGalleryPageOptions(
-                                                              imageProvider:
-                                                                  NetworkImage(
-                                                                      APIs.imagePrefix +
-                                                                          item),
-                                                              initialScale:
-                                                                  PhotoViewComputedScale
-                                                                      .contained,
-                                                              heroAttributes:
-                                                                  PhotoViewHeroAttributes(
-                                                                tag:
-                                                                    'galleryTag_$index',
-                                                              ),
-                                                              onTapUp: (context,
-                                                                      details,
-                                                                      controllerValue) =>
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop(),
+                            itemCount: images.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => PhotoViewGallery(
+                                            pageOptions:
+                                                images
+                                                    .map(
+                                                      (
+                                                        item,
+                                                      ) => PhotoViewGalleryPageOptions(
+                                                        imageProvider:
+                                                            NetworkImage(
+                                                              APIs.imagePrefix +
+                                                                  item,
                                                             ),
-                                                          )
-                                                          .toList(),
-                                                      backgroundDecoration:
-                                                          BoxDecoration(
-                                                        color: Colors.white,
+                                                        initialScale:
+                                                            PhotoViewComputedScale
+                                                                .contained,
+                                                        heroAttributes:
+                                                            PhotoViewHeroAttributes(
+                                                              tag:
+                                                                  'galleryTag_$index',
+                                                            ),
+                                                        onTapUp:
+                                                            (
+                                                              context,
+                                                              details,
+                                                              controllerValue,
+                                                            ) =>
+                                                                Navigator.of(
+                                                                  context,
+                                                                ).pop(),
                                                       ),
-                                                      pageController:
-                                                          PageController(
-                                                              initialPage:
-                                                                  index),
-                                                    )));
-                                      },
-                                      child: Container(
-                                        clipBehavior: Clip.antiAlias,
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Image.network(
-                                          APIs.imagePrefix + images[index],
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                                    )
+                                                    .toList(),
+                                            backgroundDecoration: BoxDecoration(
+                                              color: Colors.white,
+                                            ),
+                                            pageController: PageController(
+                                              initialPage: index,
+                                            ),
+                                          ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Image.network(
+                                    APIs.imagePrefix + images[index],
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ],
-                            )
-                        ]))),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ),
 
             SizedBox(height: 20.px),
 
@@ -344,51 +376,57 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                         SizedBox(width: 8.px),
                         Expanded(
                           child: GestureDetector(
-                              onTap: () {
-                                Picker.showModalSheet(context,
-                                    child: Container(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          for (final type in repairTypes)
-                                            Column(
-                                              children: [
-                                                InkWell(
-                                                  onTap: () {
-                                                    Navigator.pop(
-                                                        context, type);
-                                                  },
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    height: 44.px,
-                                                    child:
-                                                        Text(type.name ?? ''),
-                                                  ),
-                                                ),
-                                                DividerWidget()
-                                              ],
+                            onTap: () {
+                              Picker.showModalSheet(
+                                context,
+                                child: Container(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      for (final type in repairTypes)
+                                        Column(
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.pop(context, type);
+                                              },
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                height: 44.px,
+                                                child: Text(type.name ?? ''),
+                                              ),
                                             ),
-                                        ],
-                                      ),
-                                    )).then((value) {
-                                  if (value != null) {
-                                    print(value);
-                                    setState(() {
-                                      selectedRepairType = value;
-                                    });
-                                  }
-                                });
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(selectedRepairType?.name ??
-                                      S.of(context).selectRepairType),
-                                  Icon(Icons.chevron_right,
-                                      size: 16.px, color: Colors.grey),
-                                ],
-                              )),
-                        )
+                                            DividerWidget(),
+                                          ],
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ).then((value) {
+                                if (value != null) {
+                                  print(value);
+                                  setState(() {
+                                    selectedRepairType = value;
+                                  });
+                                }
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  selectedRepairType?.name ??
+                                      S.of(context).selectRepairType,
+                                ),
+                                Icon(
+                                  Icons.chevron_right,
+                                  size: 16.px,
+                                  color: Colors.grey,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(height: 16.px),
@@ -430,14 +468,18 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                                     S.of(context).selectRepairTime,
                                 style: TextStyle(
                                   fontSize: 12.px,
-                                  color: selectedRepairTime != null
-                                      ? Colors.black87
-                                      : Colors.grey[600],
+                                  color:
+                                      selectedRepairTime != null
+                                          ? Colors.black87
+                                          : Colors.grey[600],
                                 ),
                               ),
                             ),
-                            Icon(Icons.calendar_today,
-                                size: 16.px, color: Colors.grey[600]),
+                            Icon(
+                              Icons.calendar_today,
+                              size: 16.px,
+                              color: Colors.grey[600],
+                            ),
                           ],
                         ),
                       ),
@@ -457,36 +499,40 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                     Wrap(
                       spacing: 8.px,
                       runSpacing: 8.px,
-                      children: statusOptions.map((status) {
-                        bool isSelected = selectedStatus == status['value'];
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedStatus = status['value'];
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.px,
-                              vertical: 6.px,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  isSelected ? primaryColor : Colors.grey[100],
-                              borderRadius: BorderRadius.circular(20.px),
-                            ),
-                            child: Text(
-                              status['label'],
-                              style: TextStyle(
-                                fontSize: 12.px,
-                                color: isSelected
-                                    ? Colors.white
-                                    : Colors.grey[600],
+                      children:
+                          statusOptions.map((status) {
+                            bool isSelected = selectedStatus == status['value'];
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedStatus = status['value'];
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.px,
+                                  vertical: 6.px,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isSelected
+                                          ? primaryColor
+                                          : Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(20.px),
+                                ),
+                                child: Text(
+                                  status['label'],
+                                  style: TextStyle(
+                                    fontSize: 12.px,
+                                    color:
+                                        isSelected
+                                            ? Colors.white
+                                            : Colors.grey[600],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                            );
+                          }).toList(),
                     ),
 
                     SizedBox(height: 16.px),
@@ -505,8 +551,10 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
                       maxLines: 4,
                       decoration: InputDecoration(
                         hintText: S.of(context).repairDescription,
-                        hintStyle:
-                            TextStyle(fontSize: 12.px, color: Colors.grey[400]),
+                        hintStyle: TextStyle(
+                          fontSize: 12.px,
+                          color: Colors.grey[400],
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.px),
                           borderSide: BorderSide(color: Colors.grey[300]!),
@@ -543,10 +591,7 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
             ),
             child: Text(
               S.of(context).submit,
-              style: TextStyle(
-                fontSize: 16.px,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 16.px, fontWeight: FontWeight.w500),
             ),
           ),
         ),
@@ -566,13 +611,7 @@ class _RepairOrderDetailPageState extends State<RepairOrderDetailPage> {
         children: [
           icon,
           SizedBox(width: 8.px),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.px,
-              color: labelColor,
-            ),
-          ),
+          Text(label, style: TextStyle(fontSize: 12.px, color: labelColor)),
           SizedBox(width: 8.px),
           Expanded(
             child: Text(

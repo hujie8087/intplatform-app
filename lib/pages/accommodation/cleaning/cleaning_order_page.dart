@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
@@ -70,6 +71,10 @@ class _CleaningOrderPageState extends State<CleaningOrderPage> {
       case '2':
         return Colors.orange;
       case '3':
+        return Colors.red;
+      case '4':
+        return Colors.deepOrange;
+      case '5':
         return Colors.red;
       default:
         return Colors.grey;
@@ -244,7 +249,7 @@ class _CleaningOrderPageState extends State<CleaningOrderPage> {
                               itemCount: model.cleaningOrderList.length,
                               itemBuilder: (context, index) {
                                 final order = model.cleaningOrderList[index];
-                                return _buildOrderCard(order);
+                                return _buildOrderCard(order, model);
                               },
                             ),
                           ),
@@ -258,7 +263,7 @@ class _CleaningOrderPageState extends State<CleaningOrderPage> {
   }
 
   // 订单卡片
-  Widget _buildOrderCard(CleaningViewModel order) {
+  Widget _buildOrderCard(CleaningViewModel order, CleaningDataModel model) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.px),
       decoration: BoxDecoration(
@@ -474,7 +479,7 @@ class _CleaningOrderPageState extends State<CleaningOrderPage> {
               ],
             ),
 
-            SizedBox(height: 6.px),
+            SizedBox(height: 10.px),
 
             // 操作按钮
             Row(
@@ -503,6 +508,39 @@ class _CleaningOrderPageState extends State<CleaningOrderPage> {
                     ),
                   ),
                 SizedBox(width: 8.px),
+                // 取消订单
+                if (order.orderStatus == 0) // 待接单
+                  Container(
+                    height: 28.px,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        DialogFactory.instance.showFieldDialog(
+                          context: context,
+                          title: S.of(context).inputMessage(S.of(context).name),
+                          confirmClick: () async {
+                            final result = await model.cancelCleaningOrder(
+                              order.id,
+                            );
+                            if (result) {
+                              ProgressHUD.showSuccess('取消订单成功');
+                              model.getCleaningOrderList(true);
+                            }
+                          },
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: secondaryColor,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(horizontal: 12.px),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.px),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text('取消订单', style: TextStyle(fontSize: 11.px)),
+                    ),
+                  ),
+                SizedBox(width: 10.px),
                 Container(
                   height: 28.px,
                   child: ElevatedButton(

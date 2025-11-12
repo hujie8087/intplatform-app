@@ -22,8 +22,8 @@ class _AvatarWidgetState extends State<AvatarWidget> {
 
   Future<void> _fetchData() async {
     // 模拟异步数据获取
-    var userInfo = await SpUtils.getModel('userInfo');
-    avatar = userInfo != null ? userInfo['user']['avatar'] : '';
+    var userInfo = await SpUtils.getModel('thirdUserInfo');
+    avatar = userInfo != null ? userInfo['avatar'] ?? '' : '';
     setState(() {});
   }
 
@@ -31,17 +31,18 @@ class _AvatarWidgetState extends State<AvatarWidget> {
   Widget build(BuildContext context) {
     return avatar.isNotEmpty
         ? Container(
-            width: widget.width,
-            height: widget.width,
-            margin: EdgeInsets.only(right: 10),
-            decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: NetworkImage(APIs.imagePrefix + avatar),
-                  fit: BoxFit.cover,
-                ),
-                color: primaryColor),
-          )
+          width: widget.width,
+          height: widget.width,
+          margin: EdgeInsets.only(right: 10),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              image: NetworkImage(APIs.imagePrefix + avatar),
+              fit: BoxFit.cover,
+            ),
+            color: primaryColor,
+          ),
+        )
         : Container();
   }
 }

@@ -392,8 +392,22 @@ class HtmlLineLimit extends StatelessWidget {
   final String htmlContent;
 
   String _removeHtmlTags(String htmlString) {
-    final RegExp exp = RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true);
-    return htmlString.replaceAll(exp, '');
+    // 1️⃣ 去除所有 HTML 标签
+    String result = htmlString.replaceAll(RegExp(r'<[^>]*>'), '');
+
+    // 2️⃣ 处理常见 HTML 实体
+    result = result
+        .replaceAll('&nbsp;', ' ') // 空格符
+        .replaceAll('&amp;', '&') // &
+        .replaceAll('&lt;', '<') // <
+        .replaceAll('&gt;', '>') // >
+        .replaceAll('&quot;', '"') // "
+        .replaceAll('&apos;', "'"); // '
+
+    // 3️⃣ 去掉多余的空白字符（连续空格、换行等）
+    result = result.replaceAll(RegExp(r'\s+'), ' ').trim();
+
+    return result;
   }
 
   @override

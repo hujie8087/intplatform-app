@@ -125,18 +125,18 @@ class _LoginFormState extends State<LoginForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Expanded(
-                // 忘记密码
-                child: GestureDetector(
-                  onTap: () {
-                    RouteUtils.push(context, ForgetPasswordPage());
-                  },
-                  child: Text(
-                    S.of(context).forgetPassword,
-                    style: TextStyle(color: primaryColor, fontSize: 12.px),
-                  ),
-                ),
-              ),
+              // Expanded(
+              //   // 忘记密码
+              //   child: GestureDetector(
+              //     onTap: () {
+              //       RouteUtils.push(context, ForgetPasswordPage());
+              //     },
+              //     child: Text(
+              //       S.of(context).forgetPassword,
+              //       style: TextStyle(color: primaryColor, fontSize: 12.px),
+              //     ),
+              //   ),
+              // ),
               // 记住密码
               Text(
                 S.of(context).rememberPassword,
@@ -178,6 +178,11 @@ class _LoginFormState extends State<LoginForm> {
                                       Constants.SP_DEVICE_TOKEN,
                                     ) ??
                                     '';
+                                var fcmToken =
+                                    await SpUtils.getString(
+                                      Constants.SP_FCM_TOKEN,
+                                    ) ??
+                                    '';
                                 if (_isRememberPassword) {
                                   SpUtils.saveString(
                                     Constants.SP_USER_NICKNAME,
@@ -192,9 +197,9 @@ class _LoginFormState extends State<LoginForm> {
                                   SpUtils.remove(Constants.SP_USER_PASSWORD);
                                 }
 
-                                if (token != '') {
+                                if (fcmToken != '') {
                                   DataUtils.setUserToken({
-                                    'mobilePhoneId': token,
+                                    'mobilePhoneId': fcmToken,
                                   });
                                 }
                                 // RouteUtils.push(context, AppHomeScreen());

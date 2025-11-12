@@ -18,7 +18,7 @@ class CardInfoPage extends StatefulWidget {
 class _CardInfoPageState extends State<CardInfoPage> {
   CardInfoModel? cardInfo;
   TextEditingController _passwordController = TextEditingController();
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
   bool isLoading = false;
   final List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
   final List<TextEditingController> controllers = List.generate(
@@ -36,12 +36,12 @@ class _CardInfoPageState extends State<CardInfoPage> {
     setState(() {
       isLoading = true;
     });
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     if (userInfoData != null) {
-      userInfo = UserInfoModel.fromJson(userInfoData);
+      userInfo = ThirdUserInfoModel.fromJson(userInfoData);
     }
     ShoppingUtils.getCardInfo(
-      {'uniqueId': userInfo?.user?.userName},
+      {'uniqueId': userInfo?.account},
       success: (data) {
         cardInfo = CardInfoModel.fromJson(data['data']);
         setState(() {
@@ -248,17 +248,14 @@ class _CardInfoPageState extends State<CardInfoPage> {
                                   ShoppingUtils.verifyPayPassword(
                                     {
                                       'oriPassword': password,
-                                      'uniqueId': userInfo?.user?.userName,
+                                      'uniqueId': userInfo?.account,
                                       'pwdType': '1',
                                     },
                                     success: (data) {
                                       // 挂失
                                       if (cardInfo?.cardStatusNum == '1') {
                                         ShoppingUtils.disableCard(
-                                          {
-                                            'uniqueId':
-                                                userInfo?.user?.userName,
-                                          },
+                                          {'uniqueId': userInfo?.account},
                                           success: (data) {
                                             ProgressHUD.showSuccess(
                                               S.of(context).cardLossSuccess,
@@ -268,10 +265,7 @@ class _CardInfoPageState extends State<CardInfoPage> {
                                         );
                                       } else {
                                         ShoppingUtils.enableCard(
-                                          {
-                                            'uniqueId':
-                                                userInfo?.user?.userName,
-                                          },
+                                          {'uniqueId': userInfo?.account},
                                           success: (data) {
                                             ProgressHUD.showSuccess(
                                               S.of(context).cardLockSuccess,

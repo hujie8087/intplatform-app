@@ -36,7 +36,7 @@ class NativeLocationService {
   }
 
   // 开始实时定位
-  static Future<bool> startRealTimeLocation({int interval = 1000}) async {
+  static Future<bool> startRealTimeLocation({int interval = 10000}) async {
     try {
       // 明确将参数转换为正确的类型
       final arguments = <String, dynamic>{
