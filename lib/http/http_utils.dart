@@ -223,8 +223,7 @@ class HttpUtils {
           RouteUtils.navigateToLogin();
         }
         // token过期，刷新token
-        else if (resultData['code'] == ExceptionHandle.token_expired ||
-            resultData['code'] == ExceptionHandle.forbidden) {
+        else if (resultData['code'] == ExceptionHandle.token_expired) {
           // 防止多个接口同时 token 过期造成重复刷新
           if (!isRefreshing) {
             isRefreshing = true;
