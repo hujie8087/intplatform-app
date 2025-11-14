@@ -44,6 +44,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   void _fetchData() async {
     var res = await SpUtils.getModel('thirdUserInfo');
+    var spName = await SpUtils.getModel('Constants.SP_USER_NAME');
     var code = await SpUtils.getString(Constants.SP_LOGIN_CODE);
     if (code != null && code.isNotEmpty) {
       loginCode = code;
@@ -51,7 +52,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     if (res != null) {
       setState(() {
         userId = res['id'];
-        userName = res['account'];
+        userName = spName;
         nickName = res['name'];
       });
     }

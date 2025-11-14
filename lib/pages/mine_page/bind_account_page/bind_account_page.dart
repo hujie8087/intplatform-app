@@ -412,6 +412,10 @@ class _BindAccountPageState extends State<BindAccountPage> {
             await SpUtils.saveModel('userInfo', userInfo);
             SpUtils.saveString(
               Constants.SP_USER_NAME,
+              userInfo.user?.userName ?? '',
+            );
+            SpUtils.saveString(
+              Constants.SP_USER_NICKNAME,
               userInfo.user?.nickName ?? '',
             );
             SpUtils.saveString(

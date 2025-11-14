@@ -48,6 +48,10 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
         await SpUtils.saveModel('thirdUserInfo', userInfoModel);
         await SpUtils.saveString(
           Constants.SP_USER_NAME,
+          userInfoModel.account ?? '',
+        );
+        await SpUtils.saveString(
+          Constants.SP_USER_NICKNAME,
           userInfoModel.name ?? '',
         );
         await SpUtils.saveString(

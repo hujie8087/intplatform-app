@@ -126,7 +126,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             res['data'],
           );
           await SpUtils.saveModel('thirdUserInfo', userInfo);
-          SpUtils.saveString(Constants.SP_USER_NAME, userInfo.name ?? '');
+          SpUtils.saveString(Constants.SP_USER_NAME, userInfo.account ?? '');
+          SpUtils.saveString(Constants.SP_USER_NICKNAME, userInfo.name ?? '');
           SpUtils.saveString(
             Constants.SP_USER_DEPT,
             userInfo.formatOrganizeName ?? '',
@@ -137,6 +138,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           DataUtils.logout(
             success: (data) {
               SpUtils.remove(Constants.SP_USER_NAME);
+              SpUtils.remove(Constants.SP_USER_NICKNAME);
               SpUtils.remove(Constants.SP_USER_DEPT);
               SpUtils.remove(Constants.SP_TOKEN);
               Navigator.pushNamed(context, '/login');

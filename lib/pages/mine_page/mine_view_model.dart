@@ -38,6 +38,7 @@ class MineViewModel with ChangeNotifier {
         shouldLogin = true;
         //清除缓存
         SpUtils.remove(Constants.SP_USER_NAME);
+        SpUtils.remove(Constants.SP_USER_NICKNAME);
         SpUtils.remove(Constants.SP_USER_DEPT);
         SpUtils.remove(Constants.SP_TOKEN);
         notifyListeners();

@@ -40,6 +40,7 @@ class AuthViewModel with ChangeNotifier {
             Constants.SP_LOGIN_CODE,
             res['data']['code'],
           );
+          await SpUtils.saveString('Constants.SP_USER_NAME', inputUserName!);
           isFirstLogin = true;
           completer.complete(true);
         } else {
