@@ -77,18 +77,18 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
           ),
-          TabIconData(
-            imagePath: 'assets/images/tab_warn.png',
-            selectedImagePath: 'assets/images/tab_warn1.png',
-            index: 3,
-            isSelected: false,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-          ),
+          // TabIconData(
+          //   imagePath: 'assets/images/tab_warn.png',
+          //   selectedImagePath: 'assets/images/tab_warn1.png',
+          //   index: 3,
+          //   isSelected: false,
+          //   animationController: animationController,
+          //   labelName: '', // 先设为空，在build中设置
+          // ),
           TabIconData(
             imagePath: 'assets/images/tab_4.png',
             selectedImagePath: 'assets/images/tab_4s1.png',
-            index: 4,
+            index: 3,
             isSelected: false,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
@@ -104,8 +104,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       _tabIconsList[0].labelName = S.of(context).homePage;
       _tabIconsList[1].labelName = S.of(context).dangerPage;
       _tabIconsList[2].labelName = S.of(context).toolPage;
-      _tabIconsList[3].labelName = S.of(context).warningPage;
-      _tabIconsList[4].labelName = S.of(context).minePage;
+      // _tabIconsList[3].labelName = S.of(context).warningPage;
+      _tabIconsList[3].labelName = S.of(context).minePage;
     }
   }
 
@@ -153,7 +153,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   Future checkUpdate(BuildContext context) async {
     //获取当前app的版本code
     String versionCode = await DeviceUtils.version();
-    String downloadUrlPre = APIs.imagePrefix;
+    String downloadUrlPre = 'https://web.iwipwedabay.com/static/';
     DataUtils.getAppLastVersion(
       success: (data) async {
         UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
@@ -301,12 +301,12 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             tabBody = ToolBoxPage();
           });
           break;
+        // case 3:
+        //   setState(() {
+        //     tabBody = SosIndexPage();
+        //   });
+        //   break;
         case 3:
-          setState(() {
-            tabBody = SosIndexPage();
-          });
-          break;
-        case 4:
           await isLogin();
           setState(() {
             tabBody = MinePage();

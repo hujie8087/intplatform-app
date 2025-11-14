@@ -1,7 +1,7 @@
 package com.iwip.intplatform
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
+// import androidx.appcompat.app.AppCompatActivity;
+// import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +15,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.location.*
+import android.os.Handler
+import android.os.Looper
+import io.flutter.plugin.common.MethodChannel
+import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.location.LocationProvider
+import java.util.Timer
+import java.util.TimerTask
 
 class NativeLocationService(private val context: Context) {
     private var locationManager: LocationManager? = null

@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert'; // 添加这个导入
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketService {
-  static const String baseUrl = 'ws://10.40.10.18:10301/websocket/';
   WebSocketChannel? _channel;
   StreamSubscription? _subscription;
 
@@ -32,7 +32,7 @@ class WebSocketService {
   Future<bool> connect() async {
     try {
       String identifier = await getIdentifier();
-      String url = '$baseUrl$identifier';
+      String url = '${APIs.websocketFix}$identifier';
 
       print('WebSocket连接URL: $url');
 

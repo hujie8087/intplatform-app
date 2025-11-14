@@ -223,7 +223,8 @@ class HttpUtils {
           RouteUtils.navigateToLogin();
         }
         // token过期，刷新token
-        else if (resultData['code'] == ExceptionHandle.token_expired) {
+        else if (resultData['code'] == ExceptionHandle.token_expired ||
+            resultData['code'] == ExceptionHandle.forbidden) {
           // 防止多个接口同时 token 过期造成重复刷新
           if (!isRefreshing) {
             isRefreshing = true;
@@ -253,7 +254,6 @@ class HttpUtils {
               },
               fail: (code, msg) {
                 isRefreshing = false;
-
                 // 刷新失败 -> 跳转登录
                 ProgressHUD.showText('登录已过期，请重新登录');
                 SpUtils.remove(Constants.SP_USER_NAME);
@@ -275,6 +275,15 @@ class HttpUtils {
               resultData['msg'] ?? resultData['message'] ?? '请求失败',
             );
           }
+        } else {
+          // 其他状态，弹出错误提示信息
+          ProgressHUD.showError(
+            resultData['msg'] ?? resultData['message'] ?? '请求失败',
+          );
+          fail?.call(
+            resultData['code'],
+            resultData['msg'] ?? resultData['message'] ?? '请求失败',
+          );
         }
       },
       onError: (code, msg) {

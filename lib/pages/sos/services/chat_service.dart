@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/model/chat_message_model.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -19,7 +20,6 @@ class ChatService {
   factory ChatService() {
     return ChatService._internal();
   }
-  static const String baseUrl = 'ws://10.40.10.18:10301/websocket/';
   WebSocketChannel? _channel;
   StreamSubscription? _subscription;
   Timer? _heartbeatTimer;
@@ -51,7 +51,7 @@ class ChatService {
         cleanUserId = await getUniqueIdentifier();
       }
 
-      String url = '$baseUrl$cleanUserId';
+      String url = '${APIs.websocketFix}$cleanUserId';
 
       print('WebSocket连接URL: $url');
       print('使用的userId: $cleanUserId');

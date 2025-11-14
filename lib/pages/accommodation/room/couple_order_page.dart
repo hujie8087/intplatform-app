@@ -610,6 +610,7 @@ class _CoupleOrderPageState extends State<CoupleOrderPage> {
                                               S
                                                   .of(context)
                                                   .coupleRoom_room_cancel,
+                                              style: TextStyle(fontSize: 12.px),
                                             ),
                                           ),
                                         SizedBox(width: 10.px),
@@ -752,6 +753,9 @@ class _CoupleOrderPageState extends State<CoupleOrderPage> {
                                                   S
                                                       .of(context)
                                                       .coupleRoom_room_confirm_order,
+                                                  style: TextStyle(
+                                                    fontSize: 12.px,
+                                                  ),
                                                 ),
                                               ),
                                               SizedBox(width: 10.px),
@@ -779,6 +783,7 @@ class _CoupleOrderPageState extends State<CoupleOrderPage> {
                                           ),
                                           child: Text(
                                             S.of(context).coupleRoom_room_view,
+                                            style: TextStyle(fontSize: 12.px),
                                           ),
                                         ),
                                       ],

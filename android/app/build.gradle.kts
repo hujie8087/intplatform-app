@@ -65,8 +65,9 @@ flutter {
 dependencies {
     // implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
-    implementation(files("src/main/java/io/flutter/plugins/iscanuserapi.jar"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    implementation(files("src/libs/iscanuserapi.jar"))
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    // implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     // implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     // implementation("com.google.firebase:firebase-analytics")
 }
