@@ -601,26 +601,29 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
         ],
       ),
       // 浮动按钮，根据配送状态显示
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: isTracking ? secondaryColor : primaryColor,
-        onPressed: () => _handleLocationEvent(),
-        icon: Icon(
-          isTracking ? Icons.location_on : Icons.location_off,
-          color: Colors.white,
-        ),
-        label: Text(
-          isTracking ? S.current.stopLocation : S.current.startLocation,
-          style: TextStyle(color: Colors.white),
-        ),
-        extendedPadding: EdgeInsets.symmetric(
-          horizontal: 10.px,
-          vertical: 2.px,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        isExtended: false,
-      ),
+      floatingActionButton:
+          Platform.isAndroid
+              ? FloatingActionButton.extended(
+                backgroundColor: isTracking ? secondaryColor : primaryColor,
+                onPressed: () => _handleLocationEvent(),
+                icon: Icon(
+                  isTracking ? Icons.location_on : Icons.location_off,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  isTracking ? S.current.stopLocation : S.current.startLocation,
+                  style: TextStyle(color: Colors.white),
+                ),
+                extendedPadding: EdgeInsets.symmetric(
+                  horizontal: 10.px,
+                  vertical: 2.px,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                isExtended: false,
+              )
+              : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Stack(
         children: [

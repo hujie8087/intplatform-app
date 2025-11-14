@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/data/meal_delivery_utils.dart';
 import 'package:logistics_app/http/model/base_list_model.dart';
-import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
-import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_service_model.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_manager.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_service_model.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/phone_scan_page.dart';
 import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -589,26 +590,29 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
       ),
 
       // 浮动按钮，根据配送状态显示
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: isTracking ? secondaryColor : primaryColor,
-        onPressed: () => _handleLocationEvent(),
-        icon: Icon(
-          isTracking ? Icons.location_on : Icons.location_off,
-          color: Colors.white,
-        ),
-        label: Text(
-          isTracking ? S.current.stopLocation : S.current.startLocation,
-          style: TextStyle(color: Colors.white),
-        ),
-        extendedPadding: EdgeInsets.symmetric(
-          horizontal: 10.px,
-          vertical: 2.px,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        isExtended: false,
-      ),
+      floatingActionButton:
+          Platform.isAndroid
+              ? FloatingActionButton.extended(
+                backgroundColor: isTracking ? secondaryColor : primaryColor,
+                onPressed: () => _handleLocationEvent(),
+                icon: Icon(
+                  isTracking ? Icons.location_on : Icons.location_off,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  isTracking ? S.current.stopLocation : S.current.startLocation,
+                  style: TextStyle(color: Colors.white),
+                ),
+                extendedPadding: EdgeInsets.symmetric(
+                  horizontal: 10.px,
+                  vertical: 2.px,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                isExtended: false,
+              )
+              : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body:
           !isBindAccount
