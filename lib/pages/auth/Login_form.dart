@@ -37,7 +37,7 @@ class _LoginFormState extends State<LoginForm> {
 
   // 获取记住密码
   void getRememberPassword() async {
-    var username = await SpUtils.getString(Constants.SP_USER_NICKNAME);
+    var username = await SpUtils.getString(Constants.SP_USER_NAME);
     var password = await SpUtils.getString(Constants.SP_USER_PASSWORD);
     _usernameController.text = username ?? '';
     _passwordController.text = password ?? '';
@@ -185,7 +185,7 @@ class _LoginFormState extends State<LoginForm> {
                                     '';
                                 if (_isRememberPassword) {
                                   SpUtils.saveString(
-                                    Constants.SP_USER_NICKNAME,
+                                    Constants.SP_USER_NAME,
                                     _usernameController.text,
                                   );
                                   SpUtils.saveString(
@@ -193,7 +193,7 @@ class _LoginFormState extends State<LoginForm> {
                                     _passwordController.text,
                                   );
                                 } else {
-                                  SpUtils.remove(Constants.SP_USER_NICKNAME);
+                                  SpUtils.remove(Constants.SP_USER_NAME);
                                   SpUtils.remove(Constants.SP_USER_PASSWORD);
                                 }
 

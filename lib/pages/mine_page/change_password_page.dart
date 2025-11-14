@@ -44,8 +44,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   void _fetchData() async {
     var res = await SpUtils.getModel('thirdUserInfo');
-    var spName = await SpUtils.getModel('Constants.SP_USER_NAME');
+    var spName = await SpUtils.getString('Constants.SP_USER_NAME');
     var code = await SpUtils.getString(Constants.SP_LOGIN_CODE);
+    print(spName);
     if (code != null && code.isNotEmpty) {
       loginCode = code;
     }
@@ -277,9 +278,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           Padding(
             padding: EdgeInsets.only(left: 15.px, right: 15.px),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if ((_formKey.currentState as FormState).validate()) {
                   if (widget.isFirstLogin) {
+                    userName = await SpUtils.getString(
+                      'Constants.SP_USER_NAME',
+                    );
+                    print(userName);
                     //验证通过提交数据
                     DataUtils.updateUserFirstPwd(
                       {
