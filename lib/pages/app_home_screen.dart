@@ -1,6 +1,8 @@
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:async';
 import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_update_dialog/update_dialog.dart';
@@ -9,7 +11,6 @@ import 'package:logistics_app/common_ui/navigation/navigation_bar_item.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
-import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/app_check_update_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
@@ -17,15 +18,13 @@ import 'package:logistics_app/pages/home_page/home_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_page.dart';
 import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:logistics_app/pages/repair/report_hazard_page.dart';
-import 'package:logistics_app/pages/sos/sos_index_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // 在文件顶部定义全局 key
 final GlobalKey<_AppHomeScreenState> appHomeScreenKey =
@@ -137,7 +136,6 @@ class _AppHomeScreenState extends State<AppHomeScreen>
         fail: (code, msg) {
           DataUtils.logout(
             success: (data) {
-              SpUtils.remove(Constants.SP_USER_NAME);
               SpUtils.remove(Constants.SP_USER_NICKNAME);
               SpUtils.remove(Constants.SP_USER_DEPT);
               SpUtils.remove(Constants.SP_TOKEN);

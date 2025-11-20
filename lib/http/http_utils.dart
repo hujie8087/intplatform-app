@@ -216,7 +216,6 @@ class HttpUtils {
             resultData['code'] == ExceptionHandle.refresh_token_invalid)) {
           ProgressHUD.showText('请登录您的帐号');
 
-          SpUtils.remove(Constants.SP_USER_NAME);
           SpUtils.remove(Constants.SP_USER_DEPT);
           SpUtils.remove(Constants.SP_TOKEN);
           SpUtils.remove(Constants.SP_REFRESH_TOKEN);
@@ -255,7 +254,6 @@ class HttpUtils {
                 isRefreshing = false;
                 // 刷新失败 -> 跳转登录
                 ProgressHUD.showText('登录已过期，请重新登录');
-                SpUtils.remove(Constants.SP_USER_NAME);
                 SpUtils.remove(Constants.SP_TOKEN);
                 SpUtils.remove(Constants.SP_REFRESH_TOKEN);
                 RouteUtils.navigateToLogin();

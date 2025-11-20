@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
-import 'package:video_player/video_player.dart';
-import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/http/model/notice_list_model.dart';
-import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/route/route_annotation.dart';
+import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:video_player/video_player.dart';
 
 @AppRoute(path: 'promo_detail_page', name: '宣传片详情页')
 class PromoDetailPage extends StatefulWidget {
@@ -122,7 +122,7 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
                 controller: _scrollController,
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 750),
+                    constraints: const BoxConstraints(maxWidth: 1024),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

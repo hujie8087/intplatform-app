@@ -1,6 +1,7 @@
 import 'dart:math' as math;
-import 'package:logistics_app/app_theme.dart';
+
 import 'package:flutter/material.dart';
+import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/main.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -54,8 +55,8 @@ class NavigationBarItemState extends State<NavigationBarItem>
   @override
   Widget build(BuildContext context) {
     double screenWidth =
-        MediaQuery.of(context).size.width > 750
-            ? 750
+        MediaQuery.of(context).size.width > 1024
+            ? 1024
             : MediaQuery.of(context).size.width;
     int tabCount = widget.tabIconsList.length;
     int grooveIndex = widget.grooveIndex; // 想让凹槽居中第2个tab

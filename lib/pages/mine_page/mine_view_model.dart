@@ -37,6 +37,25 @@ class MineViewModel with ChangeNotifier {
         print('success${data}');
         shouldLogin = true;
         //清除缓存
+        SpUtils.remove(Constants.SP_USER_NICKNAME);
+        SpUtils.remove(Constants.SP_USER_DEPT);
+        SpUtils.remove(Constants.SP_TOKEN);
+        notifyListeners();
+      },
+      fail: (code, msg) {
+        showToast(S.current.networkError);
+      },
+    );
+  }
+
+  // 用户注销账号
+  Future cancelAccount() async {
+    DataUtils.cancelUser(
+      success: (data) {
+        // 跳转登录页
+        print('success${data}');
+        shouldLogin = true;
+        //清除缓存
         SpUtils.remove(Constants.SP_USER_NAME);
         SpUtils.remove(Constants.SP_USER_NICKNAME);
         SpUtils.remove(Constants.SP_USER_DEPT);

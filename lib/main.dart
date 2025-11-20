@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -50,7 +51,7 @@ void main() async {
     OverlaySupport.global(
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 750),
+          constraints: const BoxConstraints(maxWidth: 1024),
           child: MyApp(languageCode: languageCode),
         ),
       ),

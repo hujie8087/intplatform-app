@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_update_dialog/update_dialog.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/dialog/dialog_factory.dart';
-import 'package:flutter_update_dialog/update_dialog.dart';
 import 'package:logistics_app/common_ui/divider_widget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 // import 'package:logistics_app/common_ui/xupdate.dart';
@@ -20,9 +20,9 @@ import 'package:logistics_app/http/model/card_info_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
+import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
-import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_view_model.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/my_address_page.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
@@ -33,9 +33,9 @@ import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:pub_semver/pub_semver.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MinePage extends StatefulWidget {
@@ -299,6 +299,26 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
     }
   }
 
+  void deleteAccount(BuildContext context) {
+    DialogFactory.new().showConfirmDialog(
+      context: context,
+      title: '注销账号',
+      content: '确定要注销账号吗？该操作不可逆！',
+      confirmClick: () {
+        // 退出登录
+        model
+            .cancelAccount()
+            .then(
+              (value) => {
+                ProgressHUD.showText('账号已注销'),
+                RouteUtils.push(context, LoginPage()),
+              },
+            )
+            .catchError((e) => {ProgressHUD.showError('账号注销失败')});
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenAdapterHelper.init(context);
@@ -407,6 +427,15 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
                             },
                             version,
                             0.9,
+                          ),
+                          _commonItem(
+                            '注销账号',
+                            Icons.delete,
+                            () {
+                              deleteAccount(context);
+                            },
+                            '',
+                            1.0,
                           ),
                           _logoutButton(
                             () => DialogFactory.new().showConfirmDialog(

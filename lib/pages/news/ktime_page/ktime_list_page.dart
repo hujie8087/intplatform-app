@@ -108,7 +108,7 @@ class _KTimeListPageState extends State<KTimeListPage>
               ? EmptyView()
               : Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 750),
+                  constraints: const BoxConstraints(maxWidth: 1024),
                   child: SmartRefreshWidget(
                     controller: _refreshController,
                     enablePullDown: true,

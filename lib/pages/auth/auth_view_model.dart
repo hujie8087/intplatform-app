@@ -54,43 +54,50 @@ class AuthViewModel with ChangeNotifier {
           if (token != '') {
             DataUtils.putLoginUser(
               {'username': inputUserName, 'password': ''},
-              success: (res) {
-                DataUtils.getThirdUserInfo(
-                  success: (res) async {
-                    ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
-                      res['data'],
-                    );
-                    await SpUtils.saveModel('thirdUserInfo', userInfo);
-                    await SpUtils.saveString(
-                      Constants.SP_USER_NAME,
-                      userInfo.name ?? '',
-                    );
-                    await SpUtils.saveString(
-                      Constants.SP_USER_DEPT,
-                      userInfo.formatOrganizeName ?? '',
-                    );
-                    DataUtils.getUserInfo(
-                      success: (res) async {
-                        UserInfoModel userInfo = UserInfoModel.fromJson(
-                          res['data'],
-                        );
-                        await SpUtils.saveModel('userInfo', userInfo);
-                        await SpUtils.saveModel(
-                          Constants.SP_USER_PERMISSION,
-                          userInfo.permissions ?? [],
-                        );
-                        getAddressData();
-                        completer.complete(true);
-                      },
-                      fail: (code, msg) {
-                        completer.complete(false);
-                      },
-                    );
-                  },
-                  fail: (code, msg) {
-                    completer.complete(false);
-                  },
-                );
+              success: (res) async {
+                if (res['data']['loginUser']['status'] == '1') {
+                  await SpUtils.remove(Constants.SP_TOKEN);
+                  await SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+                  ProgressHUD.showError('账号已注销，请联系管理员');
+                  completer.complete(false);
+                } else {
+                  DataUtils.getThirdUserInfo(
+                    success: (res) async {
+                      ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
+                        res['data'],
+                      );
+                      await SpUtils.saveModel('thirdUserInfo', userInfo);
+                      await SpUtils.saveString(
+                        Constants.SP_USER_NAME,
+                        userInfo.name ?? '',
+                      );
+                      await SpUtils.saveString(
+                        Constants.SP_USER_DEPT,
+                        userInfo.formatOrganizeName ?? '',
+                      );
+                      DataUtils.getUserInfo(
+                        success: (res) async {
+                          UserInfoModel userInfo = UserInfoModel.fromJson(
+                            res['data'],
+                          );
+                          await SpUtils.saveModel('userInfo', userInfo);
+                          await SpUtils.saveModel(
+                            Constants.SP_USER_PERMISSION,
+                            userInfo.permissions ?? [],
+                          );
+                          getAddressData();
+                          completer.complete(true);
+                        },
+                        fail: (code, msg) {
+                          completer.complete(false);
+                        },
+                      );
+                    },
+                    fail: (code, msg) {
+                      completer.complete(false);
+                    },
+                  );
+                }
               },
               fail: (code, msg) {
                 completer.complete(false);

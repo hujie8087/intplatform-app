@@ -67,6 +67,11 @@ class DataUtils {
     );
   }
 
+  // 注销账号
+  static void cancelUser<T>({Success? success, Fail? fail}) {
+    HttpUtils.get(APIs.cancelUser, null, success: success, fail: fail);
+  }
+
   // 获取用户消费信息
   static void getUserConsumeInfo<T>(userId, {Success? success, Fail? fail}) {
     HttpUtils.get(

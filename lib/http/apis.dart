@@ -71,6 +71,9 @@ class APIs {
   // 登录成功回调
   static const String putLoginUser = '/auth/putLoginUser';
 
+  // 注销账号
+  static const String cancelUser = '/system/user/signOut';
+
   // 获取用户消费信息
   static const String getUserConsumeInfo = '/system/user/info/';
 

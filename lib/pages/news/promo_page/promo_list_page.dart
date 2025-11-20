@@ -117,7 +117,7 @@ class _PromoListPageState extends State<PromoListPage>
                 },
                 child: Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 750),
+                    constraints: const BoxConstraints(maxWidth: 1024),
                     child: ListView.builder(
                       itemCount: promoList.length,
                       itemBuilder: (context, index) {
