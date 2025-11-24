@@ -47,12 +47,27 @@ import CoreLocation
         case "isLocationAvailable":
             result(service.isLocationAvailable())
 
+        case "requestLocationPermission":
+            service.requestLocationPermission(result: result)
+
         case "getLocation":
             service.getLocation(result)
 
         case "startRealTimeLocation":
-            let interval = (call.arguments as? Int) ?? 2000
-            service.startRealTimeLocation(interval: Double(interval), result: result)
+            // 处理 Map 参数 {'interval': interval} 或直接传入 Int
+            var interval: Double = 2000.0
+            if let args = call.arguments as? [String: Any],
+               let intervalValue = args["interval"] as? Int {
+                interval = Double(intervalValue)
+            } else if let intervalValue = call.arguments as? Int {
+                interval = Double(intervalValue)
+            } else if let args = call.arguments as? [String: Any],
+                      let intervalValue = args["interval"] as? Double {
+                interval = intervalValue
+            } else if let intervalValue = call.arguments as? Double {
+                interval = intervalValue
+            }
+            service.startRealTimeLocation(interval: interval, result: result)
 
         case "stopRealTimeLocation":
             service.stopRealTimeLocation(result: result)
