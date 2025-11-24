@@ -144,77 +144,263 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                   context: context,
                                                   backgroundColor:
                                                       Colors.transparent,
+                                                  isScrollControlled: true,
                                                   builder: (context) {
+                                                    final contactCount =
+                                                        chatListModel
+                                                            .contactList
+                                                            .length;
+                                                    final maxHeight =
+                                                        MediaQuery.of(
+                                                          context,
+                                                        ).size.height *
+                                                        0.7;
+                                                    final itemHeight = 72.0;
+                                                    final headerHeight = 80.0;
+                                                    final calculatedHeight =
+                                                        (contactCount *
+                                                                    itemHeight +
+                                                                headerHeight)
+                                                            .clamp(
+                                                              0.0,
+                                                              maxHeight,
+                                                            );
+
                                                     return Container(
+                                                      height: calculatedHeight,
                                                       decoration: BoxDecoration(
                                                         color: Colors.white,
                                                         borderRadius:
                                                             BorderRadius.only(
                                                               topLeft:
                                                                   Radius.circular(
-                                                                    16.px,
+                                                                    20.px,
                                                                   ),
                                                               topRight:
                                                                   Radius.circular(
-                                                                    16.px,
+                                                                    20.px,
                                                                   ),
                                                             ),
                                                       ),
                                                       child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
                                                         children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                  16.px,
+                                                          // 拖拽指示器
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                  top: 12.px,
+                                                                  bottom: 8.px,
                                                                 ),
-                                                            child: Text(
-                                                              S
-                                                                  .current
-                                                                  .select_contact_method,
-                                                              style: TextStyle(
-                                                                fontSize: 16.px,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
+                                                            width: 40.px,
+                                                            height: 4.px,
+                                                            decoration: BoxDecoration(
+                                                              color:
+                                                                  Colors
+                                                                      .grey[300],
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    2.px,
+                                                                  ),
                                                             ),
                                                           ),
-                                                          ListView.builder(
-                                                            itemCount:
-                                                                chatListModel
-                                                                    .contactList
-                                                                    .length,
-                                                            itemBuilder: (
-                                                              context,
-                                                              index,
-                                                            ) {
-                                                              final contact =
-                                                                  chatListModel
-                                                                      .contactList[index];
-                                                              return ListTile(
-                                                                title: Text(
-                                                                  contact.name ??
-                                                                      '',
+                                                          // 标题
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.symmetric(
+                                                                  horizontal:
+                                                                      20.px,
+                                                                  vertical:
+                                                                      16.px,
                                                                 ),
-                                                                subtitle: Text(
-                                                                  contact.tel ??
-                                                                      '',
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .phone_outlined,
+                                                                  size: 20.px,
+                                                                  color:
+                                                                      Colors
+                                                                          .grey[700],
                                                                 ),
-                                                                onTap: () {
-                                                                  Navigator.pop(
+                                                                SizedBox(
+                                                                  width: 8.px,
+                                                                ),
+                                                                Text(
+                                                                  S
+                                                                      .current
+                                                                      .select_contact_method,
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                        18.px,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color:
+                                                                        Colors
+                                                                            .grey[900],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Divider(
+                                                            height: 1,
+                                                            thickness: 1,
+                                                            color:
+                                                                Colors
+                                                                    .grey[200],
+                                                          ),
+                                                          // 联系人列表
+                                                          Flexible(
+                                                            child: ListView.separated(
+                                                              shrinkWrap: true,
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .zero,
+                                                              itemCount:
+                                                                  contactCount,
+                                                              separatorBuilder:
+                                                                  (
                                                                     context,
-                                                                  );
-                                                                  chatListModel
-                                                                      .makePhoneCall(
-                                                                        contact
-                                                                            .tel,
-                                                                      );
-                                                                },
-                                                              );
-                                                            },
+                                                                    index,
+                                                                  ) => Divider(
+                                                                    height: 1,
+                                                                    thickness:
+                                                                        1,
+                                                                    indent:
+                                                                        72.px,
+                                                                    color:
+                                                                        Colors
+                                                                            .grey[100],
+                                                                  ),
+                                                              itemBuilder: (
+                                                                context,
+                                                                index,
+                                                              ) {
+                                                                final contact =
+                                                                    chatListModel
+                                                                        .contactList[index];
+                                                                return InkWell(
+                                                                  onTap: () {
+                                                                    Navigator.pop(
+                                                                      context,
+                                                                    );
+                                                                    chatListModel
+                                                                        .makePhoneCall(
+                                                                          contact
+                                                                              .tel,
+                                                                        );
+                                                                  },
+                                                                  child: Container(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          20.px,
+                                                                      vertical:
+                                                                          16.px,
+                                                                    ),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        // 头像/图标
+                                                                        Container(
+                                                                          width:
+                                                                              48.px,
+                                                                          height:
+                                                                              48.px,
+                                                                          decoration: BoxDecoration(
+                                                                            color: secondaryColor.withOpacity(
+                                                                              0.1,
+                                                                            ),
+                                                                            shape:
+                                                                                BoxShape.circle,
+                                                                          ),
+                                                                          child: Icon(
+                                                                            Icons.person,
+                                                                            color:
+                                                                                secondaryColor,
+                                                                            size:
+                                                                                24.px,
+                                                                          ),
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              16.px,
+                                                                        ),
+                                                                        // 联系人信息
+                                                                        Expanded(
+                                                                          child: Column(
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.min,
+                                                                            children: [
+                                                                              Text(
+                                                                                contact.name ??
+                                                                                    '未知联系人',
+                                                                                style: TextStyle(
+                                                                                  fontSize:
+                                                                                      16.px,
+                                                                                  fontWeight:
+                                                                                      FontWeight.w600,
+                                                                                  color:
+                                                                                      Colors.grey[900],
+                                                                                ),
+                                                                                maxLines:
+                                                                                    1,
+                                                                                overflow:
+                                                                                    TextOverflow.ellipsis,
+                                                                              ),
+                                                                              SizedBox(
+                                                                                height:
+                                                                                    4.px,
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  Icon(
+                                                                                    Icons.phone,
+                                                                                    size:
+                                                                                        14.px,
+                                                                                    color:
+                                                                                        Colors.grey[600],
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    width:
+                                                                                        4.px,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    contact.tel ??
+                                                                                        '',
+                                                                                    style: TextStyle(
+                                                                                      fontSize:
+                                                                                          14.px,
+                                                                                      color:
+                                                                                          Colors.grey[600],
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        // 箭头图标
+                                                                        Icon(
+                                                                          Icons
+                                                                              .chevron_right,
+                                                                          color:
+                                                                              Colors.grey[400],
+                                                                          size:
+                                                                              24.px,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
