@@ -116,6 +116,25 @@ class NativeLocationService: NSObject, CLLocationManagerDelegate {
             }
             // notDetermined 状态继续等待用户选择
         }
+
+        // iOS 兼容：发送定位状态变化回调（模拟 Android 的 onStatusChanged）
+        if isTracking {
+            let statusString: String
+            switch status {
+            case .authorizedWhenInUse, .authorizedAlways:
+                statusString = "enabled"
+            case .denied, .restricted:
+                statusString = "disabled"
+            case .notDetermined:
+                statusString = "not_determined"
+            @unknown default:
+                statusString = "unknown"
+            }
+            methodChannel?.invokeMethod("onLocationStatusChanged", arguments: [
+                "provider": "ios",
+                "status": statusString
+            ])
+        }
     }
 
     // -------------------------------------------------------
@@ -143,6 +162,11 @@ class NativeLocationService: NSObject, CLLocationManagerDelegate {
         trackingInterval = interval / 1000.0   // 安卓传入毫秒，所以需转换
 
         locationManager.startUpdatingLocation()
+
+        // iOS 兼容：发送定位提供者启用回调（模拟 Android 的 onProviderEnabled）
+        if CLLocationManager.locationServicesEnabled() {
+            methodChannel?.invokeMethod("onLocationProviderEnabled", arguments: "ios")
+        }
 
         // 确保 Timer 在主线程运行
         DispatchQueue.main.async { [weak self] in
@@ -173,6 +197,9 @@ class NativeLocationService: NSObject, CLLocationManagerDelegate {
         timer?.invalidate()
         timer = nil
         locationManager.stopUpdatingLocation()
+
+        // iOS 兼容：发送定位提供者禁用回调（模拟 Android 的 onProviderDisabled）
+        methodChannel?.invokeMethod("onLocationProviderDisabled", arguments: "ios")
 
         methodChannel?.invokeMethod("onRealTimeLocationStopped", arguments: nil)
 
