@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
-import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -537,21 +537,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               24.px * (1.0 - topBarAnimation!.value),
               0.0,
             ),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               height: 180.px,
               child: Swiper(
                 itemCount: bannerList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return bannerList[index].content != null
-                      ? Image.network(
-                        "${APIs.imagePrefix + (bannerList[index].content ?? '')}",
-                        fit: BoxFit.fill,
-                      )
-                      : Image.asset(
-                        'assets/images/banner.jpg',
-                        fit: BoxFit.fill,
-                      );
+                  final imageUrl =
+                      "${APIs.imagePrefix + (bannerList[index].content ?? '')}";
+
+                  return CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.cover,
+                    placeholder:
+                        (_, __) => Image.asset(
+                          "assets/images/banner.jpg",
+                          fit: BoxFit.cover,
+                        ),
+                    errorWidget:
+                        (_, __, ___) => Image.asset(
+                          "assets/images/banner.jpg",
+                          fit: BoxFit.cover,
+                        ),
+                  );
                 },
                 autoplay: true,
                 indicatorLayout: PageIndicatorLayout.COLOR,
