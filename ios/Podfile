@@ -43,7 +43,8 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
-        'PERMISSION_CAMERA=1'  # 允许使用相机权限
+        'PERMISSION_CAMERA=1',  # 允许使用相机权限
+        'PERMISSION_MICROPHONE=1'  # 允许使用麦克风权限
       ]
     end
   end

@@ -7,7 +7,6 @@ import 'package:logistics_app/utils/update_file.dart';
 import 'package:record/record.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class VoiceMessageService {
   final AudioRecorder _audioRecorder = AudioRecorder();
@@ -30,9 +29,29 @@ class VoiceMessageService {
       await _stopSafe(); // 停止旧的录音（如果有）
 
       // 请求麦克风权限
-      PermissionStatus status = await Permission.microphone.request();
+      PermissionStatus status = await Permission.microphone.status;
+
+      // 如果权限未授予，则请求权限
       if (status != PermissionStatus.granted) {
-        ProgressHUD.showError('请授权麦克风权限');
+        // 如果权限被永久拒绝，提示用户去设置
+        if (status == PermissionStatus.permanentlyDenied) {
+          ProgressHUD.showError('请在设置中授权麦克风权限');
+          _isBusy = false;
+          return;
+        }
+
+        // 请求权限
+        status = await Permission.microphone.request();
+        if (status != PermissionStatus.granted) {
+          ProgressHUD.showError('请授权麦克风权限');
+          _isBusy = false;
+          return;
+        }
+      }
+
+      // 额外检查 record 包的权限（iOS 上可能需要）
+      if (Platform.isIOS && !await _audioRecorder.hasPermission()) {
+        ProgressHUD.showError('麦克风权限未授权，请检查设置');
         _isBusy = false;
         return;
       }
