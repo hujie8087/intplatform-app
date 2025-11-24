@@ -16,7 +16,7 @@ class ChartModel with ChangeNotifier {
   bool isLoading = false;
   ChatSessionModel? currentSession;
   ChatService chatService = ChatService();
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? thirdUserInfo;
   String? deviceId;
 
   Future<void> initialize() async {
@@ -26,10 +26,10 @@ class ChartModel with ChangeNotifier {
 
   Future<void> getUserInfo() async {
     // 模拟异步数据获取
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var thirdUserInfoData = await SpUtils.getModel('thirdUserInfo');
     deviceId = await SpUtils.getString(Constants.SP_DEVICE_TOKEN) ?? '';
-    if (userInfoData != null) {
-      userInfo = UserInfoModel.fromJson(userInfoData);
+    if (thirdUserInfoData != null) {
+      thirdUserInfo = ThirdUserInfoModel.fromJson(thirdUserInfoData);
     }
   }
 
@@ -100,17 +100,7 @@ class ChartModel with ChangeNotifier {
   Future<bool> connect({String? sessionId}) async {
     _initializeChat();
 
-    String connectId;
-
-    if (userInfo != null) {
-      // 用户已登录，使用工号连接WebSocket
-      connectId = userInfo?.user?.userName ?? '';
-      print('用户已登录，使用工号连接WebSocket: $connectId');
-    } else {
-      // 用户未登录，使用设备ID连接WebSocket
-      connectId = deviceId ?? '';
-      print('用户未登录，使用设备ID连接WebSocket: $connectId');
-    }
+    String connectId = thirdUserInfo?.account ?? '';
 
     bool connected = await chatService.connect(connectId);
     isConnected = connected;
@@ -126,7 +116,7 @@ class ChartModel with ChangeNotifier {
     // 检查连接状态，如果未连接则尝试重新连接
     if (!chatService.isConnected) {
       print('ChatController: 发送消息前检测到未连接，尝试重新连接...');
-      String connectId = userInfo?.user?.userName ?? deviceId ?? '';
+      String connectId = thirdUserInfo?.account ?? '';
       bool connected = await chatService.connect(connectId);
 
       if (!connected) {
@@ -137,21 +127,19 @@ class ChartModel with ChangeNotifier {
 
     // 获取用户信息
     String senderId =
-        userInfo?.user != null
-            ? userInfo?.user?.userName ?? ''
-            : deviceId ?? '';
+        thirdUserInfo != null ? thirdUserInfo?.account ?? '' : deviceId ?? '';
     String senderName =
-        userInfo?.user != null
-            ? (userInfo?.user?.nickName?.isNotEmpty ?? false
-                ? userInfo?.user?.nickName ?? ''
-                : userInfo?.user?.userName ?? '')
+        thirdUserInfo != null
+            ? (thirdUserInfo?.name?.isNotEmpty ?? false
+                ? thirdUserInfo?.name ?? ''
+                : thirdUserInfo?.account ?? '')
             : '设备用户_${deviceId ?? ''}';
 
     // 构造消息数据
     Map<String, dynamic> messageData = {
       'type': 'CHAT_MESSAGE',
       'senderId': senderId,
-      'targetUserId': 'AGENT',
+      'targetUserId': '1423092221',
       'content': content,
       'senderType': 'USER',
       'senderName': senderName,
@@ -177,9 +165,9 @@ class ChartModel with ChangeNotifier {
         senderId: senderId,
         senderName: senderName,
         type: 'CHAT_MESSAGE',
-        userId: senderId,
+        userId: thirdUserInfo?.id?.toString() ?? '',
         nickName: senderName,
-        userName: senderName,
+        userName: thirdUserInfo?.account ?? '',
         contentType: contentType,
         content: content,
         timestamp: DateTime.now().toIso8601String(),
@@ -268,24 +256,11 @@ class ChartModel with ChangeNotifier {
         params['orderId'] = orderNo;
         print('添加订单信息 - orderNumber: $orderNo, orderId: $orderNo');
       }
-
-      if (userInfo != null) {
-        // 用户已登录，使用用户的身份信息
-        print('用户已登录，使用用户信息: ${userInfo?.user?.userName}');
-        params['userName'] = userInfo?.user?.userName; // 使用用户的工号
-        params['nickName'] =
-            userInfo?.user?.nickName?.isNotEmpty ?? false
-                ? userInfo?.user?.nickName
-                : userInfo?.user?.userName;
-        params['userId'] = userInfo?.user?.userId;
-        params['senderType'] = 'USER';
-      } else {
-        // 用户未登录，使用设备ID
-        params['userName'] = deviceId;
-        params['nickName'] = '设备用户';
-        params['userId'] = 1; // 默认用户ID
-        params['senderType'] = 'USER';
-      }
+      // 用户未登录，使用设备ID
+      params['userName'] = thirdUserInfo?.account ?? deviceId ?? '';
+      params['nickName'] = thirdUserInfo?.name ?? '设备用户';
+      params['userId'] = thirdUserInfo?.id?.toString() ?? '1';
+      params['senderType'] = 'USER';
 
       print('会话参数: $params');
       return params;
@@ -294,9 +269,9 @@ class ChartModel with ChangeNotifier {
       print('发生错误，使用设备ID: $deviceId, 错误: $e');
       Map<String, dynamic> params = {
         'equipmentId': deviceId,
-        'userName': deviceId,
-        'nickName': '设备用户',
-        'userId': 1,
+        'userName': thirdUserInfo?.account ?? deviceId ?? '',
+        'nickName': thirdUserInfo?.name ?? '设备用户',
+        'userId': thirdUserInfo?.id?.toString() ?? '1',
         'userType': 'USER',
         'senderType': 'USER',
       };
@@ -356,7 +331,7 @@ class ChartModel with ChangeNotifier {
           try {
             final newSession = ChatSessionModel.fromJson(data['data']);
             currentSession = newSession;
-
+            print('newSession: $newSession');
             if (!sessions.any((s) => s.sessionId == newSession.sessionId)) {
               sessions.insert(0, newSession);
             }

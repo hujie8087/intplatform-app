@@ -3,9 +3,10 @@ import CoreLocation
 import Flutter
 
 class NativeLocationService: NSObject, CLLocationManagerDelegate {
-    
+
     private let locationManager = CLLocationManager()
-    private var resultCallback: FlutterResult?
+    private var getLocationCallback: FlutterResult?
+    private var permissionCallback: FlutterResult?
     private var methodChannel: FlutterMethodChannel?
 
     private var isTracking = false
@@ -31,7 +32,7 @@ class NativeLocationService: NSObject, CLLocationManagerDelegate {
     // MARK: 单次定位 getLocation（与安卓一致逻辑）
     // -------------------------------------------------------
     func getLocation(_ result: @escaping FlutterResult) {
-        self.resultCallback = result
+        self.getLocationCallback = result
 
         let status = CLLocationManager.authorizationStatus()
 
@@ -42,12 +43,14 @@ class NativeLocationService: NSObject, CLLocationManagerDelegate {
 
         if status == .denied || status == .restricted {
             result(FlutterError(code: "NO_PERMISSION", message: "Location permission denied", details: nil))
+            getLocationCallback = nil
             return
         }
 
         // 尝试获取缓存位置
         if let location = locationManager.location {
             result(locationToMap(location))
+            getLocationCallback = nil
             return
         }
 
@@ -57,18 +60,18 @@ class NativeLocationService: NSObject, CLLocationManagerDelegate {
         // 设置 30 秒超时（与安卓一致）
         DispatchQueue.main.asyncAfter(deadline: .now() + 30) { [weak self] in
             guard let self = self else { return }
-            if self.resultCallback != nil {
-                self.resultCallback?(nil)
-                self.resultCallback = nil
+            if let callback = self.getLocationCallback {
+                callback(FlutterError(code: "TIMEOUT", message: "Location request timeout", details: nil))
+                self.getLocationCallback = nil
             }
         }
     }
 
     // MARK: 定位成功
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let callback = resultCallback, let location = locations.first {
+        if let callback = getLocationCallback, let location = locations.first {
             callback(locationToMap(location))
-            resultCallback = nil
+            getLocationCallback = nil
         }
 
         if isTracking, let location = locations.last {
@@ -78,18 +81,40 @@ class NativeLocationService: NSObject, CLLocationManagerDelegate {
 
     // MARK: 定位失败
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        if let callback = resultCallback {
+        if let callback = getLocationCallback {
             callback(FlutterError(code: "LOCATION_ERROR", message: error.localizedDescription, details: nil))
-            resultCallback = nil
+            getLocationCallback = nil
         }
     }
 
-    // MARK: 授权变更（用于 getLocation）
+    // MARK: 授权变更（用于 getLocation 和 requestLocationPermission）
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if resultCallback == nil { return }
+        // 处理 getLocation 的权限回调
+        if let callback = getLocationCallback {
+            if status == .authorizedWhenInUse || status == .authorizedAlways {
+                // 尝试获取缓存位置
+                if let location = manager.location {
+                    callback(locationToMap(location))
+                    getLocationCallback = nil
+                } else {
+                    manager.requestLocation()
+                }
+            } else if status == .denied || status == .restricted {
+                callback(FlutterError(code: "NO_PERMISSION", message: "Location permission denied", details: nil))
+                getLocationCallback = nil
+            }
+        }
 
-        if status == .authorizedWhenInUse || status == .authorizedAlways {
-            manager.requestLocation()
+        // 处理 requestLocationPermission 的权限回调
+        if let callback = permissionCallback {
+            if status == .authorizedWhenInUse || status == .authorizedAlways {
+                callback(true)
+                permissionCallback = nil
+            } else if status == .denied || status == .restricted {
+                callback(false)
+                permissionCallback = nil
+            }
+            // notDetermined 状态继续等待用户选择
         }
     }
 
@@ -102,16 +127,34 @@ class NativeLocationService: NSObject, CLLocationManagerDelegate {
             return
         }
 
+        // 检查权限
+        let status = CLLocationManager.authorizationStatus()
+        if status == .denied || status == .restricted {
+            result(FlutterError(code: "NO_PERMISSION", message: "Location permission denied", details: nil))
+            return
+        }
+
+        if status == .notDetermined {
+            result(FlutterError(code: "NO_PERMISSION", message: "Location permission not granted. Please request permission first.", details: nil))
+            return
+        }
+
         isTracking = true
         trackingInterval = interval / 1000.0   // 安卓传入毫秒，所以需转换
 
         locationManager.startUpdatingLocation()
 
-        timer = Timer.scheduledTimer(withTimeInterval: trackingInterval, repeats: true) { [weak self] _ in
+        // 确保 Timer 在主线程运行
+        DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            if let location = self.locationManager.location {
-                self.methodChannel?.invokeMethod("onRealTimeLocationUpdate", arguments: self.locationToMap(location))
+            self.timer = Timer.scheduledTimer(withTimeInterval: self.trackingInterval, repeats: true) { [weak self] _ in
+                guard let self = self else { return }
+                if let location = self.locationManager.location {
+                    self.methodChannel?.invokeMethod("onRealTimeLocationUpdate", arguments: self.locationToMap(location))
+                }
             }
+            // 将 Timer 添加到 RunLoop 以确保在主线程运行
+            RunLoop.current.add(self.timer!, forMode: .common)
         }
 
         result(true)
@@ -144,7 +187,7 @@ class NativeLocationService: NSObject, CLLocationManagerDelegate {
         let status = CLLocationManager.authorizationStatus()
 
         if status == .notDetermined {
-            self.resultCallback = result
+            self.permissionCallback = result
             locationManager.requestWhenInUseAuthorization()
             return
         }

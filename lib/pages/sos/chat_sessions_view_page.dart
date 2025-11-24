@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/chat_session_model.dart';
 import 'package:logistics_app/pages/sos/chat_view_page.dart';
 import 'package:logistics_app/pages/sos/models/chart_model.dart';
@@ -53,7 +54,7 @@ class _ChatSessionsViewPageState extends State<ChatSessionsViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('聊天会话'),
+        title: Text(S.current.chat_sessions),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
         elevation: 0,
@@ -62,7 +63,7 @@ class _ChatSessionsViewPageState extends State<ChatSessionsViewPage> {
         child: Center(
           child: Column(
             children: [
-              Text('聊天会话'),
+              Text(S.current.chat_sessions),
               ListView.builder(
                 itemCount: chartModel.sessions.length,
                 itemBuilder: (context, index) {
@@ -131,7 +132,7 @@ class _ChatSessionsViewPageState extends State<ChatSessionsViewPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              session.lastMessage ?? '暂无消息',
+              session.lastMessage ?? S.current.no_message,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
@@ -165,7 +166,7 @@ class _ChatSessionsViewPageState extends State<ChatSessionsViewPage> {
       } else if (time.day == now.day - 1 &&
           time.month == now.month &&
           time.year == now.year) {
-        return '昨天';
+        return S.current.yesterday;
       } else {
         return '${time.month}/${time.day}';
       }

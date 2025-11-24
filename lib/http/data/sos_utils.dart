@@ -49,7 +49,7 @@ class SosUtils {
     Fail? fail,
   }) {
     HttpUtils.post(
-      '/customer/chat/sessions/mark/read',
+      '/customer/chat/messages/read',
       parameters,
       success: success,
       fail: fail,

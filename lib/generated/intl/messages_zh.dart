@@ -20,27 +20,31 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
-  static String m0(name) => "绑定${name}账号";
+  static String m0(orderNo) => "报警单号：${orderNo}";
 
-  static String m1(name) => "确定要解除${name}账号的绑定吗？";
+  static String m1(name) => "绑定${name}账号";
 
-  static String m2(title) => "删除${title}成功！";
+  static String m2(name) => "确定要解除${name}账号的绑定吗？";
 
-  static String m3(count) => "共${count}人";
+  static String m3(title) => "删除${title}成功！";
 
-  static String m4(title) => "请输入${title}";
+  static String m4(count) => "共${count}人";
 
-  static String m5(count) => "取餐成功，剩余${count}份包裹未取";
+  static String m5(title) => "请输入${title}";
 
-  static String m6(name) => "请输入${name}账号";
+  static String m6(count) => "取餐成功，剩余${count}份包裹未取";
 
-  static String m7(name) => "请输入${name}密码";
+  static String m7(name) => "请输入${name}账号";
 
-  static String m8(title) => "请填写${title}";
+  static String m8(name) => "请输入${name}密码";
 
-  static String m9(label) => "请输入${label}";
+  static String m9(title) => "请填写${title}";
 
-  static String m10(title) => "请选择${title}";
+  static String m10(label) => "请输入${label}";
+
+  static String m11(title) => "请选择${title}";
+
+  static String m12(error) => "发送消息时出错: ${error}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -58,6 +62,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "addressOutOfRange":
             MessageLookupByLibrary.simpleMessage("不在配送范围，请重新选择地址"),
         "admin": MessageLookupByLibrary.simpleMessage("管理员"),
+        "alarm_failed": MessageLookupByLibrary.simpleMessage("报警失败"),
+        "alarm_order_number": m0,
+        "alarm_reported": MessageLookupByLibrary.simpleMessage("已报警"),
+        "alarm_success": MessageLookupByLibrary.simpleMessage("报警成功"),
         "all": MessageLookupByLibrary.simpleMessage("全部"),
         "allRead": MessageLookupByLibrary.simpleMessage("全部已读"),
         "appTitle": MessageLookupByLibrary.simpleMessage("IWIP后勤综合服务"),
@@ -70,7 +78,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "basic_info": MessageLookupByLibrary.simpleMessage("基本信息"),
         "batch": MessageLookupByLibrary.simpleMessage("批次"),
         "bind": MessageLookupByLibrary.simpleMessage("绑定"),
-        "bindAccount": m0,
+        "bindAccount": m1,
         "bindFail": MessageLookupByLibrary.simpleMessage("绑定失败"),
         "bindMealDeliveryAccount":
             MessageLookupByLibrary.simpleMessage("绑定报餐送餐账号，获取报餐送餐系统权限功能信息"),
@@ -86,6 +94,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "busTimetable": MessageLookupByLibrary.simpleMessage("公交时刻表"),
         "busToday": MessageLookupByLibrary.simpleMessage("今日"),
         "businessHours": MessageLookupByLibrary.simpleMessage("营业时间"),
+        "call_phone": MessageLookupByLibrary.simpleMessage("拨打电话"),
         "cameraPermissionDenied":
             MessageLookupByLibrary.simpleMessage("相机权限被永久拒绝，打开设置页面"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
@@ -117,6 +126,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "changePassword": MessageLookupByLibrary.simpleMessage("修改密码"),
         "changeSuccess": MessageLookupByLibrary.simpleMessage("修改成功"),
         "changeTheme": MessageLookupByLibrary.simpleMessage("切换主题"),
+        "chat_sessions": MessageLookupByLibrary.simpleMessage("聊天会话"),
         "checkUpdate": MessageLookupByLibrary.simpleMessage("检查更新"),
         "checkout": MessageLookupByLibrary.simpleMessage("去结算"),
         "chineseFood": MessageLookupByLibrary.simpleMessage("中国餐"),
@@ -191,6 +201,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clickConfirmButtonToViewUnreceivedOrders":
             MessageLookupByLibrary.simpleMessage("点击确认按钮查看未接收订单"),
         "clickRetry": MessageLookupByLibrary.simpleMessage("点击重试"),
+        "click_to_start_dialog": MessageLookupByLibrary.simpleMessage("点击开始对话"),
         "close": MessageLookupByLibrary.simpleMessage("关闭"),
         "companyNews": MessageLookupByLibrary.simpleMessage("公司动态"),
         "completed": MessageLookupByLibrary.simpleMessage("已完结"),
@@ -210,10 +221,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirmSubmit": MessageLookupByLibrary.simpleMessage("确认提交"),
         "confirmSubmitContent":
             MessageLookupByLibrary.simpleMessage("确定要提交订单吗？"),
-        "confirmToUnbind": m1,
+        "confirmToUnbind": m2,
         "confirm_empty_all_input":
             MessageLookupByLibrary.simpleMessage("确定要清空所有输入内容吗？"),
+        "confirm_end_alarm": MessageLookupByLibrary.simpleMessage("确定要结束报警吗？"),
         "confirm_reset": MessageLookupByLibrary.simpleMessage("确认重置"),
+        "connecting_customer_service":
+            MessageLookupByLibrary.simpleMessage("正在连接客服..."),
         "contact": MessageLookupByLibrary.simpleMessage("联系Ta"),
         "contactNumber": MessageLookupByLibrary.simpleMessage("联系电话"),
         "contactPerson": MessageLookupByLibrary.simpleMessage("联系人"),
@@ -350,6 +364,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "currentBound": MessageLookupByLibrary.simpleMessage("当前绑定: "),
         "currentVersionIsLatest":
             MessageLookupByLibrary.simpleMessage("当前版本已是最新版本"),
+        "current_position": MessageLookupByLibrary.simpleMessage("当前位置"),
+        "current_position_failed":
+            MessageLookupByLibrary.simpleMessage("当前位置获取失败,请检查定位权限"),
+        "customer_service": MessageLookupByLibrary.simpleMessage("客服"),
         "dangerPage": MessageLookupByLibrary.simpleMessage("发现隐患"),
         "days_ago": MessageLookupByLibrary.simpleMessage("天前"),
         "defaultValue": MessageLookupByLibrary.simpleMessage("默认"),
@@ -359,7 +377,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "deleteRepair": MessageLookupByLibrary.simpleMessage("删除"),
         "deleteRepairSuccess": MessageLookupByLibrary.simpleMessage("删除报修单成功"),
         "deleteRepairTips": MessageLookupByLibrary.simpleMessage("确认删除该报修单吗?"),
-        "deleteSuccess": m2,
+        "deleteSuccess": m3,
         "deliver": MessageLookupByLibrary.simpleMessage("送达"),
         "deliverFailed": MessageLookupByLibrary.simpleMessage("送达失败"),
         "deliverFailedTips":
@@ -476,7 +494,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "deliverySuccess": MessageLookupByLibrary.simpleMessage("订单送达成功！"),
         "deliveryTel": MessageLookupByLibrary.simpleMessage("联系电话"),
         "deliveryTime": MessageLookupByLibrary.simpleMessage("配送时间"),
-        "deliveryTotal": m3,
+        "deliveryTotal": m4,
         "deliveryType": MessageLookupByLibrary.simpleMessage("配送方式"),
         "deliveryUploadFailed": MessageLookupByLibrary.simpleMessage("图片上传失败！"),
         "deliveryUploading": MessageLookupByLibrary.simpleMessage("图片上传中..."),
@@ -518,13 +536,23 @@ class MessageLookup extends MessageLookupByLibrary {
         "editToBeAuditedMessage":
             MessageLookupByLibrary.simpleMessage("修改成功，等待审核"),
         "email": MessageLookupByLibrary.simpleMessage("邮箱"),
+        "emergency_alarm_session":
+            MessageLookupByLibrary.simpleMessage("紧急报警会话"),
+        "emergency_alarm_system":
+            MessageLookupByLibrary.simpleMessage("紧急报警系统"),
+        "emergency_alarm_tips": MessageLookupByLibrary.simpleMessage(
+            "遇到紧急情况请立即按下报警按钮\n安全团队将在第一时间为您提供帮助"),
+        "emergency_chat": MessageLookupByLibrary.simpleMessage("紧急聊天"),
         "employeeNumber": MessageLookupByLibrary.simpleMessage("工号"),
         "en": MessageLookupByLibrary.simpleMessage("English"),
         "endDate": MessageLookupByLibrary.simpleMessage("结束日期"),
         "endOfList": MessageLookupByLibrary.simpleMessage("已经到底啦"),
         "endStation": MessageLookupByLibrary.simpleMessage("终点站"),
+        "end_alarm": MessageLookupByLibrary.simpleMessage("结束报警"),
         "enterNewPasswordAgin":
             MessageLookupByLibrary.simpleMessage("请再次输入新密码"),
+        "error_occurred_when_connecting_customer_service":
+            MessageLookupByLibrary.simpleMessage("连接客服时发生错误"),
         "evaluate": MessageLookupByLibrary.simpleMessage("评价"),
         "evaluated": MessageLookupByLibrary.simpleMessage("已评价"),
         "evaluation": MessageLookupByLibrary.simpleMessage("评价"),
@@ -547,6 +575,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "5. 多次上传未能通过照片审核的用户，可持工卡在工作时间到卡务柜台办理"),
         "faceCollectionTipsTitle":
             MessageLookupByLibrary.simpleMessage("采集标准要求说明"),
+        "failed_to_create_chat_session":
+            MessageLookupByLibrary.simpleMessage("无法创建聊天会话"),
+        "failed_to_reconnect_to_server":
+            MessageLookupByLibrary.simpleMessage("无法重新连接到服务器"),
         "feedback": MessageLookupByLibrary.simpleMessage("留言反馈"),
         "feedbackContent": MessageLookupByLibrary.simpleMessage("留言内容"),
         "feedbackTitle": MessageLookupByLibrary.simpleMessage("留言标题"),
@@ -582,6 +614,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "head": MessageLookupByLibrary.simpleMessage("负责人"),
         "hello": MessageLookupByLibrary.simpleMessage("你好"),
         "homePage": MessageLookupByLibrary.simpleMessage("首页"),
+        "hour_response": MessageLookupByLibrary.simpleMessage("24小时响应"),
         "hours_ago": MessageLookupByLibrary.simpleMessage("小时前"),
         "iWantToEat": MessageLookupByLibrary.simpleMessage("我想吃"),
         "i_want_to_eat": MessageLookupByLibrary.simpleMessage("我想吃"),
@@ -599,7 +632,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "inputDifferentPassword":
             MessageLookupByLibrary.simpleMessage("输入的两次密码不同"),
         "inputIdCard": MessageLookupByLibrary.simpleMessage("请输入您的身份证号"),
-        "inputMessage": m4,
+        "inputMessage": m5,
         "inputNewPassword": MessageLookupByLibrary.simpleMessage("请输入新密码"),
         "inputOldPassword": MessageLookupByLibrary.simpleMessage("请输入旧密码"),
         "inputOrderName": MessageLookupByLibrary.simpleMessage("请输入订单姓名"),
@@ -613,6 +646,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "kTimeDetail": MessageLookupByLibrary.simpleMessage("小K拾光详情"),
         "kTimeList": MessageLookupByLibrary.simpleMessage("小K拾光"),
         "lastTripTime": MessageLookupByLibrary.simpleMessage("末班车"),
+        "latest_time": MessageLookupByLibrary.simpleMessage("最新时间"),
         "library": MessageLookupByLibrary.simpleMessage("图书馆"),
         "library_book": MessageLookupByLibrary.simpleMessage("图书"),
         "library_book_detail": MessageLookupByLibrary.simpleMessage("图书详情"),
@@ -658,7 +692,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "manage": MessageLookupByLibrary.simpleMessage("管理"),
         "mealDelivery": MessageLookupByLibrary.simpleMessage("报餐送餐"),
         "mealDeliveryAccept": MessageLookupByLibrary.simpleMessage("手持机扫码接单"),
-        "mealDeliverySuccess": m5,
+        "mealDeliverySuccess": m6,
         "mealTime": MessageLookupByLibrary.simpleMessage("餐次"),
         "mealType": MessageLookupByLibrary.simpleMessage("餐别"),
         "message": MessageLookupByLibrary.simpleMessage("消息"),
@@ -679,6 +713,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "myReleaseList": MessageLookupByLibrary.simpleMessage("我的发布列表"),
         "myRepair": MessageLookupByLibrary.simpleMessage("我的报修"),
         "my_good_deeds": MessageLookupByLibrary.simpleMessage("我的发布"),
+        "myself": MessageLookupByLibrary.simpleMessage("我"),
         "name": MessageLookupByLibrary.simpleMessage("姓名"),
         "needCameraPermission":
             MessageLookupByLibrary.simpleMessage("需要相机权限才能扫码"),
@@ -701,6 +736,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "no_food_menu_info": MessageLookupByLibrary.simpleMessage("暂无菜谱信息"),
         "no_food_menu_info_tips":
             MessageLookupByLibrary.simpleMessage("该日期暂无菜谱安排"),
+        "no_message": MessageLookupByLibrary.simpleMessage("暂无消息"),
         "no_more_info": MessageLookupByLibrary.simpleMessage("暂无详细信息"),
         "normalOrder": MessageLookupByLibrary.simpleMessage("正常订单"),
         "not_filled": MessageLookupByLibrary.simpleMessage("未填写"),
@@ -714,6 +750,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlineApply": MessageLookupByLibrary.simpleMessage("在线申请"),
         "onlineDelivery": MessageLookupByLibrary.simpleMessage("在线接单"),
         "onlineDining": MessageLookupByLibrary.simpleMessage("在线订餐"),
+        "online_customer_service": MessageLookupByLibrary.simpleMessage("在线客服"),
         "operator": MessageLookupByLibrary.simpleMessage("操作人"),
         "optional": MessageLookupByLibrary.simpleMessage("（可选）"),
         "order": MessageLookupByLibrary.simpleMessage("点餐"),
@@ -758,6 +795,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "personal_info": MessageLookupByLibrary.simpleMessage("个人信息"),
         "phone": MessageLookupByLibrary.simpleMessage("手机号"),
         "phoneNumber": MessageLookupByLibrary.simpleMessage("联系电话"),
+        "phone_number_empty": MessageLookupByLibrary.simpleMessage("电话号码为空"),
         "photoAlbum": MessageLookupByLibrary.simpleMessage("相册"),
         "pickupCode": MessageLookupByLibrary.simpleMessage("货架"),
         "pickupLimitTime": MessageLookupByLibrary.simpleMessage("取餐限定时间"),
@@ -765,13 +803,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "pickupType": MessageLookupByLibrary.simpleMessage("取餐方式"),
         "pleaseAcceptOrder": MessageLookupByLibrary.simpleMessage("请先接单"),
         "pleaseCancelOrder": MessageLookupByLibrary.simpleMessage("请先取消订单"),
-        "pleaseEnterAccount": m6,
-        "pleaseEnterPassword": m7,
-        "pleaseFillIn": m8,
-        "pleaseInput": m9,
+        "pleaseEnterAccount": m7,
+        "pleaseEnterPassword": m8,
+        "pleaseFillIn": m9,
+        "pleaseInput": m10,
         "pleaseScanTheBarcode":
             MessageLookupByLibrary.simpleMessage("请将条形码放入框内，即可自动扫描"),
-        "pleaseSelect": m10,
+        "pleaseSelect": m11,
         "please_enter_good_deeds_contact_info":
             MessageLookupByLibrary.simpleMessage("请输入联系方式"),
         "please_enter_good_deeds_description":
@@ -800,6 +838,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("请拍摄或选择隐患现场照片，最多选择6张"),
         "please_upload_hazard_video":
             MessageLookupByLibrary.simpleMessage("请上传发现视频"),
+        "press_alarm": MessageLookupByLibrary.simpleMessage("按下报警"),
+        "press_to_speak": MessageLookupByLibrary.simpleMessage("按住 说话"),
         "price": MessageLookupByLibrary.simpleMessage("价格"),
         "process": MessageLookupByLibrary.simpleMessage("处理"),
         "processDescription": MessageLookupByLibrary.simpleMessage("流程说明"),
@@ -832,8 +872,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "recommendPerson": MessageLookupByLibrary.simpleMessage("推荐人"),
         "recommendReason": MessageLookupByLibrary.simpleMessage("推荐理由"),
         "recommendTime": MessageLookupByLibrary.simpleMessage("推荐时间"),
+        "reconnected_to_server":
+            MessageLookupByLibrary.simpleMessage("已重新连接到服务器"),
         "record_the_warm_moments_around_you":
             MessageLookupByLibrary.simpleMessage("记录身边的温暖瞬间，传递正能量"),
+        "recording_audio": MessageLookupByLibrary.simpleMessage("正在录音..."),
         "reduceOrder": MessageLookupByLibrary.simpleMessage("减餐"),
         "refresh": MessageLookupByLibrary.simpleMessage("刷新"),
         "refreshComplete": MessageLookupByLibrary.simpleMessage("刷新完成"),
@@ -847,6 +890,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "registerText": MessageLookupByLibrary.simpleMessage("没有账号？立即注册"),
         "related_account": MessageLookupByLibrary.simpleMessage("关联帐号"),
         "releaseLoadMore": MessageLookupByLibrary.simpleMessage("释放加载更多"),
+        "release_finger_to_cancel":
+            MessageLookupByLibrary.simpleMessage("松开手指，取消发送"),
+        "release_to_send": MessageLookupByLibrary.simpleMessage("松开 发送"),
         "reload": MessageLookupByLibrary.simpleMessage("重新加载"),
         "remaining": MessageLookupByLibrary.simpleMessage("剩余"),
         "remark": MessageLookupByLibrary.simpleMessage("备注"),
@@ -927,6 +973,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("选择对应的餐次和餐种"),
         "selectRepairTime": MessageLookupByLibrary.simpleMessage("请选择维修时间"),
         "selectRepairType": MessageLookupByLibrary.simpleMessage("请选择维修类型"),
+        "select_contact_method": MessageLookupByLibrary.simpleMessage("选择联系方式"),
         "select_date": MessageLookupByLibrary.simpleMessage("选择日期"),
         "select_discover_date": MessageLookupByLibrary.simpleMessage("请选择发现日期"),
         "select_discover_description":
@@ -938,12 +985,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_discover_time": MessageLookupByLibrary.simpleMessage("请选择发现时间"),
         "selected": MessageLookupByLibrary.simpleMessage("已选择"),
         "selfPickup": MessageLookupByLibrary.simpleMessage("自取"),
+        "sendMessageError": m12,
         "serviceGuide": MessageLookupByLibrary.simpleMessage("服务指南"),
         "setDefault": MessageLookupByLibrary.simpleMessage("确定把该地址设置为默认吗？"),
         "share_your_good_deeds":
             MessageLookupByLibrary.simpleMessage("分享您的好人好事"),
         "shopWorkbench": MessageLookupByLibrary.simpleMessage("店铺工作台"),
         "size": MessageLookupByLibrary.simpleMessage("尺寸"),
+        "sos": MessageLookupByLibrary.simpleMessage("SOS"),
+        "sos_alarm_tips":
+            MessageLookupByLibrary.simpleMessage("请勿滥用紧急报警功能，虚假报警将承担相应责任"),
+        "sos_emergency_alarm": MessageLookupByLibrary.simpleMessage("SOS紧急报警"),
         "startDate": MessageLookupByLibrary.simpleMessage("开始日期"),
         "startLocation": MessageLookupByLibrary.simpleMessage("开始定位"),
         "startStation": MessageLookupByLibrary.simpleMessage("起点站"),
@@ -963,6 +1015,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("提交成功"),
         "submitting": MessageLookupByLibrary.simpleMessage("提交中..."),
         "supplementOrder": MessageLookupByLibrary.simpleMessage("补餐"),
+        "system": MessageLookupByLibrary.simpleMessage("系统"),
         "takePhoto": MessageLookupByLibrary.simpleMessage("拍摄"),
         "takeout": MessageLookupByLibrary.simpleMessage("打包"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("三个月"),
@@ -983,7 +1036,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "today": MessageLookupByLibrary.simpleMessage("今天"),
         "toolPage": MessageLookupByLibrary.simpleMessage("工具箱"),
         "total": MessageLookupByLibrary.simpleMessage("合计"),
+        "triggering_emergency_alarm":
+            MessageLookupByLibrary.simpleMessage("正在发起紧急报警..."),
         "tripNumber": MessageLookupByLibrary.simpleMessage("班次数"),
+        "trying_to_reconnect":
+            MessageLookupByLibrary.simpleMessage("正在尝试重新连接..."),
         "type": MessageLookupByLibrary.simpleMessage("类型"),
         "type_no": MessageLookupByLibrary.simpleMessage("类型编号"),
         "unbind": MessageLookupByLibrary.simpleMessage("解除绑定"),
@@ -1004,6 +1061,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "unread": MessageLookupByLibrary.simpleMessage("未读"),
         "unreceived": MessageLookupByLibrary.simpleMessage("未收"),
         "unreceivedOrder": MessageLookupByLibrary.simpleMessage("未取订单"),
+        "unsupported_file_type":
+            MessageLookupByLibrary.simpleMessage("不支持的文件类型"),
         "update": MessageLookupByLibrary.simpleMessage("更新"),
         "updateAddressData": MessageLookupByLibrary.simpleMessage("更新区域数据"),
         "updateAppStore":
@@ -1018,6 +1077,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "uploadNewFacePhoto": MessageLookupByLibrary.simpleMessage("上传新证件照"),
         "upload_images_failed":
             MessageLookupByLibrary.simpleMessage("图片上传失败，请重试"),
+        "uploading_file": MessageLookupByLibrary.simpleMessage("正在上传文件..."),
         "usageInstructions": MessageLookupByLibrary.simpleMessage("使用说明"),
         "useHandheldScannerToScanBarcode":
             MessageLookupByLibrary.simpleMessage("使用手持机扫描条码"),
@@ -1027,6 +1087,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "userNamePlaceholder": MessageLookupByLibrary.simpleMessage("请输入您的账号"),
         "usernamePlaceholder": MessageLookupByLibrary.simpleMessage("请输入您的工号"),
         "version": MessageLookupByLibrary.simpleMessage("版本"),
+        "video_preview": MessageLookupByLibrary.simpleMessage("视频预览"),
         "viewOrder": MessageLookupByLibrary.simpleMessage("查看订单"),
         "viewPerson": MessageLookupByLibrary.simpleMessage("查看人员"),
         "viewed": MessageLookupByLibrary.simpleMessage("已查看"),
@@ -1036,6 +1097,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "welcome": MessageLookupByLibrary.simpleMessage("欢迎来到IWIP后勤综合服务APP"),
         "woman": MessageLookupByLibrary.simpleMessage("女"),
         "workNo": MessageLookupByLibrary.simpleMessage("工号"),
+        "yesterday": MessageLookupByLibrary.simpleMessage("昨天"),
         "zh": MessageLookupByLibrary.simpleMessage("中文")
       };
 }

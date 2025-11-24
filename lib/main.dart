@@ -78,6 +78,11 @@ Future<String> getDeviceId() async {
 }
 
 Future<void> initializeFirebase() async {
+  final deviceId = await getDeviceId();
+  print('deviceId: $deviceId');
+  if (deviceId.isNotEmpty) {
+    SpUtils.saveString(Constants.SP_DEVICE_TOKEN, deviceId);
+  }
   if (Platform.isAndroid) {
     final availability =
         await GoogleApiAvailability.instance
@@ -85,11 +90,6 @@ Future<void> initializeFirebase() async {
 
     if (availability != GooglePlayServicesAvailability.success) {
       print("Google Play 服务不可用: $availability");
-      final deviceId = await getDeviceId();
-      print('deviceId: $deviceId');
-      if (deviceId.isNotEmpty) {
-        SpUtils.saveString(Constants.SP_DEVICE_TOKEN, deviceId);
-      }
       return; // 跳过 Firebase 初始化
     }
   }
@@ -209,42 +209,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      SpUtils.getString(Constants.SP_TOKEN).then((token) {
-        if (token != null) {
-          // 应用从后台返回前台时刷新 token
-          _checkAndRefreshToken();
-        }
-      });
-    }
-  }
-
-  Future<void> _checkAndRefreshToken() async {
-    String refreshToken = await SpUtils.getString(Constants.SP_REFRESH_TOKEN);
-    DataUtils.updateToken(
-      {'refreshToken': refreshToken},
-      success: (data) async {
-        var token = data['data']['accessToken'];
-        var refreshToken = data['data']['refreshToken'];
-        await SpUtils.saveString(Constants.SP_TOKEN, token ?? "");
-        await SpUtils.saveString(
-          Constants.SP_REFRESH_TOKEN,
-          refreshToken ?? "",
-        );
-      },
-      fail: (code, msg) {
-        print('refreshToken fail: $code, $msg');
-        if (code == ExceptionHandle.refresh_token_invalid) {
-          SpUtils.remove(Constants.SP_TOKEN);
-          SpUtils.remove(Constants.SP_REFRESH_TOKEN);
-          RouteUtils.navigateToLogin();
-        }
-      },
-    );
   }
 
   @override

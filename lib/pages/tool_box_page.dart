@@ -147,14 +147,11 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
 
   // 获取我的报修未读数量
   Future<void> getMyRepairUnreadCount() async {
-    RepairUtils.getMyRepairList(
-      {'pageNum': 1, 'pageSize': 1000, 'status': 1, 'readStatus': 1},
+    RepairUtils.getMyRepairUnreadCount(
       success: (data) {
         setState(() {
-          if (repairUnreadCount != data['total']) {
-            repairUnreadCount = data['total'];
-            filterAppMenu();
-          }
+          repairUnreadCount = data['data'];
+          filterAppMenu();
         });
       },
     );

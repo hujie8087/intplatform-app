@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/model/chat_message_model.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -152,7 +153,8 @@ class ChatService {
           sessionId: jsonData['sessionId']?.toString() ?? '',
           senderType: jsonData['senderType']?.toString() ?? 'USER',
           senderId: jsonData['senderId']?.toString() ?? '',
-          senderName: jsonData['senderName']?.toString() ?? '客服',
+          senderName:
+              jsonData['senderName']?.toString() ?? S.current.customer_service,
           type: jsonData['type']?.toString() ?? 'NEW_MESSAGE',
           userId: jsonData['userId']?.toString() ?? '',
           nickName: jsonData['nickName']?.toString() ?? '',
@@ -235,7 +237,7 @@ class ChatService {
     Map<String, dynamic> messageData = {
       'type': 'CHAT_MESSAGE',
       'senderId': senderId,
-      'targetUserId': 'AGENT',
+      'targetUserId': '1423092221',
       'content': content,
       'senderType': 'USER',
       'senderName': senderName,

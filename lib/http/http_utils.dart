@@ -20,7 +20,6 @@ import 'log_utils.dart';
 
 typedef Success<T> = Function(T data);
 typedef Fail = Function(int code, String msg);
-bool isRefreshing = false;
 
 // 日志开关
 const bool isOpenLog = true;
@@ -224,54 +223,31 @@ class HttpUtils {
         // token过期，刷新token
         else if (resultData['code'] == ExceptionHandle.token_expired) {
           // 防止多个接口同时 token 过期造成重复刷新
-          if (!isRefreshing) {
-            isRefreshing = true;
-            String refreshToken =
-                await SpUtils.getString(Constants.SP_REFRESH_TOKEN) ?? '';
+          String refreshToken =
+              await SpUtils.getString(Constants.SP_REFRESH_TOKEN) ?? '';
 
-            DataUtils.updateToken(
-              {'refreshToken': refreshToken},
-              success: (data) async {
-                isRefreshing = false;
-
-                // 假设新 token 存在 data['token']
-                final newToken = data['token'];
-                await SpUtils.saveString(Constants.SP_TOKEN, newToken);
-
-                // 重新执行上一次请求
-                var retryResult = await DioUtils.instance.request(
-                  method,
-                  url,
-                  data: data,
-                  queryParameters: queryParameters,
-                  onSuccess: success,
-                  onError: fail,
-                );
-
-                return retryResult;
-              },
-              fail: (code, msg) {
-                isRefreshing = false;
-                // 刷新失败 -> 跳转登录
-                ProgressHUD.showText('登录已过期，请重新登录');
-                SpUtils.remove(Constants.SP_TOKEN);
-                SpUtils.remove(Constants.SP_REFRESH_TOKEN);
-                RouteUtils.navigateToLogin();
-              },
-            );
-          } else if ((resultData['status'] == ExceptionHandle.not_found)) {
-            ProgressHUD.showText('无法连接服务器');
-            fail?.call(ExceptionHandle.not_found, '无法连接服务器');
-          } else {
-            // 其他状态，弹出错误提示信息
-            ProgressHUD.showText(
-              resultData['msg'] ?? resultData['message'] ?? '请求失败',
-            );
-            fail?.call(
-              resultData['code'],
-              resultData['msg'] ?? resultData['message'] ?? '请求失败',
-            );
-          }
+          DataUtils.updateToken(
+            {'refreshToken': refreshToken},
+            success: (data) async {
+              // 假设新 token 存在 data['token']
+              final newToken = data['data']['accessToken'];
+              final refreshToken = data['data']['refreshToken'];
+              await SpUtils.saveString(Constants.SP_TOKEN, newToken);
+              await SpUtils.saveString(
+                Constants.SP_REFRESH_TOKEN,
+                refreshToken,
+              );
+              // 刷新当前页面
+              RouteUtils.refreshCurrentPage();
+            },
+            fail: (code, msg) {
+              // 刷新失败 -> 跳转登录
+              ProgressHUD.showText('登录已过期，请重新登录');
+              SpUtils.remove(Constants.SP_TOKEN);
+              SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+              RouteUtils.navigateToLogin();
+            },
+          );
         } else {
           // 其他状态，弹出错误提示信息
           ProgressHUD.showError(
@@ -284,7 +260,6 @@ class HttpUtils {
         }
       },
       onError: (code, msg) {
-        isRefreshing = false;
         if (loadingText != null && loadingText.isNotEmpty) {
           ProgressHUD.hide();
         }

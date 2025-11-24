@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/pages/sos/chat_list_page.dart';
 import 'package:logistics_app/pages/sos/models/chat_list_model.dart';
 import 'package:logistics_app/pages/sos/widgets/info_card.dart';
 import 'package:logistics_app/pages/sos/widgets/sos_button.dart';
 import 'package:logistics_app/pages/sos/widgets/contact_options.dart';
+import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:provider/provider.dart';
 
 class SosIndexPage extends StatefulWidget {
@@ -24,32 +27,12 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
     chatListModel.initialize();
   }
 
-  // 上传图片
-  // Future<void> _uploadImage() async {
-  //   // final result = await HJBottomSheet.wxPicker(context, [], 1);
-  //   final result = await Picker.assetsCamera(context: context);
-  //   print('result: $result');
-  //   if (result != null) {
-  //     ProgressHUD.showLoadingText('上传图片...');
-  //     try {
-  //       final fileUrl = await uploadMealDeliveryFile([result]);
-  //       ProgressHUD.hide();
-  //       if (fileUrl.isNotEmpty) {
-  //         chatListModel.reportImage = fileUrl[0];
-  //         setState(() {});
-  //       }
-  //     } catch (e) {
-  //       ProgressHUD.showError('上传图片失败: $e');
-  //     }
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'SOS紧急报警',
+          S.current.sos_emergency_alarm,
           style: TextStyle(fontSize: 16.px, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -58,14 +41,27 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
         elevation: 0,
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.chat_bubble_outline),
+          ElevatedButton(
             onPressed:
                 () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ChatListPage()),
                 ),
-            tooltip: '聊天列表',
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              foregroundColor: Colors.white,
+              textStyle: TextStyle(fontSize: 12.px),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Icon(Icons.chat_bubble_outline, size: 16.px),
+                SizedBox(width: 3.px),
+                Text('记录', style: TextStyle(fontSize: 12.px)),
+              ],
+            ),
           ),
         ],
         flexibleSpace: Container(
@@ -134,17 +130,70 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                   ? ContactOptions(
                                     key: const ValueKey('contact-options'),
                                     onPhoneCall:
-                                        () =>
-                                            chatListModel.makePhoneCall('110'),
-                                    onChat:
-                                        () => chatListModel.startEmergencyChat(
-                                          context,
+                                        () => chatListModel.makePhoneCall(
+                                          chatListModel.contactList.first.tel,
                                         ),
+                                    onChat:
+                                        () => {
+                                          chatListModel.enterChat(
+                                            context,
+                                            chatListModel.currentSessionId ??
+                                                '',
+                                          ),
+                                        },
                                     onVoiceMessage: () => {},
                                   )
                                   : const SizedBox(key: ValueKey('empty')),
                         ),
                         SizedBox(height: 10.px),
+                        // 当已经报警时，可以结束报警状态
+                        if (chatListModel.isAlarmTriggered)
+                          ElevatedButton(
+                            onPressed:
+                                () => {
+                                  // 弹窗确认框
+                                  showDialog(
+                                    context: context,
+                                    builder:
+                                        (context) => AlertDialog(
+                                          title: Text(S.current.end_alarm),
+                                          content: Text(
+                                            S.current.confirm_end_alarm,
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed:
+                                                  () => Navigator.pop(context),
+                                              child: Text(S.current.cancel),
+                                            ),
+                                            TextButton(
+                                              onPressed:
+                                                  () => {
+                                                    chatListModel
+                                                            .isAlarmTriggered =
+                                                        false,
+                                                    SpUtils.saveBool(
+                                                      'isAlarmTriggered',
+                                                      false,
+                                                    ),
+                                                    chatListModel
+                                                            .currentSessionId =
+                                                        null,
+                                                    SpUtils.remove(
+                                                      'currentSessionId',
+                                                    ),
+                                                    Navigator.pop(context),
+                                                    // 刷新当前页面
+                                                    RouteUtils.refreshCurrentPage(),
+                                                  },
+                                              child: Text(S.current.confirm),
+                                            ),
+                                          ],
+                                        ),
+                                  ),
+                                },
+                            child: Text('结束报警'),
+                          ),
                         Spacer(),
                         Container(
                           padding: EdgeInsets.all(16.px),
@@ -167,7 +216,7 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                               SizedBox(width: 8.px, height: 8.px),
                               Expanded(
                                 child: Text(
-                                  '请勿滥用紧急报警功能，虚假报警将承担相应责任',
+                                  S.current.sos_alarm_tips,
                                   style: TextStyle(
                                     fontSize: 12.px,
                                     color: Colors.white.withOpacity(0.8),

@@ -18,6 +18,7 @@ class AuthViewModel with ChangeNotifier {
   String? confirmPassword = "";
   String? nickName = "";
   bool? isFirstLogin = false;
+
   Future<bool> login() async {
     if (inputUserName?.trim().isEmpty == true) {
       ProgressHUD.showError(S.current.inputMessage(S.current.userName));

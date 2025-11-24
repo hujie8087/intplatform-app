@@ -60,6 +60,7 @@ class MineViewModel with ChangeNotifier {
         SpUtils.remove(Constants.SP_USER_NICKNAME);
         SpUtils.remove(Constants.SP_USER_DEPT);
         SpUtils.remove(Constants.SP_TOKEN);
+        SpUtils.remove(Constants.SP_REFRESH_TOKEN);
         notifyListeners();
       },
       fail: (code, msg) {

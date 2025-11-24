@@ -8359,6 +8359,446 @@ class S {
       args: [],
     );
   }
+
+  /// `SOS紧急报警`
+  String get sos_emergency_alarm {
+    return Intl.message(
+      'SOS紧急报警',
+      name: 'sos_emergency_alarm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `结束报警`
+  String get end_alarm {
+    return Intl.message(
+      '结束报警',
+      name: 'end_alarm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `确定要结束报警吗？`
+  String get confirm_end_alarm {
+    return Intl.message(
+      '确定要结束报警吗？',
+      name: 'confirm_end_alarm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请勿滥用紧急报警功能，虚假报警将承担相应责任`
+  String get sos_alarm_tips {
+    return Intl.message(
+      '请勿滥用紧急报警功能，虚假报警将承担相应责任',
+      name: 'sos_alarm_tips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `在线客服`
+  String get online_customer_service {
+    return Intl.message(
+      '在线客服',
+      name: 'online_customer_service',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `系统`
+  String get system {
+    return Intl.message(
+      '系统',
+      name: 'system',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `我`
+  String get myself {
+    return Intl.message(
+      '我',
+      name: 'myself',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `发送消息时出错: {error}`
+  String sendMessageError(Object error) {
+    return Intl.message(
+      '发送消息时出错: $error',
+      name: 'sendMessageError',
+      desc: '',
+      args: [error],
+    );
+  }
+
+  /// `聊天会话`
+  String get chat_sessions {
+    return Intl.message(
+      '聊天会话',
+      name: 'chat_sessions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无消息`
+  String get no_message {
+    return Intl.message(
+      '暂无消息',
+      name: 'no_message',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `昨天`
+  String get yesterday {
+    return Intl.message(
+      '昨天',
+      name: 'yesterday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `正在上传文件...`
+  String get uploading_file {
+    return Intl.message(
+      '正在上传文件...',
+      name: 'uploading_file',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `不支持的文件类型`
+  String get unsupported_file_type {
+    return Intl.message(
+      '不支持的文件类型',
+      name: 'unsupported_file_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `客服`
+  String get customer_service {
+    return Intl.message(
+      '客服',
+      name: 'customer_service',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `紧急报警会话`
+  String get emergency_alarm_session {
+    return Intl.message(
+      '紧急报警会话',
+      name: 'emergency_alarm_session',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `报警单号：{orderNo}`
+  String alarm_order_number(Object orderNo) {
+    return Intl.message(
+      '报警单号：$orderNo',
+      name: 'alarm_order_number',
+      desc: '',
+      args: [orderNo],
+    );
+  }
+
+  /// `最新时间`
+  String get latest_time {
+    return Intl.message(
+      '最新时间',
+      name: 'latest_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `正在尝试重新连接...`
+  String get trying_to_reconnect {
+    return Intl.message(
+      '正在尝试重新连接...',
+      name: 'trying_to_reconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已重新连接到服务器`
+  String get reconnected_to_server {
+    return Intl.message(
+      '已重新连接到服务器',
+      name: 'reconnected_to_server',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `无法重新连接到服务器`
+  String get failed_to_reconnect_to_server {
+    return Intl.message(
+      '无法重新连接到服务器',
+      name: 'failed_to_reconnect_to_server',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `点击开始对话`
+  String get click_to_start_dialog {
+    return Intl.message(
+      '点击开始对话',
+      name: 'click_to_start_dialog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `选择联系方式`
+  String get select_contact_method {
+    return Intl.message(
+      '选择联系方式',
+      name: 'select_contact_method',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `拨打电话`
+  String get call_phone {
+    return Intl.message(
+      '拨打电话',
+      name: 'call_phone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `紧急聊天`
+  String get emergency_chat {
+    return Intl.message(
+      '紧急聊天',
+      name: 'emergency_chat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `紧急报警系统`
+  String get emergency_alarm_system {
+    return Intl.message(
+      '紧急报警系统',
+      name: 'emergency_alarm_system',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `24小时响应`
+  String get hour_response {
+    return Intl.message(
+      '24小时响应',
+      name: 'hour_response',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `遇到紧急情况请立即按下报警按钮\n安全团队将在第一时间为您提供帮助`
+  String get emergency_alarm_tips {
+    return Intl.message(
+      '遇到紧急情况请立即按下报警按钮\n安全团队将在第一时间为您提供帮助',
+      name: 'emergency_alarm_tips',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已报警`
+  String get alarm_reported {
+    return Intl.message(
+      '已报警',
+      name: 'alarm_reported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SOS`
+  String get sos {
+    return Intl.message(
+      'SOS',
+      name: 'sos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `按下报警`
+  String get press_alarm {
+    return Intl.message(
+      '按下报警',
+      name: 'press_alarm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `视频预览`
+  String get video_preview {
+    return Intl.message(
+      '视频预览',
+      name: 'video_preview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `松开手指，取消发送`
+  String get release_finger_to_cancel {
+    return Intl.message(
+      '松开手指，取消发送',
+      name: 'release_finger_to_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `松开 发送`
+  String get release_to_send {
+    return Intl.message(
+      '松开 发送',
+      name: 'release_to_send',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `按住 说话`
+  String get press_to_speak {
+    return Intl.message(
+      '按住 说话',
+      name: 'press_to_speak',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `正在录音...`
+  String get recording_audio {
+    return Intl.message(
+      '正在录音...',
+      name: 'recording_audio',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `正在发起紧急报警...`
+  String get triggering_emergency_alarm {
+    return Intl.message(
+      '正在发起紧急报警...',
+      name: 'triggering_emergency_alarm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `当前位置获取失败,请检查定位权限`
+  String get current_position_failed {
+    return Intl.message(
+      '当前位置获取失败,请检查定位权限',
+      name: 'current_position_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `当前位置`
+  String get current_position {
+    return Intl.message(
+      '当前位置',
+      name: 'current_position',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `报警成功`
+  String get alarm_success {
+    return Intl.message(
+      '报警成功',
+      name: 'alarm_success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `报警失败`
+  String get alarm_failed {
+    return Intl.message(
+      '报警失败',
+      name: 'alarm_failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `电话号码为空`
+  String get phone_number_empty {
+    return Intl.message(
+      '电话号码为空',
+      name: 'phone_number_empty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `正在连接客服...`
+  String get connecting_customer_service {
+    return Intl.message(
+      '正在连接客服...',
+      name: 'connecting_customer_service',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `无法创建聊天会话`
+  String get failed_to_create_chat_session {
+    return Intl.message(
+      '无法创建聊天会话',
+      name: 'failed_to_create_chat_session',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `连接客服时发生错误`
+  String get error_occurred_when_connecting_customer_service {
+    return Intl.message(
+      '连接客服时发生错误',
+      name: 'error_occurred_when_connecting_customer_service',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/chat_session_model.dart';
 import 'package:logistics_app/pages/sos/models/chat_list_model.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
@@ -16,31 +17,44 @@ class _ChatListPage extends State<ChatListPage> {
   void initState() {
     super.initState();
     chatListModel.initialize();
+    chatListModel.loadChatSessions();
+  }
+
+  @override
+  void dispose() {
+    chatListModel.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('客服对话', style: TextStyle(fontSize: 16.px)),
+        title: Text(S.current.chat_sessions, style: TextStyle(fontSize: 16.px)),
         backgroundColor: const Color(0xFFd32f2f),
         foregroundColor: Colors.white,
         actions: [],
       ),
-      body: Builder(
-        builder: (context) {
+      body: AnimatedBuilder(
+        animation: chatListModel,
+        builder: (context, _) {
           if (chatListModel.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
           if (chatListModel.chatSessions?.isEmpty ?? true) {
             return Center(
-              child: Text('暂无对话记录', style: TextStyle(fontSize: 16.px)),
+              child: Text(
+                S.current.no_message,
+                style: TextStyle(fontSize: 16.px),
+              ),
             );
           }
 
           return RefreshIndicator(
-            onRefresh: chatListModel.loadChatSessions,
+            onRefresh: () async {
+              await chatListModel.loadChatSessions();
+            },
             child: ListView.builder(
               itemCount: chatListModel.chatSessions?.length ?? 0,
               itemBuilder: (context, index) {
@@ -71,6 +85,7 @@ class _ChatListPage extends State<ChatListPage> {
   ) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 16.px, vertical: 4.px),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.px)),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: const Color(0xFFd32f2f),
@@ -82,7 +97,7 @@ class _ChatListPage extends State<ChatListPage> {
         ),
         subtitle: Text(
           session.lastMessage?.isEmpty ?? true
-              ? '点击开始对话'
+              ? S.current.click_to_start_dialog
               : session.lastMessage ?? '',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -93,11 +108,7 @@ class _ChatListPage extends State<ChatListPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              _formatTime(
-                DateTime.parse(
-                  session.lastMessageTime ?? DateTime.now().toIso8601String(),
-                ),
-              ),
+              _formatTime(DateTime.parse(session.createTime)),
               style: TextStyle(fontSize: 12.px, color: Colors.grey[600]),
             ),
             if ((session.unreadCount ?? 0) > 0)
@@ -115,12 +126,13 @@ class _ChatListPage extends State<ChatListPage> {
               ),
           ],
         ),
-        onTap:
-            () => chatListModel.enterChat(
-              context,
-              session.sessionId,
-              (session.unreadCount ?? 0) > 0,
-            ),
+        onTap: () {
+          chatListModel.enterChat(
+            context,
+            session.sessionId,
+            (session.unreadCount ?? 0) > 0,
+          );
+        },
       ),
     );
   }
@@ -130,13 +142,13 @@ class _ChatListPage extends State<ChatListPage> {
     final diff = now.difference(time);
 
     if (diff.inDays > 0) {
-      return '${diff.inDays}天前';
+      return '${diff.inDays} ${S.current.days_ago}';
     } else if (diff.inHours > 0) {
-      return '${diff.inHours}小时前';
+      return '${diff.inHours} ${S.current.hours_ago}';
     } else if (diff.inMinutes > 0) {
-      return '${diff.inMinutes}分钟前';
+      return '${diff.inMinutes} ${S.current.minutes_ago}';
     } else {
-      return '刚刚';
+      return S.current.just_now;
     }
   }
 }

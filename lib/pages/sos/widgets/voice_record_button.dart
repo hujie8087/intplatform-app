@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class VoiceRecordButton extends StatefulWidget {
@@ -107,7 +108,11 @@ class _VoiceRecordButtonState extends State<VoiceRecordButton>
               border: Border.all(color: Colors.red),
             ),
             child: Text(
-              _isRecording ? (_isCancel ? '松开手指，取消发送' : '松开 发送') : '按住 说话',
+              _isRecording
+                  ? (_isCancel
+                      ? S.current.release_finger_to_cancel
+                      : S.current.release_to_send)
+                  : S.current.press_to_speak,
               style: TextStyle(
                 color: _isRecording ? Colors.white : Colors.red,
                 fontSize: 14.px,
@@ -142,7 +147,9 @@ class _VoiceRecordButtonState extends State<VoiceRecordButton>
               _buildWaveformAnimation(),
             SizedBox(height: 8.px),
             Text(
-              _isCancel ? '松开手指，取消发送' : '正在录音...',
+              _isCancel
+                  ? S.current.release_finger_to_cancel
+                  : S.current.recording_audio,
               style: TextStyle(color: Colors.white, fontSize: 12.px),
             ),
           ],

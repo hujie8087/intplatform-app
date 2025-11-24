@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/sos_utils.dart';
 import 'package:logistics_app/pages/sos/models/chart_model.dart';
 import 'package:logistics_app/pages/sos/widgets/audio_message_widget.dart';
+import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/update_file.dart';
 import 'package:logistics_app/utils/utils.dart';
 import 'package:logistics_app/http/model/chat_message_model.dart';
 import 'package:logistics_app/pages/sos/services/chat_service.dart';
-import 'package:logistics_app/pages/sos/services/user_info_service.dart'; // 导入用户信息服务
 import 'package:logistics_app/pages/sos/widgets/media_message_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -19,7 +21,7 @@ import 'package:logistics_app/pages/sos/widgets/voice_record_button.dart';
 
 // Resource API base URL for static files (images, videos, etc.)
 class ResourceConfig {
-  static const String resourceApi = 'http://192.168.91.50:9000/intplatform';
+  static const String resourceApi = APIs.imagePrefix;
 }
 
 class ChatScreenPage extends StatefulWidget {
@@ -123,10 +125,7 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
 
   // 尝试初始连接的方法
   Future<void> _tryInitialConnection() async {
-    final userInfo = await UserInfoService.getUserInfo();
-    String connectId =
-        userInfo.isLoggedIn ? userInfo.userName : userInfo.deviceId;
-
+    String connectId = widget.chartModel.thirdUserInfo?.account ?? '';
     bool connected = await widget.chatService.connect(connectId);
     if (connected) {
       isConnected = true;
@@ -144,7 +143,7 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
       RequestType.common,
     );
     if (result != null) {
-      ProgressHUD.showLoadingText('正在上传文件...');
+      ProgressHUD.showLoadingText(S.current.uploading_file);
       final fileUrl = await uploadFile([result[0]], widget.sessionId);
       String contentType;
       final ext = fileUrl[0].split('.').last.toLowerCase();
@@ -154,7 +153,7 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
         } else if (['mp4', 'avi', 'mov', 'wmv', 'flv', 'webm'].contains(ext)) {
           contentType = 'VIDEO';
         } else {
-          ProgressHUD.showError('不支持的文件类型');
+          ProgressHUD.showError(S.current.unsupported_file_type);
           return;
         }
         ProgressHUD.hide();
@@ -177,21 +176,31 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
         builder: (context, chartModel, child) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('在线客服', style: TextStyle(fontSize: 16.px)),
+              title: Text(
+                S.current.online_customer_service,
+                style: TextStyle(fontSize: 16.px),
+              ),
               backgroundColor: const Color(0xFFE53E3E),
               foregroundColor: Colors.white,
               elevation: 0,
+              // 返回按钮
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back, size: 24.px),
+                onPressed: () {
+                  RouteUtils.pop(context);
+                },
+              ),
               actions: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    widget.chartModel.isConnected
+                    widget.chatService.isConnected
                         ? Icon(Icons.circle, color: Colors.green, size: 14.px)
                         : Icon(Icons.circle, color: Colors.red, size: 14.px),
                     SizedBox(width: 8.px),
                     Text(
-                      '客服',
+                      S.current.customer_service,
                       style: TextStyle(fontSize: 14.px, color: Colors.white),
                     ),
                     SizedBox(width: 16.px),
@@ -202,6 +211,7 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
             body: Column(
               children: [
                 // Chat messages list
+                _buildSessionInfoBanner(),
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.all(8.px),
@@ -213,7 +223,7 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
                         bool isOwnMessage = message.senderType != 'AGENT';
                         bool isSystemMessage =
                             message.senderType == 'SYSTEM' ||
-                            message.senderName == '系统';
+                            message.senderName == S.current.system;
 
                         // Determine message type
                         if (isSystemMessage) {
@@ -285,7 +295,9 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
                                     style: TextStyle(fontSize: 12.px),
                                     controller: _messageController,
                                     decoration: InputDecoration(
-                                      hintText: '输入消息...',
+                                      hintText: S.current.inputMessage(
+                                        S.current.message,
+                                      ),
                                       border: InputBorder.none,
                                       isDense: true,
                                       contentPadding: EdgeInsets.symmetric(
@@ -450,6 +462,102 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
     );
   }
 
+  Widget _buildSessionInfoBanner() {
+    final session = widget.chartModel.currentSession;
+    print('session: $session');
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: EdgeInsets.symmetric(horizontal: 12.px, vertical: 10.px),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFDECEF),
+        borderRadius: BorderRadius.circular(10.px),
+        border: Border.all(color: const Color(0xFFE53E3E).withOpacity(0.18)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFE53E3E).withOpacity(0.08),
+            blurRadius: 8.px,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            S.current.emergency_alarm_session,
+            style: TextStyle(
+              fontSize: 14.px,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFFB71C1C),
+            ),
+          ),
+          if (session?.orderNo != null) ...[
+            Text(
+              S.current.alarm_order_number(session?.orderNo ?? ''),
+              style: TextStyle(
+                fontSize: 12.px,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF880E4F),
+              ),
+            ),
+            SizedBox(height: 4.px),
+          ],
+          if (session?.nickName != null) ...[
+            SizedBox(height: 2.px),
+            _buildBannerLine(
+              icon: Icons.person_outline,
+              label: S.current.reporter,
+              value: session?.nickName ?? '',
+            ),
+          ],
+          if (session?.updateTime != null)
+            Padding(
+              padding: EdgeInsets.only(top: 4.px),
+              child: _buildBannerLine(
+                icon: Icons.history,
+                label: S.current.latest_time,
+                value: session?.updateTime ?? '',
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBannerLine({
+    required IconData icon,
+    required String label,
+    required String value,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(icon, size: 16.px, color: Color(0xFFE53935)),
+        SizedBox(width: 6.px),
+        Text(
+          '$label：',
+          style: TextStyle(
+            fontSize: 12.px,
+            color: Color(0xFF424242),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 12.px,
+              color: Color(0xFF424242),
+              fontWeight: FontWeight.w500,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
   // 构建消息内容，根据内容类型显示不同的组件
   Widget _buildMessageContent(ChatMessageModel message, bool isOwnMessage) {
     // 根据消息的contentType判断显示类型
@@ -515,7 +623,7 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
     // 检查消息内容
     if (text.isEmpty) {
       print('消息为空，无法发送');
-      ProgressHUD.showError('请输入消息内容');
+      ProgressHUD.showError(S.current.inputMessage(S.current.message));
       return;
     }
 
@@ -527,7 +635,7 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
       // After reconnection attempt, check status again
       if (!widget.chatService.isConnected) {
         print('重连后仍然未连接，无法发送消息');
-        ProgressHUD.showError('未连接到服务器，请检查网络连接');
+        ProgressHUD.showError(S.current.networkError);
         return;
       }
     }
@@ -544,22 +652,20 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
   Future<void> _tryReconnect() async {
     // 显示连接尝试提示
     print('ChatScreen: 正在尝试重新连接...');
-    ProgressHUD.showText('正在尝试重新连接...');
+    ProgressHUD.showText(S.current.trying_to_reconnect);
 
     // 使用SOSAlarmController中的user info来获取连接ID
-    final userInfo = await UserInfoService.getUserInfo();
-    String connectId =
-        userInfo.isLoggedIn ? userInfo.userName : userInfo.deviceId;
+    String connectId = widget.chartModel.thirdUserInfo?.account ?? '';
 
     bool connected = await widget.chatService.connect(connectId);
     if (connected) {
       isConnected = widget.chatService.isConnected; // Use actual service status
       print('ChatScreen: 重新连接成功，当前连接状态: ${isConnected}');
-      ProgressHUD.showSuccess('已重新连接到服务器');
+      ProgressHUD.showSuccess(S.current.reconnected_to_server);
     } else {
       isConnected = false;
       print('ChatScreen: 重新连接失败，当前连接状态: ${isConnected}');
-      ProgressHUD.showError('无法重新连接到服务器');
+      ProgressHUD.showError(S.current.failed_to_reconnect_to_server);
     }
   }
 

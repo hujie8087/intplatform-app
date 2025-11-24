@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class InfoCard extends StatelessWidget {
@@ -49,7 +50,7 @@ class InfoCard extends StatelessWidget {
           ),
           SizedBox(height: 16.px),
           Text(
-            '紧急报警系统',
+            S.current.emergency_alarm_system,
             style: TextStyle(
               fontSize: 20.px,
               fontWeight: FontWeight.bold,
@@ -70,7 +71,7 @@ class InfoCard extends StatelessWidget {
                 Icon(Icons.security, size: 14.px, color: Color(0xFFd32f2f)),
                 SizedBox(width: 8.px),
                 Text(
-                  '24小时响应',
+                  S.current.hour_response,
                   style: TextStyle(
                     fontSize: 12.px,
                     fontWeight: FontWeight.w600,
@@ -82,7 +83,7 @@ class InfoCard extends StatelessWidget {
           ),
           SizedBox(height: 12.px),
           Text(
-            '遇到紧急情况请立即按下报警按钮\n安全团队将在第一时间为您提供帮助',
+            S.current.emergency_alarm_tips,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12.px,

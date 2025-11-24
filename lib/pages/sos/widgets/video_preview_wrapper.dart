@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPreviewPlayer extends StatefulWidget {
@@ -168,7 +169,7 @@ class VideoPreviewWrapper extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
-        title: const Text('视频预览'),
+        title: Text(S.current.video_preview),
         elevation: 0,
       ),
       body: Center(child: VideoPreviewPlayer(videoUrl: videoUrl)),

@@ -22,6 +22,8 @@ import 'package:logistics_app/pages/repair/repair_order_page/repair_order_page.d
 import 'package:logistics_app/pages/shopping/food_menu_page.dart';
 import 'package:logistics_app/pages/sos/chat_list_page.dart';
 import 'package:logistics_app/pages/sos/chat_screen_page.dart';
+import 'package:logistics_app/pages/sos/models/chart_model.dart';
+import 'package:logistics_app/pages/sos/services/chat_service.dart';
 import 'package:logistics_app/pages/sos/sos_index_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/pages/news/promo_page/promo_list_page.dart';
@@ -354,6 +356,18 @@ class AutoRouteGenerator {
     RoutePath.ChatListPage: RouteConfig(
       builder: (context) => ChatListPage(),
       name: 'ChatListPage',
+    ),
+    RoutePath.ChatScreenPage: RouteConfig(
+      builder:
+          (context) => ChatScreenPage(
+            sessionId: '',
+            chatService: ChatService(),
+            senderId: '',
+            senderName: '',
+            senderType: '',
+            chartModel: ChartModel(),
+          ),
+      name: 'ChatScreenPage',
     ),
   };
 

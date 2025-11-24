@@ -18,6 +18,7 @@ import 'package:logistics_app/pages/home_page/home_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_page.dart';
 import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:logistics_app/pages/repair/report_hazard_page.dart';
+import 'package:logistics_app/pages/sos/sos_index_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -26,9 +27,11 @@ import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// 在文件顶部定义全局 key
+// 在文件顶部定义全局 key 和 state 引用
 final GlobalKey<_AppHomeScreenState> appHomeScreenKey =
     GlobalKey<_AppHomeScreenState>();
+// 当前 AppHomeScreen 的 state 引用，用于外部访问
+_AppHomeScreenState? currentAppHomeScreenState;
 
 class AppHomeScreen extends StatefulWidget {
   const AppHomeScreen({Key? key}) : super(key: key);
@@ -76,18 +79,18 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
           ),
-          // TabIconData(
-          //   imagePath: 'assets/images/tab_warn.png',
-          //   selectedImagePath: 'assets/images/tab_warn1.png',
-          //   index: 3,
-          //   isSelected: false,
-          //   animationController: animationController,
-          //   labelName: '', // 先设为空，在build中设置
-          // ),
+          TabIconData(
+            imagePath: 'assets/images/tab_warn.png',
+            selectedImagePath: 'assets/images/tab_warn1.png',
+            index: 3,
+            isSelected: false,
+            animationController: animationController,
+            labelName: '', // 先设为空，在build中设置
+          ),
           TabIconData(
             imagePath: 'assets/images/tab_4.png',
             selectedImagePath: 'assets/images/tab_4s1.png',
-            index: 3,
+            index: 4,
             isSelected: false,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
@@ -103,8 +106,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       _tabIconsList[0].labelName = S.of(context).homePage;
       _tabIconsList[1].labelName = S.of(context).dangerPage;
       _tabIconsList[2].labelName = S.of(context).toolPage;
-      // _tabIconsList[3].labelName = S.of(context).warningPage;
-      _tabIconsList[3].labelName = S.of(context).minePage;
+      _tabIconsList[3].labelName = S.of(context).warningPage;
+      _tabIconsList[4].labelName = S.of(context).minePage;
     }
   }
 
@@ -267,6 +270,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       vsync: this,
     );
     super.initState();
+    // 注册当前的 state，用于外部访问
+    currentAppHomeScreenState = this;
     handleTabChanged(_grooveIndex);
     // tabBody = HomePage(
     //     animationController: animationController, onChanged: handleTabChanged);
@@ -301,12 +306,12 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             tabBody = ToolBoxPage();
           });
           break;
-        // case 3:
-        //   setState(() {
-        //     tabBody = SosIndexPage();
-        //   });
-        //   break;
         case 3:
+          setState(() {
+            tabBody = SosIndexPage();
+          });
+          break;
+        case 4:
           await isLogin();
           setState(() {
             tabBody = MinePage();
@@ -319,8 +324,19 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     });
   }
 
+  // 刷新当前 tab 页面
+  void refreshCurrentTab() {
+    if (!mounted) return;
+    // 重新构建当前 tab 的页面
+    handleTabChanged(_grooveIndex);
+  }
+
   @override
   void dispose() {
+    // 清除 state 引用
+    if (currentAppHomeScreenState == this) {
+      currentAppHomeScreenState = null;
+    }
     animationController?.dispose();
     super.dispose();
   }

@@ -29,10 +29,15 @@ import UIKit
             service.getLocation(result)
 
         case "startRealTimeLocation":
-            if let interval = call.arguments as? Double {
+            // Flutter 传入的是 Map: {'interval': interval}
+            if let args = call.arguments as? [String: Any],
+               let interval = args["interval"] as? Double {
+                service.startRealTimeLocation(interval: interval, result: result)
+            } else if let interval = call.arguments as? Double {
+                // 兼容直接传入 Double 的情况
                 service.startRealTimeLocation(interval: interval, result: result)
             } else {
-                result(FlutterError(code: "BAD_ARGS", message: "Invalid interval", details: nil))
+                result(FlutterError(code: "BAD_ARGS", message: "Invalid interval argument", details: nil))
             }
 
         case "stopRealTimeLocation":

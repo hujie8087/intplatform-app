@@ -15,7 +15,7 @@ class WebSocketService {
   Function(String error)? onError;
   Function? onConnected;
   Function? onDisconnected;
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
 
   // Get a unique identifier for the device or user
   static Future<String> getIdentifier() async {
@@ -82,31 +82,27 @@ class WebSocketService {
     if (_channel != null) {
       try {
         // Get user info to determine senderId and senderName
-        var userInfoData = await SpUtils.getModel('userInfo');
+        var userInfoData = await SpUtils.getModel('thirdUserInfo');
         if (userInfoData != null) {
-          userInfo = UserInfoModel.fromJson(userInfoData);
+          userInfo = ThirdUserInfoModel.fromJson(userInfoData);
         }
 
         String senderId;
         String senderName;
 
-        if (userInfo != null && userInfo?.user != null) {
+        if (userInfo != null && userInfo?.account != null) {
           // User is logged in
-          senderId = userInfo?.user?.userName ?? '';
-          senderName =
-              userInfo?.user?.nickName ?? userInfo?.user?.userName ?? '';
-        } else {
-          // User not logged in
-          String deviceId = await getUniqueIdentifier();
-          senderId = deviceId;
-          senderName = deviceId;
+          senderName = userInfo?.name ?? '';
         }
+        // User not logged in
+        senderId = await getUniqueIdentifier();
+        senderName = senderId;
 
         // Create the message JSON
         Map<String, dynamic> messageData = {
           'type': 'CHAT_MESSAGE',
           'senderId': senderId,
-          'targetUserId': 'AGENT',
+          'targetUserId': '1423092221',
           'content': content,
           'senderType': 'USER',
           'senderName': senderName,

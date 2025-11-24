@@ -27,6 +27,7 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
   TextEditingController _reporterController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
+  bool isSubmitting = false;
 
   // 选择的图片
   List<AssetEntity> selectedAssets = [];
@@ -161,7 +162,9 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
         return;
       }
     }
-
+    setState(() {
+      isSubmitting = true;
+    });
     // 提交隐患报告
     DataUtils.submitHazardReport(
       {
@@ -185,9 +188,15 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
           context,
           MaterialPageRoute(builder: (context) => AppHomeScreen()),
         );
+        setState(() {
+          isSubmitting = false;
+        });
       },
       fail: (code, msg) {
         ProgressHUD.showError('${S.current.submit_hazard_report_fail}：$msg');
+        setState(() {
+          isSubmitting = false;
+        });
       },
     );
   }
@@ -364,7 +373,7 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _submitReport,
+                    onPressed: isSubmitting ? null : _submitReport,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondaryColor[600],
                       foregroundColor: Colors.white,
@@ -374,13 +383,25 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
                       ),
                       elevation: 0,
                     ),
-                    child: Text(
-                      S.of(context).hazard_submit,
-                      style: TextStyle(
-                        fontSize: 14.px,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child:
+                        isSubmitting
+                            ? SizedBox(
+                              width: 16.px,
+                              height: 16.px,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                            : Text(
+                              S.of(context).hazard_submit,
+                              style: TextStyle(
+                                fontSize: 14.px,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                   ),
                 ),
 

@@ -6,7 +6,6 @@ import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/Register_page.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
-import 'package:logistics_app/pages/auth/forget_password_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -173,11 +172,6 @@ class _LoginFormState extends State<LoginForm> {
                             .login()
                             .then((value) async {
                               if (value) {
-                                var token =
-                                    await SpUtils.getString(
-                                      Constants.SP_DEVICE_TOKEN,
-                                    ) ??
-                                    '';
                                 var fcmToken =
                                     await SpUtils.getString(
                                       Constants.SP_FCM_TOKEN,

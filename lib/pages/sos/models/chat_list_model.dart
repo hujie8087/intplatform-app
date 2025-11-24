@@ -5,13 +5,15 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/data/sos_utils.dart';
 import 'package:logistics_app/http/model/chat_session_model.dart';
+import 'package:logistics_app/http/model/contact_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/sos/chat_screen_page.dart';
 import 'package:logistics_app/pages/sos/models/chart_model.dart';
-import 'package:logistics_app/pages/sos/services/chat_service.dart';
+import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/location_manager.dart';
 import 'package:logistics_app/utils/native_location_service.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -19,6 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ChatListModel with ChangeNotifier {
   UserInfoModel? userInfo;
+  ThirdUserInfoModel? thirdUserInfo;
   bool isLoading = false;
   bool isConnected = false;
   List<ChatSessionModel>? chatSessions = [];
@@ -31,9 +34,11 @@ class ChatListModel with ChangeNotifier {
   bool isAlarmTriggered = false;
   String? currentSessionId;
   ChartModel chartModel = ChartModel();
-  ChatService? _chatService;
+  Timer? _sessionRefreshDebounce;
+  List<ContactModel> contactList = [];
 
   void initialize() async {
+    await loadContactList();
     await getUserInfo();
     await chartModel.initialize();
     await initWebSocket();
@@ -42,11 +47,21 @@ class ChatListModel with ChangeNotifier {
   Future<void> getUserInfo() async {
     // 模拟异步数据获取
     var userInfoData = await SpUtils.getModel('userInfo');
-    deviceId = await SpUtils.getString(Constants.SP_DEVICE_TOKEN) ?? '';
-    isAlarmTriggered = await SpUtils.getBool('isAlarmTriggered') ?? false;
+    var thirdUserInfoData = await SpUtils.getModel('thirdUserInfo');
+    var deviceIdData = await SpUtils.getString(Constants.SP_DEVICE_TOKEN) ?? '';
+    var isAlarmTriggeredData =
+        await SpUtils.getBool('isAlarmTriggered') ?? false;
+    var currentSessionIdData =
+        await SpUtils.getString('currentSessionId') ?? '';
+    isAlarmTriggered = isAlarmTriggeredData;
+    currentSessionId = currentSessionIdData;
+    deviceId = deviceIdData;
+    print('deviceId: $deviceId');
     if (userInfoData != null) {
       userInfo = UserInfoModel.fromJson(userInfoData);
+      thirdUserInfo = ThirdUserInfoModel.fromJson(thirdUserInfoData);
     }
+    notifyListeners();
   }
 
   Future<void> getLocationWithoutGooglePlay() async {
@@ -89,62 +104,87 @@ class ChatListModel with ChangeNotifier {
 
   Future<void> initWebSocket() async {
     try {
-      chartModel.chatService.onConnected = () {
-        isConnected = true;
-        print('WebSocket连接成功');
-      };
-
-      chartModel.chatService.onDisconnected = () {
-        isConnected = false;
-        print('WebSocket连接断开');
-      };
-
-      chartModel.chatService.onError = (error) {
-        print('WebSocket错误: $error');
-      };
-
-      // 根据用户登录状态决定使用工号还是设备ID连接WebSocket
-      String connectId;
-      if (userInfo != null) {
-        // 用户已登录，使用工号连接WebSocket
-        connectId = userInfo!.user!.userName ?? '';
-        print('用户已登录，使用工号连接WebSocket: $connectId');
-      } else {
-        // 用户未登录，使用设备ID连接WebSocket
-        connectId = deviceId ?? '';
-        print('用户未登录，使用设备ID连接WebSocket: $connectId');
+      _bindChatServiceCallbacks();
+      print('deviceId: ${deviceId?.isEmpty ?? true}');
+      print(
+        'thirdUserInfo?.account: ${thirdUserInfo?.account?.isEmpty ?? true}',
+      );
+      if ((deviceId?.isEmpty ?? true) &&
+          (thirdUserInfo?.account?.isEmpty ?? true)) {
+        ProgressHUD.showError('设备ID或用户工号为空');
+        return;
       }
 
-      print('尝试连接WebSocket，使用ID: $connectId');
-
-      if (connectId == 'unknown' || connectId.isEmpty) {
-        print('警告: 使用的连接ID为空或unknown');
-      }
-
-      await chartModel.chatService.connect(connectId);
+      await chartModel.chatService.connect(thirdUserInfo?.account ?? '');
     } catch (e) {
       print('初始化WebSocket失败: $e');
     }
   }
 
+  void _bindChatServiceCallbacks() {
+    final chatService = chartModel.chatService;
+
+    final previousOnMessage = chatService.onMessageReceived;
+    chatService.onMessageReceived = (message) {
+      previousOnMessage?.call(message);
+      _scheduleSessionsRefresh();
+    };
+
+    final previousOnConnected = chatService.onConnected;
+    chatService.onConnected = () {
+      previousOnConnected?.call();
+      isConnected = true;
+      print('WebSocket连接成功');
+      notifyListeners();
+    };
+
+    final previousOnDisconnected = chatService.onDisconnected;
+    chatService.onDisconnected = () {
+      previousOnDisconnected?.call();
+      isConnected = false;
+      print('WebSocket连接断开');
+      notifyListeners();
+    };
+
+    final previousOnError = chatService.onError;
+    chatService.onError = (error) {
+      previousOnError?.call(error);
+      print('WebSocket错误: $error');
+    };
+  }
+
+  void _scheduleSessionsRefresh() {
+    _sessionRefreshDebounce?.cancel();
+    _sessionRefreshDebounce = Timer(const Duration(milliseconds: 300), () {
+      loadChatSessions();
+    });
+  }
+
+  Future<void> loadContactList() async {
+    DataUtils.getPageList(
+      '/system/connect/list',
+      {'pageNum': 1, 'pageSize': 100, 'sourceType': '0'},
+      success: (data) {
+        var contactListData = data['rows'] as List;
+        contactList =
+            contactListData.map((e) => ContactModel.fromJson(e)).toList();
+      },
+      fail: (code, msg) {
+        print('loadContactList fail: $code, $msg');
+      },
+    );
+  }
+
   Future<void> loadChatSessions() async {
+    await getUserInfo();
+    print('thirdUserInfo?.account: ${thirdUserInfo?.account}');
     isLoading = true;
 
     try {
-      // 获取用户信息
-      String userName;
-      if (userInfo != null) {
-        // 用户已登录，使用用户的工号
-        userName = userInfo!.user!.userName ?? '';
-        print('用户已登录，使用用户工号: $userName');
-      } else {
-        // 用户未登录，使用设备ID
-        userName = deviceId ?? '';
-        print('用户未登录，使用设备ID: $userName');
-      }
-
-      final params = {'userName': userName, 'userType': 'USER'};
-
+      final params = {
+        'userName': thirdUserInfo?.account ?? deviceId,
+        'userType': 'USER',
+      };
       print('=== 请求会话列表 ===');
       print('请求参数: $params');
       print('设备ID: ${deviceId}');
@@ -155,11 +195,17 @@ class ChatListModel with ChangeNotifier {
         '/customer/chat/sessions/user/list',
         params,
         success: (data) {
-          chatSessions = data['data']['records'] as List<ChatSessionModel>;
+          final records =
+              (data['data']['records'] as List<dynamic>? ?? [])
+                  .cast<Map<String, dynamic>>();
+          chatSessions =
+              records.map<ChatSessionModel>(ChatSessionModel.fromJson).toList();
+          notifyListeners();
         },
         fail: (code, error) {
           print('加载会话列表失败: $error');
           chatSessions = [];
+          notifyListeners();
         },
       );
     } catch (e) {
@@ -167,10 +213,11 @@ class ChatListModel with ChangeNotifier {
       chatSessions = [];
     } finally {
       isLoading = false;
+      notifyListeners();
     }
   }
 
-  void enterChat(
+  Future<void> enterChat(
     BuildContext context,
     String sessionId, [
     bool hasUnread = false,
@@ -180,42 +227,57 @@ class ChatListModel with ChangeNotifier {
       await _markAsRead(sessionId);
     }
 
-    // 获取用户信息
-    String senderId;
-    String senderName;
-    String senderType;
-
-    if (userInfo != null) {
-      // 用户已登录，使用用户信息
-      senderId = userInfo!.user!.userName ?? ''; // 使用工号作为senderId
-      senderName =
-          userInfo!.user!.nickName?.isNotEmpty ?? false
-              ? userInfo!.user!.nickName ?? ''
-              : userInfo!.user!.userName ?? '';
-      senderType = 'USER';
-    } else {
-      // 用户未登录，使用设备ID
-      senderId = deviceId ?? '';
-      senderName = '设备用户_${deviceId}';
-      senderType = 'DEVICE';
+    // 从会话列表中找到对应的会话
+    ChatSessionModel? session;
+    if (chatSessions != null) {
+      try {
+        session = chatSessions!.firstWhere((s) => s.sessionId == sessionId);
+      } catch (e) {
+        print('未在本地找到会话: $sessionId');
+      }
     }
 
-    print('进入聊天: $sessionId, $senderId, $senderName, $senderType');
-    Navigator.of(context).pop();
-    Navigator.push(
+    // 如果找到了会话，设置当前会话并加载消息
+    if (session != null) {
+      await chartModel.setCurrentSession(session);
+      print('已设置当前会话: ${session.sessionId}, orderNo: ${session.orderNo}');
+    } else {
+      // 如果找不到会话，尝试通过API加载会话信息
+      print('未在本地找到会话，尝试加载会话信息: $sessionId');
+      // 可以在这里添加从API加载单个会话的逻辑
+    }
+
+    // 获取用户信息
+    String senderId = thirdUserInfo?.account ?? '';
+    String senderName = '';
+    String senderType = 'USER';
+    if (thirdUserInfo != null) {
+      // 用户已登录，使用用户信息
+      // senderId = userInfo!.user!.userName ?? ''; // 使用工号作为senderId
+      senderName =
+          thirdUserInfo!.name?.isNotEmpty ?? false
+              ? thirdUserInfo!.name ?? ''
+              : thirdUserInfo!.account ?? '';
+      senderType = 'USER';
+    }
+
+    print(
+      '进入聊天: $sessionId, $senderId, $senderName, $senderType, ${chartModel.currentSession},${chartModel.chatService.isConnected}',
+    );
+
+    await RouteUtils.push(
       context,
-      MaterialPageRoute(
-        builder:
-            (context) => ChatScreenPage(
-              sessionId: sessionId,
-              chatService: chartModel.chatService,
-              senderId: senderId,
-              senderName: senderName,
-              senderType: senderType,
-              chartModel: chartModel,
-            ),
+      ChatScreenPage(
+        sessionId: sessionId,
+        chatService: chartModel.chatService,
+        senderId: senderId,
+        senderName: senderName,
+        senderType: senderType,
+        chartModel: chartModel,
       ),
     );
+
+    await loadChatSessions();
   }
 
   Future<void> _markAsRead(String sessionId) async {
@@ -253,19 +315,19 @@ class ChatListModel with ChangeNotifier {
   void addSessionFromAlarm(String sessionId) {
     final session = ChatSessionModel(
       sessionId: sessionId,
-      userName: userInfo?.user?.userName ?? '',
-      nickName: userInfo?.user?.nickName ?? '',
+      userName: thirdUserInfo?.account ?? '',
+      nickName: thirdUserInfo?.name ?? '',
       orderId: orderNo,
       orderNumber: orderNo,
       status: 'OPEN',
-      createBy: userInfo?.user?.userName ?? '',
-      updateBy: userInfo?.user?.userName ?? '',
+      createBy: thirdUserInfo?.account ?? '',
+      updateBy: thirdUserInfo?.account ?? '',
       createTime: DateTime.now().toIso8601String(),
       updateTime: DateTime.now().toIso8601String(),
       unreadCount: 0,
       lastMessage: '',
       lastMessageTime: DateTime.now().toIso8601String(),
-      avatar: userInfo?.user?.avatar ?? '',
+      avatar: thirdUserInfo?.avatar ?? '',
       orderNo: orderNo,
       userType: 'USER',
     );
@@ -275,44 +337,49 @@ class ChatListModel with ChangeNotifier {
 
   // 触发紧急报警
   Future<void> triggerEmergencyAlarm(BuildContext context) async {
-    ProgressHUD.showText('正在发起紧急报警...');
+    ProgressHUD.showText(S.current.triggering_emergency_alarm);
 
     try {
       // 获取最新位置
       await getLocationWithoutGooglePlay();
+      if (currentPosition == null) {
+        ProgressHUD.showError(S.current.current_position_failed);
+        notifyListeners();
+        return;
+      }
       ProgressHUD.showInfo(
-        '当前位置: ${currentPosition?.latitude}, ${currentPosition?.longitude}',
+        '${S.current.current_position}: ${currentPosition?.latitude}, ${currentPosition?.longitude}',
       );
 
-      // 准备报警数据（对齐后端字段命名）
-      final String dateYmd = DateFormat(
-        'yyyy-MM-dd HH:mm:ss',
-      ).format(DateTime.now());
       final alarmData = {
         'level': 0, // 级别
         'reportLocation':
             '经度: ${currentPosition?.longitude}, 纬度: ${currentPosition?.latitude}', // 报警地点
         'reportDescription': '紧急SOS报警', // 报警详情
         'reportBy':
-            userInfo?.user?.nickName?.isNotEmpty ?? false
-                ? userInfo?.user?.nickName ?? ''
-                : userInfo?.user?.userName ?? '', // 报警人
-        'tel': userInfo?.user?.phonenumber ?? '', // 联系电话（无表单时留空）
-        'reportTime': dateYmd, // 报警时间 yyyy-MM-dd
+            thirdUserInfo?.name?.isNotEmpty ?? false
+                ? thirdUserInfo?.name ?? ''
+                : thirdUserInfo?.account ?? '设备用户', // 报警人
+        'tel': thirdUserInfo?.tel ?? '', // 联系电话（无表单时留空）
+        'reportTime': DateFormat(
+          'yyyy-MM-dd HH:mm:ss',
+        ).format(DateTime.now()), // 报警时间 yyyy-MM-dd HH:mm:ss
         'reportImage': reportImage, // 报警图片
         'processingBy': '', // 处理人
         'processingResult': '', // 处理结果
-        'processingTime': dateYmd, // 处理时间 yyyy-MM-dd
+        'processingTime': '', // 处理时间 yyyy-MM-dd HH:mm:ss
         'longitude': currentPosition?.longitude, // 经度
         'latitude': currentPosition?.latitude, // 纬度
-        'deviceType': '', // 设备信息
+        'deviceType': deviceId, // 设备号（必传）
         'delFlag': '0', // 删除标志（0代表存在 1代表删除）
         'orderNo': '', // 报警单号
+        'systemSource': '0', // 系统来源（0是后勤）
+        // 报警人工号（登录传userName工号，未登录传空）
+        'createBy': thirdUserInfo?.account ?? deviceId ?? '',
         // 其他辅助信息
         'deviceId': deviceId,
-        'userName': userInfo?.user?.userName,
-        'userId': userInfo?.user?.userId,
-        'jobId': userInfo?.user?.userName,
+        'userName': thirdUserInfo?.account ?? deviceId ?? '',
+        'userId': thirdUserInfo?.id?.toString() ?? '1',
         'reportType': 'EMERGENCY_SOS',
       };
 
@@ -349,15 +416,18 @@ class ChatListModel with ChangeNotifier {
           isAlarmTriggered = true;
           SpUtils.saveBool('isAlarmTriggered', true);
           currentSessionId = 'sos_${DateTime.now().millisecondsSinceEpoch}';
-          ProgressHUD.showSuccess('报警成功');
+          SpUtils.saveString('currentSessionId', currentSessionId ?? '');
+          ProgressHUD.showSuccess(S.current.alarm_success);
+          startEmergencyChat(context);
           notifyListeners();
         },
         fail: (code, error) {
           print('报警失败: $error');
           isAlarmTriggered = false;
           SpUtils.saveBool('isAlarmTriggered', false);
+          SpUtils.remove('currentSessionId');
           currentSessionId = null;
-          ProgressHUD.showError('报警失败: $error');
+          ProgressHUD.showError('${S.current.alarm_failed}: $error');
           notifyListeners();
         },
       );
@@ -366,6 +436,7 @@ class ChatListModel with ChangeNotifier {
       print('报警异常: $e');
       isAlarmTriggered = false;
       SpUtils.saveBool('isAlarmTriggered', false);
+      SpUtils.remove('currentSessionId');
       currentSessionId = null;
     } finally {
       isLoading = false;
@@ -377,7 +448,7 @@ class ChatListModel with ChangeNotifier {
     if (phoneNumber != null) {
       launchUrl(Uri.parse('tel:$phoneNumber'));
     } else {
-      ProgressHUD.showError('电话号码为空');
+      ProgressHUD.showError(S.current.phone_number_empty);
     }
   }
 
@@ -388,6 +459,7 @@ class ChatListModel with ChangeNotifier {
       isAlarmTriggered = false;
       SpUtils.saveBool('isAlarmTriggered', false);
       currentSessionId = null;
+      SpUtils.remove('currentSessionId');
       notifyListeners();
       return;
     }
@@ -402,7 +474,7 @@ class ChatListModel with ChangeNotifier {
                 children: [
                   const CircularProgressIndicator(),
                   const SizedBox(width: 20),
-                  const Text('正在连接客服...'),
+                  Text(S.current.connecting_customer_service),
                 ],
               ),
             ),
@@ -430,32 +502,27 @@ class ChatListModel with ChangeNotifier {
         bool isActuallyConnected = chartModel.chatService.isConnected;
         print('SOSAlarmController: 检查最终连接状态 - $isActuallyConnected');
 
-        // 使用ChatController中的ChatService实例
-        _chatService = chartModel.chatService;
-
-        enterChat(context, newSession.sessionId);
-
-        // 跳转到聊天界面，不管连接状态如何
-        // ChatScreen会处理连接状态
-        // Get.to(() => ChatScreen(
-        //       sessionId: newSession.sessionId,
-        //       chatService: _chatService!,
-        //       senderId: senderId,
-        //       senderName: senderName,
-        //       senderType: senderType,
-        //       chatController: chatController, // 添加chatController参数
-        //     ));
-
-        //     enterChat(newSession.sessionId);
+        currentSessionId = newSession.sessionId;
+        SpUtils.saveString('currentSessionId', currentSessionId ?? '');
+        Navigator.of(context).pop();
+        notifyListeners();
       } else {
-        ProgressHUD.showError('无法创建聊天会话');
+        ProgressHUD.showError(S.current.failed_to_create_chat_session);
         Navigator.of(context).pop();
         notifyListeners();
       }
     } catch (e) {
-      ProgressHUD.showError('连接客服时发生错误: $e');
+      ProgressHUD.showError(
+        '${S.current.error_occurred_when_connecting_customer_service}: $e',
+      );
       Navigator.of(context).pop();
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    _sessionRefreshDebounce?.cancel();
+    super.dispose();
   }
 }

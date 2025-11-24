@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/chat_message_model.dart';
 import 'package:logistics_app/pages/sos/models/chart_model.dart';
+import 'package:logistics_app/route/auto_route_generator.dart';
+import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/utils.dart';
 
@@ -49,7 +52,7 @@ class _ChatViewPageState extends State<ChatViewPage> {
         title: Text(
           chartModel.currentSession?.nickName ??
               chartModel.currentSession?.userName ??
-              '在线客服',
+              S.current.online_customer_service,
           style: TextStyle(fontSize: 16.px),
         ),
         backgroundColor: const Color(0xFF2196F3),
@@ -59,7 +62,7 @@ class _ChatViewPageState extends State<ChatViewPage> {
           icon: Icon(Icons.arrow_back, size: 24.px),
           onPressed: () {
             chartModel.disconnect();
-            Navigator.of(context).pop();
+            RouteUtils.pushNamed(context, RoutePath.SosIndexPage);
           },
         ),
         actions: [
@@ -84,7 +87,9 @@ class _ChatViewPageState extends State<ChatViewPage> {
             child: Builder(
               builder: (context) {
                 if (chartModel.isLoading) {
-                  return Center(child: ProgressHUD.showLoadingText('加载中...'));
+                  return Center(
+                    child: ProgressHUD.showLoadingText(S.current.loading),
+                  );
                 }
 
                 return RefreshIndicator(
@@ -102,10 +107,10 @@ class _ChatViewPageState extends State<ChatViewPage> {
                       ChatMessageModel message = chartModel.messages[index];
                       bool isOwnMessage =
                           message.senderType == 'USER' ||
-                          message.senderName == '我';
+                          message.senderName == S.current.myself;
                       bool isSystemMessage =
                           message.senderType == 'SYSTEM' ||
-                          message.senderName == '系统';
+                          message.senderName == S.current.system;
 
                       // 判断是否需要显示时间
                       bool showTime = _shouldShowTime(index);
@@ -140,8 +145,8 @@ class _ChatViewPageState extends State<ChatViewPage> {
                     ),
                     child: TextField(
                       controller: _messageController,
-                      decoration: const InputDecoration(
-                        hintText: '输入消息...',
+                      decoration: InputDecoration(
+                        hintText: S.current.inputMessage(S.current.message),
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(vertical: 12),
                       ),
@@ -313,7 +318,7 @@ class _ChatViewPageState extends State<ChatViewPage> {
     // 检查消息内容
     if (text.isEmpty) {
       print('消息为空，无法发送');
-      ProgressHUD.showError('请输入消息内容');
+      ProgressHUD.showError(S.current.inputMessage(S.current.message));
       return;
     }
 
@@ -325,7 +330,7 @@ class _ChatViewPageState extends State<ChatViewPage> {
       // After reconnection attempt, check status again
       if (!chartModel.isConnected) {
         print('重连后仍然未连接，无法发送消息');
-        ProgressHUD.showError('未连接到服务器，请检查网络连接');
+        ProgressHUD.showError(S.current.networkError);
         return;
       }
     }
@@ -343,7 +348,7 @@ class _ChatViewPageState extends State<ChatViewPage> {
       print('消息发送成功');
     } catch (e) {
       print('消息发送失败: $e');
-      ProgressHUD.showError('发送消息时出错: $e');
+      ProgressHUD.showError(S.current.sendMessageError(e.toString()));
     }
   }
 

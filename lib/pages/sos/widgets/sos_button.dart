@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class SOSButton extends StatefulWidget {
@@ -154,7 +155,9 @@ class _SOSButtonState extends State<SOSButton> with TickerProviderStateMixin {
                               ),
                               SizedBox(height: 10.px),
                               Text(
-                                widget.isDisabled ? '已报警' : 'SOS',
+                                widget.isDisabled
+                                    ? S.current.alarm_reported
+                                    : S.current.sos,
                                 style: TextStyle(
                                   fontSize: 24.px,
                                   fontWeight: FontWeight.bold,
@@ -164,7 +167,9 @@ class _SOSButtonState extends State<SOSButton> with TickerProviderStateMixin {
                               ),
                               SizedBox(height: 4.px),
                               Text(
-                                widget.isDisabled ? '请选择联系方式' : '按下报警',
+                                widget.isDisabled
+                                    ? S.current.select_contact_method
+                                    : S.current.press_alarm,
                                 style: TextStyle(
                                   fontSize: 12.px,
                                   color: Colors.white,
