@@ -150,24 +150,32 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                         chatListModel
                                                             .contactList
                                                             .length;
-                                                    final maxHeight =
+                                                    final screenHeight =
                                                         MediaQuery.of(
                                                           context,
-                                                        ).size.height *
-                                                        0.7;
-                                                    final itemHeight = 72.0;
-                                                    final headerHeight = 80.0;
+                                                        ).size.height;
+                                                    final safeAreaBottom =
+                                                        MediaQuery.of(
+                                                          context,
+                                                        ).padding.bottom;
+                                                    final maxHeight =
+                                                        screenHeight * 0.85;
+                                                    final itemHeight = 60.0;
+                                                    final headerHeight = 65.0;
                                                     final calculatedHeight =
                                                         (contactCount *
                                                                     itemHeight +
-                                                                headerHeight)
+                                                                headerHeight +
+                                                                safeAreaBottom)
                                                             .clamp(
                                                               0.0,
                                                               maxHeight,
                                                             );
 
                                                     return Container(
-                                                      height: calculatedHeight,
+                                                      height:
+                                                          calculatedHeight +
+                                                          20.px,
                                                       decoration: BoxDecoration(
                                                         color: Colors.white,
                                                         borderRadius:
@@ -190,8 +198,8 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                           Container(
                                                             margin:
                                                                 EdgeInsets.only(
-                                                                  top: 12.px,
-                                                                  bottom: 8.px,
+                                                                  top: 8.px,
+                                                                  bottom: 6.px,
                                                                 ),
                                                             width: 40.px,
                                                             height: 4.px,
@@ -210,9 +218,9 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                             padding:
                                                                 EdgeInsets.symmetric(
                                                                   horizontal:
-                                                                      20.px,
-                                                                  vertical:
                                                                       16.px,
+                                                                  vertical:
+                                                                      12.px,
                                                                 ),
                                                             child: Row(
                                                               mainAxisAlignment:
@@ -222,13 +230,13 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                 Icon(
                                                                   Icons
                                                                       .phone_outlined,
-                                                                  size: 20.px,
+                                                                  size: 18.px,
                                                                   color:
                                                                       Colors
                                                                           .grey[700],
                                                                 ),
                                                                 SizedBox(
-                                                                  width: 8.px,
+                                                                  width: 6.px,
                                                                 ),
                                                                 Text(
                                                                   S
@@ -236,7 +244,7 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                       .select_contact_method,
                                                                   style: TextStyle(
                                                                     fontSize:
-                                                                        18.px,
+                                                                        16.px,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -260,8 +268,10 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                             child: ListView.separated(
                                                               shrinkWrap: true,
                                                               padding:
-                                                                  EdgeInsets
-                                                                      .zero,
+                                                                  EdgeInsets.only(
+                                                                    bottom:
+                                                                        safeAreaBottom,
+                                                                  ),
                                                               itemCount:
                                                                   contactCount,
                                                               separatorBuilder:
@@ -273,7 +283,7 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                     thickness:
                                                                         1,
                                                                     indent:
-                                                                        72.px,
+                                                                        60.px,
                                                                     color:
                                                                         Colors
                                                                             .grey[100],
@@ -299,18 +309,18 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                   child: Container(
                                                                     padding: EdgeInsets.symmetric(
                                                                       horizontal:
-                                                                          20.px,
-                                                                      vertical:
                                                                           16.px,
+                                                                      vertical:
+                                                                          12.px,
                                                                     ),
                                                                     child: Row(
                                                                       children: [
                                                                         // 头像/图标
                                                                         Container(
                                                                           width:
-                                                                              48.px,
+                                                                              40.px,
                                                                           height:
-                                                                              48.px,
+                                                                              40.px,
                                                                           decoration: BoxDecoration(
                                                                             color: secondaryColor.withOpacity(
                                                                               0.1,
@@ -323,12 +333,12 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                             color:
                                                                                 secondaryColor,
                                                                             size:
-                                                                                24.px,
+                                                                                20.px,
                                                                           ),
                                                                         ),
                                                                         SizedBox(
                                                                           width:
-                                                                              16.px,
+                                                                              12.px,
                                                                         ),
                                                                         // 联系人信息
                                                                         Expanded(
@@ -343,7 +353,7 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                                     '未知联系人',
                                                                                 style: TextStyle(
                                                                                   fontSize:
-                                                                                      16.px,
+                                                                                      15.px,
                                                                                   fontWeight:
                                                                                       FontWeight.w600,
                                                                                   color:
@@ -356,14 +366,14 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                               ),
                                                                               SizedBox(
                                                                                 height:
-                                                                                    4.px,
+                                                                                    3.px,
                                                                               ),
                                                                               Row(
                                                                                 children: [
                                                                                   Icon(
                                                                                     Icons.phone,
                                                                                     size:
-                                                                                        14.px,
+                                                                                        12.px,
                                                                                     color:
                                                                                         Colors.grey[600],
                                                                                   ),
@@ -376,7 +386,7 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                                         '',
                                                                                     style: TextStyle(
                                                                                       fontSize:
-                                                                                          14.px,
+                                                                                          13.px,
                                                                                       color:
                                                                                           Colors.grey[600],
                                                                                     ),
@@ -393,7 +403,7 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                           color:
                                                                               Colors.grey[400],
                                                                           size:
-                                                                              24.px,
+                                                                              20.px,
                                                                         ),
                                                                       ],
                                                                     ),
@@ -401,6 +411,9 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                                                                 );
                                                               },
                                                             ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 20.px,
                                                           ),
                                                         ],
                                                       ),
