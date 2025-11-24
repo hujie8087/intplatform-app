@@ -22,9 +22,10 @@ class APIs {
       'http://192.168.91.50:9000/intplatform/'; // 图片外网地址
   // static const String imagePrefix =
   //     'http://test.iwipwedabay.com/static/intplatform/'; // 图片外网地址
-  static const String websocketFix = 'ws://10.40.10.18:12301/websocket/';
+  static const String websocketFix =
+      'wss://api.iwipwedabay.com/api/intplatform/mis/customer/websocket/';
   static const String alarmWebsocketUrl =
-      'wss://test.iwipwedabay.com/security-stage-api/websocket/customer-service/';
+      '"wss://test.api.iwipwedabay.com/api/security/mis/websocket/customer-service/';
   // static const String websocketFix = 'ws://10.40.11.166:10301/websocket/';
 
   // 韩栋本地环境
