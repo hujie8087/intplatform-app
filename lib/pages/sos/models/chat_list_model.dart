@@ -13,6 +13,7 @@ import 'package:logistics_app/http/model/contact_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/sos/chat_screen_page.dart';
 import 'package:logistics_app/pages/sos/models/chart_model.dart';
+import 'package:logistics_app/pages/sos/services/websocket_service.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/location_manager.dart';
 import 'package:logistics_app/utils/native_location_service.dart';
@@ -36,6 +37,7 @@ class ChatListModel with ChangeNotifier {
   ChartModel chartModel = ChartModel();
   Timer? _sessionRefreshDebounce;
   List<ContactModel> contactList = [];
+  WebSocketService webSocketService = WebSocketService();
 
   void initialize() async {
     await loadContactList();
@@ -107,17 +109,8 @@ class ChatListModel with ChangeNotifier {
   Future<void> initWebSocket() async {
     try {
       _bindChatServiceCallbacks();
-      print('deviceId: ${deviceId?.isEmpty ?? true}');
-      print(
-        'thirdUserInfo?.account: ${thirdUserInfo?.account?.isEmpty ?? true}',
-      );
-      if ((deviceId?.isEmpty ?? true) &&
-          (thirdUserInfo?.account?.isEmpty ?? true)) {
-        ProgressHUD.showError('设备ID或用户工号为空');
-        return;
-      }
 
-      await chartModel.chatService.connect(thirdUserInfo?.account ?? '');
+      await webSocketService.connect();
     } catch (e) {
       print('初始化WebSocket失败: $e');
     }

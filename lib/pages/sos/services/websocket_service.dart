@@ -32,7 +32,7 @@ class WebSocketService {
   Future<bool> connect() async {
     try {
       String identifier = await getIdentifier();
-      String url = '${APIs.websocketFix}$identifier';
+      String url = '${APIs.alarmWebsocketUrl}$identifier';
 
       print('WebSocket连接URL: $url');
 

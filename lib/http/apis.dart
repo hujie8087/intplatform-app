@@ -15,7 +15,7 @@ class APIs {
   static const String websocketFix =
       'wss://api.iwipwedabay.com/api/intplatform/mis/customer/websocket/';
   static const String alarmWebsocketUrl =
-      'ws://web.iwipwedabay.com/security/mis/adt/websocket/customer-service/';
+      'wss://api.iwipwedabay.com/api/security/mis/websocket/customer-service/';
 
   // 测试环境
   // static const String apiPrefix =
