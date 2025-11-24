@@ -3,21 +3,21 @@ import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/sos_utils.dart';
+import 'package:logistics_app/http/model/chat_message_model.dart';
 import 'package:logistics_app/pages/sos/models/chart_model.dart';
+import 'package:logistics_app/pages/sos/services/chat_service.dart';
 import 'package:logistics_app/pages/sos/widgets/audio_message_widget.dart';
+import 'package:logistics_app/pages/sos/widgets/media_message_widgets.dart';
+import 'package:logistics_app/pages/sos/widgets/voice_record_button.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/update_file.dart';
 import 'package:logistics_app/utils/utils.dart';
-import 'package:logistics_app/http/model/chat_message_model.dart';
-import 'package:logistics_app/pages/sos/services/chat_service.dart';
-import 'package:logistics_app/pages/sos/widgets/media_message_widgets.dart';
+import 'package:logistics_app/utils/voice_message_service.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-import 'package:logistics_app/utils/voice_message_service.dart';
-import 'package:logistics_app/pages/sos/widgets/voice_record_button.dart';
 
 // Resource API base URL for static files (images, videos, etc.)
 class ResourceConfig {
@@ -142,8 +142,9 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
       1,
       RequestType.common,
     );
-    if (result != null) {
+    if (result != null && result.isNotEmpty) {
       ProgressHUD.showLoadingText(S.current.uploading_file);
+
       final fileUrl = await uploadFile([result[0]], widget.sessionId);
       String contentType;
       final ext = fileUrl[0].split('.').last.toLowerCase();
@@ -208,140 +209,145 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
                 ),
               ],
             ),
-            body: Column(
-              children: [
-                // Chat messages list
-                _buildSessionInfoBanner(),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(8.px),
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      itemCount: chartModel.messages.length,
-                      itemBuilder: (context, index) {
-                        ChatMessageModel message = chartModel.messages[index];
-                        bool isOwnMessage = message.senderType != 'AGENT';
-                        bool isSystemMessage =
-                            message.senderType == 'SYSTEM' ||
-                            message.senderName == S.current.system;
+            body: SafeArea(
+              bottom: true,
+              child: Column(
+                children: [
+                  // Chat messages list
+                  _buildSessionInfoBanner(),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(8.px),
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        itemCount: chartModel.messages.length,
+                        itemBuilder: (context, index) {
+                          ChatMessageModel message = chartModel.messages[index];
+                          bool isOwnMessage = message.senderType != 'AGENT';
+                          bool isSystemMessage =
+                              message.senderType == 'SYSTEM' ||
+                              message.senderName == S.current.system;
 
-                        // Determine message type
-                        if (isSystemMessage) {
-                          return _buildSystemMessage(message);
-                        } else {
-                          // 判断是否需要显示时间
-                          bool showTime = _shouldShowTime(index);
-                          return _buildChatMessage(
-                            message,
-                            isOwnMessage,
-                            showTime: showTime,
-                          );
-                        }
-                      },
+                          // Determine message type
+                          if (isSystemMessage) {
+                            return _buildSystemMessage(message);
+                          } else {
+                            // 判断是否需要显示时间
+                            bool showTime = _shouldShowTime(index);
+                            return _buildChatMessage(
+                              message,
+                              isOwnMessage,
+                              showTime: showTime,
+                            );
+                          }
+                        },
+                      ),
                     ),
                   ),
-                ),
 
-                // Input area
-                Container(
-                  padding: EdgeInsets.all(8.px),
-                  child: Row(
-                    children: [
-                      // 语音输入
-                      Container(
-                        width: 40.px,
-                        height: 40.px,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(10.px),
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            size: 24.px,
-                            isVoiceInput ? Icons.keyboard : Icons.mic,
-                            color: Colors.black,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              isVoiceInput = !isVoiceInput;
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 6.px),
-                      Expanded(
-                        child: Container(
+                  // Input area
+                  Container(
+                    padding: EdgeInsets.all(8.px),
+                    child: Row(
+                      children: [
+                        // 语音输入
+                        Container(
+                          width: 40.px,
                           height: 40.px,
-                          padding: EdgeInsets.symmetric(horizontal: 4.px),
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(10.px),
                           ),
-                          child:
-                              isVoiceInput
-                                  ? VoiceRecordButton(
-                                    startRecording:
-                                        () => _voiceMessageService
-                                            .startRecording(widget.chartModel),
-                                    stopRecording:
-                                        () => _voiceMessageService
-                                            .stopRecording(widget.chartModel),
-                                    cancelRecording:
-                                        () =>
-                                            _voiceMessageService
-                                                .cancelRecording(),
-                                  )
-                                  : TextField(
-                                    style: TextStyle(fontSize: 12.px),
-                                    controller: _messageController,
-                                    decoration: InputDecoration(
-                                      hintText: S.current.inputMessage(
-                                        S.current.message,
+                          child: IconButton(
+                            icon: Icon(
+                              size: 24.px,
+                              isVoiceInput ? Icons.keyboard : Icons.mic,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isVoiceInput = !isVoiceInput;
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 6.px),
+                        Expanded(
+                          child: Container(
+                            height: 40.px,
+                            padding: EdgeInsets.symmetric(horizontal: 4.px),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(10.px),
+                            ),
+                            child:
+                                isVoiceInput
+                                    ? VoiceRecordButton(
+                                      startRecording:
+                                          () => _voiceMessageService
+                                              .startRecording(
+                                                widget.chartModel,
+                                              ),
+                                      stopRecording:
+                                          () => _voiceMessageService
+                                              .stopRecording(widget.chartModel),
+                                      cancelRecording:
+                                          () =>
+                                              _voiceMessageService
+                                                  .cancelRecording(),
+                                    )
+                                    : TextField(
+                                      style: TextStyle(fontSize: 12.px),
+                                      controller: _messageController,
+                                      decoration: InputDecoration(
+                                        hintText: S.current.inputMessage(
+                                          S.current.message,
+                                        ),
+                                        border: InputBorder.none,
+                                        isDense: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.px,
+                                          vertical: 12.px,
+                                        ),
                                       ),
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 10.px,
-                                        vertical: 12.px,
-                                      ),
+                                      onSubmitted: (value) {
+                                        _sendMessage();
+                                      },
                                     ),
-                                    onSubmitted: (value) {
-                                      _sendMessage();
-                                    },
-                                  ),
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 6.px),
-                      // Upload button
-                      Container(
-                        width: 40.px,
-                        height: 40.px,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFE53E3E),
-                          borderRadius: BorderRadius.circular(10.px),
+                        SizedBox(width: 6.px),
+                        // Upload button
+                        Container(
+                          width: 40.px,
+                          height: 40.px,
+                          decoration: BoxDecoration(
+                            color: Color(0xFFE53E3E),
+                            borderRadius: BorderRadius.circular(10.px),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.attach_file, color: Colors.white),
+                            onPressed: _uploadFile,
+                          ),
                         ),
-                        child: IconButton(
-                          icon: Icon(Icons.attach_file, color: Colors.white),
-                          onPressed: _uploadFile,
+                        SizedBox(width: 6.px),
+                        Container(
+                          width: 40.px,
+                          height: 40.px,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE53E3E),
+                            borderRadius: BorderRadius.circular(10.px),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.send, color: Colors.white),
+                            onPressed: _sendMessage,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 6.px),
-                      Container(
-                        width: 40.px,
-                        height: 40.px,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE53E3E),
-                          borderRadius: BorderRadius.circular(10.px),
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.send, color: Colors.white),
-                          onPressed: _sendMessage,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

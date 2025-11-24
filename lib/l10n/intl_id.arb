@@ -873,5 +873,6 @@
   "phone_number_empty": "Nomor telepon kosong",
   "connecting_customer_service": "Menghubungkan pelayanan pelanggan...",
   "failed_to_create_chat_session": "Gagal membuat sesi obrolan",
-  "error_occurred_when_connecting_customer_service": "Gagal menghubungkan pelayanan pelanggan"
+  "error_occurred_when_connecting_customer_service": "Gagal menghubungkan pelayanan pelanggan",
+  "select_contact": "Pilih Kontak"
 }

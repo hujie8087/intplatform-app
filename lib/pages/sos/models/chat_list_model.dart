@@ -59,6 +59,8 @@ class ChatListModel with ChangeNotifier {
     print('deviceId: $deviceId');
     if (userInfoData != null) {
       userInfo = UserInfoModel.fromJson(userInfoData);
+    }
+    if (thirdUserInfoData != null) {
       thirdUserInfo = ThirdUserInfoModel.fromJson(thirdUserInfoData);
     }
     notifyListeners();

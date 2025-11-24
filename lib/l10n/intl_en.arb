@@ -869,5 +869,6 @@
   "phone_number_empty": "Phone number is empty",
   "connecting_customer_service": "Connecting customer service...",
   "failed_to_create_chat_session": "Failed to create chat session",
-  "error_occurred_when_connecting_customer_service": "Failed to connect to customer service"
+  "error_occurred_when_connecting_customer_service": "Failed to connect to customer service",
+  "select_contact": "Select Contact"
 }

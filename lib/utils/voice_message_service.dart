@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/pages/sos/models/chart_model.dart';
 import 'package:logistics_app/utils/update_file.dart';
-import 'package:record/record.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
 
 class VoiceMessageService {
   final AudioRecorder _audioRecorder = AudioRecorder();
@@ -31,6 +32,8 @@ class VoiceMessageService {
       // 请求麦克风权限
       PermissionStatus status = await Permission.microphone.status;
 
+      print('Microphone permission status: $status');
+
       // 如果权限未授予，则请求权限
       if (status != PermissionStatus.granted) {
         // 如果权限被永久拒绝，提示用户去设置
@@ -42,6 +45,7 @@ class VoiceMessageService {
 
         // 请求权限
         status = await Permission.microphone.request();
+        print('Microphone permission status: $status');
         if (status != PermissionStatus.granted) {
           ProgressHUD.showError('请授权麦克风权限');
           _isBusy = false;

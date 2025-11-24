@@ -873,5 +873,6 @@
   "phone_number_empty": "电话号码为空",
   "connecting_customer_service": "正在连接客服...",
   "failed_to_create_chat_session": "无法创建聊天会话",
-  "error_occurred_when_connecting_customer_service": "连接客服时发生错误"
+  "error_occurred_when_connecting_customer_service": "连接客服时发生错误",
+  "select_contact": "请选择联系方式"
 }
