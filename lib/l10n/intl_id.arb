@@ -874,5 +874,7 @@
   "connecting_customer_service": "Menghubungkan pelayanan pelanggan...",
   "failed_to_create_chat_session": "Gagal membuat sesi obrolan",
   "error_occurred_when_connecting_customer_service": "Gagal menghubungkan pelayanan pelanggan",
-  "select_contact": "Pilih Kontak"
+  "select_contact": "Pilih Kontak",
+  "hazard_type": "Jenis Masalah",
+  "my_discovery":"Penemuan saya"
 }

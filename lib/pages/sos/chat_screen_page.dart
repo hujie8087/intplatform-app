@@ -686,8 +686,8 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
             List<dynamic> records = data['records'];
             List<ChatMessageModel> historyMessages =
                 records.map((record) {
-                  String senderType =
-                      record['senderType']?.toString() ?? 'USER';
+                  // String senderType =
+                  //     record['senderType']?.toString() ?? 'USER';
                   return ChatMessageModel.fromJson(record);
                 }).toList();
             widget.chartModel.messages = historyMessages;

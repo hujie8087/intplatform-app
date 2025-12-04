@@ -855,7 +855,7 @@
   "call_phone": "拨打电话",
   "emergency_chat": "紧急聊天",
   "emergency_alarm_system": "紧急报警系统",
-  "hour_response": "24小时响应",
+  "hour_response": "24小时实时响应",
   "emergency_alarm_tips": "遇到紧急情况请立即按下报警按钮\n安全团队将在第一时间为您提供帮助",
   "alarm_reported": "已报警",
   "sos": "SOS",
@@ -874,5 +874,7 @@
   "connecting_customer_service": "正在连接客服...",
   "failed_to_create_chat_session": "无法创建聊天会话",
   "error_occurred_when_connecting_customer_service": "连接客服时发生错误",
-  "select_contact": "请选择联系方式"
+  "select_contact": "请选择联系方式",
+  "hazard_type": "隐患类型",
+  "my_discovery":"我的发现"
 }

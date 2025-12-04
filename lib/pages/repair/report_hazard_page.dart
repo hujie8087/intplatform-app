@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/base_list_model.dart';
+import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
+import 'package:logistics_app/pages/repair/my_hazard_page.dart';
 import 'package:logistics_app/pages/repair/safety_reward_page.dart';
 import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/hj_bottom_sheet.dart';
+import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 
@@ -27,7 +31,9 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
   TextEditingController _reporterController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
+  DictModel? selectedHazardType;
   bool isSubmitting = false;
+  List<DictModel> hazardTypeList = [];
 
   // 选择的图片
   List<AssetEntity> selectedAssets = [];
@@ -51,12 +57,29 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
     });
   }
 
+  // 获取隐患类型
+  Future<void> getHazardType() async {
+    DataUtils.getDictDataList(
+      'hazard_collection_type',
+      success: (data) {
+        final result =
+            BaseListModel<DictModel>.fromJson(
+              data,
+              (json) => DictModel.fromJson(json),
+            ).data ??
+            [];
+        this.hazardTypeList = result;
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.now();
     _selectedTime = TimeOfDay.now();
     _getUserInfo();
+    getHazardType();
   }
 
   @override
@@ -107,6 +130,12 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
   // 提交隐患报告
   Future<void> _submitReport() async {
     // 先进行表单验证
+
+    if (selectedHazardType == null) {
+      ProgressHUD.showError(S.current.pleaseSelect(S.current.hazard_type));
+      return;
+    }
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -170,6 +199,7 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
       {
         'name': _hazardNameController.text,
         'location': _locationController.text,
+        'type': selectedHazardType!.dictValue,
         'findTime':
             _selectedDate!.toString().split(' ')[0] +
             ' ' +
@@ -210,27 +240,44 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
           S.of(context).report_hazard,
           style: TextStyle(fontSize: 16.px),
         ),
-        // 增加一个奖励细则查看按钮
         actions: [
           TextButton(
-            onPressed:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SafetyRewardPage()),
-                ),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MyHazardPage()),
+            ),
             child: Row(
               children: [
-                Icon(Icons.info, size: 14.px, color: secondaryColor[600]),
+                Icon(Icons.feedback, size: 14.px, color: primaryColor[600]),
                 SizedBox(width: 2.px),
                 Text(
-                  S.of(context).reward_details,
-                  style: TextStyle(fontSize: 12.px, color: secondaryColor[600]),
+                  S.of(context).my_discovery,
+                  style: TextStyle(fontSize: 12.px, color: primaryColor[600]),
                 ),
                 SizedBox(width: 4.px),
               ],
             ),
           ),
         ],
+        leadingWidth: 140.px,
+        // 奖励细则
+        leading: TextButton(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SafetyRewardPage()),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.info, size: 14.px, color: secondaryColor[600]),
+              SizedBox(width: 2.px),
+              Text(
+                S.of(context).reward_details,
+                style: TextStyle(fontSize: 12.px, color: secondaryColor[600]),
+              ),
+              SizedBox(width: 4.px),
+            ],
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -246,6 +293,105 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 隐患类型
+                _buildSelectField(
+                  label: S.of(context).hazard_type,
+                  value: selectedHazardType?.dictLabel ?? '',
+                  onTap: () {
+                    Picker.showModalSheet(context, child: Container(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.7,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // 标题栏
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16.px, vertical: 12.px),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  S.of(context).pleaseSelect(S.of(context).hazard_type),
+                                  style: TextStyle(
+                                    fontSize: 16.px,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.close, size: 20.px, color: Colors.grey[600]),
+                                  onPressed: () => Navigator.pop(context),
+                                  padding: EdgeInsets.zero,
+                                  constraints: BoxConstraints(),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(height: 1, thickness: 0.5),
+                          // 选项列表（可滚动）
+                          Flexible(
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.symmetric(vertical: 8.px),
+                              itemCount: hazardTypeList.length,
+                              separatorBuilder: (context, index) => Divider(
+                                height: 1,
+                                thickness: 0.5,
+                                indent: 16.px,
+                                endIndent: 16.px,
+                              ),
+                              itemBuilder: (context, index) {
+                                final hazardType = hazardTypeList[index];
+                                return Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context, hazardType);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16.px,
+                                        vertical: 16.px,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              hazardType.dictLabel ?? '',
+                                              style: TextStyle(
+                                                fontSize: 15.px,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.chevron_right,
+                                            size: 20.px,
+                                            color: Colors.grey[400],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    )).then((value) {
+                      if (value != null && value is DictModel) {
+                        setState(() {
+                          selectedHazardType = value;
+                        });
+                      }
+                    });
+                  },
+                  icon: Icons.warning,
+                ),
+                SizedBox(height: 12.px),
+
                 // 隐患名称
                 _buildFormField(
                   label: S.of(context).hazard_name,
@@ -531,12 +677,12 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
                 children: [
                   Expanded(
                     child: Text(
-                      value,
+                      value.isEmpty ? S.current.pleaseSelect(label) : value,
                       style: TextStyle(
                         fontSize: 12.px,
                         color:
-                            value.startsWith('请选择')
-                                ? Colors.grey[500]
+                            value.isEmpty
+                                ? Colors.grey[700]
                                 : Colors.black87,
                       ),
                     ),

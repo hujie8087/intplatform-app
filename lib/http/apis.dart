@@ -130,6 +130,9 @@ class APIs {
   // 获取区域楼栋最新版本
   static const String getBuildingVersion = '/maintenance/building/version';
 
+  // 我的隐患列表
+  static const String hazardReportList = '/maintenance/hidden/danger/list';
+
   // 新增我的地址
   static const String addMyAddress = '/other/address';
 

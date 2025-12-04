@@ -771,6 +771,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hazard_name": MessageLookupByLibrary.simpleMessage("Nama Masalah"),
         "hazard_photo": MessageLookupByLibrary.simpleMessage("Foto"),
         "hazard_submit": MessageLookupByLibrary.simpleMessage("Kirim"),
+        "hazard_type": MessageLookupByLibrary.simpleMessage("Jenis Masalah"),
         "head": MessageLookupByLibrary.simpleMessage("Pemilik"),
         "hello": MessageLookupByLibrary.simpleMessage("Halo"),
         "homePage": MessageLookupByLibrary.simpleMessage("Beranda"),
@@ -903,6 +904,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "myReleaseList":
             MessageLookupByLibrary.simpleMessage("Daftar Publikasi Saya"),
         "myRepair": MessageLookupByLibrary.simpleMessage("Layanan Perbaikan"),
+        "my_discovery": MessageLookupByLibrary.simpleMessage("Penemuan saya"),
         "my_good_deeds":
             MessageLookupByLibrary.simpleMessage("Pengumuman Saya"),
         "myself": MessageLookupByLibrary.simpleMessage("Saya"),
@@ -1261,6 +1263,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Pilih Waktu Perbaikan"),
         "selectRepairType":
             MessageLookupByLibrary.simpleMessage("Pilih Jenis Perbaikan"),
+        "select_contact": MessageLookupByLibrary.simpleMessage("Pilih Kontak"),
         "select_contact_method":
             MessageLookupByLibrary.simpleMessage("Pilih metode kontak"),
         "select_date": MessageLookupByLibrary.simpleMessage("Pilih tanggal"),

@@ -13,8 +13,6 @@ import 'package:google_api_availability/google_api_availability.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/firebase_service.dart';
-import 'package:logistics_app/http/data/data_utils.dart';
-import 'package:logistics_app/http/error_handle.dart';
 import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/http/log_utils.dart';
 import 'package:logistics_app/route/auto_route_generator.dart';

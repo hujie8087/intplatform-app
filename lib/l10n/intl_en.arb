@@ -870,5 +870,7 @@
   "connecting_customer_service": "Connecting customer service...",
   "failed_to_create_chat_session": "Failed to create chat session",
   "error_occurred_when_connecting_customer_service": "Failed to connect to customer service",
-  "select_contact": "Select Contact"
+  "select_contact": "Select Contact",
+  "hazard_type": "Hazard Type",
+  "my_discovery":"My Discovery"
 }

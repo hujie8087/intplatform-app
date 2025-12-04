@@ -333,7 +333,6 @@ class ChatListModel with ChangeNotifier {
   // 触发紧急报警
   Future<void> triggerEmergencyAlarm(BuildContext context) async {
     ProgressHUD.showText(S.current.triggering_emergency_alarm);
-
     try {
       // 获取最新位置
       await getLocationWithoutGooglePlay();

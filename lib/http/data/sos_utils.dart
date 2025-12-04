@@ -139,7 +139,8 @@ class SosUtils {
     Fail? fail,
   }) {
     HttpUtils.post(
-      '/maintenance/report',
+      // 'https://test.iwipwedabay.com/security-stage-api/adt/report/add',
+      'https://api.iwipwedabay.com/security-stage-api/adt/report/add',
       parameters,
       success: success,
       fail: fail,

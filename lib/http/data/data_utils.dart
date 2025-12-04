@@ -615,6 +615,16 @@ class DataUtils {
     );
   }
 
+  // 获取我的隐患列表
+  static void getHazardReportList(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      APIs.hazardReportList,
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
   // 绑定报餐送餐帐号
   static void bindMealDeliveryAccount(
     parameters, {

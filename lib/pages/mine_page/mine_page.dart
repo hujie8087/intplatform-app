@@ -304,17 +304,15 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin {
       context: context,
       title: '注销账号',
       content: '确定要注销账号吗？该操作不可逆！',
-      confirmClick: () {
+      confirmClick: () async {
         // 退出登录
-        model
-            .cancelAccount()
-            .then(
-              (value) => {
-                ProgressHUD.showText('账号已注销'),
-                RouteUtils.push(context, LoginPage()),
-              },
-            )
-            .catchError((e) => {ProgressHUD.showError('账号注销失败')});
+        final (success, message) = await model.cancelAccount();
+          if(success){
+            ProgressHUD.showText('账号已注销');
+            RouteUtils.push(context, LoginPage());
+          }else{
+            ProgressHUD.showError(message??'帐号注销失败');
+          }
       },
     );
   }

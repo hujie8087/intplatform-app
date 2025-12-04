@@ -8610,10 +8610,10 @@ class S {
     );
   }
 
-  /// `24小时响应`
+  /// `24小时实时响应`
   String get hour_response {
     return Intl.message(
-      '24小时响应',
+      '24小时实时响应',
       name: 'hour_response',
       desc: '',
       args: [],
@@ -8795,6 +8795,36 @@ class S {
     return Intl.message(
       '连接客服时发生错误',
       name: 'error_occurred_when_connecting_customer_service',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请选择联系方式`
+  String get select_contact {
+    return Intl.message(
+      '请选择联系方式',
+      name: 'select_contact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `隐患类型`
+  String get hazard_type {
+    return Intl.message(
+      '隐患类型',
+      name: 'hazard_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `我的发现`
+  String get my_discovery {
+    return Intl.message(
+      '我的发现',
+      name: 'my_discovery',
       desc: '',
       args: [],
     );

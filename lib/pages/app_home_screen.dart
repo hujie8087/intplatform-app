@@ -41,7 +41,7 @@ class AppHomeScreen extends StatefulWidget {
 }
 
 class _AppHomeScreenState extends State<AppHomeScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   AnimationController? animationController;
   final GlobalKey<NavigationBarItemState> navigationKey =
       GlobalKey<NavigationBarItemState>();
@@ -257,8 +257,53 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     }
   }
 
+  // 刷新用户权限信息
+  void refreshUserPermission() async {
+    final inputUserName = await SpUtils.getString(Constants.SP_USER_NAME);
+    DataUtils.putLoginUser(
+      {'username': inputUserName, 'password': ''},
+      success: (res) async {
+        if (res['data']['loginUser']['status'] == '1') {
+          await SpUtils.remove(Constants.SP_TOKEN);
+          await SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+          ProgressHUD.showError('账号已注销，请联系管理员');
+        } else {
+          DataUtils.getThirdUserInfo(
+            success: (res) async {
+              ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
+                res['data'],
+              );
+              await SpUtils.saveModel('thirdUserInfo', userInfo);
+              await SpUtils.saveString(
+                Constants.SP_USER_NAME,
+                userInfo.name ?? '',
+              );
+              await SpUtils.saveString(
+                Constants.SP_USER_DEPT,
+                userInfo.formatOrganizeName ?? '',
+              );
+              DataUtils.getUserInfo(
+                success: (res) async {
+                  UserInfoModel userInfo = UserInfoModel.fromJson(
+                    res['data'],
+                  );
+                  await SpUtils.saveModel('userInfo', userInfo);
+                  await SpUtils.saveModel(
+                    Constants.SP_USER_PERMISSION,
+                    userInfo.permissions ?? [],
+                  );
+                },
+              );
+            },
+          );
+        }
+      },
+    );
+  }
+
   @override
   void initState() {
+    super.initState();
     _loadTabIcons();
     _tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
@@ -269,13 +314,31 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    super.initState();
+    // 注册生命周期观察者
+    WidgetsBinding.instance.addObserver(this);
     // 注册当前的 state，用于外部访问
     currentAppHomeScreenState = this;
     handleTabChanged(_grooveIndex);
     // tabBody = HomePage(
     //     animationController: animationController, onChanged: handleTabChanged);
+    // refreshUserPermission();
     checkUpdate(context);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+    refreshUserPermission();
+      // 你要做的动作
+    } else if (state == AppLifecycleState.paused) {
+      print("🟡 App 暂停（进入后台 / 切换到其他 App）");
+    } else if (state == AppLifecycleState.inactive) {
+      print("⚪ App 暂时无响应（电话、通知等）");
+    } else if (state == AppLifecycleState.detached) {
+      print("🔴 App 被移除任务栈");
+    }
   }
 
   void handleTabChanged(int newValue) async {
@@ -333,6 +396,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
 
   @override
   void dispose() {
+    // 移除生命周期观察者
+    WidgetsBinding.instance.removeObserver(this);
     // 清除 state 引用
     if (currentAppHomeScreenState == this) {
       currentAppHomeScreenState = null;

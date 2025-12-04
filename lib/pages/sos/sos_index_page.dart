@@ -1,5 +1,7 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/model/contact_model.dart';
 import 'package:logistics_app/pages/sos/chat_list_page.dart';
 import 'package:logistics_app/pages/sos/models/chat_list_model.dart';
 import 'package:logistics_app/pages/sos/widgets/contact_options.dart';
@@ -21,10 +23,119 @@ class SosIndexPage extends StatefulWidget {
 class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
   ChatListModel chatListModel = ChatListModel();
 
+  List<ContactModel> _defaultContactList = [
+    ContactModel(name: '园区应急队', tel: '082119894821'),
+    ContactModel(name: '纬达贝园区诊所', tel: '08121266666'),
+    ContactModel(name: '园区服务中心', tel: '081313333599'),
+  ];
+
   @override
   void initState() {
     super.initState();
     chatListModel.initialize();
+  }
+
+  // 报警联系人弹窗组件
+  Widget _buildEmergencyContactModal(BuildContext context, List<ContactModel> contactList) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final safeAreaBottom = MediaQuery.of(context).padding.bottom;
+    final maxHeight = screenHeight * 0.85;
+    final itemHeight = 60.0;
+    final headerHeight = 65.0;
+    final calculatedHeight = (contactList.length * itemHeight + headerHeight + safeAreaBottom).clamp(0.0, maxHeight);
+    return Container(
+      height: calculatedHeight + 20.px,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(20.px), topRight: Radius.circular(20.px)),
+      ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 拖拽指示器
+        Container(
+          margin: EdgeInsets.only(top: 8.px, bottom: 6.px),
+          width: 40.px,
+          height: 4.px,
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(2.px),
+          ),
+        ),
+        // 标题
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.px, vertical: 12.px),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.phone_outlined, size: 18.px, color: Colors.grey[700]),
+              SizedBox(width: 6.px),
+              Text(S.current.select_contact_method, style: TextStyle(fontSize: 16.px, fontWeight: FontWeight.bold, color: Colors.grey[900])),
+            ],
+          ),
+        ),
+        Divider(height: 1, thickness: 1, color: Colors.grey[200]),
+        // 联系人列表
+        Flexible(child: ListView.separated(
+          shrinkWrap: true,
+          padding: EdgeInsets.only(bottom: safeAreaBottom),
+          itemCount: contactList.length,
+          separatorBuilder: (context, index) => Divider(height: 1, thickness: 1, indent: 60.px, color: Colors.grey[100]),
+          itemBuilder: (context, index) {
+            final contact = contactList[index];
+            return InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                chatListModel.makePhoneCall(contact.tel);
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.px, vertical: 12.px),
+                child: Row(
+                  children: [
+                    // 头像/图标
+                    Container(
+                      width: 40.px,
+                      height: 40.px,
+                      decoration: BoxDecoration(
+                        color: secondaryColor.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.person,
+                        color: secondaryColor,
+                        size: 20.px,
+                      ),
+                    ),
+                    SizedBox(width: 12.px),
+                    // 联系人信息
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(contact.name ?? '未知联系人', style: TextStyle(fontSize: 15.px, fontWeight: FontWeight.w600, color: Colors.grey[900])),
+                          SizedBox(height: 3.px),
+                          Row(
+                            children: [
+                              Icon(Icons.phone, size: 12.px, color: Colors.grey[600]),
+                              SizedBox(width: 4.px),
+                              Text(contact.tel ?? '', style: TextStyle(fontSize: 13.px, color: Colors.grey[600])),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // 箭头图标
+                    Icon(Icons.chevron_right, color: Colors.grey[400], size: 20.px),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+        ),
+     ]),
+    );
   }
 
   @override
@@ -104,10 +215,23 @@ class _SosIndexPage extends State<SosIndexPage> with TickerProviderStateMixin {
                           if (!chatListModel.isAlarmTriggered) InfoCard(),
 
                           SOSButton(
-                            onPressed:
-                                () => chatListModel.triggerEmergencyAlarm(
-                                  context,
-                                ),
+                            onPressed: () async {
+                              final List<ConnectivityResult> result =
+                                  await Connectivity().checkConnectivity();
+                              print('result: $result');
+                              if (result.contains(ConnectivityResult.none)) {
+                                showModalBottomSheet(
+                                  context: context,
+                                  backgroundColor:
+                                      Colors.transparent,
+                                  isScrollControlled: true,
+                                  builder: (context) {
+                                    return _buildEmergencyContactModal(context, _defaultContactList);
+                                  },);
+                              } else {
+                                chatListModel.triggerEmergencyAlarm(context);
+                              }
+                            },
                             isDisabled: chatListModel.isAlarmTriggered,
                           ),
 

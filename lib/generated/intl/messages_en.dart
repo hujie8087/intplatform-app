@@ -741,6 +741,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hazard_name": MessageLookupByLibrary.simpleMessage("Hazard Name"),
         "hazard_photo": MessageLookupByLibrary.simpleMessage("Hazard Photo"),
         "hazard_submit": MessageLookupByLibrary.simpleMessage("Submit"),
+        "hazard_type": MessageLookupByLibrary.simpleMessage("Hazard Type"),
         "head": MessageLookupByLibrary.simpleMessage("Head"),
         "hello": MessageLookupByLibrary.simpleMessage("Hello"),
         "homePage": MessageLookupByLibrary.simpleMessage("Home"),
@@ -864,6 +865,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "myRelease": MessageLookupByLibrary.simpleMessage("My Posts"),
         "myReleaseList": MessageLookupByLibrary.simpleMessage("My Post List"),
         "myRepair": MessageLookupByLibrary.simpleMessage("My Repair"),
+        "my_discovery": MessageLookupByLibrary.simpleMessage("My Discovery"),
         "my_good_deeds": MessageLookupByLibrary.simpleMessage("My Publish"),
         "myself": MessageLookupByLibrary.simpleMessage("Myself"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
@@ -1197,6 +1199,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Please select repair time"),
         "selectRepairType":
             MessageLookupByLibrary.simpleMessage("Please select repair type"),
+        "select_contact":
+            MessageLookupByLibrary.simpleMessage("Select Contact"),
         "select_contact_method":
             MessageLookupByLibrary.simpleMessage("Select contact method"),
         "select_date": MessageLookupByLibrary.simpleMessage("Select Date"),
