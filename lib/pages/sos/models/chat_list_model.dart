@@ -78,7 +78,7 @@ class ChatListModel with ChangeNotifier {
       SosUtils.getUserEmergencyReports(
         params,
         success: (data) {
-          var reportsData = data['data']['records'] as List;
+          var reportsData = data['rows'] as List;
           emergencyReports =
               reportsData.map((e) => SosReportModel.fromJson(e)).toList();
         },

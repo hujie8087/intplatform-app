@@ -22,7 +22,7 @@ class SosReportModel {
   double? latitude;
   String? delFlag;
   int? systemSource;
-  String? status;
+  int? status;
   String? deviceType;
 
   SosReportModel({
