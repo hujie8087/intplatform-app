@@ -47,6 +47,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       GlobalKey<NavigationBarItemState>();
   double _progress = -1;
   UpdateDialog? _updateDialog;
+  DateTime? _lastResumeTime;
 
   List<TabIconData> _tabIconsList = [];
   int _grooveIndex = 2;
@@ -276,34 +277,34 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             await SpUtils.remove(Constants.SP_REFRESH_TOKEN);
             ProgressHUD.showError('账号已注销，请联系管理员');
           } else {
-            DataUtils.getThirdUserInfo(
-              success: (res) async {
-                ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
-                  res['data'],
-                );
-                await SpUtils.saveModel('thirdUserInfo', userInfo);
-                await SpUtils.saveString(
-                  Constants.SP_USER_NAME,
-                  userInfo.account ?? '',
-                );
-                await SpUtils.saveString(
-                  Constants.SP_USER_DEPT,
-                  userInfo.formatOrganizeName ?? '',
-                );
-                DataUtils.getUserInfo(
-                  success: (res) async {
-                    UserInfoModel userInfo = UserInfoModel.fromJson(
-                      res['data'],
-                    );
-                    await SpUtils.saveModel('userInfo', userInfo);
-                    await SpUtils.saveModel(
-                      Constants.SP_USER_PERMISSION,
-                      userInfo.permissions ?? [],
-                    );
-                  },
-                );
-              },
-            );
+            // DataUtils.getThirdUserInfo(
+            //   success: (res) async {
+            //     ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
+            //       res['data'],
+            //     );
+            //     await SpUtils.saveModel('thirdUserInfo', userInfo);
+            //     await SpUtils.saveString(
+            //       Constants.SP_USER_NAME,
+            //       userInfo.account ?? '',
+            //     );
+            //     await SpUtils.saveString(
+            //       Constants.SP_USER_DEPT,
+            //       userInfo.formatOrganizeName ?? '',
+            //     );
+            //     DataUtils.getUserInfo(
+            //       success: (res) async {
+            //         UserInfoModel userInfo = UserInfoModel.fromJson(
+            //           res['data'],
+            //         );
+            //         await SpUtils.saveModel('userInfo', userInfo);
+            //         await SpUtils.saveModel(
+            //           Constants.SP_USER_PERMISSION,
+            //           userInfo.permissions ?? [],
+            //         );
+            //       },
+            //     );
+            //   },
+            // );
           }
         },
       );
@@ -360,9 +361,14 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-
+    print('AppHomeScreen instance: ${identityHashCode(this)} state: $state');
     if (state == AppLifecycleState.resumed) {
-      refreshUserPermission();
+      if (_lastResumeTime == null ||
+          DateTime.now().difference(_lastResumeTime!) >
+              const Duration(seconds: 2)) {
+        _lastResumeTime = DateTime.now();
+        refreshUserPermission();
+      }
       // 你要做的动作
     } else if (state == AppLifecycleState.paused) {
       print("🟡 App 暂停（进入后台 / 切换到其他 App）");

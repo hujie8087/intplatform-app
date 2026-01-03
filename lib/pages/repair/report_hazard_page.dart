@@ -6,7 +6,7 @@ import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/base_list_model.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
-import 'package:logistics_app/pages/app_home_screen.dart';
+
 import 'package:logistics_app/pages/repair/my_hazard_page.dart';
 import 'package:logistics_app/pages/repair/safety_reward_page.dart';
 import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
@@ -234,10 +234,8 @@ class _ReportHazardPageState extends State<ReportHazardPage> {
       success: (data) {
         ProgressHUD.showSuccess(S.current.submit_hazard_report_success);
         // 调整到工具箱
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AppHomeScreen()),
-        );
+        // 调整到工具箱
+        Navigator.pop(context);
         setState(() {
           isSubmitting = false;
         });

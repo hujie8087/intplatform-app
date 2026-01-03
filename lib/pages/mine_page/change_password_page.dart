@@ -3,9 +3,7 @@ import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
-import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/route/auto_route_generator.dart';
-import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -297,7 +295,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         ProgressHUD.showText(
                           S.of(context).passwordChangeSuccess,
                         );
-                        RouteUtils.push(context, AppHomeScreen());
+                        Navigator.of(
+                          context,
+                        ).pushNamedAndRemoveUntil('/home', (route) => false);
                       },
                     );
                   } else {

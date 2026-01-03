@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -30,6 +31,7 @@ class _AnimalListPageState extends State<AnimalListPage>
       false; // Flag to ignore scroll events during tap navigation
   List<double> _groupOffsets = []; // Cached offsets for each category
   String _language = '0';
+  bool _isLoading = false;
   @override
   void initState() {
     _refreshController = RefreshController();
@@ -46,6 +48,9 @@ class _AnimalListPageState extends State<AnimalListPage>
 
   Future<void> getAnimalTreeList() async {
     var result = await SpUtils.getString('locale');
+    setState(() {
+      _isLoading = true;
+    });
     if (result == 'id') {
       _language = '1';
     } else {
@@ -63,6 +68,7 @@ class _AnimalListPageState extends State<AnimalListPage>
           if (_list.isNotEmpty) {
             _selectedIndex = 0;
           }
+          _isLoading = false;
         });
       },
     );
@@ -243,7 +249,9 @@ class _AnimalListPageState extends State<AnimalListPage>
             Expanded(
               child:
                   _list.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
+                      ? _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : EmptyView()
                       : Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

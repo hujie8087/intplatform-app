@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -20,6 +21,7 @@ class _PlantListPageState extends State<PlantListPage>
   late RefreshController _refreshController;
   List<PlantTreeModel> _list = [];
   int _selectedIndex = 0;
+  bool _isLoading = false;
 
   final ScrollController _scrollController = ScrollController();
   bool _isTabClicked = false;
@@ -36,6 +38,9 @@ class _PlantListPageState extends State<PlantListPage>
 
   Future<void> getPlantTreeList() async {
     var result = await SpUtils.getString('locale');
+    setState(() {
+      _isLoading = true;
+    });
     if (result == 'id') {
       _language = '1';
     } else {
@@ -52,6 +57,7 @@ class _PlantListPageState extends State<PlantListPage>
           if (_list.isNotEmpty) {
             _selectedIndex = 0;
           }
+          _isLoading = false;
         });
       },
     );
@@ -226,7 +232,9 @@ class _PlantListPageState extends State<PlantListPage>
             Expanded(
               child:
                   _list.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
+                      ? _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : EmptyView()
                       : Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

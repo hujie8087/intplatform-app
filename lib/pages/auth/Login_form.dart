@@ -3,7 +3,7 @@ import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
-import 'package:logistics_app/pages/app_home_screen.dart';
+
 import 'package:logistics_app/pages/auth/Register_page.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
@@ -196,14 +196,16 @@ class _LoginFormState extends State<LoginForm> {
                                     'mobilePhoneId': fcmToken,
                                   });
                                 }
-                                // RouteUtils.push(context, AppHomeScreen());
                                 if (model.isFirstLogin == true) {
                                   RouteUtils.push(
                                     context,
                                     ChangePasswordPage(isFirstLogin: true),
                                   );
                                 } else {
-                                  RouteUtils.push(context, AppHomeScreen());
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/home',
+                                    (route) => false,
+                                  );
                                 }
                                 ProgressHUD.showText(
                                   S.of(context).loginSuccess,
