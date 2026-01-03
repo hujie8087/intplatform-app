@@ -140,7 +140,36 @@ class SosUtils {
   }) {
     HttpUtils.post(
       // 'https://test.iwipwedabay.com/security-stage-api/adt/report/add',
-      'https://api.iwipwedabay.com/security-stage-api/adt/report/add',
+      // 'https://api.iwipwedabay.com/security-stage-api/adt/report/add',
+      'https://api.iwipwedabay.com/api/security/mis/adt/report/add',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 结束报警接口
+  static void endEmergencyReport<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.put(
+      '/maintenance/report',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取当前用户的报警记录
+  static void getUserEmergencyReports<T>(
+    parameters, {
+    Success? success,
+    Fail? fail,
+  }) {
+    HttpUtils.get(
+      '/maintenance/report/list',
       parameters,
       success: success,
       fail: fail,

@@ -22,31 +22,34 @@ class HazardReportModel {
   String? handlePhoto;
   String? delFlag;
   int? type;
+  int? isRead;
 
-  HazardReportModel(
-      {this.createBy,
-      this.createTime,
-      this.updateBy,
-      this.updateTime,
-      this.remark,
-      this.startQueryTime,
-      this.endQueryTime,
-      this.id,
-      this.name,
-      this.location,
-      this.userName,
-      this.findTime,
-      this.reportPerson,
-      this.tel,
-      this.describes,
-      this.progress,
-      this.url,
-      this.handleBy,
-      this.handleTime,
-      this.handleResult,
-      this.handlePhoto,
-      this.delFlag,
-      this.type});
+  HazardReportModel({
+    this.createBy,
+    this.createTime,
+    this.updateBy,
+    this.updateTime,
+    this.remark,
+    this.startQueryTime,
+    this.endQueryTime,
+    this.id,
+    this.name,
+    this.location,
+    this.userName,
+    this.findTime,
+    this.reportPerson,
+    this.tel,
+    this.describes,
+    this.progress,
+    this.url,
+    this.handleBy,
+    this.handleTime,
+    this.handleResult,
+    this.handlePhoto,
+    this.delFlag,
+    this.type,
+    this.isRead,
+  });
 
   HazardReportModel.fromJson(Map<String, dynamic> json) {
     createBy = json['createBy'];
@@ -72,6 +75,7 @@ class HazardReportModel {
     handlePhoto = json['handlePhoto'];
     delFlag = json['delFlag'];
     type = json['type'];
+    isRead = json['isRead'];
   }
 
   Map<String, dynamic> toJson() {
@@ -99,6 +103,7 @@ class HazardReportModel {
     data['handlePhoto'] = this.handlePhoto;
     data['delFlag'] = this.delFlag;
     data['type'] = this.type;
+    data['isRead'] = this.isRead;
     return data;
   }
 }

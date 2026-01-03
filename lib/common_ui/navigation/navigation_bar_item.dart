@@ -1,11 +1,10 @@
 import 'dart:math' as math;
-
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/main.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
-
 import '../../pages/models/tabIcon_data.dart';
 
 class NavigationBarItem extends StatefulWidget {
@@ -251,26 +250,37 @@ class _TabIconsState extends State<TabIcons> with TickerProviderStateMixin {
                 if (!widget.tabIconData!.isSelected)
                   Positioned(
                     bottom: 0,
-                    child: ScaleTransition(
-                      alignment: Alignment.bottomCenter,
-                      scale: Tween<double>(begin: 0.8, end: 1.0).animate(
-                        CurvedAnimation(
-                          parent: widget.tabIconData!.animationController!,
-                          curve: Interval(
-                            0.1,
-                            1.0,
-                            curve: Curves.fastOutSlowIn,
+                    child: badges.Badge(
+                      showBadge: widget.tabIconData!.unreadCount > 0,
+                      badgeContent: Text(
+                        widget.tabIconData!.unreadCount.toString(),
+                        style: TextStyle(color: Colors.white, fontSize: 12.px),
+                      ),
+                      position: badges.BadgePosition.topEnd(
+                        top: -20.px,
+                        end: 0.px,
+                      ),
+                      child: ScaleTransition(
+                        alignment: Alignment.bottomCenter,
+                        scale: Tween<double>(begin: 0.8, end: 1.0).animate(
+                          CurvedAnimation(
+                            parent: widget.tabIconData!.animationController!,
+                            curve: Interval(
+                              0.1,
+                              1.0,
+                              curve: Curves.fastOutSlowIn,
+                            ),
                           ),
                         ),
-                      ),
-                      child: Text(
-                        widget.tabIconData!.labelName,
-                        style: TextStyle(
-                          color:
-                              widget.tabIconData!.isSelected
-                                  ? primaryColor
-                                  : Colors.grey,
-                          fontSize: 12.px,
+                        child: Text(
+                          widget.tabIconData!.labelName,
+                          style: TextStyle(
+                            color:
+                                widget.tabIconData!.isSelected
+                                    ? primaryColor
+                                    : Colors.grey,
+                            fontSize: 12.px,
+                          ),
                         ),
                       ),
                     ),

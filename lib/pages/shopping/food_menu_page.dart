@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/generated/l10n.dart';
-import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/shopping_utils.dart';
 import 'package:logistics_app/http/model/food_menu_model.dart';
 import 'package:logistics_app/route/route_annotation.dart';
-import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 @AppRoute(path: 'food_menu_page', name: '今日菜谱')
@@ -42,22 +40,12 @@ class _FoodMenuPageState extends State<FoodMenuPage>
 
     try {
       ShoppingUtils.getTodayMenu(
-        {
-          'pageNum': 1,
-          'pageSize': 100,
-          'menuDate': _selectedDate.toString().split(' ')[0],
-        },
+        {'menuDate': _selectedDate.toString().split(' ')[0]},
         success: (data) {
           setState(() {
-            var todayMenuList = data['rows'] as List;
-            if (todayMenuList.isNotEmpty) {
-              List<FoodMenuModel> rows =
-                  todayMenuList.map((i) => FoodMenuModel.fromJson(i)).toList();
-              if (rows.isNotEmpty) {
-                _todayMenu = rows[0];
-              } else {
-                _todayMenu = null;
-              }
+            var todayMenuList = data['data'];
+            if (todayMenuList != null) {
+              _todayMenu = FoodMenuModel.fromJson(todayMenuList);
             } else {
               _todayMenu = null;
             }
@@ -72,10 +60,12 @@ class _FoodMenuPageState extends State<FoodMenuPage>
         },
       );
     } catch (e) {
-      setState(() {
-        _errorMessage = '获取菜谱失败: $e';
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = '获取菜谱失败: $e';
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -101,34 +91,6 @@ class _FoodMenuPageState extends State<FoodMenuPage>
     }
   }
 
-  // 获取餐次图标
-  IconData _getMealTypeIcon(int mealType) {
-    switch (mealType) {
-      case 0:
-        return Icons.wb_sunny;
-      case 1:
-        return Icons.wb_sunny_outlined;
-      case 2:
-        return Icons.nights_stay;
-      default:
-        return Icons.restaurant;
-    }
-  }
-
-  // 获取餐次颜色
-  Color _getMealTypeColor(int mealType) {
-    switch (mealType) {
-      case 0:
-        return Colors.orange;
-      case 1:
-        return Colors.red;
-      case 2:
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
-  }
-
   // 选择日期
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -146,78 +108,49 @@ class _FoodMenuPageState extends State<FoodMenuPage>
     }
   }
 
-  // 构建菜品卡片
-  Widget _buildDishCard(Dishs dish) {
-    return Card(
-      margin: EdgeInsets.symmetric(horizontal: 16.px, vertical: 4.px),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.px)),
-      child: ListTile(
-        leading:
-            dish.imageUrl != null && dish.imageUrl!.isNotEmpty
-                ? ClipRRect(
-                  borderRadius: BorderRadius.circular(8.px),
-                  child: Image.network(
-                    APIs.imagePrefix + dish.imageUrl!,
-                    width: 50.px,
-                    height: 50.px,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: 50.px,
-                        height: 50.px,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(8.px),
-                        ),
-                        child: Icon(Icons.restaurant, color: Colors.grey[400]),
-                      );
-                    },
+  // 构建单个分类列
+  Widget _buildCategoryColumn(String title, List<Dishs> items) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: 8.px),
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 14.px,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF5D4037),
+              ),
+            ),
+          ),
+          if (items.isEmpty)
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 4.px),
+              child: Text(
+                '--',
+                style: TextStyle(fontSize: 14.px, color: Colors.grey[400]),
+              ),
+            )
+          else
+            ...items.map(
+              (item) => Padding(
+                padding: EdgeInsets.symmetric(vertical: 4.px),
+                child: Text(
+                  item.name ?? '',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12.px,
+                    color: Color(0xFF666666),
+                    height: 1.2,
                   ),
-                )
-                : Container(
-                  width: 50.px,
-                  height: 50.px,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(8.px),
-                  ),
-                  child: Icon(Icons.restaurant, color: Colors.grey[400]),
-                ),
-        title: Text(
-          dish.name ?? S.of(context).unknown_dish,
-          style: TextStyle(fontSize: 12.px, fontWeight: FontWeight.w600),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (dish.englishName != null && dish.englishName!.isNotEmpty)
-              Text(
-                dish.englishName!,
-                style: TextStyle(
-                  fontSize: 10.px,
-                  color: Colors.grey[600],
-                  fontStyle: FontStyle.italic,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            if (dish.indonesianName != null && dish.indonesianName!.isNotEmpty)
-              Text(
-                dish.indonesianName!,
-                style: TextStyle(fontSize: 10.px, color: Colors.grey[600]),
-              ),
-            if (dish.description != null && dish.description!.isNotEmpty)
-              Text(
-                dish.description!,
-                style: TextStyle(fontSize: 10.px, color: Colors.grey[500]),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-          ],
-        ),
-        trailing:
-            dish.status == 1
-                ? Icon(Icons.check_circle, color: primaryColor, size: 20.px)
-                : Icon(Icons.cancel, color: secondaryColor, size: 20.px),
+            ),
+        ],
       ),
     );
   }
@@ -226,51 +159,153 @@ class _FoodMenuPageState extends State<FoodMenuPage>
   Widget _buildMealSection(int mealType) {
     final dishes = _getDishesByMealType(mealType);
     if (dishes.isEmpty) {
+      // 即使为空也显示空位，或者隐藏？设计稿应该是固定的
+      // 这里如果没数据就不显示
       return SizedBox.shrink();
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          margin: EdgeInsets.fromLTRB(16.px, 16.px, 16.px, 8.px),
-          padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 4.px),
-          decoration: BoxDecoration(
-            color: _getMealTypeColor(mealType).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20.px),
-            border: Border.all(
-              color: _getMealTypeColor(mealType).withOpacity(0.3),
-              width: 1,
+    // 分类
+    List<Dishs> staples = [];
+    List<Dishs> normalDishes = [];
+    List<Dishs> soups = [];
+
+    for (var dish in dishes) {
+      if (dish.dishType == 0)
+        staples.add(dish);
+      else if (dish.dishType == 2)
+        soups.add(dish);
+      else
+        normalDishes.add(dish);
+    }
+
+    String title = _getMealTypeName(mealType);
+    if (title.length >= 2 && !title.contains('\n')) {
+      // 竖排文字处理
+      title = title.split('').join('\n');
+    }
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8.px, vertical: 8.px),
+      // 不设置固定高度，让他自适应内容，但给个最小高度保证对齐
+      constraints: BoxConstraints(minHeight: 140.px),
+      child: IntrinsicHeight(
+        child: Stack(
+          children: [
+            // 卡片背景
+            Container(
+              margin: EdgeInsets.only(left: 20.px), //留出标签位置
+              width: double.infinity,
+              padding: EdgeInsets.fromLTRB(30.px, 16.px, 16.px, 16.px),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.px),
+                border: Border.all(color: Color(0xFFA07D66), width: 2),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0xFFA07D66),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildCategoryColumn('主食', staples),
+                  _buildCategoryColumn('菜品', normalDishes),
+                  _buildCategoryColumn('汤品', soups),
+                ],
+              ),
             ),
+            // 左侧标签 - 垂直居中
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              child: Center(
+                child: Container(
+                  width: 40.px,
+                  height: 90.px,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF9E7E6B), // 稍微浅一点的棕色
+                    borderRadius: BorderRadius.circular(20.px),
+                    border: Border.all(color: Colors.white, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(2, 2),
+                        blurRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.px,
+                      fontWeight: FontWeight.bold,
+                      height: 1.2,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 构建顶部标题
+  Widget _buildDailyMenuHeader() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(
+        top: 20.px,
+        bottom: 20.px,
+      ), // 减少一点顶部padding，因为AppBar还在
+      decoration: BoxDecoration(
+        color: Color(0xFFDAC9B6), // 稍微浅一点的棕色
+        image: DecorationImage(
+          image: AssetImage('assets/images/food_menu_bg.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Center(
+        child: Container(
+          width: 260.px,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Color(0xFFAB4D20), width: 3.px), // 蓝色边框
           ),
-          child: Row(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Icon(
-                _getMealTypeIcon(mealType),
-                color: _getMealTypeColor(mealType),
-                size: 16.px,
-              ),
-              SizedBox(width: 4.px),
-              Text(
-                _getMealTypeName(mealType),
-                style: TextStyle(
-                  fontSize: 12.px,
-                  fontWeight: FontWeight.w600,
-                  color: _getMealTypeColor(mealType),
-                ),
-              ),
-              SizedBox(width: 4.px),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 2.px),
-                decoration: BoxDecoration(
-                  color: _getMealTypeColor(mealType),
-                  borderRadius: BorderRadius.circular(10.px),
-                ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 12.px),
                 child: Text(
-                  '${dishes.length}${S.of(context).dishes}',
+                  '每日菜单',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 10.px,
+                    fontSize: 32.px,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFAB4D20),
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 4.px),
+                color: Color(0xFFAB4D20), // 棕色底
+                child: Text(
+                  'Daily Menu',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16.px,
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),
@@ -279,52 +314,6 @@ class _FoodMenuPageState extends State<FoodMenuPage>
             ],
           ),
         ),
-        ...dishes.map((dish) => _buildDishCard(dish)).toList(),
-      ],
-    );
-  }
-
-  // 构建日期显示
-  Widget _buildDateHeader() {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.px, vertical: 8.px),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(10.px),
-          bottomRight: Radius.circular(10.px),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.calendar_today, color: primaryColor, size: 20.px),
-          SizedBox(width: 8.px),
-          Text(
-            '${_selectedDate.year}-${_selectedDate.month}-${_selectedDate.day}',
-            style: TextStyle(
-              fontSize: 14.px,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[800],
-            ),
-          ),
-          Spacer(),
-          TextButton.icon(
-            onPressed: () => _selectDate(context),
-            icon: Icon(Icons.edit_calendar, size: 14.px),
-            label: Text(
-              S.of(context).select_date,
-              style: TextStyle(fontSize: 12.px),
-            ),
-            style: TextButton.styleFrom(foregroundColor: primaryColor),
-          ),
-        ],
       ),
     );
   }
@@ -335,7 +324,7 @@ class _FoodMenuPageState extends State<FoodMenuPage>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(),
+          CircularProgressIndicator(color: Color(0xFFAB4D20)),
           SizedBox(height: 16.px),
           Text(
             S.of(context).loading_food_menu,
@@ -377,7 +366,7 @@ class _FoodMenuPageState extends State<FoodMenuPage>
               style: TextStyle(fontSize: 12.px),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: primaryColor,
+              backgroundColor: Color(0xFFAB4D20),
               foregroundColor: Colors.white,
             ),
           ),
@@ -402,11 +391,6 @@ class _FoodMenuPageState extends State<FoodMenuPage>
               color: Colors.grey[600],
             ),
           ),
-          SizedBox(height: 8.px),
-          Text(
-            S.of(context).no_food_menu_info_tips,
-            style: TextStyle(fontSize: 12.px, color: Colors.grey[500]),
-          ),
         ],
       ),
     );
@@ -415,12 +399,19 @@ class _FoodMenuPageState extends State<FoodMenuPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFAF4F0), // 背景色，浅米色
       appBar: AppBar(
         title: Text(S.of(context).food_menu, style: TextStyle(fontSize: 16.px)),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
+        centerTitle: true,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.date_range),
+            onPressed: () => _selectDate(context),
+            tooltip: S.of(context).select_date,
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _getTodayMenu,
@@ -430,7 +421,7 @@ class _FoodMenuPageState extends State<FoodMenuPage>
       ),
       body: Column(
         children: [
-          _buildDateHeader(),
+          _buildDailyMenuHeader(),
           Expanded(
             child:
                 _isLoading
@@ -441,36 +432,27 @@ class _FoodMenuPageState extends State<FoodMenuPage>
                         _todayMenu!.dishs == null ||
                         _todayMenu!.dishs!.isEmpty
                     ? _buildEmptyState()
-                    : RefreshIndicator(
-                      onRefresh: _getTodayMenu,
-                      child: ListView(
-                        padding: EdgeInsets.only(bottom: 16.px),
-                        children: [
-                          _buildMealSection(0), // 早餐
-                          _buildMealSection(1), // 午餐
-                          _buildMealSection(2), // 晚餐
-                        ],
-                      ),
+                    : ListView(
+                      padding: EdgeInsets.only(bottom: 12.px),
+                      children: [
+                        _buildMealSection(0), // 早餐
+                        _buildMealSection(1), // 午餐
+                        _buildMealSection(2), // 晚餐
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 6.px),
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          child: Text(
+                            _todayMenu?.remark ?? '',
+                            style: TextStyle(
+                              fontSize: 12.px,
+                              color: Colors.grey,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     ),
-          ),
-          // 底部说明
-          Container(
-            padding: EdgeInsets.only(
-              left: 16.px,
-              right: 16.px,
-              top: 8.px,
-              bottom: 16.px,
-            ),
-            width: double.infinity,
-            child: Text(
-              '温馨提示：菜谱仅供参考，如有疑问请咨询食堂工作人员。',
-              style: TextStyle(fontSize: 12.px),
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12.px),
-              border: Border.all(color: Colors.grey[200]!),
-            ),
           ),
         ],
       ),

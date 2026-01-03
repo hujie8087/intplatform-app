@@ -10,6 +10,7 @@ import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/data/sos_utils.dart';
 import 'package:logistics_app/http/model/chat_session_model.dart';
 import 'package:logistics_app/http/model/contact_model.dart';
+import 'package:logistics_app/http/model/sos_report_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/sos/chat_screen_page.dart';
 import 'package:logistics_app/pages/sos/models/chart_model.dart';
@@ -38,6 +39,7 @@ class ChatListModel with ChangeNotifier {
   Timer? _sessionRefreshDebounce;
   List<ContactModel> contactList = [];
   WebSocketService webSocketService = WebSocketService();
+  List<SosReportModel> emergencyReports = [];
 
   void initialize() async {
     await loadContactList();
@@ -65,7 +67,28 @@ class ChatListModel with ChangeNotifier {
     if (thirdUserInfoData != null) {
       thirdUserInfo = ThirdUserInfoModel.fromJson(thirdUserInfoData);
     }
+    await loadUserEmergencyReports(deviceIdData);
     notifyListeners();
+  }
+
+  Future<void> loadUserEmergencyReports(String deviceIdData) async {
+    try {
+      final params = {'deviceType': deviceIdData, 'pageNum': 1, 'pageSize': 10};
+
+      SosUtils.getUserEmergencyReports(
+        params,
+        success: (data) {
+          var reportsData = data['data']['records'] as List;
+          emergencyReports =
+              reportsData.map((e) => SosReportModel.fromJson(e)).toList();
+        },
+        fail: (code, error) {
+          print('加载用户紧急报警记录失败: $error');
+        },
+      );
+    } catch (e) {
+      print('加载用户紧急报警记录异常: $e');
+    }
   }
 
   Future<void> getLocationWithoutGooglePlay() async {

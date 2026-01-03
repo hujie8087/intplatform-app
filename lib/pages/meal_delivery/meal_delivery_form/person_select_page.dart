@@ -156,7 +156,6 @@ class _PersonSelectionPageState extends State<PersonSelectPage> {
                   controller: searchDeptController,
                   onChanged: (value) {
                     setState(() {
-                      searchDeptController.text = value;
                       mealDeliveryModel.searchDept(value);
                     });
                   },
@@ -186,7 +185,6 @@ class _PersonSelectionPageState extends State<PersonSelectPage> {
                   controller: searchController,
                   onChanged: (value) {
                     setState(() {
-                      searchController.text = value;
                       mealDeliveryModel.searchPerson(value);
                     });
                   },

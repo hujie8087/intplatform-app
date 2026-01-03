@@ -40,23 +40,40 @@ class FeedbackCardWidget extends StatelessWidget {
                 ),
               ],
             ),
-            child: Padding(
-              padding: EdgeInsets.all(16.px),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 头部信息：联系人和状态
-                  _buildHeader(context),
-                  SizedBox(height: 12.px),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(16.px),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 头部信息：联系人和状态
+                      _buildHeader(context),
+                      SizedBox(height: 12.px),
 
-                  // 反馈内容
-                  _buildContent(context),
-                  SizedBox(height: 12.px),
+                      // 反馈内容
+                      _buildContent(context),
+                      SizedBox(height: 12.px),
 
-                  // 底部信息：时间和类型
-                  _buildFooter(context),
-                ],
-              ),
+                      // 底部信息：时间和类型
+                      _buildFooter(context),
+                    ],
+                  ),
+                ),
+                if (feedback.isRead == 1)
+                  Positioned(
+                    top: 12.px,
+                    right: 12.px,
+                    child: Container(
+                      width: 8.px,
+                      height: 8.px,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),

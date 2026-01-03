@@ -14,6 +14,7 @@ import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:badges/badges.dart' as badges;
 
 class MyHazardPage extends StatefulWidget {
   const MyHazardPage({super.key});
@@ -51,7 +52,8 @@ class _MyHazardPageState extends State<MyHazardPage>
     );
     _fetchUserInfo();
   }
-// 获取隐患类型
+
+  // 获取隐患类型
   Future<void> _fetchHazardType() async {
     DataUtils.getDictDataList(
       'hazard_collection_type',
@@ -62,11 +64,11 @@ class _MyHazardPageState extends State<MyHazardPage>
               (json) => DictModel.fromJson(json),
             ).data ??
             [];
-        setState(() {
-        });
+        setState(() {});
       },
     );
   }
+
   Future<void> _fetchUserInfo() async {
     final data = await SpUtils.getModel('thirdUserInfo');
     if (data == null) return;
@@ -109,8 +111,9 @@ class _MyHazardPageState extends State<MyHazardPage>
         if (!mounted) return;
         final rows = (data?['rows'] as List?) ?? [];
         final total = data?['total'] ?? 0;
-        final items =
-            rows.map((e) => HazardReportModel.fromJson(e)).toList(growable: false);
+        final items = rows
+            .map((e) => HazardReportModel.fromJson(e))
+            .toList(growable: false);
 
         setState(() {
           if (isRefresh) {
@@ -145,11 +148,9 @@ class _MyHazardPageState extends State<MyHazardPage>
         }
         final errorMessage =
             msg.trim().isNotEmpty ? msg : S.of(context).networkError;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(errorMessage)));
         completer.complete();
       },
     );
@@ -168,7 +169,6 @@ class _MyHazardPageState extends State<MyHazardPage>
     _refreshController.dispose();
     super.dispose();
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -181,6 +181,11 @@ class _MyHazardPageState extends State<MyHazardPage>
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
+        // 返回按钮
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context, true),
+        ),
       ),
       body: SafeArea(
         child: SmartRefreshWidget(
@@ -191,9 +196,10 @@ class _MyHazardPageState extends State<MyHazardPage>
           onLoading: () => _getHazardList(isRefresh: false),
           child: Padding(
             padding: EdgeInsets.all(12.px),
-            child: _hazardList.isEmpty
-                ? (_isLoading ? const SizedBox.shrink() : EmptyView())
-                : _buildHazardList(),
+            child:
+                _hazardList.isEmpty
+                    ? (_isLoading ? const SizedBox.shrink() : EmptyView())
+                    : _buildHazardList(),
           ),
         ),
       ),
@@ -207,10 +213,7 @@ class _MyHazardPageState extends State<MyHazardPage>
       itemBuilder: (context, index) {
         final hazard = _hazardList[index];
         final count = _hazardList.length;
-        final animation = Tween<double>(
-          begin: 0,
-          end: 1,
-        ).animate(
+        final animation = Tween<double>(begin: 0, end: 1).animate(
           CurvedAnimation(
             parent: _animationController!,
             curve: Interval(
@@ -228,7 +231,14 @@ class _MyHazardPageState extends State<MyHazardPage>
               opacity: animation,
               child: Transform.translate(
                 offset: Offset(0, 30.px * (1 - animation.value)),
-                child: _HazardCard(hazard: hazard, hazardProcessList: _hazardProcessList, hazardTypeList: _hazardTypeList),
+                child: _HazardCard(
+                  hazard: hazard,
+                  hazardProcessList: _hazardProcessList,
+                  hazardTypeList: _hazardTypeList,
+                  onRead: () {
+                    _getHazardList(isRefresh: true);
+                  },
+                ),
               ),
             );
           },
@@ -245,11 +255,13 @@ class _HazardCard extends StatefulWidget {
     required this.hazard,
     required this.hazardProcessList,
     required this.hazardTypeList,
+    required this.onRead,
   });
 
   final HazardReportModel hazard;
   final List<DictModel> hazardProcessList;
   final List<DictModel> hazardTypeList;
+  final Function onRead;
 
   @override
   State<_HazardCard> createState() => _HazardCardState();
@@ -267,99 +279,127 @@ class _HazardCardState extends State<_HazardCard> {
   @override
   Widget build(BuildContext context) {
     final hazard = widget.hazard;
-    final statusColor = hazard.progress == 0
-        ? secondaryColor
-        : hazard.progress == 1
+    final statusColor =
+        hazard.progress == 0
+            ? secondaryColor
+            : hazard.progress == 1
             ? const Color(0xFFFFC107)
             : secondaryColor;
     final statusText =
-        widget.hazardProcessList.firstWhere((element) => element.dictCode == hazard.progress).dictLabel;
+        widget.hazardProcessList
+            .firstWhere((element) => element.dictCode == hazard.progress)
+            .dictLabel;
     final typeLabel =
-        widget.hazardTypeList.firstWhere((element) => int.parse(element.dictValue ?? '0') == hazard.type).dictLabel;
-    return Container(
-      padding: EdgeInsets.all(14.px),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.px),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  hazard.name ?? S.of(context).hazard_name,
-                  style: TextStyle(
-                    fontSize: 15.px,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.px, vertical: 4.px),
-                decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(20.px),
-                ),
-                child: Text(
-                  statusText ?? '',
-                  style: TextStyle(
-                    fontSize: 11.px,
-                    fontWeight: FontWeight.w500,
-                    color: statusColor,
-                  ),
-                ),
+        widget.hazardTypeList
+            .firstWhere(
+              (element) => int.parse(element.dictValue ?? '0') == hazard.type,
+            )
+            .dictLabel;
+    return badges.Badge(
+      position: badges.BadgePosition.topEnd(top: 0.px, end: 0.px),
+      showBadge: widget.hazard.isRead == 1,
+      child: InkWell(
+        onTap: () {
+          if (widget.hazard.isRead == 1) {
+            DataUtils.getData(
+              '/maintenance/hidden/danger/read/${widget.hazard.id}',
+              null,
+              success: (data) {
+                setState(() {
+                  widget.onRead();
+                  widget.hazard.isRead = 0;
+                });
+              },
+            );
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.all(14.px),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.px),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-          SizedBox(height: 8.px),
-          if ((hazard.findTime ?? '').isNotEmpty)
-            _InfoRow(
-              icon: Icons.category_outlined,
-              label: '${S.of(context).hazard_type}: ',
-              value: typeLabel ?? '',
-              textColor:secondaryColor,
-            ),
-          if ((hazard.location ?? '').isNotEmpty)
-            _InfoRow(
-              icon: Icons.place_outlined,
-              label: '隐患地点：',
-              value: hazard.location ?? '',
-              textColor: Colors.grey.shade800,
-            ),
-          if ((hazard.findTime ?? '').isNotEmpty)
-            _InfoRow(
-              icon: Icons.schedule_outlined,
-              label: '发现时间：',
-              value: hazard.findTime!,
-              textColor: Colors.grey.shade800,
-            ),
-          SizedBox(height: 10.px),
-          if ((hazard.describes ?? '').isNotEmpty)
-            Text(
-              hazard.describes!,
-              style: TextStyle(
-                fontSize: 13.px,
-                color: Colors.grey.shade800,
-                height: 1.4,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      hazard.name ?? S.of(context).hazard_name,
+                      style: TextStyle(
+                        fontSize: 15.px,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.px,
+                      vertical: 4.px,
+                    ),
+                    decoration: BoxDecoration(
+                      color: statusColor.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(20.px),
+                    ),
+                    child: Text(
+                      statusText ?? '',
+                      style: TextStyle(
+                        fontSize: 11.px,
+                        fontWeight: FontWeight.w500,
+                        color: statusColor,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          if (hazard.url != null) ...[
-            SizedBox(height: 12.px),
-            Wrap(
-              spacing: 8.px,
-              runSpacing: 8.px,
-              children: [
-                ClipRRect(
+              SizedBox(height: 8.px),
+              if ((hazard.findTime ?? '').isNotEmpty)
+                _InfoRow(
+                  icon: Icons.category_outlined,
+                  label: '${S.of(context).hazard_type}: ',
+                  value: typeLabel ?? '',
+                  textColor: secondaryColor,
+                ),
+              if ((hazard.location ?? '').isNotEmpty)
+                _InfoRow(
+                  icon: Icons.place_outlined,
+                  label: S.of(context).hazard_location + ': ',
+                  value: hazard.location ?? '',
+                  textColor: Colors.grey.shade800,
+                ),
+              if ((hazard.findTime ?? '').isNotEmpty)
+                _InfoRow(
+                  icon: Icons.schedule_outlined,
+                  label: S.of(context).hazard_discovery_time + ': ',
+                  value: hazard.findTime!,
+                  textColor: Colors.grey.shade800,
+                ),
+              SizedBox(height: 10.px),
+              if ((hazard.describes ?? '').isNotEmpty)
+                Text(
+                  hazard.describes!,
+                  style: TextStyle(
+                    fontSize: 13.px,
+                    color: Colors.grey.shade800,
+                    height: 1.4,
+                  ),
+                ),
+              if (hazard.url != null) ...[
+                SizedBox(height: 12.px),
+                Wrap(
+                  spacing: 8.px,
+                  runSpacing: 8.px,
+                  children: [
+                    ClipRRect(
                       borderRadius: BorderRadius.circular(8.px),
                       child: Image.network(
                         APIs.imagePrefix + hazard.url!,
@@ -375,21 +415,23 @@ class _HazardCardState extends State<_HazardCard> {
                           );
                         },
                       ),
-                    ),]
-                  
-            ),
-          ],
-          SizedBox(height: 12.px),
-          if (((hazard.handleResult ?? '').isNotEmpty) ||
-              ((hazard.handlePhoto ?? '').isNotEmpty) ||
-              ((hazard.handleBy ?? '').isNotEmpty) ||
-              ((hazard.handleTime ?? '').isNotEmpty))
-            _ReplySection(
-              hazard: hazard,
-              isExpanded: _isReplyExpanded,
-              onToggle: _toggleReplySection,
-            ),
-        ],
+                    ),
+                  ],
+                ),
+              ],
+              SizedBox(height: 12.px),
+              if (((hazard.handleResult ?? '').isNotEmpty) ||
+                  ((hazard.handlePhoto ?? '').isNotEmpty) ||
+                  ((hazard.handleBy ?? '').isNotEmpty) ||
+                  ((hazard.handleTime ?? '').isNotEmpty))
+                _ReplySection(
+                  hazard: hazard,
+                  isExpanded: _isReplyExpanded,
+                  onToggle: _toggleReplySection,
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -406,17 +448,6 @@ class _ReplySection extends StatelessWidget {
   final bool isExpanded;
   final VoidCallback onToggle;
 
-  String _toggleLabel(BuildContext context) {
-    final code = Localizations.localeOf(context).languageCode.toLowerCase();
-    if (code.startsWith('zh')) {
-      return isExpanded ? '收起回复' : '展开回复';
-    }
-    if (code.startsWith('id')) {
-      return isExpanded ? 'Sembunyikan balasan' : 'Lihat balasan';
-    }
-    return isExpanded ? 'Hide reply' : 'View reply';
-  }
-
   Widget _buildFullContent(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -424,7 +455,11 @@ class _ReplySection extends StatelessWidget {
         if ((hazard.handleResult ?? '').isNotEmpty)
           Text(
             hazard.handleResult ?? '',
-            style: TextStyle(fontSize: 13.px, color: Colors.black87, height: 1.4),
+            style: TextStyle(
+              fontSize: 13.px,
+              color: Colors.black87,
+              height: 1.4,
+            ),
           ),
         if ((hazard.handlePhoto ?? '').isNotEmpty) ...[
           SizedBox(height: 12.px),
@@ -502,7 +537,9 @@ class _ReplySection extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  _toggleLabel(context),
+                  isExpanded
+                      ? S.of(context).hazard_hide_reply
+                      : S.of(context).hazard_expand_reply,
                   style: TextStyle(fontSize: 11.px, color: primaryColor[600]),
                 ),
                 Icon(
@@ -519,12 +556,18 @@ class _ReplySection extends StatelessWidget {
               hazard.handleResult ?? '',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 13.px, color: Colors.black87, height: 1.4),
+              style: TextStyle(
+                fontSize: 13.px,
+                color: Colors.black87,
+                height: 1.4,
+              ),
             ),
             secondChild: _buildFullContent(context),
             duration: const Duration(milliseconds: 200),
             crossFadeState:
-                isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                isExpanded
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
           ),
         ],
       ),
@@ -533,7 +576,12 @@ class _ReplySection extends StatelessWidget {
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.label, required this.value, required this.textColor});
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.textColor,
+  });
 
   final IconData icon;
   final String label;
@@ -550,13 +598,13 @@ class _InfoRow extends StatelessWidget {
           Icon(icon, size: 14.px, color: Colors.grey[600]),
           SizedBox(width: 6.px),
           Text(
-              label,
-              style: TextStyle(fontSize: 12.px, color: Colors.grey[800]),
-            ),
+            label,
+            style: TextStyle(fontSize: 12.px, color: Colors.grey[800]),
+          ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: 12.px, color:textColor),
+              style: TextStyle(fontSize: 12.px, color: textColor),
             ),
           ),
         ],
@@ -564,4 +612,3 @@ class _InfoRow extends StatelessWidget {
     );
   }
 }
-

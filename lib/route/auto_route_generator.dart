@@ -10,6 +10,7 @@ import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_pag
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
+import 'package:logistics_app/pages/news/logistics_page/logistics_list_page.dart';
 import 'package:logistics_app/pages/route_query_page/route_query_page.dart';
 import 'package:logistics_app/pages/news/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/news/news_page/news_list_page.dart';
@@ -138,6 +139,10 @@ class AutoRouteGenerator {
     RoutePath.MonthlyListPage: RouteConfig(
       builder: (context) => MonthlyListPage(),
       name: 'MonthlyListPage',
+    ),
+    RoutePath.LogisticsListPage: RouteConfig(
+      builder: (context) => LogisticsListPage(),
+      name: 'LogisticsListPage',
     ),
 
     // 失物招领
@@ -445,6 +450,7 @@ class RoutePath {
   static const String PromoListPage = 'promo_list_page';
   static const String KTimeListPage = 'k_time_list_page';
   static const String MonthlyListPage = 'monthly_list_page';
+  static const String LogisticsListPage = 'logistics_list_page';
 
   // 失物招领
   static const String LostFoundListPage = 'lost_found_list_page';

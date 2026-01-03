@@ -37,6 +37,7 @@ class LostFoundViewModel with ChangeNotifier {
         'pageNum': pageNum,
         'pageSize': pageSize,
         'reviewStatus': reviewStatus,
+        "isFound":'0',
         'def2': type,
         'createBy': createBy,
       };

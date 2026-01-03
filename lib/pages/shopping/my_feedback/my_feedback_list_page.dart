@@ -12,6 +12,7 @@ import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @AppRoute(path: 'my_feedback_list_page', name: '我的反馈列表页')
@@ -27,6 +28,7 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
   int _page = 1;
   List<ComplaintMessageModel> _list = [];
   int _total = 0;
+  int feedbackUnreadCount = 0;
   ThirdUserInfoModel? userInfo;
 
   late RefreshController _refreshController;
@@ -40,6 +42,7 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
     _refreshController = RefreshController();
     super.initState();
     getUserInfo();
+    getFeedbackUnreadCount();
   }
 
   void getUserInfo() async {
@@ -47,10 +50,42 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
     if (userInfoData != null) {
       userInfo = ThirdUserInfoModel.fromJson(userInfoData);
       setState(() {
-        print(userInfo?.account);
         getMyFeedbackModelList(true);
       });
     }
+  }
+
+  // 获取未读消息数量
+  void getFeedbackUnreadCount() {
+    DataUtils.getFeedbackUnreadCount(
+      success: (data) {
+        setState(() {
+          feedbackUnreadCount = data['data'];
+        });
+      },
+    );
+  }
+
+  // 全部已读
+  void allRead() {
+    DataUtils.getData(
+      '/other/ComplaintMessage/appAllRead',
+      null,
+      success: (data) {
+        getMyFeedbackModelList(true);
+        getFeedbackUnreadCount();
+      },
+    );
+  }
+
+  void readOne(id) {
+    DataUtils.getData(
+      '/other/ComplaintMessage/appRead/${id}',
+      null,
+      success: (data) {
+        getMyFeedbackModelList(true);
+      },
+    );
   }
 
   Future<void> getMyFeedbackModelList(bool isRefresh) async {
@@ -109,6 +144,30 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
+        actions: [
+          // 全部已读按钮
+          badges.Badge(
+            badgeContent:
+                feedbackUnreadCount != 0
+                    ? Text(
+                      feedbackUnreadCount.toString(),
+                      style: TextStyle(color: Colors.white, fontSize: 10.px),
+                    )
+                    : null,
+            showBadge: feedbackUnreadCount != 0,
+            position: badges.BadgePosition.topEnd(top: 4.px, end: -4.px),
+            child: TextButton(
+              child: Text(
+                S.of(context).allRead,
+                style: TextStyle(fontSize: 12.px),
+              ),
+              onPressed: () {
+                allRead();
+              },
+            ),
+          ),
+          SizedBox(width: 10.px),
+        ],
       ),
       body: SafeArea(
         child: SmartRefreshWidget(
@@ -166,6 +225,10 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
                     child: FeedbackCardWidget(
                       feedback: _list[index],
                       onTap: () {
+                        if (_list[index].isRead == 1) {
+                          readOne(_list[index].id);
+                          getFeedbackUnreadCount();
+                        }
                         // 跳转到反馈详情页
                         RouteUtils.push(
                           context,

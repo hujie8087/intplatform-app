@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/plant_model.dart';
@@ -18,7 +20,7 @@ class AnimalDetailPage extends StatefulWidget {
 class _AnimalDetailPageState extends State<AnimalDetailPage>
     with TickerProviderStateMixin {
   PlantModel? plantData;
-  List<String> picture = [];
+  List<String> pictures = [];
   AnimationController? animationController;
 
   @override
@@ -39,7 +41,7 @@ class _AnimalDetailPageState extends State<AnimalDetailPage>
       success: (data) {
         plantData = PlantModel.fromJson(data['data']);
         setState(() {
-          picture = plantData?.picture?.split(',') ?? [];
+          pictures = plantData?.picture?.split(',') ?? [];
         });
       },
     );
@@ -65,20 +67,35 @@ class _AnimalDetailPageState extends State<AnimalDetailPage>
                   height: 300,
                   child: Swiper(
                     itemBuilder: (context, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              APIs.imagePrefix + picture[index],
+                      return CachedNetworkImage(
+                        imageUrl: APIs.imagePrefix + pictures[index],
+                        cacheKey: pictures[index],
+                        fadeInDuration: Duration.zero,
+                        fadeOutDuration: Duration.zero,
+                        imageBuilder:
+                            (context, imageProvider) => Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: imageProvider,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                        placeholder:
+                            (context, url) => Container(
+                              color: Colors.grey[200],
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Container(
+                              color: Colors.grey[200],
+                              child: Icon(Icons.error, color: Colors.grey),
+                            ),
                       );
                     },
-                    itemCount: picture.length,
+                    itemCount: pictures.length,
                     autoplay: true,
-                    duration: 300,
+                    duration: 100,
                     pagination: const SwiperPagination(),
                   ),
                 ),
@@ -113,10 +130,10 @@ class _AnimalDetailPageState extends State<AnimalDetailPage>
                 // 形态特征
                 _buildInfoCard(
                   context,
-                  '产地',
+                  S.of(context).science_origin,
                   [
                     Text(
-                      plantData?.origin ?? '暂无描述',
+                      plantData?.origin ?? S.of(context).no_description,
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],
@@ -135,10 +152,10 @@ class _AnimalDetailPageState extends State<AnimalDetailPage>
                 // 生长习性
                 _buildInfoCard(
                   context,
-                  '习性',
+                  S.of(context).science_habit,
                   [
                     Text(
-                      plantData?.habit ?? '暂无描述',
+                      plantData?.habit ?? S.of(context).no_description,
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],
@@ -158,10 +175,10 @@ class _AnimalDetailPageState extends State<AnimalDetailPage>
                 // 应用价值
                 _buildInfoCard(
                   context,
-                  '食物',
+                  S.of(context).science_food,
                   [
                     Text(
-                      plantData?.food ?? '暂无描述',
+                      plantData?.food ?? S.of(context).no_description,
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],
@@ -181,10 +198,10 @@ class _AnimalDetailPageState extends State<AnimalDetailPage>
                 // 应用价值
                 _buildInfoCard(
                   context,
-                  '繁殖',
+                  S.of(context).science_reproduce,
                   [
                     Text(
-                      plantData?.reproduce ?? '暂无描述',
+                      plantData?.reproduce ?? S.of(context).no_description,
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],

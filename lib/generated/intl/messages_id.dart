@@ -733,6 +733,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Konten Umpan Balik"),
         "feedback_detail":
             MessageLookupByLibrary.simpleMessage("Detail Umpan Balik"),
+        "findPlace": MessageLookupByLibrary.simpleMessage("Lokasi penjemputan"),
         "firstLoginTips": MessageLookupByLibrary.simpleMessage(
             "Untuk keamanan, segera ubah password setelah login pertama!"),
         "firstTripTime":
@@ -767,6 +768,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "groupSubmitted":
             MessageLookupByLibrary.simpleMessage("Grup Sudah Dikirim"),
         "hazard_description": MessageLookupByLibrary.simpleMessage("Deskripsi"),
+        "hazard_discovery_time":
+            MessageLookupByLibrary.simpleMessage("Waktu Ditemukan"),
+        "hazard_expand_reply":
+            MessageLookupByLibrary.simpleMessage("Lihat Balasan"),
+        "hazard_hide_reply":
+            MessageLookupByLibrary.simpleMessage("Sembunyikan Balasan"),
         "hazard_location": MessageLookupByLibrary.simpleMessage("Lokasi"),
         "hazard_name": MessageLookupByLibrary.simpleMessage("Nama Masalah"),
         "hazard_photo": MessageLookupByLibrary.simpleMessage("Foto"),
@@ -857,6 +864,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginBtn": MessageLookupByLibrary.simpleMessage("Masuk"),
         "loginFailed": MessageLookupByLibrary.simpleMessage("Gagal masuk"),
         "loginSuccess": MessageLookupByLibrary.simpleMessage("Berhasil masuk"),
+        "logistics": MessageLookupByLibrary.simpleMessage("Logistik"),
         "logout": MessageLookupByLibrary.simpleMessage("Keluar"),
         "logoutFailed": MessageLookupByLibrary.simpleMessage("Gagal keluar"),
         "logoutSuccess":
@@ -1244,6 +1252,31 @@ class MessageLookup extends MessageLookupByLibrary {
         "scanSettings":
             MessageLookupByLibrary.simpleMessage("Pengaturan pemindaian"),
         "scanStatus": MessageLookupByLibrary.simpleMessage("Status pemindaian"),
+        "science_animals":
+            MessageLookupByLibrary.simpleMessage("Popularisasi Ilmu Hewan"),
+        "science_animals_search": MessageLookupByLibrary.simpleMessage(
+            "Silakan masukkan nomor seri hewan."),
+        "science_food": MessageLookupByLibrary.simpleMessage("Makanan"),
+        "science_habit": MessageLookupByLibrary.simpleMessage("Habit"),
+        "science_origin": MessageLookupByLibrary.simpleMessage("Asal"),
+        "science_plant_code": MessageLookupByLibrary.simpleMessage("Kode"),
+        "science_plant_feature": MessageLookupByLibrary.simpleMessage("Fitur"),
+        "science_plant_habit": MessageLookupByLibrary.simpleMessage("Habit"),
+        "science_plant_introduce":
+            MessageLookupByLibrary.simpleMessage("Introduce"),
+        "science_plant_origin":
+            MessageLookupByLibrary.simpleMessage("Area Asal"),
+        "science_plant_other_name":
+            MessageLookupByLibrary.simpleMessage("Nama Lain"),
+        "science_plant_peacock_type":
+            MessageLookupByLibrary.simpleMessage("Kelas"),
+        "science_plant_unknown":
+            MessageLookupByLibrary.simpleMessage("Tumbuhan Tidak Diketahui"),
+        "science_plants":
+            MessageLookupByLibrary.simpleMessage("Popularisasi Ilmu Tumbuhan"),
+        "science_plants_search": MessageLookupByLibrary.simpleMessage(
+            "Silakan masukkan nomor seri tumbuhan."),
+        "science_reproduce": MessageLookupByLibrary.simpleMessage("Reproduksi"),
         "search": MessageLookupByLibrary.simpleMessage("Cari"),
         "searchMessage": MessageLookupByLibrary.simpleMessage("Cari pesan"),
         "searchMyOrder":

@@ -373,7 +373,6 @@ class _BindAccountPageState extends State<BindAccountPage> {
       success: (data) {
         ProgressHUD.showSuccess(S.of(context).bindSuccess);
         DataUtils.putLoginUser(
-          {'username': thirdUserInfo?.account, 'password': ''},
           success: (res) {
             DataUtils.getUserInfo(
               success: (res) async {

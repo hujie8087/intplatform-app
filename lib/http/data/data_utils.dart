@@ -58,10 +58,10 @@ class DataUtils {
   }
 
   // 登录成功回调
-  static void putLoginUser<T>(parameters, {Success? success, Fail? fail}) {
+  static void putLoginUser<T>({Success? success, Fail? fail}) {
     return HttpUtils.post(
       APIs.putLoginUser,
-      parameters,
+      null,
       success: success,
       fail: fail,
     );
@@ -671,5 +671,25 @@ class DataUtils {
   // 点赞好人好事
   static void likeGoodDeed(id, {Success? success, Fail? fail}) {
     HttpUtils.get('/other/deeds/like/$id', null, success: success, fail: fail);
+  }
+
+  // 获取动植物树结构
+  static void getAnimalPlantTree(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/other/fauna/treeList',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取反馈未读数量
+  static void getFeedbackUnreadCount({Success? success, Fail? fail}) {
+    HttpUtils.get(
+      APIs.getFeedbackUnreadCount,
+      null,
+      success: success,
+      fail: fail,
+    );
   }
 }

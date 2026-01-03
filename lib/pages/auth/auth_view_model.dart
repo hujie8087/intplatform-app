@@ -54,7 +54,6 @@ class AuthViewModel with ChangeNotifier {
           );
           if (token != '') {
             DataUtils.putLoginUser(
-              {'username': inputUserName, 'password': ''},
               success: (res) async {
                 if (res['data']['loginUser']['status'] == '1') {
                   await SpUtils.remove(Constants.SP_TOKEN);
@@ -70,7 +69,7 @@ class AuthViewModel with ChangeNotifier {
                       await SpUtils.saveModel('thirdUserInfo', userInfo);
                       await SpUtils.saveString(
                         Constants.SP_USER_NAME,
-                        userInfo.name ?? '',
+                        userInfo.account ?? '',
                       );
                       await SpUtils.saveString(
                         Constants.SP_USER_DEPT,

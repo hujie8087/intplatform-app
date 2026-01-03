@@ -3970,6 +3970,16 @@ class S {
     );
   }
 
+  /// `拾取地点`
+  String get findPlace {
+    return Intl.message(
+      '拾取地点',
+      name: 'findPlace',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `丢失类型`
   String get lostType {
     return Intl.message(
@@ -5835,6 +5845,36 @@ class S {
     return Intl.message(
       '请选择发现时间',
       name: 'please_select_hazard_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `发现时间`
+  String get hazard_discovery_time {
+    return Intl.message(
+      '发现时间',
+      name: 'hazard_discovery_time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `展开回复`
+  String get hazard_expand_reply {
+    return Intl.message(
+      '展开回复',
+      name: 'hazard_expand_reply',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `收起回复`
+  String get hazard_hide_reply {
+    return Intl.message(
+      '收起回复',
+      name: 'hazard_hide_reply',
       desc: '',
       args: [],
     );
@@ -8825,6 +8865,176 @@ class S {
     return Intl.message(
       '我的发现',
       name: 'my_discovery',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `后勤动态`
+  String get logistics {
+    return Intl.message(
+      '后勤动态',
+      name: 'logistics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `产地`
+  String get science_origin {
+    return Intl.message(
+      '产地',
+      name: 'science_origin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `习性`
+  String get science_habit {
+    return Intl.message(
+      '习性',
+      name: 'science_habit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `食物`
+  String get science_food {
+    return Intl.message(
+      '食物',
+      name: 'science_food',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `繁殖`
+  String get science_reproduce {
+    return Intl.message(
+      '繁殖',
+      name: 'science_reproduce',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `动物科普`
+  String get science_animals {
+    return Intl.message(
+      '动物科普',
+      name: 'science_animals',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入动物序号`
+  String get science_animals_search {
+    return Intl.message(
+      '请输入动物序号',
+      name: 'science_animals_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `植物科普`
+  String get science_plants {
+    return Intl.message(
+      '植物科普',
+      name: 'science_plants',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `请输入植物序号`
+  String get science_plants_search {
+    return Intl.message(
+      '请输入植物序号',
+      name: 'science_plants_search',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `未知植物`
+  String get science_plant_unknown {
+    return Intl.message(
+      '未知植物',
+      name: 'science_plant_unknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `科属`
+  String get science_plant_peacock_type {
+    return Intl.message(
+      '科属',
+      name: 'science_plant_peacock_type',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `别名`
+  String get science_plant_other_name {
+    return Intl.message(
+      '别名',
+      name: 'science_plant_other_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `编码`
+  String get science_plant_code {
+    return Intl.message(
+      '编码',
+      name: 'science_plant_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `形态特征`
+  String get science_plant_feature {
+    return Intl.message(
+      '形态特征',
+      name: 'science_plant_feature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `生长习性`
+  String get science_plant_habit {
+    return Intl.message(
+      '生长习性',
+      name: 'science_plant_habit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `分布区域`
+  String get science_plant_origin {
+    return Intl.message(
+      '分布区域',
+      name: 'science_plant_origin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `植物简介`
+  String get science_plant_introduce {
+    return Intl.message(
+      '植物简介',
+      name: 'science_plant_introduce',
       desc: '',
       args: [],
     );

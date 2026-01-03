@@ -117,6 +117,8 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   List<String>? permission;
   int repairUnfinishedCount = 0;
   int repairUnreadCount = 0;
+  int feedbackUnreadCount = 0;
+  int hiddenDangerUnreadCount = 0;
   List<AppMenuListModel> appMenuList = [];
   List<AppMenuModel> appMenuListFilter = [];
   UserInfoModel? userInfoData;
@@ -143,6 +145,13 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
         }
       },
     );
+    DataUtils.getFeedbackUnreadCount(
+      success: (data) {
+        setState(() {
+          feedbackUnreadCount = data['data'];
+        });
+      },
+    );
   }
 
   // 获取我的报修未读数量
@@ -163,10 +172,12 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     switch (permission) {
       case 'commonality:repair:unfinishedCountApp':
         badgeContent = repairUnfinishedCount;
-        print(badgeContent);
         break;
       case 'commonality:repair:listApp':
         badgeContent = repairUnreadCount;
+        break;
+      case 'commonality:feedback:listApp':
+        badgeContent = feedbackUnreadCount;
         break;
       default:
         badgeContent = 0;

@@ -401,7 +401,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     S.of(context).moreFunction,
                     false,
                     Icons.more_horiz,
-                    () => widget.onChanged!(1),
+                    () => widget.onChanged!(2),
                   ),
                 ],
               ),

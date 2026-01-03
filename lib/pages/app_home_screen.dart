@@ -51,6 +51,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   List<TabIconData> _tabIconsList = [];
   int _grooveIndex = 2;
 
+  int hiddenDangerUnreadCount = 0;
+
   void _loadTabIcons() {
     setState(() {
       if (_tabIconsList.isEmpty) {
@@ -62,6 +64,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             isSelected: true,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
+            unreadCount: 0,
           ),
           TabIconData(
             imagePath: 'assets/images/tab_danger1.png',
@@ -70,6 +73,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             isSelected: true,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
+            unreadCount: hiddenDangerUnreadCount,
           ),
           TabIconData(
             imagePath: 'assets/images/tab_tool1.png',
@@ -78,6 +82,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             isSelected: false,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
+            unreadCount: 0,
           ),
           TabIconData(
             imagePath: 'assets/images/tab_warn.png',
@@ -86,6 +91,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             isSelected: false,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
+            unreadCount: 0,
           ),
           TabIconData(
             imagePath: 'assets/images/tab_4.png',
@@ -94,6 +100,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
             isSelected: false,
             animationController: animationController,
             labelName: '', // 先设为空，在build中设置
+            unreadCount: 0,
           ),
         ];
       }
@@ -260,56 +267,53 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   // 刷新用户权限信息
   void refreshUserPermission() async {
     final inputUserName = await SpUtils.getString(Constants.SP_USER_NAME);
-    DataUtils.putLoginUser(
-      {'username': inputUserName, 'password': ''},
-      success: (res) async {
-        if (res['data']['loginUser']['status'] == '1') {
-          await SpUtils.remove(Constants.SP_TOKEN);
-          await SpUtils.remove(Constants.SP_REFRESH_TOKEN);
-          ProgressHUD.showError('账号已注销，请联系管理员');
-        } else {
-          DataUtils.getThirdUserInfo(
-            success: (res) async {
-              ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
-                res['data'],
-              );
-              await SpUtils.saveModel('thirdUserInfo', userInfo);
-              await SpUtils.saveString(
-                Constants.SP_USER_NAME,
-                userInfo.name ?? '',
-              );
-              await SpUtils.saveString(
-                Constants.SP_USER_DEPT,
-                userInfo.formatOrganizeName ?? '',
-              );
-              DataUtils.getUserInfo(
-                success: (res) async {
-                  UserInfoModel userInfo = UserInfoModel.fromJson(
-                    res['data'],
-                  );
-                  await SpUtils.saveModel('userInfo', userInfo);
-                  await SpUtils.saveModel(
-                    Constants.SP_USER_PERMISSION,
-                    userInfo.permissions ?? [],
-                  );
-                },
-              );
-            },
-          );
-        }
-      },
-    );
+    final token = await SpUtils.getString(Constants.SP_TOKEN);
+    if (inputUserName != null && token != null) {
+      DataUtils.putLoginUser(
+        success: (res) async {
+          if (res['data']['loginUser']['status'] == '1') {
+            await SpUtils.remove(Constants.SP_TOKEN);
+            await SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+            ProgressHUD.showError('账号已注销，请联系管理员');
+          } else {
+            DataUtils.getThirdUserInfo(
+              success: (res) async {
+                ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
+                  res['data'],
+                );
+                await SpUtils.saveModel('thirdUserInfo', userInfo);
+                await SpUtils.saveString(
+                  Constants.SP_USER_NAME,
+                  userInfo.account ?? '',
+                );
+                await SpUtils.saveString(
+                  Constants.SP_USER_DEPT,
+                  userInfo.formatOrganizeName ?? '',
+                );
+                DataUtils.getUserInfo(
+                  success: (res) async {
+                    UserInfoModel userInfo = UserInfoModel.fromJson(
+                      res['data'],
+                    );
+                    await SpUtils.saveModel('userInfo', userInfo);
+                    await SpUtils.saveModel(
+                      Constants.SP_USER_PERMISSION,
+                      userInfo.permissions ?? [],
+                    );
+                  },
+                );
+              },
+            );
+          }
+        },
+      );
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    _loadTabIcons();
-    _tabIconsList.forEach((TabIconData tab) {
-      tab.isSelected = false;
-    });
-    _tabIconsList[_grooveIndex].isSelected = true;
-
+    getHiddenDangerUnreadCount();
     animationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
@@ -318,11 +322,39 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     WidgetsBinding.instance.addObserver(this);
     // 注册当前的 state，用于外部访问
     currentAppHomeScreenState = this;
-    handleTabChanged(_grooveIndex);
     // tabBody = HomePage(
     //     animationController: animationController, onChanged: handleTabChanged);
     // refreshUserPermission();
     checkUpdate(context);
+  }
+
+  // 获取隐患收集未读数量
+  void getHiddenDangerUnreadCount() async {
+    final token = await SpUtils.getString(Constants.SP_TOKEN);
+    if (token == null) {
+      _loadTabIcons();
+      _tabIconsList.forEach((TabIconData tab) {
+        tab.isSelected = false;
+      });
+      _tabIconsList[_grooveIndex].isSelected = true;
+      handleTabChanged(_grooveIndex);
+    } else {
+      DataUtils.getData(
+        '/maintenance/hidden/danger/appNoReadNum',
+        null,
+        success: (data) {
+          setState(() {
+            hiddenDangerUnreadCount = data['data'];
+            _loadTabIcons();
+            _tabIconsList.forEach((TabIconData tab) {
+              tab.isSelected = false;
+            });
+            _tabIconsList[_grooveIndex].isSelected = true;
+            handleTabChanged(_grooveIndex);
+          });
+        },
+      );
+    }
   }
 
   @override
@@ -330,7 +362,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-    refreshUserPermission();
+      refreshUserPermission();
       // 你要做的动作
     } else if (state == AppLifecycleState.paused) {
       print("🟡 App 暂停（进入后台 / 切换到其他 App）");
@@ -381,6 +413,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           });
           break;
       }
+      // getHiddenDangerUnreadCount();
       navigationKey.currentState?.setRemoveAllSelection(
         _tabIconsList[newValue],
       );

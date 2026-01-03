@@ -496,7 +496,7 @@ class LostFoundView extends StatelessWidget {
                                       SizedBox(height: 8.px),
                                       _buildIconLabelValueRow(
                                         icon: Icons.location_on,
-                                        label: S.of(context).lostPlace,
+                                        label:listData?.def2 == '1' ? S.of(context).findPlace:S.of(context).lostPlace,
                                         value: listData?.foundPlace ?? '',
                                       ),
                                       if (listData?.reviewStatus == 2)

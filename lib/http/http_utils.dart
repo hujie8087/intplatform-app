@@ -9,7 +9,6 @@ import 'package:dio/dio.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
-import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 
@@ -200,7 +199,7 @@ class HttpUtils {
       onSuccess: (result) async {
         if (!LogUtils.inProduction && isOpenLog) {
           print('---------- HttpUtils response ----------');
-          print(url+result.toString());
+          print(url + result.toString());
         }
         dynamic resultData = result;
         if (result is String) {
@@ -273,8 +272,5 @@ class HttpUtils {
 }
 
 void refreshUserPermission() async {
-    final inputUserName = await SpUtils.getString(Constants.SP_USER_NAME);
-    DataUtils.putLoginUser(
-      {'username': inputUserName, 'password': ''},
-    );
-  }
+  DataUtils.putLoginUser();
+}

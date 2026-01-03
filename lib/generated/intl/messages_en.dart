@@ -702,6 +702,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Feedback Content"),
         "feedback_detail":
             MessageLookupByLibrary.simpleMessage("Feedback Detail"),
+        "findPlace": MessageLookupByLibrary.simpleMessage("Pick up location"),
         "firstLoginTips": MessageLookupByLibrary.simpleMessage(
             "For your financial security, please change your password as soon as you log in for the first time!"),
         "firstTripTime":
@@ -736,6 +737,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Group Submitted"),
         "hazard_description":
             MessageLookupByLibrary.simpleMessage("Hazard Description"),
+        "hazard_discovery_time":
+            MessageLookupByLibrary.simpleMessage("Discovery Time"),
+        "hazard_expand_reply":
+            MessageLookupByLibrary.simpleMessage("Expand Reply"),
+        "hazard_hide_reply": MessageLookupByLibrary.simpleMessage("Hide Reply"),
         "hazard_location":
             MessageLookupByLibrary.simpleMessage("Discover Location"),
         "hazard_name": MessageLookupByLibrary.simpleMessage("Hazard Name"),
@@ -824,6 +830,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginBtn": MessageLookupByLibrary.simpleMessage("Login"),
         "loginFailed": MessageLookupByLibrary.simpleMessage("Login failed"),
         "loginSuccess": MessageLookupByLibrary.simpleMessage("Login success"),
+        "logistics": MessageLookupByLibrary.simpleMessage("Logistics Updates"),
         "logout": MessageLookupByLibrary.simpleMessage("Logout"),
         "logoutFailed": MessageLookupByLibrary.simpleMessage("Logout failed"),
         "logoutSuccess": MessageLookupByLibrary.simpleMessage("Logout success"),
@@ -1180,6 +1187,30 @@ class MessageLookup extends MessageLookupByLibrary {
             "Put the QR code in the box to scan automatically"),
         "scanSettings": MessageLookupByLibrary.simpleMessage("Scan Settings"),
         "scanStatus": MessageLookupByLibrary.simpleMessage("Scan Status"),
+        "science_animals":
+            MessageLookupByLibrary.simpleMessage("Animal Science"),
+        "science_animals_search": MessageLookupByLibrary.simpleMessage(
+            "Please enter animal serial number"),
+        "science_food": MessageLookupByLibrary.simpleMessage("Food"),
+        "science_habit": MessageLookupByLibrary.simpleMessage("Habit"),
+        "science_origin": MessageLookupByLibrary.simpleMessage("Origin"),
+        "science_plant_code": MessageLookupByLibrary.simpleMessage("Code"),
+        "science_plant_feature":
+            MessageLookupByLibrary.simpleMessage("Feature"),
+        "science_plant_habit": MessageLookupByLibrary.simpleMessage("Habit"),
+        "science_plant_introduce":
+            MessageLookupByLibrary.simpleMessage("Introduce"),
+        "science_plant_origin": MessageLookupByLibrary.simpleMessage("Origin"),
+        "science_plant_other_name":
+            MessageLookupByLibrary.simpleMessage("Other Name"),
+        "science_plant_peacock_type":
+            MessageLookupByLibrary.simpleMessage("Type"),
+        "science_plant_unknown":
+            MessageLookupByLibrary.simpleMessage("Unknown Plant"),
+        "science_plants": MessageLookupByLibrary.simpleMessage("Plant Science"),
+        "science_plants_search": MessageLookupByLibrary.simpleMessage(
+            "Please enter plant serial number"),
+        "science_reproduce": MessageLookupByLibrary.simpleMessage("Reproduce"),
         "search": MessageLookupByLibrary.simpleMessage("Search"),
         "searchMessage": MessageLookupByLibrary.simpleMessage("Search message"),
         "searchMyOrder":
