@@ -4,6 +4,7 @@ import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/plant_model.dart';
+import 'package:logistics_app/pages/science/plants/plant_detail_page.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -364,40 +365,58 @@ class _PlantListPageState extends State<PlantListPage>
               ),
               delegate: SliverChildBuilderDelegate((context, index) {
                 var item = children[index];
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4.px),
-                        child: Image.network(
-                          item.picture != null
-                              ? APIs.imagePrefix + item.picture!
-                              : '',
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              color: Colors.grey[200],
-                              child: Icon(
-                                Icons.image_not_supported,
-                                color: Colors.grey,
-                              ),
-                            );
-                          },
+                return InkWell(
+                  onTap: () {
+                    print(item.fId);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) =>
+                                PlantDetailPage(fId: item.fId.toString()),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(6.px),
+                    ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(4.px),
+                            child: Image.network(
+                              item.picture != null
+                                  ? APIs.imagePrefix + item.picture!
+                                  : '',
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey[200],
+                                  child: Icon(
+                                    Icons.image_not_supported,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 8.px),
+                        Text(
+                          item.name ?? '',
+                          style: TextStyle(
+                            fontSize: 14.px,
+                            color: const Color(0xFF333333),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 8.px),
-                    Text(
-                      item.name ?? '',
-                      style: TextStyle(
-                        fontSize: 14.px,
-                        color: const Color(0xFF333333),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                  ),
                 );
               }, childCount: children.length),
             ),
