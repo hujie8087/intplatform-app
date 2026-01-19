@@ -431,9 +431,11 @@ class ThirdUserInfoModel {
   String? avatar;
   String? name;
   int? sex;
+  String? card;
   String? tel;
   String? postName;
   String? formatOrganizeName;
+  int? country;
 
   ThirdUserInfoModel({
     this.id,
@@ -441,9 +443,11 @@ class ThirdUserInfoModel {
     this.avatar,
     this.name,
     this.sex,
+    this.card,
     this.tel,
     this.postName,
     this.formatOrganizeName,
+    this.country,
   });
 
   ThirdUserInfoModel.fromJson(Map<String, dynamic> json) {
@@ -452,9 +456,11 @@ class ThirdUserInfoModel {
     avatar = json['avatar'];
     name = json['name'];
     sex = json['sex'];
+    card = json['card'];
     tel = json['tel'];
     postName = json['postName'];
     formatOrganizeName = json['formatOrganizeName'];
+    country = json['country'];
   }
 
   Map<String, dynamic> toJson() {
@@ -464,9 +470,11 @@ class ThirdUserInfoModel {
     data['avatar'] = this.avatar;
     data['name'] = this.name;
     data['sex'] = this.sex;
+    data['card'] = this.card;
     data['tel'] = this.tel;
     data['postName'] = this.postName;
     data['formatOrganizeName'] = this.formatOrganizeName;
+    data['country'] = this.country;
     return data;
   }
 }

@@ -122,6 +122,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   List<AppMenuListModel> appMenuList = [];
   List<AppMenuModel> appMenuListFilter = [];
   UserInfoModel? userInfoData;
+  ThirdUserInfoModel? thirdUserInfoData;
   String token = '';
   String languageCode = 'zh';
 
@@ -253,10 +254,17 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
                   menu.iconArticles?.where((article) {
                     if (article.status == 1) {
                       return false;
+                    } else if (article.permissions == 'topup:record:save') {
+                      if (thirdUserInfoData?.country == 1) {
+                        return true;
+                      } else {
+                        return false;
+                      }
                     } else if (article.permissions != null) {
                       return permission!.contains('*:*:*') ||
                           permission!.contains(article.permissions);
                     }
+
                     return true;
                   }) // 过滤 `iconArticles`
                   .toList(),
@@ -338,6 +346,14 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     languageCode = await SpUtils.getString('locale') ?? 'zh';
     final userInfoDataModel = await SpUtils.getModel('userInfo');
     token = await SpUtils.getString(Constants.SP_TOKEN) ?? '';
+    // 模拟异步数据获取
+    var thirdUserInfoDataModel = await SpUtils.getModel('thirdUserInfo');
+    // 更新状态
+    setState(() {
+      if (thirdUserInfoDataModel != null) {
+        thirdUserInfoData = ThirdUserInfoModel.fromJson(thirdUserInfoDataModel);
+      }
+    });
     userInfoData =
         userInfoDataModel != null
             ? UserInfoModel.fromJson(userInfoDataModel)
