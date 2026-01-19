@@ -388,7 +388,6 @@ class _AnimalListPageState extends State<AnimalListPage>
                 // 点击跳转到详情页
                 return InkWell(
                   onTap: () {
-                    print(item.fId);
                     Navigator.push(
                       context,
                       MaterialPageRoute(

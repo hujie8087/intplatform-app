@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/generated/l10n.dart';
@@ -35,6 +36,11 @@ class _PlantListPageState extends State<PlantListPage>
     super.initState();
     getPlantTreeList();
     _scrollController.addListener(_onScroll);
+  }
+
+  // 获取图片链接
+  String getImageUrl(String url) {
+    return APIs.imagePrefix + url.split(',')[0];
   }
 
   Future<void> getPlantTreeList() async {
@@ -386,13 +392,14 @@ class _PlantListPageState extends State<PlantListPage>
                         Expanded(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(4.px),
-                            child: Image.network(
-                              item.picture != null
-                                  ? APIs.imagePrefix + item.picture!
-                                  : '',
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  item.picture != null
+                                      ? getImageUrl(item.picture!)
+                                      : '',
                               fit: BoxFit.cover,
                               width: double.infinity,
-                              errorBuilder: (context, error, stackTrace) {
+                              errorWidget: (context, error, stackTrace) {
                                 return Container(
                                   color: Colors.grey[200],
                                   child: Icon(

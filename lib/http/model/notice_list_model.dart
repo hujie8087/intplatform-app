@@ -13,23 +13,25 @@ class NoticeListModel {
 }
 
 class NoticeModel {
-  NoticeModel(
-      {this.createBy,
-      this.createTime,
-      this.createDept,
-      this.updateBy,
-      this.updateTime,
-      this.papeView,
-      this.img,
-      this.file,
-      this.video,
-      this.noticeId,
-      this.remark,
-      this.noticeTitle,
-      this.noticeType,
-      this.noticeContent,
-      this.noticeGrade,
-      this.status});
+  NoticeModel({
+    this.createBy,
+    this.createTime,
+    this.createDept,
+    this.updateBy,
+    this.updateTime,
+    this.papeView,
+    this.name,
+    this.img,
+    this.file,
+    this.video,
+    this.noticeId,
+    this.remark,
+    this.noticeTitle,
+    this.noticeType,
+    this.noticeContent,
+    this.noticeGrade,
+    this.status,
+  });
 
   NoticeModel.fromJson(dynamic json) {
     if (json["createBy"] is String) {
@@ -42,6 +44,9 @@ class NoticeModel {
       updateBy = json["updateBy"];
     }
     updateTime = json["updateTime"];
+    if (json["name"] is String) {
+      name = json["name"];
+    }
     if (json["remark"] is String) {
       remark = json["remark"];
     }
@@ -84,6 +89,7 @@ class NoticeModel {
   dynamic updateTime;
   String? remark;
   int? noticeId;
+  String? name;
   String? noticeTitle;
   String? noticeType;
   String? noticeContent;
@@ -112,6 +118,7 @@ class NoticeModel {
     _data["file"] = file;
     _data["video"] = video;
     _data["papeView"] = papeView;
+    _data["name"] = name;
     return _data;
   }
 }

@@ -17,11 +17,11 @@ class MealLocationServiceModel {
         {'lng': longitude, 'lat': latitude, 'foodName': foodName},
         success: (data) {
           print("位置上传成功");
-          ProgressHUD.showSuccess('位置上传成功');
+          // ProgressHUD.showSuccess('位置上传成功');
         },
         fail: (code, msg) {
           print("位置上传失败: $code, $msg");
-          ProgressHUD.showError('位置上传失败');
+          //ProgressHUD.showError('位置上传失败');
         },
       );
     } catch (e) {
@@ -34,6 +34,11 @@ class MealLocationServiceModel {
     if (await NativeLocationService.isLocationAvailable()) {
       if (await NativeLocationService.requestLocationPermission()) {
         bool success = await NativeLocationService.startRealTimeLocation();
+        if (!success) {
+          // 如果启动失败，检查是否已经在运行中
+          success = await NativeLocationService.isRealTimeTracking();
+        }
+
         if (success) {
           print("位置监听启动成功");
           NativeLocationService.setRealTimeLocationCallback(

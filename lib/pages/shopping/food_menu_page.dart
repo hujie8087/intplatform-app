@@ -302,7 +302,7 @@ class _FoodMenuPageState extends State<FoodMenuPage>
                 padding: EdgeInsets.symmetric(vertical: 4.px),
                 color: Color(0xFFAB4D20), // 棕色底
                 child: Text(
-                  'Daily Menu',
+                  _selectedDate.toString().split(' ')[0],
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16.px,

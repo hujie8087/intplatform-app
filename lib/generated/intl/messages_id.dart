@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Peringatan Darurat Berhasil"),
         "all": MessageLookupByLibrary.simpleMessage("Semua"),
         "allRead": MessageLookupByLibrary.simpleMessage("Semua telah dibaca"),
+        "amount": MessageLookupByLibrary.simpleMessage("Jumlah isi ulang"),
         "appTitle": MessageLookupByLibrary.simpleMessage(
             "Layanan logistik terintegrasi IWIP"),
         "appVersion": MessageLookupByLibrary.simpleMessage("Versi Aplikasi"),
@@ -249,6 +250,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "close": MessageLookupByLibrary.simpleMessage("Tutup"),
         "companyNews":
             MessageLookupByLibrary.simpleMessage("Berita Perusahaan"),
+        "complaint_detail":
+            MessageLookupByLibrary.simpleMessage("Hotline Detail"),
+        "complaint_hotline": MessageLookupByLibrary.simpleMessage("Hotline"),
         "completed": MessageLookupByLibrary.simpleMessage("Selesai"),
         "confirm": MessageLookupByLibrary.simpleMessage("Konfirmasi"),
         "confirmDelete":
@@ -436,6 +440,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sedang terhubung: "),
         "currentVersionIsLatest": MessageLookupByLibrary.simpleMessage(
             "Versi saat ini sudah terbaru"),
+        "current_balance": MessageLookupByLibrary.simpleMessage(
+            "Saldo kartu konsumsi saat ini"),
         "current_position":
             MessageLookupByLibrary.simpleMessage("Posisi Saat Ini"),
         "current_position_failed": MessageLookupByLibrary.simpleMessage(
@@ -673,6 +679,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Seret untuk menghapus gambar"),
         "duplicateOrderReception":
             MessageLookupByLibrary.simpleMessage("Menerima pesanan berulang"),
+        "dutyScope": MessageLookupByLibrary.simpleMessage("Scope of Duty"),
         "earlyTea": MessageLookupByLibrary.simpleMessage("Pagi Teh"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "editToBeAuditedMessage": MessageLookupByLibrary.simpleMessage(
@@ -686,6 +693,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Jika ada situasi darurat, silakan tekan tombol peringatan\nTim keamanan akan segera memberikan bantuan"),
         "emergency_chat":
             MessageLookupByLibrary.simpleMessage("Obrolan Darurat"),
+        "employee": MessageLookupByLibrary.simpleMessage("Profil Karyawan"),
         "employeeNumber": MessageLookupByLibrary.simpleMessage("No karyawan"),
         "en": MessageLookupByLibrary.simpleMessage("English"),
         "endDate": MessageLookupByLibrary.simpleMessage("Akhir"),
@@ -703,6 +711,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exceedStock": MessageLookupByLibrary.simpleMessage("Melebihi stok"),
         "exception":
             MessageLookupByLibrary.simpleMessage("Pengiriman Bermasalah"),
+        "exchange_rate": MessageLookupByLibrary.simpleMessage("Rate"),
         "exitManage": MessageLookupByLibrary.simpleMessage("Keluar manajemen"),
         "expenditure": MessageLookupByLibrary.simpleMessage("Biaya"),
         "faceCollection": MessageLookupByLibrary.simpleMessage("Koleksi Wajah"),
@@ -720,6 +729,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "5. Pengguna yang gagal verifikasi foto beberapa kali dapat membawa kartu karyawan ke loket layanan kartu selama jam kerja"),
         "faceCollectionTipsTitle":
             MessageLookupByLibrary.simpleMessage("Instruksi Standar Koleksi"),
+        "facility": MessageLookupByLibrary.simpleMessage("Fasilitas pendukung"),
         "failed_to_create_chat_session":
             MessageLookupByLibrary.simpleMessage("Gagal membuat sesi obrolan"),
         "failed_to_reconnect_to_server": MessageLookupByLibrary.simpleMessage(
@@ -899,6 +909,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "minutes_ago": MessageLookupByLibrary.simpleMessage("Menit Yang Lalu"),
         "modifyAddress": MessageLookupByLibrary.simpleMessage("Ubah alamat"),
         "modifyPerson": MessageLookupByLibrary.simpleMessage("Ubah Orang"),
+        "month": MessageLookupByLibrary.simpleMessage("Bulan"),
         "monthly": MessageLookupByLibrary.simpleMessage("Wedabay Monthly"),
         "monthlySales": MessageLookupByLibrary.simpleMessage("Bulanan"),
         "moreFunction": MessageLookupByLibrary.simpleMessage("Fitur Lainnya"),
@@ -954,6 +965,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_filled": MessageLookupByLibrary.simpleMessage("Belum Lengkap"),
         "notice": MessageLookupByLibrary.simpleMessage("Pengumuman"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifikasi"),
+        "officeLocation":
+            MessageLookupByLibrary.simpleMessage("Office Location"),
         "oldPassword": MessageLookupByLibrary.simpleMessage("Kata Sandi Lama"),
         "oldPasswordNotEmpty": MessageLookupByLibrary.simpleMessage(
             "Kata Sandi Lama tidak boleh kosong"),
@@ -966,6 +979,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlineDining": MessageLookupByLibrary.simpleMessage("Pesan Online"),
         "online_customer_service":
             MessageLookupByLibrary.simpleMessage("Pelayanan Pelanggan Online"),
+        "online_recharge":
+            MessageLookupByLibrary.simpleMessage("Isi ulang online"),
         "operator": MessageLookupByLibrary.simpleMessage("Operator"),
         "optional": MessageLookupByLibrary.simpleMessage("（Opsional）"),
         "order": MessageLookupByLibrary.simpleMessage("Pesan"),
@@ -1119,6 +1134,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "received": MessageLookupByLibrary.simpleMessage("Diterima"),
         "recentlyScanned":
             MessageLookupByLibrary.simpleMessage("Pemindaian terakhir"),
+        "recharge_limit": MessageLookupByLibrary.simpleMessage(
+            "Jumlah yang dapat diisi ulang"),
+        "recharge_record":
+            MessageLookupByLibrary.simpleMessage("Riwayat pengisian ulang"),
+        "recharge_rules":
+            MessageLookupByLibrary.simpleMessage("Aturan Pengisian Ulang"),
         "recommendPerson":
             MessageLookupByLibrary.simpleMessage("Perekomendasi"),
         "recommendReason":
@@ -1351,6 +1372,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "takePhoto": MessageLookupByLibrary.simpleMessage("Ambil"),
         "takeout": MessageLookupByLibrary.simpleMessage("Bungkus"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("Tiga Bulan"),
+        "time": MessageLookupByLibrary.simpleMessage("Waktu"),
         "timetable": MessageLookupByLibrary.simpleMessage("Jadwal Perjalanan"),
         "tip": MessageLookupByLibrary.simpleMessage("Tip"),
         "title": MessageLookupByLibrary.simpleMessage("Judul"),
@@ -1392,6 +1414,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Nama Tidak Diketahui"),
         "unknownStatus":
             MessageLookupByLibrary.simpleMessage("Status Tidak Diketahui"),
+        "unknownTel": MessageLookupByLibrary.simpleMessage("No Telepon"),
         "unknown_dish": MessageLookupByLibrary.simpleMessage("Lainnya"),
         "unknown_error":
             MessageLookupByLibrary.simpleMessage("Kesalahan tidak diketahui"),
@@ -1433,6 +1456,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Petunjuk penggunaan"),
         "useHandheldScannerToScanBarcode": MessageLookupByLibrary.simpleMessage(
             "Pemindaian dengan pemindaian QR Code"),
+        "used_credit_limit":
+            MessageLookupByLibrary.simpleMessage("Jumlah yang diisi ulang"),
         "userFeedback":
             MessageLookupByLibrary.simpleMessage("Umpan Balik Pengguna"),
         "userInfo": MessageLookupByLibrary.simpleMessage("Informasi Pribadi"),
@@ -1455,6 +1480,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Selamat datang di IWIP"),
         "woman": MessageLookupByLibrary.simpleMessage("Wanita"),
         "workNo": MessageLookupByLibrary.simpleMessage("Nomor Kerja"),
+        "workTime": MessageLookupByLibrary.simpleMessage("Jam kerja"),
         "yesterday": MessageLookupByLibrary.simpleMessage("Kemarin"),
         "zh": MessageLookupByLibrary.simpleMessage("中文")
       };

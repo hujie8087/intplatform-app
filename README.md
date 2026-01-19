@@ -15,4 +15,9 @@ For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## 发布命令
+
+shorebird release android --artifact apk
+采用 shorebird 发布,可用于热更新
+
 web 启动命令 flutter run -d chrome --web-browser-flag "--disable-web-security" --web-browser-flag "--user-data-dir=/tmp/chrome"

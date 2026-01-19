@@ -4,35 +4,36 @@
 class APIs {
   /// url 前缀
   // 正式环境
-  static const String apiPrefix =
-      'https://api.iwipwedabay.com/api/intplatform/app';
-  static const String imagePrefix =
-      'https://web.iwipwedabay.com/static/intplatform';
+  // static const String apiPrefix =
+  //     'https://api.iwipwedabay.com/api/intplatform/app';
+  // static const String imagePrefix =
+  //     'https://web.iwipwedabay.com/static/intplatform';
   // 餐饮图片资源前缀
   static const String foodPrefix = 'https://web.iwipwedabay.com/static/';
-  static const String imageOnlinePrefix =
-      'https://web.iwipwedabay.com/static/intplatform';
-  static const String websocketFix =
-      'wss://api.iwipwedabay.com/api/intplatform/mis/customer/websocket/';
-  static const String alarmWebsocketUrl =
-      'wss://api.iwipwedabay.com/api/security/mis/websocket/customer-service/';
+  // static const String imageOnlinePrefix =
+  //     'https://web.iwipwedabay.com/static/intplatform';
+  // static const String websocketFix =
+  //     'wss://api.iwipwedabay.com/api/intplatform/mis/customer/websocket/';
+  // static const String alarmWebsocketUrl =
+  //     'wss://api.iwipwedabay.com/api/security/mis/websocket/customer-service/';
 
   // 测试环境
   // static const String apiPrefix =
   //     'https://test.iwipwedabay.com/intplatform-stage-api'; // 外网
-  // static const String imageOnlinePrefix =
-  //     'http://192.168.90.30/static/intplatform';
-  // static const String imagePrefix =
-  //     'http://192.168.91.50:9000/intplatform/'; // 图片外网地址
+  static const String imageOnlinePrefix =
+      'http://192.168.90.30/static/intplatform';
+  static const String imagePrefix =
+      'http://192.168.91.50:9000/intplatform/'; // 图片外网地址
   // static const String imagePrefix =
   //     'http://test.iwipwedabay.com/static/intplatform/'; // 图片外网地址
-  // static const String websocketFix = 'ws://10.40.10.18:12301/websocket/';
-  // static const String alarmWebsocketUrl =
-  //     'wss://test.iwipwedabay.com/security-stage-api/websocket/customer-service/';
+  static const String websocketFix = 'ws://10.40.10.18:12301/websocket/';
+  static const String alarmWebsocketUrl =
+      'wss://test.iwipwedabay.com/security-stage-api/websocket/customer-service/';
+
   // static const String websocketFix = 'ws://10.40.11.166:10301/websocket/';
 
   // 韩栋本地环境
-  // static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
+  static const String apiPrefix = 'http://10.40.10.18:10200'; // 外网
 
   // 垂豪本地环境
   // static const String apiPrefix = 'http://10.40.11.44:8081'; // 外网
@@ -112,6 +113,25 @@ class APIs {
   // static const String updateUserFirstPwd = '/system/user/firstEdit';
   static const String updateUserFirstPwd =
       'https://api.iwipwedabay.com/api/rain/iwip/home/sso/home/sso/resetFirstPassword';
+
+  // 获取用户充值额度
+  static const String getUserCreditLimit =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/lms/home/rule/find/quota';
+
+  // 获取用户已使用额度
+  static const String getUserUsedCreditLimit =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/lms/home/usage/find/usedCredit';
+  // 获取月充值记录
+  static const String getUserRechargeRecord =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/lms/home/month/page';
+
+  // 获取月充值详情记录
+  static const String getUserRechargeRecordDetail =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/lms/home/record/page';
+
+  // 提交充值
+  static const String submitRecharge =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/lms/home/record/save';
 
   // 获取数据字典
   static const String getDictDataList = '/system/dict/data/type/';

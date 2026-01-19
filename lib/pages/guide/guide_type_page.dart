@@ -314,7 +314,8 @@ class _GuideTypePageState extends State<GuideTypePage> {
                                       // 附件区域
                                       if (guideTypeDetail?.approvalStatus ==
                                               4 &&
-                                          guideTypeDetail?.file != null)
+                                          (guideTypeDetail?.file != null ||
+                                              guideTypeDetail?.file != ''))
                                         Container(
                                           width: double.infinity,
                                           child: Column(

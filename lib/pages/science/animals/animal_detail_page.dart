@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
+import 'package:logistics_app/common_ui/keep_alive_image.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -67,30 +67,9 @@ class _AnimalDetailPageState extends State<AnimalDetailPage>
                   height: 300,
                   child: Swiper(
                     itemBuilder: (context, index) {
-                      return CachedNetworkImage(
+                      return KeepAliveImage(
                         imageUrl: APIs.imagePrefix + pictures[index],
                         cacheKey: pictures[index],
-                        fadeInDuration: Duration.zero,
-                        fadeOutDuration: Duration.zero,
-                        imageBuilder:
-                            (context, imageProvider) => Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                        placeholder:
-                            (context, url) => Container(
-                              color: Colors.grey[200],
-                              child: Center(child: CircularProgressIndicator()),
-                            ),
-                        errorWidget:
-                            (context, url, error) => Container(
-                              color: Colors.grey[200],
-                              child: Icon(Icons.error, color: Colors.grey),
-                            ),
                       );
                     },
                     itemCount: pictures.length,

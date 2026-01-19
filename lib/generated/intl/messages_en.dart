@@ -74,6 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "alarm_success": MessageLookupByLibrary.simpleMessage("Alarm Success"),
         "all": MessageLookupByLibrary.simpleMessage("All"),
         "allRead": MessageLookupByLibrary.simpleMessage("All read"),
+        "amount": MessageLookupByLibrary.simpleMessage("Recharge Amount"),
         "appTitle":
             MessageLookupByLibrary.simpleMessage("IWIP Integrated Platform"),
         "appVersion": MessageLookupByLibrary.simpleMessage("App Version"),
@@ -241,6 +242,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Click to start dialog"),
         "close": MessageLookupByLibrary.simpleMessage("Close"),
         "companyNews": MessageLookupByLibrary.simpleMessage("Company News"),
+        "complaint_detail":
+            MessageLookupByLibrary.simpleMessage("Hotline Detail"),
+        "complaint_hotline": MessageLookupByLibrary.simpleMessage("Hotline"),
         "completed": MessageLookupByLibrary.simpleMessage("Completed"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "confirmDelete":
@@ -423,6 +427,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "currentBound": MessageLookupByLibrary.simpleMessage("Current bound: "),
         "currentVersionIsLatest": MessageLookupByLibrary.simpleMessage(
             "You are using the latest version"),
+        "current_balance":
+            MessageLookupByLibrary.simpleMessage("Current Balance"),
         "current_position":
             MessageLookupByLibrary.simpleMessage("Current Position"),
         "current_position_failed": MessageLookupByLibrary.simpleMessage(
@@ -643,6 +649,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Drag to remove image"),
         "duplicateOrderReception":
             MessageLookupByLibrary.simpleMessage("Duplicate Order Reception"),
+        "dutyScope": MessageLookupByLibrary.simpleMessage("Scope of Duty"),
         "earlyTea": MessageLookupByLibrary.simpleMessage("Early Tea"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "editToBeAuditedMessage": MessageLookupByLibrary.simpleMessage(
@@ -656,6 +663,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "If you encounter an emergency, please press the alarm button immediately\nThe security team will provide help as soon as possible"),
         "emergency_chat":
             MessageLookupByLibrary.simpleMessage("Emergency Chat"),
+        "employee": MessageLookupByLibrary.simpleMessage("Employee Profiles"),
         "employeeNumber":
             MessageLookupByLibrary.simpleMessage("Employee number"),
         "en": MessageLookupByLibrary.simpleMessage("English"),
@@ -673,6 +681,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "evaluation": MessageLookupByLibrary.simpleMessage("Evaluation"),
         "exceedStock": MessageLookupByLibrary.simpleMessage("Exceeds stock"),
         "exception": MessageLookupByLibrary.simpleMessage("Exception"),
+        "exchange_rate": MessageLookupByLibrary.simpleMessage("Exchange Rate"),
         "exitManage": MessageLookupByLibrary.simpleMessage("Exit manage"),
         "expenditure": MessageLookupByLibrary.simpleMessage("Expenditure"),
         "faceCollection":
@@ -691,6 +700,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "5. Users who fail photo verification multiple times can bring their employee ID to the card service counter during working hours"),
         "faceCollectionTipsTitle": MessageLookupByLibrary.simpleMessage(
             "Collection Standards Instructions"),
+        "facility":
+            MessageLookupByLibrary.simpleMessage("Supporting facilities"),
         "failed_to_create_chat_session": MessageLookupByLibrary.simpleMessage(
             "Failed to create chat session"),
         "failed_to_reconnect_to_server": MessageLookupByLibrary.simpleMessage(
@@ -861,6 +872,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "minutes_ago": MessageLookupByLibrary.simpleMessage("Minutes Ago"),
         "modifyAddress": MessageLookupByLibrary.simpleMessage("Modify address"),
         "modifyPerson": MessageLookupByLibrary.simpleMessage("Modify Person"),
+        "month": MessageLookupByLibrary.simpleMessage("Month"),
         "monthly": MessageLookupByLibrary.simpleMessage("Monthly"),
         "monthlySales": MessageLookupByLibrary.simpleMessage("Monthly Sales"),
         "moreFunction": MessageLookupByLibrary.simpleMessage("More Function"),
@@ -910,6 +922,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_filled": MessageLookupByLibrary.simpleMessage("Not Filled"),
         "notice": MessageLookupByLibrary.simpleMessage("Notice"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
+        "officeLocation":
+            MessageLookupByLibrary.simpleMessage("Office Location"),
         "oldPassword": MessageLookupByLibrary.simpleMessage("Old Password"),
         "oldPasswordNotEmpty": MessageLookupByLibrary.simpleMessage(
             "Old password cannot be empty"),
@@ -922,6 +936,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlineDining": MessageLookupByLibrary.simpleMessage("Online Dining"),
         "online_customer_service":
             MessageLookupByLibrary.simpleMessage("Customer Service"),
+        "online_recharge":
+            MessageLookupByLibrary.simpleMessage("Online Recharge"),
         "operator": MessageLookupByLibrary.simpleMessage("Operator"),
         "optional": MessageLookupByLibrary.simpleMessage("(Optional)"),
         "order": MessageLookupByLibrary.simpleMessage("Order"),
@@ -1072,6 +1088,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "received": MessageLookupByLibrary.simpleMessage("Received"),
         "recentlyScanned":
             MessageLookupByLibrary.simpleMessage("Recently Scanned"),
+        "recharge_limit":
+            MessageLookupByLibrary.simpleMessage("Recharge Limit"),
+        "recharge_record":
+            MessageLookupByLibrary.simpleMessage("Recharge Record"),
+        "recharge_rules":
+            MessageLookupByLibrary.simpleMessage("Recharge Rules"),
         "recommendPerson": MessageLookupByLibrary.simpleMessage("Recommender"),
         "recommendReason":
             MessageLookupByLibrary.simpleMessage("Recommendation Reason"),
@@ -1284,6 +1306,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "takePhoto": MessageLookupByLibrary.simpleMessage("Take photo"),
         "takeout": MessageLookupByLibrary.simpleMessage("Takeout"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("Three Months"),
+        "time": MessageLookupByLibrary.simpleMessage("Time"),
         "timetable": MessageLookupByLibrary.simpleMessage("Timetable"),
         "tip": MessageLookupByLibrary.simpleMessage("Tip"),
         "title": MessageLookupByLibrary.simpleMessage("Title"),
@@ -1321,6 +1344,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
         "unknownName": MessageLookupByLibrary.simpleMessage("Unknown Name"),
         "unknownStatus": MessageLookupByLibrary.simpleMessage("Unknown Status"),
+        "unknownTel": MessageLookupByLibrary.simpleMessage("No Telepon"),
         "unknown_dish": MessageLookupByLibrary.simpleMessage("Unknown Dish"),
         "unknown_error": MessageLookupByLibrary.simpleMessage("Unknown error"),
         "unknown_status":
@@ -1359,6 +1383,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Usage Instructions"),
         "useHandheldScannerToScanBarcode": MessageLookupByLibrary.simpleMessage(
             "Scan barcode with handheld device"),
+        "used_credit_limit":
+            MessageLookupByLibrary.simpleMessage("Used Credit Limit"),
         "userFeedback": MessageLookupByLibrary.simpleMessage("User Feedback"),
         "userInfo": MessageLookupByLibrary.simpleMessage("User information"),
         "userName": MessageLookupByLibrary.simpleMessage("Account"),
@@ -1378,6 +1404,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "welcome": MessageLookupByLibrary.simpleMessage("Welcome to IWIP"),
         "woman": MessageLookupByLibrary.simpleMessage("Female"),
         "workNo": MessageLookupByLibrary.simpleMessage("Work Number"),
+        "workTime": MessageLookupByLibrary.simpleMessage("Working hours"),
         "yesterday": MessageLookupByLibrary.simpleMessage("Yesterday"),
         "zh": MessageLookupByLibrary.simpleMessage("中文")
       };

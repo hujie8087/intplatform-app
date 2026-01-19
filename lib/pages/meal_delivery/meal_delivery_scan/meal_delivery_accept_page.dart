@@ -152,7 +152,6 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
   // 调用接口处理条形码
   Future<void> _submitBarcode(String barcode) async {
     // 设置接口地址和请求参数
-    print('发起请求: $barcode');
     MealDeliveryUtils.receiveOrderMeal(
       {
         "foodName": _selectedFoodNameValue?.dictValue ?? '',

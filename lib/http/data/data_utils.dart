@@ -692,4 +692,14 @@ class DataUtils {
       fail: fail,
     );
   }
+
+  // 在线充值
+  static void onlineTopup(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      'https://api.iwipwedabay.com/api/rain/iwip/home/lms/home/record/save',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
 }

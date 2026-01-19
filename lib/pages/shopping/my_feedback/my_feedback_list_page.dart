@@ -42,7 +42,6 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
     _refreshController = RefreshController();
     super.initState();
     getUserInfo();
-    getFeedbackUnreadCount();
   }
 
   void getUserInfo() async {
@@ -93,6 +92,7 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
       _page = 1;
       _list = [];
     }
+    getFeedbackUnreadCount();
     try {
       DataUtils.getPageList(
         '/other/ComplaintMessage/list',
@@ -182,13 +182,16 @@ class _MyFeedbackListPageState extends State<MyFeedbackListPage>
             getMyFeedbackModelList(false);
           },
           controller: _refreshController,
-          child: Padding(padding: EdgeInsets.all(10), child: newsListView()),
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: FeedbackListView(),
+          ),
         ),
       ),
     );
   }
 
-  Widget newsListView() {
+  Widget FeedbackListView() {
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),

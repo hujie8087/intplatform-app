@@ -165,20 +165,6 @@ class _PromoDetailPageState extends State<PromoDetailPage> {
                                         color: Colors.grey[600],
                                       ),
                                     ),
-                                    SizedBox(width: 16.px),
-                                    Icon(
-                                      Icons.remove_red_eye,
-                                      size: 16.px,
-                                      color: Colors.grey[600],
-                                    ),
-                                    SizedBox(width: 4.px),
-                                    Text(
-                                      '${_promo?.papeView ?? 0}',
-                                      style: TextStyle(
-                                        fontSize: 12.px,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ),

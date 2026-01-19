@@ -9039,6 +9039,186 @@ class S {
       args: [],
     );
   }
+
+  /// `投诉热线`
+  String get complaint_hotline {
+    return Intl.message(
+      '投诉热线',
+      name: 'complaint_hotline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `暂无电话`
+  String get unknownTel {
+    return Intl.message(
+      '暂无电话',
+      name: 'unknownTel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `投诉热线详情`
+  String get complaint_detail {
+    return Intl.message(
+      '投诉热线详情',
+      name: 'complaint_detail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `职责范围`
+  String get dutyScope {
+    return Intl.message(
+      '职责范围',
+      name: 'dutyScope',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `办公地点`
+  String get officeLocation {
+    return Intl.message(
+      '办公地点',
+      name: 'officeLocation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `工作时间`
+  String get workTime {
+    return Intl.message(
+      '工作时间',
+      name: 'workTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `配套设施风采`
+  String get facility {
+    return Intl.message(
+      '配套设施风采',
+      name: 'facility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `员工风采`
+  String get employee {
+    return Intl.message(
+      '员工风采',
+      name: 'employee',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `在线充值`
+  String get online_recharge {
+    return Intl.message(
+      '在线充值',
+      name: 'online_recharge',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `当前消费卡余额`
+  String get current_balance {
+    return Intl.message(
+      '当前消费卡余额',
+      name: 'current_balance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `可充值额度`
+  String get recharge_limit {
+    return Intl.message(
+      '可充值额度',
+      name: 'recharge_limit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `已充值额度`
+  String get used_credit_limit {
+    return Intl.message(
+      '已充值额度',
+      name: 'used_credit_limit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `充值金额`
+  String get amount {
+    return Intl.message(
+      '充值金额',
+      name: 'amount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `充值规则说明`
+  String get recharge_rules {
+    return Intl.message(
+      '充值规则说明',
+      name: 'recharge_rules',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `充值记录`
+  String get recharge_record {
+    return Intl.message(
+      '充值记录',
+      name: 'recharge_record',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `月份`
+  String get month {
+    return Intl.message(
+      '月份',
+      name: 'month',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `时间`
+  String get time {
+    return Intl.message(
+      '时间',
+      name: 'time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `汇率`
+  String get exchange_rate {
+    return Intl.message(
+      '汇率',
+      name: 'exchange_rate',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

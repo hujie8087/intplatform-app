@@ -245,20 +245,6 @@ class _KTimeListPageState extends State<KTimeListPage>
                   // 底部信息
                   Row(
                     children: [
-                      Icon(
-                        Icons.remove_red_eye_outlined,
-                        size: 14.px,
-                        color: Colors.grey[600],
-                      ),
-                      SizedBox(width: 4.px),
-                      Text(
-                        '${promo.papeView ?? 0}',
-                        style: TextStyle(
-                          fontSize: 12.px,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      Spacer(),
                       Text(
                         promo.createTime!.substring(0, 10),
                         style: TextStyle(

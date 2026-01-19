@@ -24,6 +24,9 @@ class MealLocationManager {
 
   /// 初始化管理器，从本地存储恢复状态
   Future<void> initialize() async {
+    // 如果服务已经存在，不需要重新初始化
+    if (_locationService != null) return;
+
     _isTracking = await SpUtils.getBool('isTracking') ?? false;
     _currentFoodName = await SpUtils.getString('currentFoodName') ?? '';
 

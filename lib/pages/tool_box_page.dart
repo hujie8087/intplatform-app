@@ -145,13 +145,6 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
         }
       },
     );
-    DataUtils.getFeedbackUnreadCount(
-      success: (data) {
-        setState(() {
-          feedbackUnreadCount = data['data'];
-        });
-      },
-    );
   }
 
   // 获取我的报修未读数量
@@ -161,6 +154,13 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
         setState(() {
           repairUnreadCount = data['data'];
           filterAppMenu();
+        });
+      },
+    );
+    DataUtils.getFeedbackUnreadCount(
+      success: (data) {
+        setState(() {
+          feedbackUnreadCount = data['data'];
         });
       },
     );
@@ -435,6 +435,8 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   IconData sewingIcon = Icons.local_laundry_service;
   // 超市图标
   IconData supermarketIcon = Icons.shopping_cart;
+  // 充值记录查询图标
+  IconData topUpIcon = Icons.card_giftcard;
 
   @override
   void initState() {

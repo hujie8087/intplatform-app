@@ -273,18 +273,6 @@ class MonthlyDataView extends StatelessWidget {
                                 ],
                               ),
                               SizedBox(height: 10.px),
-                              Row(
-                                children: [
-                                  // 阅读次数
-                                  Text(
-                                    '阅读: ${listData?.papeView.toString() ?? '0'}',
-                                    style: TextStyle(
-                                      fontSize: 12.px,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
                             ],
                           ),
                         ),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/data/shopping_utils.dart';
 import 'package:logistics_app/http/model/base_list_model.dart';
+import 'package:logistics_app/http/model/canteen_layout_model.dart';
 import 'package:logistics_app/http/model/delivery_fee_model.dart';
 import 'package:logistics_app/http/model/delivery_time_model.dart';
 import 'package:logistics_app/http/model/food_model.dart';
@@ -19,6 +21,7 @@ import 'package:logistics_app/pages/mine_page/my_address_page/add_address_page.d
 import 'package:logistics_app/pages/repair/components/my_address_view.dart';
 import 'package:logistics_app/pages/repair/repair_data_model.dart';
 import 'package:logistics_app/pages/shopping/food_view_model.dart';
+import 'package:logistics_app/pages/shopping/order/canteen_layout_widget.dart';
 import 'package:logistics_app/pages/shopping/order/order_list_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/picker.dart';
@@ -78,6 +81,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
   ThirdUserInfoModel? userInfo;
   RepairDataModel model = RepairDataModel();
   bool _isLoading = false;
+  CanteenLayoutModel? canteenLayout;
+  FoodCanteenLayoutDeskList? selectedTable;
+  String tableStatus = '';
 
   Future _fetchData() async {
     DataUtils.getDetailById(
@@ -225,6 +231,42 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
     }
   }
 
+  // 获取餐厅布局
+  Future _getRestaurantLayout() async {
+    DataUtils.getData(
+      '/productdisplay/canteenLayout/list',
+      {'canteenId': widget.restaurantId, "status": "0"},
+      success: (data) {
+        setState(() {
+          selectedTable = null;
+          canteenLayout = null;
+          if (data['rows'].length > 0) {
+            canteenLayout = CanteenLayoutModel.fromJson(data['rows'][0]);
+          }
+        });
+      },
+    );
+  }
+
+  // 获取选择餐桌当前状态
+  Future _getTableStatus() async {
+    Completer completer = Completer();
+    DataUtils.getData(
+      '/productdisplay/canteenLayoutDesk/${selectedTable?.id}',
+      null,
+      success: (data) {
+        setState(() {
+          tableStatus = data['data']['status'];
+        });
+        completer.complete();
+      },
+      fail: (code, msg) {
+        completer.complete();
+      },
+    );
+    return completer.future;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -362,6 +404,125 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
                 ],
               ),
             ),
+
+            // 餐厅布局
+            if (selectedPickupType == 1 && canteenLayout != null) ...[
+              Container(
+                margin: EdgeInsets.only(left: 6.px, right: 6.px, bottom: 6.px),
+                padding: EdgeInsets.all(10.px),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(6.px),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '订桌',
+                            style: TextStyle(
+                              fontSize: 12.px,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        // 可预订、已预订、使用中、暂停使用
+                        Container(
+                          padding: EdgeInsets.all(5.px),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6.px),
+                          ),
+                          child: Text(
+                            '已选中',
+                            style: TextStyle(
+                              fontSize: 10.px,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5.px),
+                        Container(
+                          padding: EdgeInsets.all(5.px),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF009688),
+                            borderRadius: BorderRadius.circular(6.px),
+                          ),
+                          child: Text(
+                            '可预订',
+                            style: TextStyle(
+                              fontSize: 10.px,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5.px),
+                        Container(
+                          padding: EdgeInsets.all(5.px),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF67C23A),
+                            borderRadius: BorderRadius.circular(6.px),
+                          ),
+                          child: Text(
+                            '已预订',
+                            style: TextStyle(
+                              fontSize: 10.px,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5.px),
+                        Container(
+                          padding: EdgeInsets.all(5.px),
+                          decoration: BoxDecoration(
+                            color: Color(0xFFE6A23C),
+                            borderRadius: BorderRadius.circular(6.px),
+                          ),
+                          child: Text(
+                            '使用中',
+                            style: TextStyle(
+                              fontSize: 10.px,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5.px),
+                        Container(
+                          padding: EdgeInsets.all(5.px),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF909399),
+                            borderRadius: BorderRadius.circular(6.px),
+                          ),
+                          child: Text(
+                            '暂停使用',
+                            style: TextStyle(
+                              fontSize: 10.px,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10.px),
+                    CanteenLayoutWidget(
+                      canteenLayout: canteenLayout!,
+                      onTableSelected: (table) {
+                        setState(() {
+                          selectedTable = table;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+
             // 选择配送时显示地址选择
             if (selectedPickupType == 3) ...[
               Container(
@@ -858,6 +1019,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
     return GestureDetector(
       onTap: () {
         selectedPickupType = id;
+        if (id == 1) {
+          _getRestaurantLayout();
+        }
         if (id == 1 || id == 2) {
           selectedDeliveryTime = null;
           selectedDeliveryFee = null;
@@ -1020,7 +1184,7 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
     );
   }
 
-  void _submitOrder() {
+  Future<void> _submitOrder() async {
     // 检查联系电话
     if (_phoneController.text.isEmpty) {
       ProgressHUD.showError(S.of(context).pleaseFillIn(S.of(context).phone));
@@ -1037,6 +1201,85 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
       );
       return;
     }
+
+    if (selectedPickupType == 1 && selectedTable != null) {
+      await _getTableStatus();
+      if (tableStatus != '0') {
+        DialogFactory.new().showConfirmDialog(
+          context: context,
+          title: '餐桌当前已经预订或使用',
+          content: '是否确定使用该餐桌？',
+          cancelClick: () {
+            selectedTable = null;
+            _getRestaurantLayout();
+            return;
+          },
+          confirmClick: () {
+            DialogFactory.new().showConfirmDialog(
+              context: context,
+              title: S.of(context).confirmSubmit,
+              content: S.of(context).confirmSubmitContent,
+              confirmClick: () {
+                Map<String, dynamic> parameters = {
+                  'name': userInfo?.name,
+                  'tel': _phoneController.text,
+                  'nick': userInfo?.account,
+                  'canteenId': restaurantDetail?.id,
+                  'canteenName': restaurantDetail?.name,
+                  'totalPrice': widget.totalPrice,
+                  'orderDetails': widget.cartItems,
+                  'remark': _remarkController.text,
+                  'pickupType': selectedPickupType,
+                  'expectedTime':
+                      '${restaurantDetail?.startTime} ~ ${restaurantDetail?.endTime}',
+                };
+                if (selectedPickupType == 1 && selectedTable != null) {
+                  parameters['tableNumber'] = selectedTable?.label;
+                }
+                if (selectedPickupType == 3) {
+                  double postPrice = selectedDeliveryFee?.price ?? 0;
+                  parameters['postPrice'] = postPrice;
+                  parameters['totalPrice'] = widget.totalPrice + postPrice;
+                  parameters['deliveryArea'] = selectedDeliveryTime?.name;
+                  parameters['address'] = model.defaultAddress?.detailedAddress;
+                }
+                setState(() {
+                  _isLoading = true;
+                });
+                // 提交订单
+                ShoppingUtils.submitOrder(
+                  parameters,
+                  success: (value) {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    ProgressHUD.showSuccess(S.of(context).submitSuccess);
+                    Navigator.pop(context); // 关闭对话框
+                    // 清空当前餐厅的购物车
+                    context.read<FoodViewModel>().clearCart(
+                      restaurantDetail?.id ?? 0,
+                    );
+                    // 跳转至订单列表页
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => OrderListPage()),
+                    );
+                  },
+                  fail: (code, msg) {
+                    setState(() {
+                      _isLoading = false;
+                    });
+                    ProgressHUD.showError(msg);
+                  },
+                );
+              },
+            );
+          },
+        );
+        return;
+      }
+    }
+
     // 配送方式为配送时
     if (selectedPickupType == 3) {
       // 检查地址
@@ -1073,6 +1316,9 @@ class _OrderScreenPageState extends State<OrderScreenPage> {
           'expectedTime':
               '${restaurantDetail?.startTime} ~ ${restaurantDetail?.endTime}',
         };
+        if (selectedPickupType == 1 && selectedTable != null) {
+          parameters['tableNumber'] = selectedTable?.label;
+        }
         if (selectedPickupType == 3) {
           double postPrice = selectedDeliveryFee?.price ?? 0;
           parameters['postPrice'] = postPrice;

@@ -68,6 +68,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "alarm_success": MessageLookupByLibrary.simpleMessage("报警成功"),
         "all": MessageLookupByLibrary.simpleMessage("全部"),
         "allRead": MessageLookupByLibrary.simpleMessage("全部已读"),
+        "amount": MessageLookupByLibrary.simpleMessage("充值金额"),
         "appTitle": MessageLookupByLibrary.simpleMessage("IWIP后勤综合服务"),
         "appVersion": MessageLookupByLibrary.simpleMessage("当前版本号"),
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
@@ -204,6 +205,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "click_to_start_dialog": MessageLookupByLibrary.simpleMessage("点击开始对话"),
         "close": MessageLookupByLibrary.simpleMessage("关闭"),
         "companyNews": MessageLookupByLibrary.simpleMessage("公司动态"),
+        "complaint_detail": MessageLookupByLibrary.simpleMessage("投诉热线详情"),
+        "complaint_hotline": MessageLookupByLibrary.simpleMessage("投诉热线"),
         "completed": MessageLookupByLibrary.simpleMessage("已完结"),
         "confirm": MessageLookupByLibrary.simpleMessage("确认"),
         "confirmDelete": MessageLookupByLibrary.simpleMessage("确认删除"),
@@ -364,6 +367,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "currentBound": MessageLookupByLibrary.simpleMessage("当前绑定: "),
         "currentVersionIsLatest":
             MessageLookupByLibrary.simpleMessage("当前版本已是最新版本"),
+        "current_balance": MessageLookupByLibrary.simpleMessage("当前消费卡余额"),
         "current_position": MessageLookupByLibrary.simpleMessage("当前位置"),
         "current_position_failed":
             MessageLookupByLibrary.simpleMessage("当前位置获取失败,请检查定位权限"),
@@ -531,6 +535,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dragRemoveImage": MessageLookupByLibrary.simpleMessage("拖动删除图片"),
         "duplicateOrderReception":
             MessageLookupByLibrary.simpleMessage("重复接收订单"),
+        "dutyScope": MessageLookupByLibrary.simpleMessage("职责范围"),
         "earlyTea": MessageLookupByLibrary.simpleMessage("早茶"),
         "edit": MessageLookupByLibrary.simpleMessage("编辑"),
         "editToBeAuditedMessage":
@@ -543,6 +548,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "emergency_alarm_tips": MessageLookupByLibrary.simpleMessage(
             "遇到紧急情况请立即按下报警按钮\n安全团队将在第一时间为您提供帮助"),
         "emergency_chat": MessageLookupByLibrary.simpleMessage("紧急聊天"),
+        "employee": MessageLookupByLibrary.simpleMessage("员工风采"),
         "employeeNumber": MessageLookupByLibrary.simpleMessage("工号"),
         "en": MessageLookupByLibrary.simpleMessage("English"),
         "endDate": MessageLookupByLibrary.simpleMessage("结束日期"),
@@ -558,6 +564,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "evaluation": MessageLookupByLibrary.simpleMessage("评价"),
         "exceedStock": MessageLookupByLibrary.simpleMessage("超出库存"),
         "exception": MessageLookupByLibrary.simpleMessage("配送异常"),
+        "exchange_rate": MessageLookupByLibrary.simpleMessage("汇率"),
         "exitManage": MessageLookupByLibrary.simpleMessage("退出管理"),
         "expenditure": MessageLookupByLibrary.simpleMessage("支出"),
         "faceCollection": MessageLookupByLibrary.simpleMessage("人脸采集"),
@@ -575,6 +582,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "5. 多次上传未能通过照片审核的用户，可持工卡在工作时间到卡务柜台办理"),
         "faceCollectionTipsTitle":
             MessageLookupByLibrary.simpleMessage("采集标准要求说明"),
+        "facility": MessageLookupByLibrary.simpleMessage("配套设施风采"),
         "failed_to_create_chat_session":
             MessageLookupByLibrary.simpleMessage("无法创建聊天会话"),
         "failed_to_reconnect_to_server":
@@ -707,6 +715,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "minutes_ago": MessageLookupByLibrary.simpleMessage("分钟前"),
         "modifyAddress": MessageLookupByLibrary.simpleMessage("修改地址"),
         "modifyPerson": MessageLookupByLibrary.simpleMessage("修改人员"),
+        "month": MessageLookupByLibrary.simpleMessage("月份"),
         "monthly": MessageLookupByLibrary.simpleMessage("纬达贝月刊"),
         "monthlySales": MessageLookupByLibrary.simpleMessage("月销"),
         "moreFunction": MessageLookupByLibrary.simpleMessage("更多功能"),
@@ -749,6 +758,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "not_filled": MessageLookupByLibrary.simpleMessage("未填写"),
         "notice": MessageLookupByLibrary.simpleMessage("公告"),
         "notifications": MessageLookupByLibrary.simpleMessage("通知公告"),
+        "officeLocation": MessageLookupByLibrary.simpleMessage("办公地点"),
         "oldPassword": MessageLookupByLibrary.simpleMessage("旧密码"),
         "oldPasswordNotEmpty": MessageLookupByLibrary.simpleMessage("旧密码不能为空"),
         "oneMonth": MessageLookupByLibrary.simpleMessage("一个月"),
@@ -758,6 +768,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "onlineDelivery": MessageLookupByLibrary.simpleMessage("在线接单"),
         "onlineDining": MessageLookupByLibrary.simpleMessage("在线订餐"),
         "online_customer_service": MessageLookupByLibrary.simpleMessage("在线客服"),
+        "online_recharge": MessageLookupByLibrary.simpleMessage("在线充值"),
         "operator": MessageLookupByLibrary.simpleMessage("操作人"),
         "optional": MessageLookupByLibrary.simpleMessage("（可选）"),
         "order": MessageLookupByLibrary.simpleMessage("点餐"),
@@ -876,6 +887,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "receiveTime": MessageLookupByLibrary.simpleMessage("拾取时间"),
         "received": MessageLookupByLibrary.simpleMessage("已收货"),
         "recentlyScanned": MessageLookupByLibrary.simpleMessage("最近扫码"),
+        "recharge_limit": MessageLookupByLibrary.simpleMessage("可充值额度"),
+        "recharge_record": MessageLookupByLibrary.simpleMessage("充值记录"),
+        "recharge_rules": MessageLookupByLibrary.simpleMessage("充值规则说明"),
         "recommendPerson": MessageLookupByLibrary.simpleMessage("推荐人"),
         "recommendReason": MessageLookupByLibrary.simpleMessage("推荐理由"),
         "recommendTime": MessageLookupByLibrary.simpleMessage("推荐时间"),
@@ -1046,6 +1060,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "takePhoto": MessageLookupByLibrary.simpleMessage("拍摄"),
         "takeout": MessageLookupByLibrary.simpleMessage("打包"),
         "threeMonths": MessageLookupByLibrary.simpleMessage("三个月"),
+        "time": MessageLookupByLibrary.simpleMessage("时间"),
         "timetable": MessageLookupByLibrary.simpleMessage("发车时间表"),
         "tip": MessageLookupByLibrary.simpleMessage("提示"),
         "title": MessageLookupByLibrary.simpleMessage("标题"),
@@ -1079,6 +1094,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "unknown": MessageLookupByLibrary.simpleMessage("未知"),
         "unknownName": MessageLookupByLibrary.simpleMessage("未知姓名"),
         "unknownStatus": MessageLookupByLibrary.simpleMessage("未知状态"),
+        "unknownTel": MessageLookupByLibrary.simpleMessage("暂无电话"),
         "unknown_dish": MessageLookupByLibrary.simpleMessage("未知菜品"),
         "unknown_error": MessageLookupByLibrary.simpleMessage("未知错误"),
         "unknown_status": MessageLookupByLibrary.simpleMessage("未知状态"),
@@ -1108,6 +1124,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "usageInstructions": MessageLookupByLibrary.simpleMessage("使用说明"),
         "useHandheldScannerToScanBarcode":
             MessageLookupByLibrary.simpleMessage("使用手持机扫描条码"),
+        "used_credit_limit": MessageLookupByLibrary.simpleMessage("已充值额度"),
         "userFeedback": MessageLookupByLibrary.simpleMessage("用户反馈"),
         "userInfo": MessageLookupByLibrary.simpleMessage("个人信息"),
         "userName": MessageLookupByLibrary.simpleMessage("账号"),
@@ -1124,6 +1141,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "welcome": MessageLookupByLibrary.simpleMessage("欢迎来到IWIP后勤综合服务APP"),
         "woman": MessageLookupByLibrary.simpleMessage("女"),
         "workNo": MessageLookupByLibrary.simpleMessage("工号"),
+        "workTime": MessageLookupByLibrary.simpleMessage("工作时间"),
         "yesterday": MessageLookupByLibrary.simpleMessage("昨天"),
         "zh": MessageLookupByLibrary.simpleMessage("中文")
       };

@@ -247,22 +247,6 @@ class NewsDataView extends StatelessWidget {
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(width: 20.px),
-                                              // 浏览次数图标
-                                              Icon(
-                                                Icons.remove_red_eye_outlined,
-                                                color: Colors.grey,
-                                                size: 16.px,
-                                              ),
-                                              SizedBox(width: 5.px),
-                                              Text(
-                                                listData?.papeView.toString() ??
-                                                    '0',
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 12.px,
-                                                ),
-                                              ),
                                             ],
                                           ),
                                         ],
@@ -333,22 +317,6 @@ class NewsDataView extends StatelessWidget {
                                             children: [
                                               Text(
                                                 listData?.createTime ?? '',
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 12.px,
-                                                ),
-                                              ),
-                                              SizedBox(width: 20.px),
-                                              // 浏览次数图标
-                                              Icon(
-                                                Icons.remove_red_eye_outlined,
-                                                color: Colors.grey,
-                                                size: 16.px,
-                                              ),
-                                              SizedBox(width: 5.px),
-                                              Text(
-                                                listData?.papeView.toString() ??
-                                                    '0',
                                                 style: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 12.px,

@@ -55,57 +55,55 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   int hiddenDangerUnreadCount = 0;
 
   void _loadTabIcons() {
-    setState(() {
-      if (_tabIconsList.isEmpty) {
-        _tabIconsList = <TabIconData>[
-          TabIconData(
-            imagePath: 'assets/images/tab_1.png',
-            selectedImagePath: 'assets/images/tab_1s1.png',
-            index: 0,
-            isSelected: true,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-            unreadCount: 0,
-          ),
-          TabIconData(
-            imagePath: 'assets/images/tab_danger1.png',
-            selectedImagePath: 'assets/images/tab_danger1s.png',
-            index: 1,
-            isSelected: true,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-            unreadCount: hiddenDangerUnreadCount,
-          ),
-          TabIconData(
-            imagePath: 'assets/images/tab_tool1.png',
-            selectedImagePath: 'assets/images/tab_tool21.png',
-            index: 2,
-            isSelected: false,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-            unreadCount: 0,
-          ),
-          TabIconData(
-            imagePath: 'assets/images/tab_warn.png',
-            selectedImagePath: 'assets/images/tab_warn1.png',
-            index: 3,
-            isSelected: false,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-            unreadCount: 0,
-          ),
-          TabIconData(
-            imagePath: 'assets/images/tab_4.png',
-            selectedImagePath: 'assets/images/tab_4s1.png',
-            index: 4,
-            isSelected: false,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-            unreadCount: 0,
-          ),
-        ];
-      }
-    });
+    if (_tabIconsList.isEmpty) {
+      _tabIconsList = <TabIconData>[
+        TabIconData(
+          imagePath: 'assets/images/tab_1.png',
+          selectedImagePath: 'assets/images/tab_1s1.png',
+          index: 0,
+          isSelected: true,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: 0,
+        ),
+        TabIconData(
+          imagePath: 'assets/images/tab_danger1.png',
+          selectedImagePath: 'assets/images/tab_danger1s.png',
+          index: 1,
+          isSelected: true,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: hiddenDangerUnreadCount,
+        ),
+        TabIconData(
+          imagePath: 'assets/images/tab_tool1.png',
+          selectedImagePath: 'assets/images/tab_tool21.png',
+          index: 2,
+          isSelected: false,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: 0,
+        ),
+        TabIconData(
+          imagePath: 'assets/images/tab_warn.png',
+          selectedImagePath: 'assets/images/tab_warn1.png',
+          index: 3,
+          isSelected: false,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: 0,
+        ),
+        TabIconData(
+          imagePath: 'assets/images/tab_4.png',
+          selectedImagePath: 'assets/images/tab_4s1.png',
+          index: 4,
+          isSelected: false,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: 0,
+        ),
+      ];
+    }
   }
 
   // 更新tab标签名称
@@ -380,12 +378,16 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   }
 
   void handleTabChanged(int newValue) async {
+    if (_tabIconsList.isEmpty) {
+      _loadTabIcons();
+    }
+    if (_tabIconsList.isEmpty) return;
     _tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
-    _tabIconsList[newValue].isSelected = true;
+    _tabIconsList[newValue ?? 2].isSelected = true;
     setState(() {
-      _grooveIndex = newValue;
+      _grooveIndex = newValue ?? 2;
     });
     animationController?.reverse().then<dynamic>((data) async {
       if (!mounted) {

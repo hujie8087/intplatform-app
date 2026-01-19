@@ -34,7 +34,7 @@ class NativeLocationService(private val context: Context) {
     private var locationListener: LocationListener? = null
     private var methodChannel: MethodChannel? = null
     private var isTracking = false
-    private var trackingInterval = 2000L // 默认2秒
+    private var trackingInterval = 5000L // 默认2秒
     private var locationUpdateHandler: Handler? = null
     private var locationUpdateRunnable: Runnable? = null
 
@@ -139,7 +139,7 @@ class NativeLocationService(private val context: Context) {
     }
 
     // 开始实时定位
-    fun startRealTimeLocation(interval: Long = 2000L): Boolean {
+    fun startRealTimeLocation(interval: Long = 5000L): Boolean {
         if (isTracking) {
             return false
         }

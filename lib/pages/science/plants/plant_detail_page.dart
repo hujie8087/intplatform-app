@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
+import 'package:logistics_app/common_ui/keep_alive_image.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -19,8 +20,8 @@ class PlantDetailPage extends StatefulWidget {
 class _PlantDetailPageState extends State<PlantDetailPage>
     with TickerProviderStateMixin {
   PlantModel? plantData;
-  List<String> picture = [];
   AnimationController? animationController;
+  List<String> pictures = [];
 
   @override
   void initState() {
@@ -40,7 +41,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
       success: (data) {
         plantData = PlantModel.fromJson(data['data']);
         setState(() {
-          picture = plantData?.picture?.split(',') ?? [];
+          pictures = plantData?.picture?.split(',') ?? [];
         });
       },
     );
@@ -66,20 +67,14 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                   height: 300,
                   child: Swiper(
                     itemBuilder: (context, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              APIs.imagePrefix + picture[index],
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      return KeepAliveImage(
+                        imageUrl: APIs.imagePrefix + pictures[index],
+                        cacheKey: pictures[index],
                       );
                     },
-                    itemCount: picture.length,
+                    itemCount: pictures.length,
                     autoplay: true,
-                    duration: 300,
+                    duration: 100,
                     pagination: const SwiperPagination(),
                   ),
                 ),
