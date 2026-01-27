@@ -1660,10 +1660,10 @@ class S {
     );
   }
 
-  /// `卡余额`
+  /// `卡积分`
   String get cardBalance {
     return Intl.message(
-      '卡余额',
+      '卡积分',
       name: 'cardBalance',
       desc: '',
       args: [],
@@ -9130,40 +9130,40 @@ class S {
     );
   }
 
-  /// `当前消费卡余额`
+  /// `当前消费卡积分`
   String get current_balance {
     return Intl.message(
-      '当前消费卡余额',
+      '当前消费卡积分',
       name: 'current_balance',
       desc: '',
       args: [],
     );
   }
 
-  /// `可充值额度`
+  /// `可充值积分`
   String get recharge_limit {
     return Intl.message(
-      '可充值额度',
+      '可充值积分',
       name: 'recharge_limit',
       desc: '',
       args: [],
     );
   }
 
-  /// `已充值额度`
+  /// `已充值积分`
   String get used_credit_limit {
     return Intl.message(
-      '已充值额度',
+      '已充值积分',
       name: 'used_credit_limit',
       desc: '',
       args: [],
     );
   }
 
-  /// `充值金额`
+  /// `充值积分`
   String get amount {
     return Intl.message(
-      '充值金额',
+      '充值积分',
       name: 'amount',
       desc: '',
       args: [],

@@ -5,6 +5,7 @@ import 'package:logistics_app/common_ui/option_grid_view.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/data/tool_utils.dart';
@@ -112,6 +113,7 @@ class ToolBoxPage extends StatefulWidget {
 }
 
 class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
+  bool _isLoadingAppMenu = false;
   List<GuideTypeViewModel> guideTypeList = [];
   List<GuideViewModel> guideList = [];
   List<String>? permission;
@@ -125,6 +127,7 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   ThirdUserInfoModel? thirdUserInfoData;
   String token = '';
   String languageCode = 'zh';
+  int creditLimit = 0;
 
   // 获取维修订单未完成数量
   Future<void> getRepairUnfinishedCount() async {
@@ -190,16 +193,39 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
 
   // 获取App菜单
   Future<void> getAppMenu() async {
-    ToolUtils.getAppMenu<AppMenuModel>(
+    if (_isLoadingAppMenu) return;
+    _isLoadingAppMenu = true;
+    // 获取信用额度
+    DataUtils.getData(
+      APIs.getUserCreditLimit,
+      null,
       success: (data) {
-        BaseListModel<AppMenuModel> response = BaseListModel.fromJson(
-          data,
-          (json) => AppMenuModel.fromJson(json),
-        );
-        appMenuListFilter = response.data ?? [];
-        setState(() {
-          filterAppMenu();
-        });
+        if (mounted) {
+          setState(() {
+            creditLimit = data['data'];
+            ToolUtils.getAppMenu<AppMenuModel>(
+              success: (data) {
+                _isLoadingAppMenu = false;
+                BaseListModel<AppMenuModel> response = BaseListModel.fromJson(
+                  data,
+                  (json) => AppMenuModel.fromJson(json),
+                );
+                appMenuListFilter = response.data ?? [];
+                setState(() {
+                  filterAppMenu();
+                });
+              },
+              fail: (code, msg) {
+                _isLoadingAppMenu = false;
+              },
+            );
+          });
+        } else {
+          _isLoadingAppMenu = false;
+        }
+      },
+      fail: (code, msg) {
+        _isLoadingAppMenu = false;
       },
     );
   }
@@ -255,8 +281,12 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
                     if (article.status == 1) {
                       return false;
                     } else if (article.permissions == 'topup:record:save') {
-                      if (thirdUserInfoData?.country == 1) {
-                        return true;
+                      if (thirdUserInfoData?.country == 2) {
+                        if (creditLimit > 0) {
+                          return true;
+                        } else {
+                          return false;
+                        }
                       } else {
                         return false;
                       }

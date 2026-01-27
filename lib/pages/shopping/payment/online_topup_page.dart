@@ -354,15 +354,41 @@ class _OnlineTopupPageState extends State<OnlineTopupPage> {
           SizedBox(height: 12.px),
           _buildRuleItem('1. 极速到账：', '充值成功后，消费积分立即到账，可即时使用，无需等待。'),
           SizedBox(height: 8.px),
-          _buildRuleItem('2. 兑换比例：', '1 消费积分 = 1,000 印尼盾 (IDR)。'),
+          _buildRuleItem('2. 充值积分:', '即消费卡积分。'),
           SizedBox(height: 8.px),
-          _buildRuleItem('3. 薪资代扣（当月结清）', ''),
+          _buildRuleItem('3. 兑换比例:', '1消费积分=1,000印尼盾(1Rp)。'),
+          SizedBox(height: 8.px),
+          RichText(
+            text: TextSpan(
+              style: TextStyle(fontSize: 12.px, height: 1.5),
+              children: [
+                TextSpan(
+                  text: '4. 额度说明:',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                TextSpan(
+                  text:
+                      '消费卡额度按月发放，每月1号为在职员工统一发放' +
+                      creditLimit.toString() +
+                      '积分，单月额度上限为' +
+                      creditLimit.toString() +
+                      '积分；已充值但未消费的积分员工在职期间可累积使用。',
+                  style: TextStyle(color: Colors.black54),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 8.px),
+          _buildRuleItem('5. 薪资代扣', ''),
           Padding(
             padding: EdgeInsets.only(left: 8.px, top: 4.px),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildRuleItem('• 扣款时间：', '本月产生的所有充值金额，将统一在发放本月工资时扣除。'),
+                _buildRuleItem('• 代扣时间：', '当月发生的所有充值，于当月工资中进行代扣。'),
                 Padding(
                   padding: EdgeInsets.only(
                     left: 12.px,
@@ -370,7 +396,7 @@ class _OnlineTopupPageState extends State<OnlineTopupPage> {
                     bottom: 4.px,
                   ),
                   child: Text(
-                    '例：1月份的充值，将在1月份工资中扣除。',
+                    '例：2月1日-28日期间进行的充值，将在3月发放的2月工资中进行代扣。',
                     style: TextStyle(
                       fontSize: 12.px,
                       color: Colors.black45,
@@ -378,12 +404,17 @@ class _OnlineTopupPageState extends State<OnlineTopupPage> {
                     ),
                   ),
                 ),
-                _buildRuleItem('• 汇率计算：', '扣款金额将按充值当月的公司设定汇率进行折算。'),
+                _buildRuleItem('• 代扣金额计算：', '按照公司公布的汇率进行印尼盾兑人民币计算，以人民币金额进行代扣。'),
               ],
             ),
           ),
           SizedBox(height: 8.px),
-          _buildRuleItem('4. 额度说明：', '每月享有固定充值额度，次月1日自动重置，额度不累计。'),
+          _buildRuleItem(
+            '6.',
+            ' 员工离职后，需前往卡务中心办理消费卡注销手续。消费卡内剩余积分将以印尼盾现金形式退还给员工，员工在离职退卡时同时办理！',
+          ),
+          SizedBox(height: 8.px),
+          _buildRuleItem('注：', '受结算方式限制，该充值功能目前仅限本公司中国籍员工使用，其他人员暂不纳入。'),
         ],
       ),
     );

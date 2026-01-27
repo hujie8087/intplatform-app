@@ -156,137 +156,138 @@ class _EmployeeDetailPageState extends State<EmployeeDetailPage> {
                         ),
                       ),
                       SizedBox(height: 10.px),
-                      ShaderMask(
-                        shaderCallback: (Rect bounds) {
-                          return LinearGradient(
-                            colors: [Color(0xFF8AAE2B), Color(0xFF328638)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ).createShader(bounds);
-                        },
-                        blendMode: BlendMode.srcIn,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.px),
-                          width: double.infinity,
-                          child: Text(
-                            noticeModel?.noticeTitle ?? '',
-                            style: TextStyle(
-                              fontSize: 18.px,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ),
+
+                      // ShaderMask(
+                      //   shaderCallback: (Rect bounds) {
+                      //     return LinearGradient(
+                      //       colors: [Color(0xFF8AAE2B), Color(0xFF328638)],
+                      //       begin: Alignment.topCenter,
+                      //       end: Alignment.bottomCenter,
+                      //     ).createShader(bounds);
+                      //   },
+                      //   blendMode: BlendMode.srcIn,
+                      //   child: Container(
+                      //     padding: EdgeInsets.symmetric(horizontal: 16.px),
+                      //     width: double.infinity,
+                      //     child: Text(
+                      //       noticeModel?.noticeTitle ?? '',
+                      //       style: TextStyle(
+                      //         fontSize: 18.px,
+                      //         fontWeight: FontWeight.bold,
+                      //       ),
+                      //       textAlign: TextAlign.left,
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(height: 10.px),
                       // 员工图片
-                      Container(
-                        width: double.infinity,
-                        height: 350.px, // 给定高度以容纳布局
-                        padding: EdgeInsets.only(left: 40.px),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // 背景黄色装饰 (Background Yellow decoration)
-                            Positioned(
-                              top: 20.px,
-                              left: 0,
-                              child: Container(
-                                width: 235.px,
-                                height: 282.px,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'assets/images/employee_avatar.png',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // 头像 (Profile Image)
-                            Positioned(
-                              top: 0,
-                              // 居中
-                              child: Container(
-                                padding: EdgeInsets.all(10.px),
-                                child: Container(
-                                  width: 350.px,
-                                  height: 350.px,
-                                  child: ClipPath(
-                                    // 1. 这里调用自定义的裁剪器
-                                    clipper: MyShapeClipper(),
-                                    child: Container(
-                                      width: 350.px,
-                                      height: 250.px,
-                                      // 2. 图片可以直接用 Image 组件，或者保留在 decoration 里都可以
-                                      decoration: BoxDecoration(
-                                        color: Colors.green,
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            APIs.imagePrefix +
-                                                noticeModel!.img!,
-                                          ),
-                                          fit: BoxFit.cover, // 确保图片填满裁剪区域
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            // 姓名标签 (Name Tag)
-                            Positioned(
-                              bottom: 0.px,
-                              left: 0.px,
-                              child: Container(
-                                width: 120.px,
-                                height: 120.px,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'assets/images/employee_name.png',
-                                    ),
-                                    fit: BoxFit.cover,
-                                    alignment: Alignment.center,
-                                  ),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      noticeModel?.name ?? S.of(context).name,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20.px,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 2,
-                                      ),
-                                    ),
-                                    SizedBox(height: 4.px),
-                                    Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 160.px,
-                                      ),
-                                      child: Text(
-                                        noticeModel?.createDept ??
-                                            S.of(context).dept,
-                                        style: TextStyle(
-                                          color: Colors.white.withOpacity(0.9),
-                                          fontSize: 10.px,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Container(
+                      //   width: double.infinity,
+                      //   height: 350.px, // 给定高度以容纳布局
+                      //   padding: EdgeInsets.only(left: 40.px),
+                      //   child: Stack(
+                      //     alignment: Alignment.center,
+                      //     children: [
+                      //       // 背景黄色装饰 (Background Yellow decoration)
+                      //       Positioned(
+                      //         top: 20.px,
+                      //         left: 0,
+                      //         child: Container(
+                      //           width: 235.px,
+                      //           height: 282.px,
+                      //           decoration: BoxDecoration(
+                      //             image: DecorationImage(
+                      //               image: AssetImage(
+                      //                 'assets/images/employee_avatar.png',
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       // 头像 (Profile Image)
+                      //       Positioned(
+                      //         top: 0,
+                      //         // 居中
+                      //         child: Container(
+                      //           padding: EdgeInsets.all(10.px),
+                      //           child: Container(
+                      //             width: 350.px,
+                      //             height: 350.px,
+                      //             child: ClipPath(
+                      //               // 1. 这里调用自定义的裁剪器
+                      //               clipper: MyShapeClipper(),
+                      //               child: Container(
+                      //                 width: 350.px,
+                      //                 height: 250.px,
+                      //                 // 2. 图片可以直接用 Image 组件，或者保留在 decoration 里都可以
+                      //                 decoration: BoxDecoration(
+                      //                   color: Colors.green,
+                      //                   image: DecorationImage(
+                      //                     image: NetworkImage(
+                      //                       APIs.imagePrefix +
+                      //                           noticeModel!.img!,
+                      //                     ),
+                      //                     fit: BoxFit.cover, // 确保图片填满裁剪区域
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       // 姓名标签 (Name Tag)
+                      //       Positioned(
+                      //         bottom: 0.px,
+                      //         left: 0.px,
+                      //         child: Container(
+                      //           width: 120.px,
+                      //           height: 120.px,
+                      //           decoration: BoxDecoration(
+                      //             image: DecorationImage(
+                      //               image: AssetImage(
+                      //                 'assets/images/employee_name.png',
+                      //               ),
+                      //               fit: BoxFit.cover,
+                      //               alignment: Alignment.center,
+                      //             ),
+                      //           ),
+                      //           child: Column(
+                      //             mainAxisSize: MainAxisSize.min,
+                      //             crossAxisAlignment: CrossAxisAlignment.center,
+                      //             mainAxisAlignment: MainAxisAlignment.center,
+                      //             children: [
+                      //               Text(
+                      //                 noticeModel?.name ?? S.of(context).name,
+                      //                 style: TextStyle(
+                      //                   color: Colors.white,
+                      //                   fontSize: 20.px,
+                      //                   fontWeight: FontWeight.bold,
+                      //                   letterSpacing: 2,
+                      //                 ),
+                      //               ),
+                      //               SizedBox(height: 4.px),
+                      //               Container(
+                      //                 constraints: BoxConstraints(
+                      //                   maxWidth: 160.px,
+                      //                 ),
+                      //                 child: Text(
+                      //                   noticeModel?.createDept ??
+                      //                       S.of(context).dept,
+                      //                   style: TextStyle(
+                      //                     color: Colors.white.withOpacity(0.9),
+                      //                     fontSize: 10.px,
+                      //                   ),
+                      //                   maxLines: 2,
+                      //                   overflow: TextOverflow.ellipsis,
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                       // 信息
                       Stack(
                         children: [
@@ -305,10 +306,12 @@ class _EmployeeDetailPageState extends State<EmployeeDetailPage> {
                                   colors: [
                                     Color(0xFFFFFFFF),
                                     Color(0xFFFFFFFF),
+                                    Color(0xFFFFFFFF).withOpacity(0.8),
                                     Color(0xFFFFFFFF).withOpacity(0.0),
                                   ],
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
+                                  stops: [0.0, 0.8, 0.9, 1.0],
                                 ),
                               ),
                             ),

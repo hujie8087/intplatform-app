@@ -79,8 +79,6 @@ class _MyFeedbackDetailPageState extends State<MyFeedbackDetailPage>
                   _buildReplyCard(),
 
                 SizedBox(height: 12.px),
-                // 底部联系人信息
-                _buildContactInfo(),
               ],
             ),
           ),
@@ -115,8 +113,8 @@ class _MyFeedbackDetailPageState extends State<MyFeedbackDetailPage>
           Row(
             children: [
               Container(
-                width: 36.px,
-                height: 36.px,
+                width: 40.px,
+                height: 40.px,
                 decoration: BoxDecoration(
                   color: Color(0xFFF0F7FF),
                   shape: BoxShape.circle,
@@ -139,10 +137,22 @@ class _MyFeedbackDetailPageState extends State<MyFeedbackDetailPage>
                       color: Color(0xFF1D1D1F),
                     ),
                   ),
+                  SizedBox(height: 6.px),
                   Text(
                     _formatTime(widget.feedback.createTime),
                     style: TextStyle(fontSize: 11.px, color: Color(0xFF86868B)),
                   ),
+                  SizedBox(height: 6.px),
+                  if (widget.feedback.phone != null ||
+                      widget.feedback.phone!.isNotEmpty)
+                    Text(
+                      widget.feedback.phone!,
+                      style: TextStyle(
+                        fontSize: 12.px,
+                        color: Color(0xFF86868B),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                 ],
               ),
             ],
@@ -161,6 +171,17 @@ class _MyFeedbackDetailPageState extends State<MyFeedbackDetailPage>
               height: 1.6,
             ),
           ),
+          if (widget.feedback.def4 != null &&
+              widget.feedback.def4!.isNotEmpty) ...[
+            SizedBox(height: 12.px),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.px),
+              child: Image.network(
+                APIs.imagePrefix + widget.feedback.def4!,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -327,36 +348,6 @@ class _MyFeedbackDetailPageState extends State<MyFeedbackDetailPage>
           fontSize: 12.px,
           fontWeight: FontWeight.w600,
           color: textColor,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContactInfo() {
-    if (widget.feedback.phone == null || widget.feedback.phone!.isEmpty) {
-      return SizedBox();
-    }
-    return Center(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.px, vertical: 8.px),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.03),
-          borderRadius: BorderRadius.circular(20.px),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.phone, size: 14.px, color: Color(0xFF86868B)),
-            SizedBox(width: 6.px),
-            Text(
-              "${S.of(context).contact_info}: ${widget.feedback.phone}",
-              style: TextStyle(
-                fontSize: 12.px,
-                color: Color(0xFF86868B),
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
         ),
       ),
     );

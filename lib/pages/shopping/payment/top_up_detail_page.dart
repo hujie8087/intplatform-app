@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/utils/color.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -9,8 +10,9 @@ import 'package:logistics_app/http/model/top_up_model.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
 class TopUpDetailPage extends StatefulWidget {
-  final String yearMonth;
-  const TopUpDetailPage({Key? key, required this.yearMonth}) : super(key: key);
+  final TopUpMonthModel topUpMonthModel;
+  const TopUpDetailPage({Key? key, required this.topUpMonthModel})
+    : super(key: key);
 
   @override
   _TopUpDetailPageState createState() => _TopUpDetailPageState();
@@ -37,7 +39,11 @@ class _TopUpDetailPageState extends State<TopUpDetailPage> {
 
     DataUtils.getData(
       APIs.getUserRechargeRecordDetail,
-      {'current': _pageNum, 'size': _pageSize, 'yearMonth': widget.yearMonth},
+      {
+        'current': _pageNum,
+        'size': _pageSize,
+        'yearMonth': widget.topUpMonthModel.yearMonth,
+      },
       success: (data) {
         var rows = data['data']['list'];
         List<TopUpDetailModel> list = [];
@@ -116,6 +122,13 @@ class _TopUpDetailPageState extends State<TopUpDetailPage> {
   }
 
   Widget _buildItem(TopUpDetailModel item) {
+    // 建议加上 null 检查和 0 检查
+    final rawAmount = item.amount ?? 0;
+    final rate = widget.topUpMonthModel.exchangeRate ?? 0;
+
+    // 计算结果
+    double amount = (rate != 0) ? (rawAmount * 1000 / rate) : 0.0;
+
     return Container(
       margin: EdgeInsets.only(bottom: 12.px),
       child: InkWell(
@@ -143,12 +156,22 @@ class _TopUpDetailPageState extends State<TopUpDetailPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    Expanded(
+                      child: Text(
+                        item.name ?? '',
+                        style: TextStyle(
+                          fontSize: 14.px,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
                     Text(
-                      item.name ?? '',
+                      '充值积分：',
                       style: TextStyle(
-                        fontSize: 14.px,
+                        fontSize: 10.px,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: secondaryColor,
                       ),
                     ),
                     Text(
@@ -156,7 +179,7 @@ class _TopUpDetailPageState extends State<TopUpDetailPage> {
                       style: TextStyle(
                         fontSize: 16.px,
                         fontWeight: FontWeight.bold,
-                        color: Colors.red[400],
+                        color: secondaryColor,
                       ),
                     ),
                   ],
@@ -164,16 +187,40 @@ class _TopUpDetailPageState extends State<TopUpDetailPage> {
                 SizedBox(height: 8.px),
                 Row(
                   children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Text(
+                            S.of(context).account,
+                            style: TextStyle(
+                              fontSize: 12.px,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Text(
+                            item.account?.toString() ?? '',
+                            style: TextStyle(
+                              fontSize: 12.px,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Text(
-                      S.of(context).account,
+                      '人民币：',
                       style: TextStyle(
-                        fontSize: 12.px,
+                        fontSize: 10.px,
                         color: Colors.grey[600],
                       ),
                     ),
                     Text(
-                      item.account?.toString() ?? '',
-                      style: TextStyle(fontSize: 12.px, color: Colors.black87),
+                      amount.toStringAsFixed(2),
+                      style: TextStyle(
+                        fontSize: 16.px,
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor[900],
+                      ),
                     ),
                   ],
                 ),

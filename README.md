@@ -20,4 +20,8 @@ samples, guidance on mobile development, and a full API reference.
 shorebird release android --artifact apk
 采用 shorebird 发布,可用于热更新
 
+To create a patch for this release, run shorebird patch --platforms=android --release-version=2.0.6+3000
+A new version of shorebird is available!
+Run shorebird upgrade to upgrade.
+
 web 启动命令 flutter run -d chrome --web-browser-flag "--disable-web-security" --web-browser-flag "--user-data-dir=/tmp/chrome"

@@ -164,6 +164,82 @@ class _RepairFormPage extends State<RepairFormPage>
     }
   }
 
+  // 提交表单
+  void _submit() async {
+    if (model.defaultAddress == null) {
+      ProgressHUD.showError(S.of(context).repairAddressNotEmpty);
+      return;
+    }
+    // 校验表单
+    if (_formKey.currentState!.validate()) {
+      // 上传图片
+      if (selectedAssets.isNotEmpty) {
+        ProgressHUD.showLoadingText(S.of(context).imageUploading);
+        final res = await uploadImages(selectedAssets);
+        if (res.isNotEmpty) {
+          setState(() {
+            _uploadedImageUrls = res;
+          });
+        } else {
+          ProgressHUD.showError('图片上传失败');
+          setState(() {
+            _isLoading = false;
+          });
+          return;
+        }
+      }
+      setState(() {
+        _isLoading = true;
+      });
+      // 提交表单
+      _formKey.currentState!.save();
+      model.repairFormModel = RepairFormModel(
+        repairPerson: model.defaultAddress?.name,
+        tel: model.defaultAddress?.tel,
+        repairArea: model.defaultAddress?.area,
+        repairAreaId: model.defaultAddress?.areaId,
+        repairMessage: _repairMessageController.text,
+        repairPhoto: _uploadedImageUrls.join(','),
+        repairRoomId: model.defaultAddress?.region,
+        roomNo: model.defaultAddress?.roomNo,
+        repairKey: repairKey,
+      );
+      model.addRepairModel().then((res) {
+        ProgressHUD.hide();
+        if (res.success) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                content: Text(S.of(context).repairSubmitSuccess),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      S.of(context).confirm,
+                      style: TextStyle(fontSize: 14.px, color: primaryColor),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          ProgressHUD.showError(
+            res.errorMessage ?? S.of(context).repairSubmitFailed,
+          );
+        }
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+  }
+
   // 发送消息通知
   void sendMessage() {
     DataUtils.sendOneMessage({
@@ -360,6 +436,7 @@ class _RepairFormPage extends State<RepairFormPage>
                               ),
                               SizedBox(height: 8.px),
                               _buildPhotoList(),
+                              SizedBox(height: 24.px),
                               Container(
                                 child:
                                     _isLoading
@@ -370,141 +447,142 @@ class _RepairFormPage extends State<RepairFormPage>
                                             ),
                                           ),
                                         )
-                                        : RaisedButton(
-                                          onPressed: () async {
-                                            if (model.defaultAddress == null) {
-                                              ProgressHUD.showError(
-                                                S
-                                                    .of(context)
-                                                    .repairAddressNotEmpty,
-                                              );
-                                              return;
-                                            }
-                                            setState(() {
-                                              _isLoading = true;
-                                            });
-                                            // 校验表单
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              // 上传图片
-                                              if (selectedAssets.isNotEmpty) {
-                                                ProgressHUD.showLoadingText(
-                                                  S.of(context).imageUploading,
-                                                );
-                                                final res = await uploadImages(
-                                                  selectedAssets,
-                                                );
-                                                if (res.isNotEmpty) {
-                                                  setState(() {
-                                                    _uploadedImageUrls = res;
-                                                  });
-                                                } else {
-                                                  ProgressHUD.showError(
-                                                    '图片上传失败',
-                                                  );
-                                                  setState(() {
-                                                    _isLoading = false;
-                                                  });
-                                                  return;
-                                                }
-                                              }
-                                              // 提交表单
-                                              _formKey.currentState!.save();
-                                              model.repairFormModel =
-                                                  RepairFormModel(
-                                                    repairPerson:
-                                                        model
-                                                            .defaultAddress
-                                                            ?.name,
-                                                    tel:
-                                                        model
-                                                            .defaultAddress
-                                                            ?.tel,
-                                                    repairArea:
-                                                        model
-                                                            .defaultAddress
-                                                            ?.area,
-                                                    repairAreaId:
-                                                        model
-                                                            .defaultAddress
-                                                            ?.areaId,
-                                                    repairMessage:
-                                                        _repairMessageController
-                                                            .text,
-                                                    repairPhoto:
-                                                        _uploadedImageUrls.join(
-                                                          ',',
-                                                        ),
-                                                    repairRoomId:
-                                                        model
-                                                            .defaultAddress
-                                                            ?.region,
-                                                    roomNo:
-                                                        model
-                                                            .defaultAddress
-                                                            ?.roomNo,
-                                                    repairKey: repairKey,
-                                                  );
-                                              model.addRepairModel().then((
-                                                res,
-                                              ) {
-                                                ProgressHUD.hide();
-                                                if (res.success) {
-                                                  sendMessage();
-                                                  showDialog(
-                                                    barrierDismissible: false,
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return AlertDialog(
-                                                        content: Text(
-                                                          S
-                                                              .of(context)
-                                                              .repairSubmitSuccess,
-                                                        ),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                context,
-                                                              );
-                                                              Navigator.of(
-                                                                context,
-                                                              ).pop();
-                                                            },
-                                                            child: Text(
-                                                              S
-                                                                  .of(context)
-                                                                  .confirm,
-                                                              style: TextStyle(
-                                                                fontSize: 14.px,
-                                                                color:
-                                                                    primaryColor,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                } else {
-                                                  ProgressHUD.showError(
-                                                    res.errorMessage ??
-                                                        S
-                                                            .of(context)
-                                                            .repairSubmitFailed,
-                                                  );
-                                                }
-                                                setState(() {
-                                                  _isLoading = false;
-                                                });
-                                              });
-                                            }
-                                          },
-                                          child: Text(S.of(context).submit),
-                                          color:
-                                              primaryColor[700] ?? primaryColor,
-                                          textColor: Colors.white,
-                                        ),
+                                        : _buildSubmitButton(),
+                                // RaisedButton(
+                                //   onPressed: () async {
+                                //     if (model.defaultAddress == null) {
+                                //       ProgressHUD.showError(
+                                //         S
+                                //             .of(context)
+                                //             .repairAddressNotEmpty,
+                                //       );
+                                //       return;
+                                //     }
+                                //     setState(() {
+                                //       _isLoading = true;
+                                //     });
+                                //     // 校验表单
+                                //     if (_formKey.currentState!
+                                //         .validate()) {
+                                //       // 上传图片
+                                //       if (selectedAssets.isNotEmpty) {
+                                //         ProgressHUD.showLoadingText(
+                                //           S.of(context).imageUploading,
+                                //         );
+                                //         final res = await uploadImages(
+                                //           selectedAssets,
+                                //         );
+                                //         if (res.isNotEmpty) {
+                                //           setState(() {
+                                //             _uploadedImageUrls = res;
+                                //           });
+                                //         } else {
+                                //           ProgressHUD.showError(
+                                //             '图片上传失败',
+                                //           );
+                                //           setState(() {
+                                //             _isLoading = false;
+                                //           });
+                                //           return;
+                                //         }
+                                //       }
+                                //       // 提交表单
+                                //       _formKey.currentState!.save();
+                                //       model.repairFormModel =
+                                //           RepairFormModel(
+                                //             repairPerson:
+                                //                 model
+                                //                     .defaultAddress
+                                //                     ?.name,
+                                //             tel:
+                                //                 model
+                                //                     .defaultAddress
+                                //                     ?.tel,
+                                //             repairArea:
+                                //                 model
+                                //                     .defaultAddress
+                                //                     ?.area,
+                                //             repairAreaId:
+                                //                 model
+                                //                     .defaultAddress
+                                //                     ?.areaId,
+                                //             repairMessage:
+                                //                 _repairMessageController
+                                //                     .text,
+                                //             repairPhoto:
+                                //                 _uploadedImageUrls.join(
+                                //                   ',',
+                                //                 ),
+                                //             repairRoomId:
+                                //                 model
+                                //                     .defaultAddress
+                                //                     ?.region,
+                                //             roomNo:
+                                //                 model
+                                //                     .defaultAddress
+                                //                     ?.roomNo,
+                                //             repairKey: repairKey,
+                                //           );
+                                //       model.addRepairModel().then((
+                                //         res,
+                                //       ) {
+                                //         ProgressHUD.hide();
+                                //         if (res.success) {
+                                //           sendMessage();
+                                //           showDialog(
+                                //             barrierDismissible: false,
+                                //             context: context,
+                                //             builder: (context) {
+                                //               return AlertDialog(
+                                //                 content: Text(
+                                //                   S
+                                //                       .of(context)
+                                //                       .repairSubmitSuccess,
+                                //                 ),
+                                //                 actions: [
+                                //                   TextButton(
+                                //                     onPressed: () {
+                                //                       Navigator.pop(
+                                //                         context,
+                                //                       );
+                                //                       Navigator.of(
+                                //                         context,
+                                //                       ).pop();
+                                //                     },
+                                //                     child: Text(
+                                //                       S
+                                //                           .of(context)
+                                //                           .confirm,
+                                //                       style: TextStyle(
+                                //                         fontSize: 14.px,
+                                //                         color:
+                                //                             primaryColor,
+                                //                       ),
+                                //                     ),
+                                //                   ),
+                                //                 ],
+                                //               );
+                                //             },
+                                //           );
+                                //         } else {
+                                //           ProgressHUD.showError(
+                                //             res.errorMessage ??
+                                //                 S
+                                //                     .of(context)
+                                //                     .repairSubmitFailed,
+                                //           );
+                                //         }
+                                //         setState(() {
+                                //           _isLoading = false;
+                                //         });
+                                //       });
+                                //     }
+                                //   },
+                                //   child: Text(S.of(context).submit),
+                                //   color:
+                                //       primaryColor[700] ?? primaryColor,
+                                //   textColor: Colors.white,
+                                // ),
                               ),
                             ],
                           ),
@@ -686,6 +764,40 @@ class _RepairFormPage extends State<RepairFormPage>
     );
   }
 
+  Timer? _debounce;
+  void _onDebounceSubmit() {
+    if (_isLoading) return;
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _submit();
+    });
+  }
+
+  Widget _buildSubmitButton() {
+    return Container(
+      width: double.infinity,
+      height: 36.px,
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _onDebounceSubmit,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor[500],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.px),
+          ),
+          elevation: 2,
+        ),
+        child: Text(
+          _isLoading ? S.of(context).submitting : S.of(context).submit,
+          style: TextStyle(
+            fontSize: 14.px,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildFormColumn(
     String label,
     TextEditingController controller, {
@@ -732,34 +844,6 @@ class _RepairFormPage extends State<RepairFormPage>
             validator: validator,
           ),
         ],
-      ),
-    );
-  }
-
-  Widget RaisedButton({
-    required void Function() onPressed,
-    required Text child,
-    required Color color,
-    required Color textColor,
-  }) {
-    return Container(
-      width: double.infinity,
-      height: 32.px,
-      alignment: Alignment.center,
-      margin: EdgeInsets.only(left: 64.px, right: 64.px, top: 18.px),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.all(Radius.circular(16.px)),
-      ),
-      child: TextButton(
-        onPressed: onPressed,
-        child: child,
-        style: ButtonStyle(
-          textStyle: WidgetStateProperty.all<TextStyle>(
-            TextStyle(fontSize: 14.px, color: textColor),
-          ),
-          foregroundColor: WidgetStateProperty.all<Color>(textColor),
-        ),
       ),
     );
   }

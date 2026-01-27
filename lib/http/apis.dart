@@ -73,7 +73,7 @@ class APIs {
   static const String getUserInfo = '/system/user/getInfo';
   // 获取第三方用户信息
   static const String getThirdUserInfo =
-      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/user/findInfo';
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/profile/findInfo';
 
   // 登录成功回调
   static const String putLoginUser = '/auth/putLoginUser';

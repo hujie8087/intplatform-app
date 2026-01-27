@@ -121,10 +121,7 @@ class _TopUpListPageState extends State<TopUpListPage> {
       margin: EdgeInsets.only(bottom: 12.px),
       child: InkWell(
         onTap: () {
-          RouteUtils.push(
-            context,
-            TopUpDetailPage(yearMonth: item.yearMonth ?? ''),
-          );
+          RouteUtils.push(context, TopUpDetailPage(topUpMonthModel: item));
         },
         borderRadius: BorderRadius.circular(8.px),
         child: Ink(
@@ -146,7 +143,7 @@ class _TopUpListPageState extends State<TopUpListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       item.yearMonth ?? '',
@@ -156,24 +153,11 @@ class _TopUpListPageState extends State<TopUpListPage> {
                         color: Colors.black87,
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.px,
-                        vertical: 2.px,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(4.px),
-                      ),
-                      child: Text(
-                        item.currency ?? '',
-                        style: TextStyle(fontSize: 12.px, color: Colors.blue),
-                      ),
-                    ),
                   ],
                 ),
                 SizedBox(height: 12.px),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                       S.of(context).exchange_rate + ':',

@@ -218,6 +218,7 @@ class _BindAccountPageState extends State<BindAccountPage> {
                           passwordController.text,
                         );
                         if (result) {
+                          _fetchData();
                           Navigator.pop(context);
                         }
                       },

@@ -1,12 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:logistics_app/common_ui/GalleryWidget.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
+import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/utils/color.dart';
+import 'package:logistics_app/utils/hj_bottom_sheet.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class FoodFeedbackPage extends StatefulWidget {
   const FoodFeedbackPage({Key? key}) : super(key: key);
@@ -31,6 +37,13 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
     _loadUserInfo();
   }
 
+  List<AssetEntity> selectedAssets = [];
+  // 是否开始拖拽
+  bool isDragNow = false;
+  // 是否将要删除
+  bool isWillRemove = false;
+  List<String> _uploadedImageUrls = [];
+
   Future<void> _loadUserInfo() async {
     String? token = await SpUtils.getString(Constants.SP_TOKEN);
     print(token);
@@ -49,6 +62,21 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
     if (_isLoading) return;
 
     if (_formKey.currentState!.validate()) {
+      if (selectedAssets.isNotEmpty) {
+        ProgressHUD.showLoadingText(S.of(context).imageUploading);
+        final res = await uploadImages(selectedAssets);
+        if (res.isNotEmpty) {
+          setState(() {
+            _uploadedImageUrls = res;
+          });
+        } else {
+          ProgressHUD.showError('图片上传失败');
+          setState(() {
+            _isLoading = false;
+          });
+          return;
+        }
+      }
       setState(() {
         _isLoading = true;
       });
@@ -61,6 +89,7 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
           'phone': _phoneController.text,
           'def1': _foodNameController.text,
           'content': _contentController.text,
+          'def4': _uploadedImageUrls.join(','),
         };
         DataUtils.submitMessage(
           data,
@@ -213,8 +242,150 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
               return null;
             },
           ),
+          Row(
+            children: [
+              Text(
+                S.of(context).uploadImages,
+                style: TextStyle(fontSize: 12.px),
+              ),
+              Text(
+                '(' + S.of(context).dragRemoveImage + ')',
+                style: TextStyle(color: Colors.grey, fontSize: 12.px),
+              ),
+            ],
+          ),
+          SizedBox(height: 8.px),
+          // 上传图片
+          _buildPhotoList(),
+          SizedBox(height: 16.px),
         ],
       ),
+    );
+  }
+
+  // 列表图片
+  Widget _buildPhotoList() {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constants) {
+        final double width = (constants.maxWidth - 8.px * 2) / 3;
+        return Wrap(
+          spacing: 8.px,
+          runSpacing: 8.px,
+          children: [
+            for (final asset in selectedAssets)
+              Draggable(
+                // 拖拽的数据
+                data: asset,
+                // 开始拖拽
+                onDragStarted: () {
+                  setState(() {
+                    isDragNow = true;
+                  });
+                },
+                // 拖拽结束
+                onDragEnd: (details) {
+                  setState(() {
+                    isDragNow = false;
+                  });
+                },
+                onDragCompleted: () {},
+                onDraggableCanceled: (velocity, offset) {
+                  setState(() {
+                    isDragNow = false;
+                  });
+                },
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return GalleryWidget(
+                            initialIndex: selectedAssets.indexOf(asset),
+                            items: selectedAssets,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: Container(
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: AssetEntityImage(
+                      asset,
+                      isOriginal: true,
+                      width: width,
+                      height: width,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                feedback: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: AssetEntityImage(
+                    asset,
+                    isOriginal: true,
+                    width: width,
+                    height: width,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                childWhenDragging: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: AssetEntityImage(
+                    asset,
+                    isOriginal: true,
+                    width: width,
+                    height: width,
+                    fit: BoxFit.cover,
+                    opacity: const AlwaysStoppedAnimation(0.3),
+                  ),
+                ),
+              ),
+            if (selectedAssets.length < 6)
+              Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: GestureDetector(
+                  onTap: () async {
+                    final result = await HJBottomSheet.wxPicker(
+                      context,
+                      selectedAssets,
+                      6,
+                      RequestType.image,
+                    );
+                    if (result != null) {
+                      selectedAssets = result;
+                      setState(() {});
+                    }
+                  },
+                  child: Container(
+                    width: width,
+                    height: width,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(
+                        color: Colors.grey.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Icon(Icons.add, size: 22.px),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -294,48 +465,35 @@ class _FoodFeedbackPageState extends State<FoodFeedbackPage> {
     );
   }
 
-  Widget _buildSubmitButton() {
-    return RaisedButton(
-      onPressed: _isLoading ? null : _submitFeedback,
-      color: _isLoading ? Colors.grey : (primaryColor[700] ?? primaryColor),
-      textColor: Colors.white,
-      child:
-          _isLoading
-              ? SizedBox(
-                width: 16.px,
-                height: 16.px,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-              : Text(
-                S.of(context).confirmSubmit,
-                style: TextStyle(fontSize: 12.px),
-              ),
-    );
+  Timer? _debounce;
+  void _onDebounceSubmit() {
+    if (_isLoading) return;
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _submitFeedback();
+    });
   }
 
-  Widget RaisedButton({
-    required void Function()? onPressed,
-    required Widget child,
-    required Color color,
-    required Color textColor,
-  }) {
+  Widget _buildSubmitButton() {
     return Container(
       width: double.infinity,
       height: 36.px,
-      alignment: Alignment.center,
-      margin: EdgeInsets.only(left: 64.px, right: 64.px, top: 15.px),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.all(Radius.circular(16.px)),
-      ),
-      child: TextButton(
-        onPressed: onPressed,
-        child: child,
-        style: ButtonStyle(
-          foregroundColor: WidgetStateProperty.all<Color>(textColor),
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _onDebounceSubmit,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor[500],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.px),
+          ),
+          elevation: 2,
+        ),
+        child: Text(
+          _isLoading ? S.of(context).submitting : S.of(context).submit,
+          style: TextStyle(
+            fontSize: 14.px,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
     );
