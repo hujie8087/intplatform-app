@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
+import 'package:logistics_app/common_ui/keep_alive_image.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/http/apis.dart';
@@ -96,14 +97,18 @@ class _PublicListPageState extends State<PublicListPage>
         if (isLoadMore) {
           setState(() {
             _dataArr = _dataArr + response.rows!;
-            images = response.rows![0].def1.split(',') ?? [];
+            if (images.isEmpty) {
+              images = response.rows![0].def1.split(',') ?? [];
+            }
           });
           _refreshController.loadComplete();
         } else {
           setState(() {
             _dataArr = response.rows ?? [];
             _totalItems = response.total ?? 0;
-            images = response.rows![0].def1?.split(',') ?? [];
+            if (images.isEmpty) {
+              images = response.rows![0].def1?.split(',') ?? [];
+            }
           });
           _refreshController.loadComplete();
           _refreshController.refreshCompleted();
@@ -151,17 +156,9 @@ class _PublicListPageState extends State<PublicListPage>
                             ),
                           ),
                           itemBuilder: (context, index) {
-                            return Image.network(
-                              APIs.imagePrefix + images[index],
-                              fit: BoxFit.cover,
-                              errorBuilder:
-                                  (ctx, err, stack) => Container(
-                                    color: Colors.grey[200],
-                                    child: Icon(
-                                      Icons.image_not_supported,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
+                            return KeepAliveImage(
+                              imageUrl: APIs.imagePrefix + images[index],
+                              cacheKey: images[index],
                             );
                           },
                         )
@@ -342,7 +339,7 @@ class _otherItem extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          if (listData?.image != null)
+                          if (listData?.image != null && listData!.image != '')
                             Container(
                               width: 100.px,
                               height: 100.px,
