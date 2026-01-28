@@ -414,7 +414,6 @@ class _OnlineTopupPageState extends State<OnlineTopupPage> {
             ' 员工离职后，需前往卡务中心办理消费卡注销手续。消费卡内剩余积分将以印尼盾现金形式退还给员工，员工在离职退卡时同时办理！',
           ),
           SizedBox(height: 8.px),
-          _buildRuleItem('注：', '受结算方式限制，该充值功能目前仅限本公司中国籍员工使用，其他人员暂不纳入。'),
         ],
       ),
     );
