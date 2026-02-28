@@ -6,6 +6,7 @@ import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/auth/forget_password_page.dart';
 import 'package:logistics_app/pages/guide/facility_list_page.dart';
 import 'package:logistics_app/pages/shopping/payment/online_topup_page.dart';
+import 'package:logistics_app/pages/shopping/payment/signature_page.dart';
 import 'package:logistics_app/pages/shopping/payment/top_up_list_page.dart';
 
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_order/meal_delivery_order_page.dart';
@@ -315,6 +316,10 @@ class AutoRouteGenerator {
       builder: (context) => TopUpListPage(),
       name: 'TopUpListPage',
     ),
+    RoutePath.SignaturePage: RouteConfig(
+      builder: (context) => SignaturePage(),
+      name: 'SignaturePage',
+    ),
 
     // 配送相关
     RoutePath.DeliveryOrderListPage: RouteConfig(
@@ -538,6 +543,7 @@ class RoutePath {
   static const String FaceCollectionPage = 'face_collection_page';
   static const String OnlineTopupPage = 'online_topup_page';
   static const String TopUpListPage = 'top_up_list_page';
+  static const String SignaturePage = 'signature_page';
 
   // 配送相关
   static const String DeliveryOrderListPage = 'delivery_order_list_page';

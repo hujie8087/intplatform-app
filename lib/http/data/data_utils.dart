@@ -57,6 +57,36 @@ class DataUtils {
     HttpUtils.get(APIs.getThirdUserInfo, null, success: success, fail: fail);
   }
 
+  // 上传签名
+  static void uploadSignature<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/sign/save',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取签名
+  static void getSignature<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/sign/page',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 删除签名
+  static void deleteSignature<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.put(
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/sign/delIds',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
   // 登录成功回调
   static void putLoginUser<T>({Success? success, Fail? fail}) {
     return HttpUtils.post(

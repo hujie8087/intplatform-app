@@ -256,6 +256,54 @@ class _TopUpDetailPageState extends State<TopUpDetailPage> {
                     ),
                   ],
                 ),
+                SizedBox(height: 4.px),
+                Row(
+                  children: [
+                    Text(
+                      '单号：',
+                      style: TextStyle(
+                        fontSize: 12.px,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    Text(
+                      item.no ?? '',
+                      style: TextStyle(fontSize: 12.px, color: Colors.black87),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.px),
+                Row(
+                  children: [
+                    Text(
+                      '薪资扣除月份：',
+                      style: TextStyle(
+                        fontSize: 12.px,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    Text(
+                      item.deductedMonths ?? '',
+                      style: TextStyle(fontSize: 12.px, color: Colors.black87),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.px),
+                Row(
+                  children: [
+                    Text(
+                      '当月汇率：',
+                      style: TextStyle(
+                        fontSize: 12.px,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    Text(
+                      widget.topUpMonthModel.exchangeRate.toString(),
+                      style: TextStyle(fontSize: 12.px, color: Colors.black87),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

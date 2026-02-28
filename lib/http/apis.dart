@@ -133,6 +133,10 @@ class APIs {
   static const String submitRecharge =
       'https://api.iwipwedabay.com/api/rain/iwip/home/lms/home/record/save';
 
+  // 获取当月汇率
+  static const String getExchangeRate =
+      'https://api.iwipwedabay.com/api/rain/iwip/home/lms/home/month/find/exchangeRate';
+
   // 获取数据字典
   static const String getDictDataList = '/system/dict/data/type/';
 

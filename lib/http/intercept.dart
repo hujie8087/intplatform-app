@@ -54,8 +54,8 @@ class AuthInterceptor extends Interceptor {
 
     options.headers['product_code'] = 'intplatform';
     options.headers['platform'] = 'app';
-    options.headers['version_name'] = '2.0.7';
-    options.headers['version_code'] = 207;
+    options.headers['version_name'] = '2.0.8';
+    options.headers['version_code'] = 208;
     options.headers['os'] =
         DeviceUtils.isAndroid
             ? 'android'
