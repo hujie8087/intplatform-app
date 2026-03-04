@@ -33,7 +33,7 @@ class TopUpDetailModel {
   String? yearMonth;
   String? createTime;
   String? deductedMonths;
-  String? status;
+  int? status;
 
   TopUpDetailModel({
     this.no,

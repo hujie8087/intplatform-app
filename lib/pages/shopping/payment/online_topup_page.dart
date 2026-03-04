@@ -32,7 +32,7 @@ class _OnlineTopupPageState extends State<OnlineTopupPage> {
   List<SignatureModel> signatureList = [];
   SignatureModel? selectSignature;
   String password = '';
-  String exchangeRate = '0.00';
+  double exchangeRate = 0.00;
 
   @override
   void initState() {
@@ -564,7 +564,7 @@ class _OnlineTopupPageState extends State<OnlineTopupPage> {
                     ),
                     SizedBox(height: 4.px),
                     Text(
-                      exchangeRate,
+                      exchangeRate.toString(),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 14.px,

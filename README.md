@@ -18,6 +18,8 @@ samples, guidance on mobile development, and a full API reference.
 ## 发布命令
 
 shorebird release android --artifact apk
+shorebird release android --artifact apk -- --target-platform android-arm64
+shorebird release ios
 采用 shorebird 发布,可用于热更新
 
 To create a patch for this release, run shorebird patch --platforms=android --release-version=2.0.6+3000
