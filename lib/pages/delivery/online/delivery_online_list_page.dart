@@ -217,8 +217,8 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
 
   // 获取订单类型
   Future<void> _fetchOrderStatus() async {
-    var userInfo = await SpUtils.getModel('userInfo');
-    userName = userInfo != null ? userInfo['user']['userName'] : '';
+    var userInfo = await SpUtils.getModel('thirdUserInfo');
+    userName = userInfo != null ? userInfo['account'] : '';
     DataUtils.getDictDataList(
       'delivery_staff_type',
       success: (data) {
@@ -284,7 +284,12 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
 
   // 上传图片
   Future<void> _uploadImage({id, deliveryAddress, nick}) async {
-    final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
+    final result = await HJBottomSheet.wxPicker(
+      context,
+      selectedAssets,
+      1,
+      RequestType.image,
+    );
     if (result != null) {
       final fileUrl = await uploadImages(result);
       if (fileUrl.isNotEmpty) {
@@ -596,26 +601,29 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
         ],
       ),
       // 浮动按钮，根据配送状态显示
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: isTracking ? secondaryColor : primaryColor,
-        onPressed: () => _handleLocationEvent(),
-        icon: Icon(
-          isTracking ? Icons.location_on : Icons.location_off,
-          color: Colors.white,
-        ),
-        label: Text(
-          isTracking ? S.current.stopLocation : S.current.startLocation,
-          style: TextStyle(color: Colors.white),
-        ),
-        extendedPadding: EdgeInsets.symmetric(
-          horizontal: 10.px,
-          vertical: 2.px,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        isExtended: false,
-      ),
+      floatingActionButton:
+          Platform.isAndroid
+              ? FloatingActionButton.extended(
+                backgroundColor: isTracking ? secondaryColor : primaryColor,
+                onPressed: () => _handleLocationEvent(),
+                icon: Icon(
+                  isTracking ? Icons.location_on : Icons.location_off,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  isTracking ? S.current.stopLocation : S.current.startLocation,
+                  style: TextStyle(color: Colors.white),
+                ),
+                extendedPadding: EdgeInsets.symmetric(
+                  horizontal: 10.px,
+                  vertical: 2.px,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                isExtended: false,
+              )
+              : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Stack(
         children: [
@@ -856,7 +864,7 @@ class OrderCard extends StatelessWidget {
                         vertical: 4.px,
                         horizontal: 8.px,
                       ),
-                      minimumSize: Size(42.px, 20.px),
+                      minimumSize: Size(42.px, 24.px),
                     ),
                     onPressed: () {
                       DataUtils.cancelOrder(
@@ -889,7 +897,7 @@ class OrderCard extends StatelessWidget {
                         vertical: 4.px,
                         horizontal: 8.px,
                       ),
-                      minimumSize: Size(42.px, 20.px),
+                      minimumSize: Size(42.px, 24.px),
                     ),
                     onPressed: onAccept,
                     child: Text(
@@ -902,7 +910,7 @@ class OrderCard extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
-                      minimumSize: Size(32.px, 16.px),
+                      minimumSize: Size(32.px, 24.px),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -925,12 +933,12 @@ class OrderCard extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondaryColor,
-                      minimumSize: Size(32.px, 16.px),
+                      minimumSize: Size(32.px, 24.px),
                     ),
                     onPressed: acceptOrder,
                     child: Text(
                       S.current.acceptOrder,
-                      style: TextStyle(fontSize: 12.px),
+                      style: TextStyle(fontSize: 12.px, color: Colors.white),
                     ),
                   ),
               ],

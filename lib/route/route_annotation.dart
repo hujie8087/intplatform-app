@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:logistics_app/pages/science/animals/animal_detail_page.dart';
+import 'package:logistics_app/pages/science/plants/plant_detail_page.dart';
 import 'package:logistics_app/route/auto_route_generator.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 
@@ -73,6 +75,18 @@ class SmartRouteGenerator {
         builder: manualConfig.builder,
         settings: settings,
       );
+    }
+
+    Uri uri = Uri.parse(settings.name ?? '');
+
+    // 匹配 /animal/xxx
+    if (uri.pathSegments.length == 2 && uri.pathSegments.first == 'animal') {
+      final fId = uri.pathSegments[1];
+      return MaterialPageRoute(builder: (_) => AnimalDetailPage(fId: fId));
+    }
+    if (uri.pathSegments.length == 2 && uri.pathSegments.first == 'plant') {
+      final fId = uri.pathSegments[1];
+      return MaterialPageRoute(builder: (_) => PlantDetailPage(fId: fId));
     }
 
     // 默认返回登录页

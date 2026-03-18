@@ -211,8 +211,8 @@ class _ShopWorkbenchPageState extends State<ShopWorkbenchPage> {
 
   // 获取订单类型
   Future<void> _fetchOrderStatus() async {
-    var userInfo = await SpUtils.getModel('userInfo');
-    userName = userInfo != null ? userInfo['user']['userName'] : '';
+    var userInfo = await SpUtils.getModel('thirdUserInfo');
+    userName = userInfo != null ? userInfo['account'] : '';
     DataUtils.getDictDataList(
       'delivery_staff_type',
       success: (data) {

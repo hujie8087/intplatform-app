@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/data/meal_delivery_utils.dart';
 import 'package:logistics_app/http/model/base_list_model.dart';
-import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
-import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_service_model.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_manager.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_service_model.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/phone_scan_page.dart';
 import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -97,6 +98,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
         userInfo = UserInfoModel.fromJson(userInfoData);
         isBindAccount = userInfo?.mealUser != null;
         if (isBindAccount) {
+          print('role: ${userInfo?.mealUser?.roles?.join(',')}');
           isCanScan =
               userInfo?.mealUser?.roles?.any(
                 (role) => role.toLowerCase().contains("driver"),
@@ -150,7 +152,6 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
   // 调用接口处理条形码
   Future<void> _submitBarcode(String barcode) async {
     // 设置接口地址和请求参数
-    print('发起请求: $barcode');
     MealDeliveryUtils.receiveOrderMeal(
       {
         "foodName": _selectedFoodNameValue?.dictValue ?? '',
@@ -588,26 +589,29 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
       ),
 
       // 浮动按钮，根据配送状态显示
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: isTracking ? secondaryColor : primaryColor,
-        onPressed: () => _handleLocationEvent(),
-        icon: Icon(
-          isTracking ? Icons.location_on : Icons.location_off,
-          color: Colors.white,
-        ),
-        label: Text(
-          isTracking ? S.current.stopLocation : S.current.startLocation,
-          style: TextStyle(color: Colors.white),
-        ),
-        extendedPadding: EdgeInsets.symmetric(
-          horizontal: 10.px,
-          vertical: 2.px,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        isExtended: false,
-      ),
+      floatingActionButton:
+          Platform.isAndroid
+              ? FloatingActionButton.extended(
+                backgroundColor: isTracking ? secondaryColor : primaryColor,
+                onPressed: () => _handleLocationEvent(),
+                icon: Icon(
+                  isTracking ? Icons.location_on : Icons.location_off,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  isTracking ? S.current.stopLocation : S.current.startLocation,
+                  style: TextStyle(color: Colors.white),
+                ),
+                extendedPadding: EdgeInsets.symmetric(
+                  horizontal: 10.px,
+                  vertical: 2.px,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                isExtended: false,
+              )
+              : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body:
           !isBindAccount
@@ -619,7 +623,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
                   bottom: 15.px,
                 ),
                 width: double.infinity,
-                height: 110.px,
+                height: 120.px,
                 margin: EdgeInsets.symmetric(
                   vertical: 50.px,
                   horizontal: 30.px,
@@ -634,7 +638,9 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
                 ),
                 // 未绑定帐号权限，请先绑定帐号
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    SizedBox(height: 10.px),
                     Text(
                       S.of(context).deliveryOrderNotBindAccount,
                       style: TextStyle(fontSize: 14.px, color: Colors.grey),
@@ -642,6 +648,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
                     SizedBox(height: 10.px),
                     // 绑定帐号
                     Container(
+                      height: 32.px,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
@@ -649,7 +656,7 @@ class _MealDeliveryAcceptPageState extends State<MealDeliveryAcceptPage> {
                             borderRadius: BorderRadius.circular(5.px),
                           ),
                           padding: EdgeInsets.symmetric(
-                            horizontal: 10.px,
+                            horizontal: 5.px,
                             vertical: 5.px,
                           ),
                         ),

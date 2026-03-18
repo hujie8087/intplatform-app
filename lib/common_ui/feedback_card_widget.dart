@@ -4,7 +4,7 @@ import 'package:logistics_app/http/model/complaint_message_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 
-/// 反馈卡片组件
+/// 反馈卡片组件 - 重新设计版
 class FeedbackCardWidget extends StatelessWidget {
   final ComplaintMessageModel feedback;
   final VoidCallback? onTap;
@@ -20,41 +20,39 @@ class FeedbackCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin ?? EdgeInsets.only(bottom: 12.px),
+      margin: margin ?? EdgeInsets.only(bottom: 16.px, left: 4.px, right: 4.px),
       child: Material(
         color: Colors.transparent,
+        shadowColor: Color(0xFFE0E0E0).withOpacity(0.5),
+        elevation: 8,
         borderRadius: BorderRadius.circular(12.px),
-        clipBehavior: Clip.hardEdge,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(12.px),
-          child: Container(
+          child: Ink(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12.px),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 8.px,
-                  offset: Offset(0, 2.px),
-                ),
-              ],
+              borderRadius: BorderRadius.circular(16.px),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.6),
+                width: 1,
+              ),
             ),
-            child: Padding(
-              padding: EdgeInsets.all(16.px),
+            child: Container(
+              padding: EdgeInsets.all(10.px),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 头部信息：联系人和状态
-                  _buildHeader(context),
-                  SizedBox(height: 12.px),
+                  // 顶部：用户信息 + 状态 + 未读红点
+                  _buildTopRow(context),
+                  SizedBox(height: 16.px),
 
-                  // 反馈内容
+                  // 中间：内容
                   _buildContent(context),
-                  SizedBox(height: 12.px),
+                  SizedBox(height: 16.px),
 
-                  // 底部信息：时间和类型
-                  _buildFooter(context),
+                  // 底部：类型 + 时间
+                  _buildBottomRow(context),
                 ],
               ),
             ),
@@ -64,187 +62,177 @@ class FeedbackCardWidget extends StatelessWidget {
     );
   }
 
-  /// 构建头部信息
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildTopRow(BuildContext context) {
     return Row(
       children: [
-        // 联系人信息
-        Expanded(
-          child: Row(
-            children: [
-              // 联系人图标
-              Container(
-                width: 32.px,
-                height: 32.px,
-                decoration: BoxDecoration(
-                  color: primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(16.px),
-                ),
-                child: Icon(
-                  Icons.person_outline,
-                  size: 18.px,
-                  color: primaryColor,
-                ),
-              ),
-              SizedBox(width: 8.px),
+        // 头像容器
+        Container(
+          width: 40.px,
+          height: 40.px,
+          decoration: BoxDecoration(
+            color: Color(0xFFF0F7FF),
+            borderRadius: BorderRadius.circular(12.px),
+          ),
+          child: Icon(Icons.person, size: 22.px, color: Color(0xFF007AFF)),
+        ),
+        SizedBox(width: 12.px),
 
-              // 联系人姓名和电话
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      feedback.contacts ?? S.of(context).not_filled,
-                      style: TextStyle(
-                        fontSize: 14.px,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF333333),
-                      ),
-                    ),
-                    if (feedback.phone != null && feedback.phone!.isNotEmpty)
-                      Text(
-                        feedback.phone!,
-                        style: TextStyle(
-                          fontSize: 12.px,
-                          color: Color(0xFF666666),
-                        ),
-                      ),
-                  ],
+        // 名字和电话
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                feedback.contacts?.isNotEmpty == true
+                    ? feedback.contacts!
+                    : S.of(context).not_filled,
+                style: TextStyle(
+                  fontSize: 15.px,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1D1D1F),
                 ),
               ),
+              if (feedback.phone?.isNotEmpty == true)
+                Padding(
+                  padding: EdgeInsets.only(top: 2.px),
+                  child: Text(
+                    feedback.phone!,
+                    style: TextStyle(fontSize: 12.px, color: Color(0xFF86868B)),
+                  ),
+                ),
             ],
           ),
         ),
 
-        // 处理状态
-        _buildStatusChip(context),
+        // 状态标签
+        _buildStatusTag(context),
+
+        // 未读红点
+        if (feedback.isRead == 1)
+          Container(
+            margin: EdgeInsets.only(left: 8.px),
+            width: 8.px,
+            height: 8.px,
+            decoration: BoxDecoration(
+              color: Color(0xFFFF3B30),
+              shape: BoxShape.circle,
+            ),
+          ),
       ],
     );
   }
 
-  /// 构建状态标签
-  Widget _buildStatusChip(BuildContext context) {
-    String statusText;
-    Color statusColor;
-    Color backgroundColor;
+  Widget _buildStatusTag(BuildContext context) {
+    String text;
+    Color textColor;
+    Color bgColor;
 
     switch (feedback.processingStatus) {
-      case 0:
-        statusText = S.of(context).reply_status;
-        statusColor = Color(0xFFFF9500);
-        backgroundColor = Color(0xFFFF9500).withOpacity(0.1);
+      case 0: // 待回复
+        text = S.of(context).reply_status;
+        textColor = Color(0xFFFF9500);
+        bgColor = Color(0xFFFFF4E5);
         break;
-      case 1:
-        statusText = S.of(context).replied;
-        statusColor = Color(0xFF007AFF);
-        backgroundColor = Color(0xFF007AFF).withOpacity(0.1);
+      case 1: // 已回复
+        text = S.of(context).replied;
+        textColor = Color(0xFF007AFF);
+        bgColor = Color(0xFFE5F1FF);
         break;
       default:
-        statusText = S.of(context).unknown;
-        statusColor = Color(0xFF8E8E93);
-        backgroundColor = Color(0xFF8E8E93).withOpacity(0.1);
+        text = S.of(context).unknown;
+        textColor = Color(0xFF8E8E93);
+        bgColor = Color(0xFFF2F2F7);
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 4.px),
+      padding: EdgeInsets.symmetric(horizontal: 10.px, vertical: 5.px),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12.px),
-      ),
-      child: Text(
-        statusText,
-        style: TextStyle(
-          fontSize: 11.px,
-          fontWeight: FontWeight.w500,
-          color: statusColor,
-        ),
-      ),
-    );
-  }
-
-  /// 构建反馈内容
-  Widget _buildContent(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(5.px),
-      decoration: BoxDecoration(
-        color: Color(0xFFF8F9FA),
+        color: bgColor,
         borderRadius: BorderRadius.circular(8.px),
       ),
       child: Text(
-        feedback.content ?? S.of(context).no_content,
+        text,
         style: TextStyle(
-          fontSize: 12.px,
-          color: Color(0xFF333333),
-          height: 1.4,
+          fontSize: 11.px,
+          fontWeight: FontWeight.w600,
+          color: textColor,
         ),
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
       ),
     );
   }
 
-  /// 构建底部信息
-  Widget _buildFooter(BuildContext context) {
+  Widget _buildContent(BuildContext context) {
+    return Text(
+      feedback.content ?? S.of(context).no_content,
+      style: TextStyle(fontSize: 14.px, color: Color(0xFF333333), height: 1.5),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Widget _buildBottomRow(BuildContext context) {
     return Row(
       children: [
-        // 反馈类型
+        // 类型标签
         if (feedback.typeId != null)
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 6.px, vertical: 2.px),
+            padding: EdgeInsets.symmetric(horizontal: 8.px, vertical: 3.px),
             decoration: BoxDecoration(
-              color:
-                  feedback.typeId == 1
-                      ? primaryColor.withOpacity(0.1)
-                      : secondaryColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(4.px),
+              border: Border.all(
+                color:
+                    feedback.typeId == 1
+                        ? primaryColor.withOpacity(0.3)
+                        : secondaryColor.withOpacity(0.3),
+              ),
+              borderRadius: BorderRadius.circular(6.px),
             ),
             child: Text(
               feedback.typeId == 1
                   ? S.of(context).i_want_to_eat
-                  : S.of(context).i_want_to_say,
+                  : feedback.typeId == 2
+                  ? S.of(context).i_want_to_say
+                  : S.of(context).coupleRoom_feedback,
               style: TextStyle(
-                fontSize: 12.px,
+                fontSize: 11.px,
                 color: feedback.typeId == 1 ? primaryColor : secondaryColor,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
 
-        if (feedback.typeId != null) SizedBox(width: 8.px),
+        Spacer(),
 
-        // 创建时间
-        Expanded(
-          child: Text(
-            _formatTime(feedback.createTime, context),
-            style: TextStyle(fontSize: 12.px, color: Color(0xFF999999)),
-          ),
+        // 时间
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.access_time, size: 12.px, color: Color(0xFF98989D)),
+            SizedBox(width: 4.px),
+            Text(
+              _formatTime(feedback.createTime, context),
+              style: TextStyle(fontSize: 12.px, color: Color(0xFF98989D)),
+            ),
+          ],
         ),
-
-        // 箭头图标
-        Icon(Icons.chevron_right, size: 16.px, color: Color(0xFFCCCCCC)),
       ],
     );
   }
 
-  /// 格式化时间
   String _formatTime(String? timeStr, BuildContext context) {
     if (timeStr == null || timeStr.isEmpty) return S.of(context).unknown_time;
-
     try {
       DateTime dateTime = DateTime.parse(timeStr);
       DateTime now = DateTime.now();
-      Duration difference = now.difference(dateTime);
+      Duration diff = now.difference(dateTime);
 
-      if (difference.inDays > 10) {
-        return '${dateTime.year}-${dateTime.month}-${dateTime.day}';
-      }
-
-      if (difference.inDays > 0) {
-        return '${difference.inDays} ${S.of(context).days_ago}';
-      } else if (difference.inHours > 0) {
-        return '${difference.inHours} ${S.of(context).hours_ago}';
-      } else if (difference.inMinutes > 0) {
-        return '${difference.inMinutes} ${S.of(context).minutes_ago}';
+      if (diff.inDays > 7) {
+        return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')}';
+      } else if (diff.inDays > 0) {
+        return '${diff.inDays}${S.of(context).days_ago}';
+      } else if (diff.inHours > 0) {
+        return '${diff.inHours}${S.of(context).hours_ago}';
+      } else if (diff.inMinutes > 0) {
+        return '${diff.inMinutes}${S.of(context).minutes_ago}';
       } else {
         return S.of(context).just_now;
       }

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
+import 'package:logistics_app/utils/sp_utils.dart';
 
 class CoupleFeedbackPage extends StatefulWidget {
   @override
@@ -13,27 +15,78 @@ class CoupleFeedbackPage extends StatefulWidget {
 class _CoupleFeedbackPageState extends State<CoupleFeedbackPage> {
   String feedbackType = '';
   TextEditingController contentController = TextEditingController();
+  bool _isLoading = false;
+  ThirdUserInfoModel? userInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCardInfo();
+  }
+
+  void _fetchCardInfo() async {
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
+    if (userInfoData != null) {
+      userInfo = ThirdUserInfoModel.fromJson(userInfoData);
+    }
+  }
 
   // 提交留言
-  Future<void> submitFeedback() async {
-    if (feedbackType.isEmpty || contentController.text.isEmpty) {
+  void _submitFeedback() async {
+    if (feedbackType.isEmpty) {
+      ProgressHUD.showError('请选择反馈类型');
       return;
     }
+    if (contentController.text.isEmpty) {
+      ProgressHUD.showError('请输入反馈内容');
+      return;
+    }
+    // 防止重复提交
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
-      DataUtils.submitCoupleFeedback(
-        {'type': feedbackType, 'content': contentController.text},
-        success: (data) {
-          print('提交留言成功: $data');
-          ProgressHUD.showSuccess(S.current.coupleRoom_feedback_submit_success);
-          Navigator.pop(context);
+      final data = {
+        'typeId': 3,
+        'contacts': userInfo?.name,
+        'def2': userInfo?.account,
+        'phone': userInfo?.tel,
+        'def1': feedbackType,
+        'content': contentController.text,
+      };
+      DataUtils.submitMessage(
+        data,
+        success: (response) {
+          if (mounted) {
+            ProgressHUD.showSuccess(S.of(context).submitSuccess);
+            // 延迟返回上一页
+            Future.delayed(Duration(seconds: 1), () {
+              setState(() {
+                _isLoading = false;
+              });
+              Navigator.pop(context);
+            });
+          }
         },
         fail: (code, msg) {
-          print('提交留言失败: $code, $msg');
-          ProgressHUD.showError('$msg');
+          if (mounted) {
+            setState(() {
+              _isLoading = false;
+            });
+            ProgressHUD.showError(msg);
+          }
         },
       );
     } catch (e) {
-      print('提交留言失败: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ProgressHUD.showError(S.of(context).submit_failed);
+      }
     }
   }
 
@@ -186,7 +239,7 @@ class _CoupleFeedbackPageState extends State<CoupleFeedbackPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  submitFeedback();
+                  _submitFeedback();
                 },
                 style: ButtonStyle(
                   minimumSize: WidgetStateProperty.all(

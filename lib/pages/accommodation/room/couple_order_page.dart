@@ -136,10 +136,10 @@ class _CoupleOrderPageState extends State<CoupleOrderPage> {
 
   // 获取订单类型
   Future<void> _fetchOrderStatus() async {
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     if (userInfoData != null) {
       setState(() {
-        userName = UserInfoModel.fromJson(userInfoData).user?.userName ?? '';
+        userName = ThirdUserInfoModel.fromJson(userInfoData).account ?? '';
         _fetchCurrentUser();
       });
     }
@@ -610,6 +610,7 @@ class _CoupleOrderPageState extends State<CoupleOrderPage> {
                                               S
                                                   .of(context)
                                                   .coupleRoom_room_cancel,
+                                              style: TextStyle(fontSize: 12.px),
                                             ),
                                           ),
                                         SizedBox(width: 10.px),
@@ -752,6 +753,9 @@ class _CoupleOrderPageState extends State<CoupleOrderPage> {
                                                   S
                                                       .of(context)
                                                       .coupleRoom_room_confirm_order,
+                                                  style: TextStyle(
+                                                    fontSize: 12.px,
+                                                  ),
                                                 ),
                                               ),
                                               SizedBox(width: 10.px),
@@ -779,6 +783,7 @@ class _CoupleOrderPageState extends State<CoupleOrderPage> {
                                           ),
                                           child: Text(
                                             S.of(context).coupleRoom_room_view,
+                                            style: TextStyle(fontSize: 12.px),
                                           ),
                                         ),
                                       ],

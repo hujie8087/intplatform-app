@@ -24,6 +24,7 @@ class ComplaintMessageModel {
   String? handleBy;
   String? deleteTime;
   String? handleTime;
+  int? isRead;
 
   ComplaintMessageModel({
     this.createBy,
@@ -51,6 +52,7 @@ class ComplaintMessageModel {
     this.handleBy,
     this.deleteTime,
     this.handleTime,
+    this.isRead,
   });
 
   ComplaintMessageModel.fromJson(Map<String, dynamic> json) {
@@ -79,6 +81,7 @@ class ComplaintMessageModel {
     handleBy = json['handleBy'];
     deleteTime = json['deleteTime'];
     handleTime = json['handleTime'];
+    isRead = json['isRead'];
   }
 
   Map<String, dynamic> toJson() {
@@ -108,6 +111,7 @@ class ComplaintMessageModel {
     data['handleBy'] = this.handleBy;
     data['deleteTime'] = this.deleteTime;
     data['handleTime'] = this.handleTime;
+    data['isRead'] = this.isRead;
     return data;
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
+import 'package:logistics_app/common_ui/keep_alive_image.dart';
+import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/plant_model.dart';
@@ -18,8 +20,8 @@ class PlantDetailPage extends StatefulWidget {
 class _PlantDetailPageState extends State<PlantDetailPage>
     with TickerProviderStateMixin {
   PlantModel? plantData;
-  List<String> picture = [];
   AnimationController? animationController;
+  List<String> pictures = [];
 
   @override
   void initState() {
@@ -39,7 +41,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
       success: (data) {
         plantData = PlantModel.fromJson(data['data']);
         setState(() {
-          picture = plantData?.picture?.split(',') ?? [];
+          pictures = plantData?.picture?.split(',') ?? [];
         });
       },
     );
@@ -65,20 +67,14 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                   height: 300,
                   child: Swiper(
                     itemBuilder: (context, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              APIs.imagePrefix + picture[index],
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                      return KeepAliveImage(
+                        imageUrl: APIs.imagePrefix + pictures[index],
+                        cacheKey: pictures[index],
                       );
                     },
-                    itemCount: picture.length,
+                    itemCount: pictures.length,
                     autoplay: true,
-                    duration: 300,
+                    duration: 100,
                     pagination: const SwiperPagination(),
                   ),
                 ),
@@ -102,7 +98,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                     children: [
                       // 植物名称
                       Text(
-                        plantData?.name ?? '未知植物',
+                        plantData?.name ?? S.of(context).science_plant_unknown,
                         style: TextStyle(
                           fontSize: 16.px,
                           fontWeight: FontWeight.bold,
@@ -117,7 +113,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                           plantData!.peacockType!.isNotEmpty)
                         _buildInfoRow(
                           icon: Icons.category,
-                          label: '科属',
+                          label: S.of(context).science_plant_peacock_type,
                           value: plantData!.peacockType!,
                           color: Colors.blue.shade600,
                         ),
@@ -127,7 +123,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                           plantData!.otherName!.isNotEmpty)
                         _buildInfoRow(
                           icon: Icons.label,
-                          label: '别名',
+                          label: S.of(context).science_plant_other_name,
                           value: plantData!.otherName!,
                           color: Colors.orange.shade600,
                         ),
@@ -137,7 +133,7 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                           plantData!.code!.isNotEmpty)
                         _buildInfoRow(
                           icon: Icons.qr_code,
-                          label: '编码',
+                          label: S.of(context).science_plant_code,
                           value: plantData!.code!,
                           color: Colors.purple.shade600,
                         ),
@@ -149,10 +145,10 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                 // 形态特征
                 _buildInfoCard(
                   context,
-                  '形态特征',
+                  S.of(context).science_plant_feature,
                   [
                     Text(
-                      plantData?.feature ?? '暂无描述',
+                      plantData?.feature ?? S.of(context).no_description,
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],
@@ -171,10 +167,10 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                 // 生长习性
                 _buildInfoCard(
                   context,
-                  '生长习性',
+                  S.of(context).science_plant_habit,
                   [
                     Text(
-                      plantData?.habit ?? '暂无描述',
+                      plantData?.habit ?? S.of(context).no_description,
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],
@@ -193,10 +189,10 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                 // 分布区域
                 _buildInfoCard(
                   context,
-                  '分布区域',
+                  S.of(context).science_plant_origin,
                   [
                     Text(
-                      plantData?.origin ?? '暂无描述',
+                      plantData?.origin ?? S.of(context).no_description,
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],
@@ -215,10 +211,10 @@ class _PlantDetailPageState extends State<PlantDetailPage>
                 // 植物简介
                 _buildInfoCard(
                   context,
-                  '植物简介',
+                  S.of(context).science_plant_introduce,
                   [
                     Text(
-                      plantData?.introduce ?? '暂无描述',
+                      plantData?.introduce ?? S.of(context).no_description,
                       style: TextStyle(
                         fontSize: 12.px,
                         color: Colors.grey[600],

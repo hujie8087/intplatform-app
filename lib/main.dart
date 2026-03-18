@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -12,7 +13,6 @@ import 'package:google_api_availability/google_api_availability.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/firebase_service.dart';
-import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/http_utils.dart';
 import 'package:logistics_app/http/log_utils.dart';
 import 'package:logistics_app/route/auto_route_generator.dart';
@@ -45,13 +45,42 @@ void main() async {
   HttpUtils.initDio();
   // notifyInit();
   String languageCode = await SpUtils.getString('locale') ?? 'zh';
-  runApp(OverlaySupport.global(child: MyApp(languageCode: languageCode)));
+  runApp(
+    OverlaySupport.global(
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1024),
+          child: MyApp(languageCode: languageCode),
+        ),
+      ),
+    ),
+  );
 }
 
 final RouteObserver<ModalRoute<void>> routeObserver =
     RouteObserver<ModalRoute<void>>();
 
+/// 通过原生方法获取设备ID
+Future<String> getDeviceId() async {
+  final deviceInfo = DeviceInfoPlugin();
+
+  if (Platform.isAndroid) {
+    final info = await deviceInfo.androidInfo;
+    return info.id ?? 'unknown'; // Android ID
+  } else if (Platform.isIOS) {
+    final info = await deviceInfo.iosInfo;
+    return info.identifierForVendor ?? 'unknown'; // iOS 设备标识
+  } else {
+    return 'unsupported-platform';
+  }
+}
+
 Future<void> initializeFirebase() async {
+  final deviceId = await getDeviceId();
+  print('deviceId: $deviceId');
+  if (deviceId.isNotEmpty) {
+    SpUtils.saveString(Constants.SP_DEVICE_TOKEN, deviceId);
+  }
   if (Platform.isAndroid) {
     final availability =
         await GoogleApiAvailability.instance
@@ -86,56 +115,8 @@ void initXUpdate() async {
   if (Platform.isAndroid) {
     WidgetsFlutterBinding.ensureInitialized();
     await FlutterDownloader.initialize(debug: true);
-    // FlutterXUpdate.init(
-    //   ///是否输出日志
-    //   debug: true,
-
-    //   ///是否使用post请求
-    //   isPost: false,
-
-    //   ///post请求是否是上传json
-    //   isPostJson: false,
-
-    //   ///请求响应超时时间
-    //   timeout: 25000,
-
-    //   ///是否开启自动模式
-    //   isWifiOnly: false,
-
-    //   ///是否开启自动模式
-    //   isAutoMode: false,
-
-    //   ///需要设置的公共参数
-    //   supportSilentInstall: false,
-
-    //   ///在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
-    //   enableRetry: false,
-    // ).then((value) {
-    //   FlutterXUpdate.setCustomParseHandler(
-    //     onUpdateParse: (String? json) async {
-    //       print("更新解析: $json");
-    //       return customParseJson(json!);
-    //     },
-    //   );
-    //   print("初始化更新模块成功");
-    // }).catchError((error) {
-    //   print("初始化更新模块出错: $error");
-    // });
   }
 }
-
-// UpdateEntity customParseJson(String json) {
-//   AppInfo appInfo = AppInfo.fromJson(json);
-//   print(appInfo);
-//   return UpdateEntity(
-//       hasUpdate: appInfo.hasUpdate,
-//       isIgnorable: appInfo.isIgnorable,
-//       versionCode: appInfo.versionCode,
-//       versionName: appInfo.versionName,
-//       updateContent: appInfo.updateLog,
-//       downloadUrl: appInfo.apkUrl,
-//       apkSize: appInfo.apkSize);
-// }
 
 /// 设计尺寸
 Size get designSize {
@@ -229,22 +210,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      SpUtils.getString(Constants.SP_TOKEN).then((token) {
-        if (token != null) {
-          // 应用从后台返回前台时刷新 token
-          _checkAndRefreshToken();
-        }
-      });
-    }
-  }
-
-  Future<void> _checkAndRefreshToken() async {
-    DataUtils.updateToken();
-  }
-
-  @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -269,7 +234,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             child: MaterialApp(
               builder: (context, child) {
                 // 初始化屏幕适配
-                ScreenAdapterHelper.init(context);
+                ScreenAdapterHelper.init(context, maxWidth: 500);
                 return child!;
               },
               onGenerateTitle: (context) {

@@ -7,6 +7,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'apis.dart';
 import 'error_handle.dart';
@@ -20,25 +21,47 @@ Future<String> getToken() async {
   return token;
 }
 
+Future<String> getRefreshToken() async {
+  var refreshToken =
+      await SpUtils.getString(Constants.SP_REFRESH_TOKEN) ?? defaultToken;
+  return refreshToken;
+}
+
 void setToken(accessToken) {
   SpUtils.saveString(Constants.SP_TOKEN, accessToken);
 }
 
 void setRefreshToken(refreshToken) {
-  SpUtils.saveString('refreshToken', refreshToken);
+  SpUtils.saveString(Constants.SP_REFRESH_TOKEN, refreshToken);
 }
 
 /// 统一添加身份验证请求头（根据项目自行处理）
 class AuthInterceptor extends Interceptor {
   @override
   void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     if (options.path != APIs.login) {
       String token = await getToken();
+      String refreshToken = await getRefreshToken();
       if (token.isNotEmpty) {
         options.headers['Authorization'] = 'Bearer $token';
+        options.headers['access_token'] = token;
+        options.headers['refresh_token'] = refreshToken;
       }
     }
+
+    options.headers['product_code'] = 'intplatform';
+    options.headers['platform'] = 'app';
+    options.headers['version_name'] = '2.0.8';
+    options.headers['version_code'] = 208;
+    options.headers['os'] =
+        DeviceUtils.isAndroid
+            ? 'android'
+            : DeviceUtils.isIOS
+            ? 'ios'
+            : 'web';
     super.onRequest(options, handler);
   }
 }
@@ -56,7 +79,8 @@ class LoggingInterceptor extends Interceptor {
       LogUtils.d('RequestUrl: ${options.baseUrl}${options.path}');
     } else {
       LogUtils.d(
-          'RequestUrl: ${options.baseUrl}${options.path}?${Transformer.urlEncodeMap(options.queryParameters)}');
+        'RequestUrl: ${options.baseUrl}${options.path}?${Transformer.urlEncodeMap(options.queryParameters)}',
+      );
     }
     LogUtils.d('RequestMethod: ${options.method}');
     LogUtils.d('RequestHeaders:${options.headers}');
@@ -67,7 +91,9 @@ class LoggingInterceptor extends Interceptor {
 
   @override
   void onResponse(
-      Response<dynamic> response, ResponseInterceptorHandler handler) {
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) {
     _endTime = DateTime.now();
     final int duration = _endTime.difference(_startTime).inMilliseconds;
     if (response.statusCode == ExceptionHandle.success) {

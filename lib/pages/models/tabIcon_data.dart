@@ -8,6 +8,7 @@ class TabIconData {
     this.isSelected = false,
     this.animationController,
     this.labelName = '',
+    this.unreadCount = 0,
   });
 
   String imagePath;
@@ -15,5 +16,6 @@ class TabIconData {
   bool isSelected;
   int index;
   String labelName;
+  int unreadCount;
   AnimationController? animationController;
 }

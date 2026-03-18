@@ -18,6 +18,7 @@ class AuthViewModel with ChangeNotifier {
   String? confirmPassword = "";
   String? nickName = "";
   bool? isFirstLogin = false;
+
   Future<bool> login() async {
     if (inputUserName?.trim().isEmpty == true) {
       ProgressHUD.showError(S.current.inputMessage(S.current.userName));
@@ -35,42 +36,74 @@ class AuthViewModel with ChangeNotifier {
     DataUtils.login(
       {'username': inputUserName, 'password': inputPassword},
       success: (res) async {
-        var token = res['data']['access_token'];
-        await SpUtils.saveString(Constants.SP_TOKEN, token ?? "");
-        if (token != '') {
-          DataUtils.getUserInfo(
-            success: (res) async {
-              UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
-              await SpUtils.saveModel('userInfo', userInfo);
-              await SpUtils.saveModel('mealUser', userInfo.mealUser ?? {});
-              isFirstLogin = userInfo.user?.isLogin == 0;
-              SpUtils.saveString(
-                Constants.SP_USER_NAME,
-                userInfo.user?.nickName ?? '',
-              );
-              SpUtils.saveString(
-                Constants.SP_USER_DEPT,
-                userInfo.user?.dept?.deptName ?? '',
-              );
-              SpUtils.saveString(
-                Constants.FACE_PHOTO,
-                userInfo.user?.facePhoto ?? '',
-              );
-              SpUtils.saveInt(
-                Constants.SP_IS_LOGIN,
-                userInfo.user?.isLogin ?? 0,
-              );
-              SpUtils.saveModel(
-                Constants.SP_USER_PERMISSION,
-                userInfo.permissions ?? [],
-              );
-              getAddressData();
-              completer.complete(true);
-            },
-            fail: (code, msg) {
-              completer.complete(false);
-            },
+        if (res['data']['code'] != null) {
+          await SpUtils.saveString(
+            Constants.SP_LOGIN_CODE,
+            res['data']['code'],
           );
+          await SpUtils.saveString('Constants.SP_USER_NAME', inputUserName!);
+          isFirstLogin = true;
+          completer.complete(true);
+        } else {
+          var token = res['data']['accessToken'];
+          var refreshToken = res['data']['refreshToken'];
+          await SpUtils.saveString(Constants.SP_TOKEN, token ?? "");
+          await SpUtils.saveString(
+            Constants.SP_REFRESH_TOKEN,
+            refreshToken ?? "",
+          );
+          if (token != '') {
+            DataUtils.putLoginUser(
+              success: (res) async {
+                if (res['data']['loginUser']['status'] == '1') {
+                  await SpUtils.remove(Constants.SP_TOKEN);
+                  await SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+                  ProgressHUD.showError('账号已注销，请联系管理员');
+                  completer.complete(false);
+                } else {
+                  DataUtils.getThirdUserInfo(
+                    success: (res) async {
+                      ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
+                        res['data'],
+                      );
+                      await SpUtils.saveModel('thirdUserInfo', userInfo);
+                      await SpUtils.saveString(
+                        Constants.SP_USER_NAME,
+                        userInfo.account ?? '',
+                      );
+                      await SpUtils.saveString(
+                        Constants.SP_USER_DEPT,
+                        userInfo.formatOrganizeName ?? '',
+                      );
+                      DataUtils.getUserInfo(
+                        success: (res) async {
+                          UserInfoModel userInfo = UserInfoModel.fromJson(
+                            res['data'],
+                          );
+                          await SpUtils.saveModel('userInfo', userInfo);
+                          await SpUtils.saveModel(
+                            Constants.SP_USER_PERMISSION,
+                            userInfo.permissions ?? [],
+                          );
+                          getAddressData();
+                          completer.complete(true);
+                        },
+                        fail: (code, msg) {
+                          completer.complete(false);
+                        },
+                      );
+                    },
+                    fail: (code, msg) {
+                      completer.complete(false);
+                    },
+                  );
+                }
+              },
+              fail: (code, msg) {
+                completer.complete(false);
+              },
+            );
+          }
         }
         return true;
       },

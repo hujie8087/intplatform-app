@@ -181,7 +181,7 @@ class MealDeliveryModel with ChangeNotifier {
         people
             .where(
               (person) =>
-                  person.deptName?.toLowerCase().contains(
+                  person.deptPath?.toLowerCase().contains(
                     value.toLowerCase(),
                   ) ??
                   false,

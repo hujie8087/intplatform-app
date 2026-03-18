@@ -1,16 +1,17 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:logistics_app/app_theme.dart';
 import 'package:logistics_app/common_ui/avatar_widget.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
 import 'package:logistics_app/common_ui/switch_type.dart';
-import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/app_resource_model.dart';
+import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/home_page/message_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
 import 'package:logistics_app/pages/mine_page/my_address_page/my_address_page.dart';
@@ -41,9 +42,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   var model = NoticeViewModel();
   final ScrollController scrollController = ScrollController();
-  String userName = '';
-  String nickName = '';
-  String avatar = '';
+  ThirdUserInfoModel? userInfo;
   double topBarOpacity = 0.0;
   Animation<double>? topBarAnimation;
   int current = 0;
@@ -119,16 +118,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Future<void> _fetchData() async {
     // 模拟异步数据获取
-    var res = await SpUtils.getString(Constants.SP_USER_NAME);
-    // 模拟异步数据获取
-    var userInfo = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     // 更新状态
-    avatar = userInfo != null ? userInfo['user']['avatar'] : '';
 
     // 更新状态
     setState(() {
-      userName = res ?? '';
-      nickName = userInfo != null ? userInfo['user']['userName'] : '';
+      if (userInfoData != null) {
+        userInfo = ThirdUserInfoModel.fromJson(userInfoData);
+      }
       _timer = Timer.periodic(Duration(seconds: 2), (Timer timer) {
         if (_pageController.hasClients) {
           int nextPage = _pageController.page!.toInt() + 1;
@@ -404,7 +401,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     S.of(context).moreFunction,
                     false,
                     Icons.more_horiz,
-                    () => widget.onChanged!(1),
+                    () => widget.onChanged!(2),
                   ),
                 ],
               ),
@@ -540,21 +537,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               24.px * (1.0 - topBarAnimation!.value),
               0.0,
             ),
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               height: 180.px,
               child: Swiper(
                 itemCount: bannerList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return bannerList[index].content != null
-                      ? Image.network(
-                        "${APIs.imagePrefix + (bannerList[index].content ?? '')}",
-                        fit: BoxFit.fill,
-                      )
-                      : Image.asset(
-                        'assets/images/banner.jpg',
-                        fit: BoxFit.fill,
-                      );
+                  final imageUrl =
+                      "${APIs.imagePrefix + (bannerList[index].content ?? '')}";
+
+                  return CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.cover,
+                    placeholder:
+                        (_, __) => Image.asset(
+                          "assets/images/banner.jpg",
+                          fit: BoxFit.cover,
+                        ),
+                    errorWidget:
+                        (_, __, ___) => Image.asset(
+                          "assets/images/banner.jpg",
+                          fit: BoxFit.cover,
+                        ),
+                  );
                 },
                 autoplay: true,
                 indicatorLayout: PageIndicatorLayout.COLOR,
@@ -621,18 +626,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       SizedBox(height: MediaQuery.of(context).padding.top),
                       Padding(
                         padding: EdgeInsets.only(
-                          left: 10.px,
-                          right: 10.px,
+                          left: 30.px,
+                          right: 20.px,
                           top: 10.px * topBarOpacity,
                           bottom: 10.px,
                         ),
                         child: Row(
                           mainAxisAlignment:
-                              userName != ''
+                              userInfo?.account != null
                                   ? MainAxisAlignment.spaceAround
                                   : MainAxisAlignment.end,
                           children: <Widget>[
-                            if (userName != '')
+                            if (userInfo?.account != null)
                               Expanded(
                                 child: InkWell(
                                   onTap: () => _handleTap(2),
@@ -646,7 +651,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              userName,
+                                              userInfo?.account ?? '',
                                               style: TextStyle(
                                                 fontFamily: AppTheme.fontName,
                                                 fontWeight: FontWeight.w700,
@@ -661,7 +666,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               ),
                                             ),
                                             Text(
-                                              nickName,
+                                              userInfo?.name ?? '',
                                               style: TextStyle(
                                                 fontFamily: AppTheme.fontName,
                                                 fontSize:

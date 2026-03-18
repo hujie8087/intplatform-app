@@ -8,6 +8,8 @@ class GuideViewModel {
   String? title;
   String? content;
   String? img;
+  int? typeId;
+  String? file;
   int? isLogin;
   int? sort;
   String? status;
@@ -15,22 +17,25 @@ class GuideViewModel {
   String? deleteBy;
   String? deleteTime;
 
-  GuideViewModel(
-      {this.createBy,
-      this.createTime,
-      this.updateBy,
-      this.updateTime,
-      this.remark,
-      this.id,
-      this.title,
-      this.content,
-      this.img,
-      this.isLogin,
-      this.sort,
-      this.status,
-      this.delFlag,
-      this.deleteBy,
-      this.deleteTime});
+  GuideViewModel({
+    this.createBy,
+    this.createTime,
+    this.updateBy,
+    this.updateTime,
+    this.remark,
+    this.id,
+    this.title,
+    this.content,
+    this.img,
+    this.typeId,
+    this.file,
+    this.isLogin,
+    this.sort,
+    this.status,
+    this.delFlag,
+    this.deleteBy,
+    this.deleteTime,
+  });
 
   GuideViewModel.fromJson(Map<String, dynamic> json) {
     createBy = json['createBy'];
@@ -42,6 +47,8 @@ class GuideViewModel {
     title = json['title'];
     content = json['content'];
     img = json['img'];
+    typeId = json['typeId'];
+    file = json['file'];
     isLogin = json['isLogin'];
     sort = json['sort'];
     status = json['status'];
@@ -61,6 +68,8 @@ class GuideViewModel {
     data['title'] = this.title;
     data['content'] = this.content;
     data['img'] = this.img;
+    data['typeId'] = this.typeId;
+    data['file'] = this.file;
     data['isLogin'] = this.isLogin;
     data['sort'] = this.sort;
     data['status'] = this.status;

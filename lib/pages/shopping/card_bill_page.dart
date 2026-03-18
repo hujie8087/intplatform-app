@@ -23,7 +23,7 @@ class _CardBillPageState extends State<CardBillPage> {
   DateTime _endDate = DateTime.now();
   List<BillModel> _bills = [];
   bool _isLoading = false;
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
 
   @override
   void initState() {
@@ -32,9 +32,9 @@ class _CardBillPageState extends State<CardBillPage> {
   }
 
   Future<void> _fetchData() async {
-    var userInfoData = await SpUtils.getModel('userInfo');
+    var userInfoData = await SpUtils.getModel('thirdUserInfo');
     if (userInfoData != null) {
-      userInfo = UserInfoModel.fromJson(userInfoData);
+      userInfo = ThirdUserInfoModel.fromJson(userInfoData);
     }
   }
 
@@ -54,13 +54,14 @@ class _CardBillPageState extends State<CardBillPage> {
           'endDealTime': endDateStr,
           'start': 1,
           'limit': 100,
-          'uniqueId': userInfo?.user?.userName,
+          'uniqueId': userInfo?.account,
         },
         success: (data) {
           if (data['data']['list'] != null) {
-            _bills = (data['data']['list'] as List)
-                .map((item) => BillModel.fromJson(item))
-                .toList();
+            _bills =
+                (data['data']['list'] as List)
+                    .map((item) => BillModel.fromJson(item))
+                    .toList();
           } else {
             _bills = [];
           }
@@ -138,8 +139,9 @@ class _CardBillPageState extends State<CardBillPage> {
                 ElevatedButton(
                   onPressed: _fetchBills,
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                    backgroundColor: primaryColor,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
                   child: Text(
                     S.of(context).search,
                     style: TextStyle(fontSize: 12.px),
@@ -151,99 +153,102 @@ class _CardBillPageState extends State<CardBillPage> {
 
           // 账单列表
           Expanded(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : _bills.isEmpty
+            child:
+                _isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : _bills.isEmpty
                     ? Center(child: Text(S.of(context).noData))
                     : GroupedListView<BillModel, String>(
-                        elements: _bills,
-                        groupBy: (bill) => DateFormat('yyyy-MM-dd')
-                            .format(DateTime.parse(bill.dealTime ?? '')),
-                        groupSeparatorBuilder: (String date) => Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 14.px, vertical: 6.px),
-                          color: Colors.grey[100],
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                date,
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12.px,
-                                ),
-                              ),
-                              Text(
-                                S.of(context).expenditure +
-                                    ':${_calculateDailyTotal(date)}',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12.px,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        itemBuilder: (context, BillModel bill) {
-                          return Container(
-                            padding: EdgeInsets.all(14.px),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.grey[200]!,
-                                ),
-                              ),
+                      elements: _bills,
+                      groupBy:
+                          (bill) => DateFormat(
+                            'yyyy-MM-dd',
+                          ).format(DateTime.parse(bill.dealTime ?? '')),
+                      groupSeparatorBuilder:
+                          (String date) => Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 14.px,
+                              vertical: 6.px,
                             ),
+                            color: Colors.grey[100],
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        bill.deviceName ?? '',
-                                        style: TextStyle(
-                                          fontSize: 12.px,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      SizedBox(height: 4.px),
-                                      Text(
-                                        bill.businessName ?? '',
-                                        style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontSize: 10.px,
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        DateFormat('HH:mm').format(
-                                            DateTime.parse(
-                                                bill.dealTime ?? '')),
-                                        style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontSize: 10.px,
-                                        ),
-                                      ),
-                                    ],
+                                Text(
+                                  date,
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: 12.px,
                                   ),
                                 ),
                                 Text(
-                                  '${bill.monDeal ?? '0'}',
+                                  S.of(context).expenditure +
+                                      ':${_calculateDailyTotal(date)}',
                                   style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 16.px,
-                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[600],
+                                    fontSize: 12.px,
                                   ),
                                 ),
                               ],
                             ),
-                          );
-                        },
-                        order: GroupedListOrder.DESC,
-                      ),
+                          ),
+                      itemBuilder: (context, BillModel bill) {
+                        return Container(
+                          padding: EdgeInsets.all(14.px),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                              bottom: BorderSide(color: Colors.grey[200]!),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      bill.deviceName ?? '',
+                                      style: TextStyle(
+                                        fontSize: 12.px,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4.px),
+                                    Text(
+                                      bill.businessName ?? '',
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 10.px,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      DateFormat('HH:mm').format(
+                                        DateTime.parse(bill.dealTime ?? ''),
+                                      ),
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 10.px,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                '${bill.monDeal ?? '0'}',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 16.px,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      order: GroupedListOrder.DESC,
+                    ),
           ),
         ],
       ),
@@ -276,10 +281,13 @@ class _CardBillPageState extends State<CardBillPage> {
 
   double _calculateDailyTotal(String date) {
     return _bills
-        .where((bill) =>
-            DateFormat('yyyy-MM-dd')
-                .format(DateTime.parse(bill.dealTime ?? '')) ==
-            date)
+        .where(
+          (bill) =>
+              DateFormat(
+                'yyyy-MM-dd',
+              ).format(DateTime.parse(bill.dealTime ?? '')) ==
+              date,
+        )
         .fold(0, (sum, bill) => sum + (double.parse(bill.monDeal ?? '0')));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
@@ -37,7 +39,7 @@ class MineViewModel with ChangeNotifier {
         print('success${data}');
         shouldLogin = true;
         //清除缓存
-        SpUtils.remove(Constants.SP_USER_NAME);
+        SpUtils.remove(Constants.SP_USER_NICKNAME);
         SpUtils.remove(Constants.SP_USER_DEPT);
         SpUtils.remove(Constants.SP_TOKEN);
         notifyListeners();
@@ -47,6 +49,36 @@ class MineViewModel with ChangeNotifier {
       },
     );
   }
+
+  // 用户注销账号
+  Future<(bool success, String? message)> cancelAccount() async {
+  final completer = Completer<(bool, String?)>();
+
+  DataUtils.cancelUser(
+    success: (data) {
+      shouldLogin = true;
+
+      // 清除缓存
+      SpUtils.remove(Constants.SP_USER_NICKNAME);
+      SpUtils.remove(Constants.SP_USER_DEPT);
+      SpUtils.remove(Constants.SP_TOKEN);
+      SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+
+      notifyListeners();
+
+      // 返回成功，无错误信息
+      completer.complete((true, null));
+    },
+    fail: (code, msg) {
+      notifyListeners();
+
+      // 返回失败，并把 msg 传出去
+      completer.complete((false, msg));
+    },
+  );
+
+  return completer.future;
+}
 
   ///检查更新
   Future checkUpdate() async {
@@ -58,12 +90,14 @@ class MineViewModel with ChangeNotifier {
         updateModel = UpdateInfoData.fromJson(data['data']);
         //线上版本的code
         Version oldVersion = Version.parse(versionName);
-        Version newVersion = Version.parse(updateModel!.versionName);
+        Version newVersion = Version.parse(updateModel!.versionName ?? '');
         try {
           //如果当前版本小于线上版本，需要更新
           if (oldVersion == newVersion) {
             SpUtils.saveString(
-                Constants.SP_NEW_APP_VERSION, updateModel?.versionName ?? '');
+              Constants.SP_NEW_APP_VERSION,
+              updateModel?.versionName ?? '',
+            );
           } else {
             SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
           }

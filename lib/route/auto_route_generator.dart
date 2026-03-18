@@ -4,12 +4,19 @@ import 'package:logistics_app/pages/accommodation/room/couple_room_page.dart';
 import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/pages/auth/login_page.dart';
 import 'package:logistics_app/pages/auth/forget_password_page.dart';
+import 'package:logistics_app/pages/guide/facility_list_page.dart';
+import 'package:logistics_app/pages/shopping/payment/online_topup_page.dart';
+import 'package:logistics_app/pages/shopping/payment/signature_page.dart';
+import 'package:logistics_app/pages/shopping/payment/top_up_list_page.dart';
+
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_order/meal_delivery_order_page.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_delivery_accept_page.dart';
 import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/pages/mine_page/person_info_page.dart';
 import 'package:logistics_app/pages/mine_page/contact_us_page.dart';
+import 'package:logistics_app/pages/news/employee_page/employee_list_page.dart';
+import 'package:logistics_app/pages/news/logistics_page/logistics_list_page.dart';
 import 'package:logistics_app/pages/route_query_page/route_query_page.dart';
 import 'package:logistics_app/pages/news/notice_page/notice_list_page.dart';
 import 'package:logistics_app/pages/news/news_page/news_list_page.dart';
@@ -19,7 +26,13 @@ import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/pages/repair/my_repair_page/repair_rating_page.dart';
 import 'package:logistics_app/pages/repair/my_repair_page/my_repair_page.dart';
 import 'package:logistics_app/pages/repair/repair_order_page/repair_order_page.dart';
+import 'package:logistics_app/pages/shopping/complaint_hotline_page.dart';
 import 'package:logistics_app/pages/shopping/food_menu_page.dart';
+import 'package:logistics_app/pages/sos/chat_list_page.dart';
+import 'package:logistics_app/pages/sos/chat_screen_page.dart';
+import 'package:logistics_app/pages/sos/models/chart_model.dart';
+import 'package:logistics_app/pages/sos/services/chat_service.dart';
+import 'package:logistics_app/pages/sos/sos_index_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/pages/news/promo_page/promo_list_page.dart';
 import 'package:logistics_app/pages/news/ktime_page/ktime_list_page.dart';
@@ -134,6 +147,14 @@ class AutoRouteGenerator {
       builder: (context) => MonthlyListPage(),
       name: 'MonthlyListPage',
     ),
+    RoutePath.LogisticsListPage: RouteConfig(
+      builder: (context) => LogisticsListPage(),
+      name: 'LogisticsListPage',
+    ),
+    RoutePath.EmployeeListPage: RouteConfig(
+      builder: (context) => EmployeeListPage(),
+      name: 'EmployeeListPage',
+    ),
 
     // 失物招领
     RoutePath.LostFoundListPage: RouteConfig(
@@ -191,9 +212,13 @@ class AutoRouteGenerator {
       builder: (context) => GuideTypePage(id: 0),
       name: 'GuideTypePage',
     ),
-    RoutePath.GuideListPage: RouteConfig(
+    RoutePath.GuideViewPage: RouteConfig(
       builder: (context) => GuideListPage(guideTypeId: 0),
       name: 'GuideListPage',
+    ),
+    RoutePath.FacilityListPage: RouteConfig(
+      builder: (context) => FacilityListPage(),
+      name: 'FacilityListPage',
     ),
 
     // 住宿相关
@@ -256,6 +281,10 @@ class AutoRouteGenerator {
       builder: (context) => MyFeedbackListPage(),
       name: 'MyFeedbackListPage',
     ),
+    RoutePath.ComplaintHotlinePage: RouteConfig(
+      builder: (context) => ComplaintHotlinePage(),
+      name: 'ComplaintHotlinePage',
+    ),
 
     // 支付相关
     RoutePath.PaymentQRCodePage: RouteConfig(
@@ -277,6 +306,19 @@ class AutoRouteGenerator {
     RoutePath.FaceCollectionPage: RouteConfig(
       builder: (context) => FaceCollectionPage(),
       name: 'FaceCollectionPage',
+    ),
+
+    RoutePath.OnlineTopupPage: RouteConfig(
+      builder: (context) => OnlineTopupPage(),
+      name: 'OnlineTopupPage',
+    ),
+    RoutePath.TopUpListPage: RouteConfig(
+      builder: (context) => TopUpListPage(),
+      name: 'TopUpListPage',
+    ),
+    RoutePath.SignaturePage: RouteConfig(
+      builder: (context) => SignaturePage(),
+      name: 'SignaturePage',
     ),
 
     // 配送相关
@@ -342,6 +384,28 @@ class AutoRouteGenerator {
     //   builder: (context) => MealDeliveryScanPage(),
     //   name: 'MealDeliveryScanPage',
     // ),
+
+    // 报警相关
+    RoutePath.SosIndexPage: RouteConfig(
+      builder: (context) => SosIndexPage(),
+      name: 'SosIndexPage',
+    ),
+    RoutePath.ChatListPage: RouteConfig(
+      builder: (context) => ChatListPage(),
+      name: 'ChatListPage',
+    ),
+    RoutePath.ChatScreenPage: RouteConfig(
+      builder:
+          (context) => ChatScreenPage(
+            sessionId: '',
+            chatService: ChatService(),
+            senderId: '',
+            senderName: '',
+            senderType: '',
+            chartModel: ChartModel(),
+          ),
+      name: 'ChatScreenPage',
+    ),
   };
 
   /// 生成路由
@@ -418,6 +482,9 @@ class RoutePath {
   static const String PromoListPage = 'promo_list_page';
   static const String KTimeListPage = 'k_time_list_page';
   static const String MonthlyListPage = 'monthly_list_page';
+  static const String LogisticsListPage = 'logistics_list_page';
+  static const String EmployeeListPage = 'employee_list_page';
+  static const String EmployeeDetailPage = 'employee_detail_page';
 
   // 失物招领
   static const String LostFoundListPage = 'lost_found_list_page';
@@ -444,6 +511,8 @@ class RoutePath {
   // 服务指南
   static const String GuideTypePage = 'guide_type_page';
   static const String GuideListPage = 'guide_list_page';
+  static const String FacilityListPage = 'facility_list_page';
+  static const String GuideViewPage = 'guide_view_page';
 
   // 住宿相关
   static const String ProcessListPage = 'process_list_page';
@@ -463,6 +532,7 @@ class RoutePath {
   static const String FoodRecommendPage = 'food_recommend_page';
   static const String FoodMenuPage = 'food_menu_page';
   static const String MyFeedbackListPage = 'my_feedback_list_page';
+  static const String ComplaintHotlinePage = 'complaint_hotline_page';
 
   // 支付相关
   static const String PaymentQRCodePage = 'payment_qr_code_page';
@@ -471,6 +541,9 @@ class RoutePath {
   static const String ModifyPaymentPasswordPage =
       'modify_payment_password_page';
   static const String FaceCollectionPage = 'face_collection_page';
+  static const String OnlineTopupPage = 'online_topup_page';
+  static const String TopUpListPage = 'top_up_list_page';
+  static const String SignaturePage = 'signature_page';
 
   // 配送相关
   static const String DeliveryOrderListPage = 'delivery_order_list_page';
@@ -494,4 +567,9 @@ class RoutePath {
   static const String MealDeliveryIndexPage = 'meal_delivery_index_page';
   static const String MealDeliveryAcceptPage = 'meal_delivery_accept_page';
   static const String MealDeliveryDeliverPage = 'meal_delivery_deliver_page';
+
+  // SOS相关
+  static const String SosIndexPage = 'sos_index_page';
+  static const String ChatListPage = 'chat_list_page';
+  static const String ChatScreenPage = 'chat_screen_page';
 }

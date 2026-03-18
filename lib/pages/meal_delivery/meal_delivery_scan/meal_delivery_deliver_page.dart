@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
@@ -10,17 +11,16 @@ import 'package:logistics_app/http/model/base_list_model.dart';
 import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/meal_delivery_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
-import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_service_model.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_manager.dart';
+import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/meal_location_service_model.dart';
 import 'package:logistics_app/pages/meal_delivery/meal_delivery_scan/phone_scan_deliver_page.dart';
 import 'package:logistics_app/pages/mine_page/bind_account_page/bind_account_page.dart';
 import 'package:logistics_app/utils/color.dart';
-import 'package:logistics_app/utils/hj_bottom_sheet.dart';
 import 'package:logistics_app/utils/mdc_update_image.dart';
+import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class MealDeliveryDeliverPage extends StatefulWidget {
   @override
@@ -36,7 +36,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
   DictModel? _selectedFoodNameValue; // 餐次
   String _selectedFoodTypeValue = ''; // 餐种
   List<DictModel> foodTypeList = [];
-  List<AssetEntity> selectedAssets = [];
+  // List<AssetEntity> selectedAssets = [];
   UserInfoModel? userInfo;
   bool isBindAccount = false;
   bool isCanScan = false;
@@ -102,6 +102,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
       setState(() {
         userInfo = UserInfoModel.fromJson(userInfoData);
         isBindAccount = userInfo?.mealUser != null;
+        print('isBindAccount: $isBindAccount');
         if (isBindAccount) {
           isCanScan =
               userInfo?.mealUser?.roles?.any(
@@ -116,7 +117,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
   // 处理Honeywell手持机扫码结果
   Future<void> _processHoneywellScan(String barcode) async {
     try {
-      ProgressHUD.showText(S.of(context).processingScanResult + ': $barcode');
+      // ProgressHUD.showText(S.of(context).processingScanResult + ': $barcode');
       print('Honeywell扫码结果: $barcode');
       // 调用接口处理条形码
       await _submitBarcode(barcode);
@@ -288,7 +289,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
             _uploadImage(orderNo: orderNo);
           } else if (orderDetail.orderStatus == '4') {
             showOrderInfo(context, orderDetail);
-            ProgressHUD.showError(S.of(context).deliveryDelivered);
+            // ProgressHUD.showError(S.of(context).deliveryDelivered);
           }
         }
       },
@@ -300,11 +301,13 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
 
   // 上传图片
   Future<void> _uploadImage({orderNo}) async {
-    final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
+    // final result = await HJBottomSheet.wxPicker(context, [], 1);
+    final result = await Picker.assetsCamera(context: context);
+    print('result: $result');
     if (result != null) {
       ProgressHUD.showLoadingText(S.of(context).deliveryUploading);
       try {
-        final fileUrl = await uploadMealDeliveryFile(result);
+        final fileUrl = await uploadMealDeliveryFile([result]);
         ProgressHUD.hide();
         if (fileUrl.isNotEmpty) {
           final parameters = {'orderNo': orderNo, 'imageUrl': fileUrl[0]};
@@ -382,26 +385,29 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
       ),
 
       // 浮动按钮，根据配送状态显示
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: isTracking ? secondaryColor : primaryColor,
-        onPressed: () => _handleLocationEvent(),
-        icon: Icon(
-          isTracking ? Icons.location_on : Icons.location_off,
-          color: Colors.white,
-        ),
-        label: Text(
-          isTracking ? S.current.stopLocation : S.current.startLocation,
-          style: TextStyle(color: Colors.white),
-        ),
-        extendedPadding: EdgeInsets.symmetric(
-          horizontal: 10.px,
-          vertical: 2.px,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        isExtended: false,
-      ),
+      floatingActionButton:
+          Platform.isAndroid
+              ? FloatingActionButton.extended(
+                backgroundColor: isTracking ? secondaryColor : primaryColor,
+                onPressed: () => _handleLocationEvent(),
+                icon: Icon(
+                  isTracking ? Icons.location_on : Icons.location_off,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  isTracking ? S.current.stopLocation : S.current.startLocation,
+                  style: TextStyle(color: Colors.white),
+                ),
+                extendedPadding: EdgeInsets.symmetric(
+                  horizontal: 10.px,
+                  vertical: 2.px,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                isExtended: false,
+              )
+              : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: SingleChildScrollView(
         child:
@@ -414,7 +420,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
                     bottom: 15.px,
                   ),
                   width: double.infinity,
-                  height: 110.px,
+                  height: 120.px,
                   margin: EdgeInsets.symmetric(
                     vertical: 50.px,
                     horizontal: 30.px,
@@ -430,6 +436,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
                   // 未绑定帐号权限，请先绑定帐号
                   child: Column(
                     children: [
+                      SizedBox(height: 10.px),
                       Text(
                         S.of(context).deliveryOrderNotBindAccount,
                         style: TextStyle(fontSize: 14.px, color: Colors.grey),
@@ -437,6 +444,7 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
                       SizedBox(height: 10.px),
                       // 绑定帐号
                       Container(
+                        height: 32.px,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,

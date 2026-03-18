@@ -31,7 +31,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
   Future<void> _fetchData() async {
     DataUtils.getPageList(
       '/system/connect/list',
-      {'pageNum': 1, 'pageSize': 100},
+      {'pageNum': 1, 'pageSize': 100, 'souceType': 2},
       success: (data) {
         setState(() {
           var contactList = data['rows'] as List;

@@ -250,7 +250,7 @@ class _LostFoundDetailPageState extends State<LostFoundDetailPage> {
                   _buildFormColumn(
                     _typeController.text == '0'
                         ? S.of(context).lostPlace
-                        : S.of(context).receivePlace,
+                        : S.of(context).findPlace,
                     _locationController,
                   ),
                   _buildFormColumn(
@@ -601,6 +601,7 @@ class _LostFoundDetailPageState extends State<LostFoundDetailPage> {
                       context,
                       selectedAssets,
                       3 - uploadedImagesList.length, // 剩余可选数量
+                      RequestType.image,
                     );
                     if (result != null) {
                       selectedAssets = result;

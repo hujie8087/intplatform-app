@@ -41,6 +41,10 @@ class _CleaningDetailPageState extends State<CleaningDetailPage> {
           statusColor = Colors.orange;
         case '3':
           statusColor = Colors.red;
+        case '4':
+          statusColor = Colors.deepOrange;
+        case '5':
+          statusColor = Colors.red;
         default:
           statusColor = Colors.grey;
       }
@@ -463,12 +467,38 @@ class _CleaningDetailPageState extends State<CleaningDetailPage> {
               isCompleted: true,
               color: Colors.green,
             ),
+            if (widget.order.orderStatus == 5)
+              _buildTimelineItem(
+                icon: Icons.cancel,
+                title: '已取消',
+                time: widget.order.updateTime ?? '',
+                isCompleted: widget.order.orderStatus == 5,
+                color: Colors.red,
+              ),
+            if (widget.order.orderStatus == 2)
+              _buildTimelineItem(
+                icon: Icons.cancel,
+                title: '已退款',
+                time: widget.order.updateTime ?? '',
+                isCompleted: widget.order.orderStatus == 2,
+                color: Colors.red,
+              ),
+            _buildTimelineItem(
+              icon: Icons.check_circle,
+              title: '已接单',
+              time: widget.order.handleTime ?? '',
+              isCompleted:
+                  widget.order.orderStatus == 4 ||
+                  widget.order.orderStatus == 1 ||
+                  widget.order.orderStatus == 3,
+              color: Colors.deepOrange,
+            ),
             _buildTimelineItem(
               icon: Icons.check_circle,
               title: S.of(context).cleaning_order_handle,
               time: widget.order.handleTime ?? '',
               isCompleted:
-                  widget.order.orderStatus == 2 ||
+                  widget.order.orderStatus == 1 ||
                   widget.order.orderStatus == 3,
               color: Colors.blue,
             ),

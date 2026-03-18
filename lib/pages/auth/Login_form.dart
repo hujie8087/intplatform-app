@@ -3,10 +3,9 @@ import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
-import 'package:logistics_app/pages/app_home_screen.dart';
+
 import 'package:logistics_app/pages/auth/Register_page.dart';
 import 'package:logistics_app/pages/auth/auth_view_model.dart';
-import 'package:logistics_app/pages/auth/forget_password_page.dart';
 import 'package:logistics_app/pages/mine_page/change_password_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
@@ -37,7 +36,7 @@ class _LoginFormState extends State<LoginForm> {
 
   // 获取记住密码
   void getRememberPassword() async {
-    var username = await SpUtils.getString(Constants.SP_USER_NICKNAME);
+    var username = await SpUtils.getString(Constants.SP_USER_NAME);
     var password = await SpUtils.getString(Constants.SP_USER_PASSWORD);
     _usernameController.text = username ?? '';
     _passwordController.text = password ?? '';
@@ -125,18 +124,18 @@ class _LoginFormState extends State<LoginForm> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Expanded(
-                // 忘记密码
-                child: GestureDetector(
-                  onTap: () {
-                    RouteUtils.push(context, ForgetPasswordPage());
-                  },
-                  child: Text(
-                    S.of(context).forgetPassword,
-                    style: TextStyle(color: primaryColor, fontSize: 12.px),
-                  ),
-                ),
-              ),
+              // Expanded(
+              //   // 忘记密码
+              //   child: GestureDetector(
+              //     onTap: () {
+              //       RouteUtils.push(context, ForgetPasswordPage());
+              //     },
+              //     child: Text(
+              //       S.of(context).forgetPassword,
+              //       style: TextStyle(color: primaryColor, fontSize: 12.px),
+              //     ),
+              //   ),
+              // ),
               // 记住密码
               Text(
                 S.of(context).rememberPassword,
@@ -173,14 +172,14 @@ class _LoginFormState extends State<LoginForm> {
                             .login()
                             .then((value) async {
                               if (value) {
-                                var token =
+                                var fcmToken =
                                     await SpUtils.getString(
-                                      Constants.SP_DEVICE_TOKEN,
+                                      Constants.SP_FCM_TOKEN,
                                     ) ??
                                     '';
                                 if (_isRememberPassword) {
                                   SpUtils.saveString(
-                                    Constants.SP_USER_NICKNAME,
+                                    Constants.SP_USER_NAME,
                                     _usernameController.text,
                                   );
                                   SpUtils.saveString(
@@ -188,23 +187,25 @@ class _LoginFormState extends State<LoginForm> {
                                     _passwordController.text,
                                   );
                                 } else {
-                                  SpUtils.remove(Constants.SP_USER_NICKNAME);
+                                  SpUtils.remove(Constants.SP_USER_NAME);
                                   SpUtils.remove(Constants.SP_USER_PASSWORD);
                                 }
 
-                                if (token != '') {
+                                if (fcmToken != '') {
                                   DataUtils.setUserToken({
-                                    'mobilePhoneId': token,
+                                    'mobilePhoneId': fcmToken,
                                   });
                                 }
-                                // RouteUtils.push(context, AppHomeScreen());
                                 if (model.isFirstLogin == true) {
                                   RouteUtils.push(
                                     context,
                                     ChangePasswordPage(isFirstLogin: true),
                                   );
                                 } else {
-                                  RouteUtils.push(context, AppHomeScreen());
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/home',
+                                    (route) => false,
+                                  );
                                 }
                                 ProgressHUD.showText(
                                   S.of(context).loginSuccess,

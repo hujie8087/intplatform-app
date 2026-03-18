@@ -34,8 +34,13 @@ class DataUtils {
   }
 
   // 刷新token
-  static void updateToken<T>({Success? success, Fail? fail}) {
-    HttpUtils.post(APIs.updateToken, null, success: success, fail: fail);
+  static void updateToken<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.put(
+      APIs.updateToken + '?refreshToken=${parameters['refreshToken']}',
+      parameters,
+      success: success,
+      fail: fail,
+    );
   }
 
   static void logout<T>({Success? success, Fail? fail}) {
@@ -45,6 +50,56 @@ class DataUtils {
   // 获取用户信息
   static void getUserInfo<T>({Success? success, Fail? fail}) {
     HttpUtils.get(APIs.getUserInfo, null, success: success, fail: fail);
+  }
+
+  // 获取第三方用户信息
+  static void getThirdUserInfo<T>({Success? success, Fail? fail}) {
+    HttpUtils.get(APIs.getThirdUserInfo, null, success: success, fail: fail);
+  }
+
+  // 上传签名
+  static void uploadSignature<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/sign/save',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取签名
+  static void getSignature<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/sign/page',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 删除签名
+  static void deleteSignature<T>(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.put(
+      'https://api.iwipwedabay.com/api/rain/iwip/home/upms/home/sign/delIds',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 登录成功回调
+  static void putLoginUser<T>({Success? success, Fail? fail}) {
+    return HttpUtils.post(
+      APIs.putLoginUser,
+      null,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 注销账号
+  static void cancelUser<T>({Success? success, Fail? fail}) {
+    HttpUtils.get(APIs.cancelUser, null, success: success, fail: fail);
   }
 
   // 获取用户消费信息
@@ -59,7 +114,7 @@ class DataUtils {
 
   // 编辑用户信息
   static void editUserInfo(parameters, {Success? success, Fail? fail}) {
-    HttpUtils.post(APIs.editUser, parameters, success: success, fail: fail);
+    HttpUtils.put(APIs.editUser, parameters, success: success, fail: fail);
   }
 
   // 用户修改密码
@@ -570,10 +625,30 @@ class DataUtils {
     );
   }
 
+  // 修改保洁订单
+  static void editCleaningOrder(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.put(
+      '/maintenance/clean/order',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
   // 提交隐患报告
   static void submitHazardReport(parameters, {Success? success, Fail? fail}) {
     HttpUtils.post(
       '/maintenance/hidden/danger',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取我的隐患列表
+  static void getHazardReportList(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      APIs.hazardReportList,
       parameters,
       success: success,
       fail: fail,
@@ -596,12 +671,12 @@ class DataUtils {
 
   // 解绑报餐送餐帐号
   static void revokeMealDeliveryAccount(
-    userId, {
+    username, {
     Success? success,
     Fail? fail,
   }) {
     HttpUtils.put(
-      '/system/user/revokeUserAuthorizeWithMeal?userId=$userId',
+      '/system/user/revokeUserAuthorizeWithMeal?username=$username',
       null,
       success: success,
       fail: fail,
@@ -626,5 +701,35 @@ class DataUtils {
   // 点赞好人好事
   static void likeGoodDeed(id, {Success? success, Fail? fail}) {
     HttpUtils.get('/other/deeds/like/$id', null, success: success, fail: fail);
+  }
+
+  // 获取动植物树结构
+  static void getAnimalPlantTree(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.get(
+      '/other/fauna/treeList',
+      parameters,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 获取反馈未读数量
+  static void getFeedbackUnreadCount({Success? success, Fail? fail}) {
+    HttpUtils.get(
+      APIs.getFeedbackUnreadCount,
+      null,
+      success: success,
+      fail: fail,
+    );
+  }
+
+  // 在线充值
+  static void onlineTopup(parameters, {Success? success, Fail? fail}) {
+    HttpUtils.post(
+      'https://api.iwipwedabay.com/api/rain/iwip/home/lms/home/record/save',
+      parameters,
+      success: success,
+      fail: fail,
+    );
   }
 }

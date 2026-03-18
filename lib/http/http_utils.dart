@@ -3,9 +3,12 @@
 ///  Created by iotjin on 2020/07/07.
 ///  description: 网络请求工具类（dio二次封装）
 
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
+import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 
@@ -29,6 +32,8 @@ class HttpUtils {
 
     /// 统一添加身份验证请求头
     interceptors.add(AuthInterceptor());
+
+    // 添加公共请求头信息
 
     /// 打印Log(生产模式去除)
     if (!LogUtils.inProduction && isOpenAllLog) {
@@ -191,28 +196,68 @@ class HttpUtils {
       url,
       data: data,
       queryParameters: queryParameters,
-      onSuccess: (result) {
+      onSuccess: (result) async {
         if (!LogUtils.inProduction && isOpenLog) {
           print('---------- HttpUtils response ----------');
-          print(result.toString());
+          print(url + result.toString());
         }
-        if (result['code'] == ExceptionHandle.success ||
-            result['code'] == '1') {
+        dynamic resultData = result;
+        if (result is String) {
+          resultData = jsonDecode(result);
+        }
+        if (resultData['code'] == ExceptionHandle.success ||
+            resultData['code'].toString() == '1') {
           // ProgressHUD.hide();
           success?.call(result);
-        } else if ((result['code'] == ExceptionHandle.unauthorized)) {
+        }
+        // 未授权或刷新token无效，重新登录
+        else if ((resultData['code'] == ExceptionHandle.unauthorized ||
+            resultData['code'] == ExceptionHandle.refresh_token_invalid)) {
           ProgressHUD.showText('请登录您的帐号');
 
-          SpUtils.remove(Constants.SP_USER_NAME);
           SpUtils.remove(Constants.SP_USER_DEPT);
           SpUtils.remove(Constants.SP_TOKEN);
+          SpUtils.remove(Constants.SP_REFRESH_TOKEN);
           RouteUtils.navigateToLogin();
-        } else if ((result['status'] == ExceptionHandle.not_found)) {
-          ProgressHUD.showText('无法连接服务器');
+        }
+        // token过期，刷新token
+        else if (resultData['code'] == ExceptionHandle.token_expired) {
+          // 防止多个接口同时 token 过期造成重复刷新
+          String refreshToken =
+              await SpUtils.getString(Constants.SP_REFRESH_TOKEN) ?? '';
+
+          DataUtils.updateToken(
+            {'refreshToken': refreshToken},
+            success: (data) async {
+              // 假设新 token 存在 data['token']
+              final newToken = data['data']['accessToken'];
+              final refreshToken = data['data']['refreshToken'];
+              await SpUtils.saveString(Constants.SP_TOKEN, newToken);
+              await SpUtils.saveString(
+                Constants.SP_REFRESH_TOKEN,
+                refreshToken,
+              );
+              refreshUserPermission();
+              // 刷新当前页面
+              RouteUtils.refreshCurrentPage();
+            },
+            fail: (code, msg) {
+              // 刷新失败 -> 跳转登录
+              ProgressHUD.showText('登录已过期，请重新登录');
+              SpUtils.remove(Constants.SP_TOKEN);
+              SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+              RouteUtils.navigateToLogin();
+            },
+          );
         } else {
           // 其他状态，弹出错误提示信息
-          ProgressHUD.showText(result['msg'] ?? '请求失败');
-          fail?.call(result['code'], result['msg'] ?? '请求失败');
+          ProgressHUD.showError(
+            resultData['msg'] ?? resultData['message'] ?? '请求失败',
+          );
+          fail?.call(
+            resultData['code'],
+            resultData['msg'] ?? resultData['message'] ?? '请求失败',
+          );
         }
       },
       onError: (code, msg) {
@@ -224,4 +269,8 @@ class HttpUtils {
       },
     );
   }
+}
+
+void refreshUserPermission() async {
+  DataUtils.putLoginUser();
 }

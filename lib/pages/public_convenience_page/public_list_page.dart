@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:logistics_app/common_ui/empty_view.dart';
+import 'package:logistics_app/common_ui/keep_alive_image.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:logistics_app/http/apis.dart';
@@ -46,6 +48,7 @@ class _PublicListPageState extends State<PublicListPage>
   late RefreshController _refreshController;
   String imagePrefix = APIs.imagePrefix;
   String title = '';
+  List<String> images = [];
 
   @override
   void initState() {
@@ -94,12 +97,18 @@ class _PublicListPageState extends State<PublicListPage>
         if (isLoadMore) {
           setState(() {
             _dataArr = _dataArr + response.rows!;
+            if (images.isEmpty) {
+              images = response.rows![0].def1.split(',') ?? [];
+            }
           });
           _refreshController.loadComplete();
         } else {
           setState(() {
             _dataArr = response.rows ?? [];
             _totalItems = response.total ?? 0;
+            if (images.isEmpty) {
+              images = response.rows![0].def1?.split(',') ?? [];
+            }
           });
           _refreshController.loadComplete();
           _refreshController.refreshCompleted();
@@ -120,25 +129,104 @@ class _PublicListPageState extends State<PublicListPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title, style: TextStyle(fontSize: 16.px))),
-      body: _body(),
-    );
+    return Scaffold(body: _body());
   }
 
   Widget _body() {
     return SafeArea(
-      child: SmartRefreshWidget(
-        enablePullDown: true,
-        enablePullUp: true,
-        onRefresh: () {
-          _requestData(isLoadMore: false);
-        },
-        onLoading: () {
-          _requestData(isLoadMore: true);
-        },
-        controller: _refreshController,
-        child: Padding(padding: EdgeInsets.all(10.px), child: _otherView()),
+      top: false,
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              Container(
+                height: images.length > 0 ? 240.px : 80.px,
+                width: double.infinity,
+                child:
+                    images.length > 0
+                        ? Swiper(
+                          itemCount: images.length,
+                          autoplay: images.length > 1,
+                          pagination: SwiperPagination(
+                            builder: DotSwiperPaginationBuilder(
+                              activeColor: Colors.white,
+                              color: Colors.white.withOpacity(0.5),
+                              size: 6.px,
+                              activeSize: 8.px,
+                            ),
+                          ),
+                          itemBuilder: (context, index) {
+                            return KeepAliveImage(
+                              imageUrl: APIs.imagePrefix + images[index],
+                              cacheKey: images[index],
+                            );
+                          },
+                        )
+                        : Container(),
+              ),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 240.px,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white,
+                        Colors.white.withOpacity(0.8),
+                        Colors.white.withOpacity(0),
+                      ],
+                      stops: [0, 0.5, 0.7],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 40.px,
+                left: 0,
+                right: 0,
+                child: Container(
+                  child: Text(
+                    title,
+                    style: TextStyle(fontSize: 16.px),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              // 返回按钮
+              Positioned(
+                top: 30.px,
+                left: 8.px,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: SmartRefreshWidget(
+              enablePullDown: true,
+              enablePullUp: true,
+              onRefresh: () {
+                _requestData(isLoadMore: false);
+              },
+              onLoading: () {
+                _requestData(isLoadMore: true);
+              },
+              controller: _refreshController,
+              child: Padding(
+                padding: EdgeInsets.all(10.px),
+                child: _otherView(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -237,10 +325,10 @@ class _otherItem extends StatelessWidget {
                   child: Ink(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(20.px),
+                      borderRadius: BorderRadius.circular(10.px),
                     ),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(20.px),
+                      borderRadius: BorderRadius.circular(10.px),
                       onTap: () {
                         RouteUtils.push(
                           context,
@@ -251,7 +339,7 @@ class _otherItem extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          if (listData?.image != null)
+                          if (listData?.image != null && listData!.image != '')
                             Container(
                               width: 100.px,
                               height: 100.px,

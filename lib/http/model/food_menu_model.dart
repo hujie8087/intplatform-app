@@ -87,6 +87,7 @@ class Dishs {
   String? description;
   String? imageUrl;
   int? mealType;
+  int? dishType;
 
   Dishs({
     this.createBy,
@@ -104,6 +105,7 @@ class Dishs {
     this.description,
     this.imageUrl,
     this.mealType,
+    this.dishType,
   });
 
   Dishs.fromJson(Map<String, dynamic> json) {
@@ -122,6 +124,7 @@ class Dishs {
     description = json['description'];
     imageUrl = json['imageUrl'];
     mealType = json['mealType'];
+    dishType = json['dishType'];
   }
 
   Map<String, dynamic> toJson() {
@@ -141,6 +144,7 @@ class Dishs {
     data['description'] = this.description;
     data['imageUrl'] = this.imageUrl;
     data['mealType'] = this.mealType;
+    data['dishType'] = this.dishType;
     return data;
   }
 }

@@ -5,6 +5,7 @@ import 'package:logistics_app/common_ui/option_grid_view.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
+import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/data/repair_utils.dart';
 import 'package:logistics_app/http/data/tool_utils.dart';
@@ -112,16 +113,21 @@ class ToolBoxPage extends StatefulWidget {
 }
 
 class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
+  bool _isLoadingAppMenu = false;
   List<GuideTypeViewModel> guideTypeList = [];
   List<GuideViewModel> guideList = [];
   List<String>? permission;
   int repairUnfinishedCount = 0;
   int repairUnreadCount = 0;
+  int feedbackUnreadCount = 0;
+  int hiddenDangerUnreadCount = 0;
   List<AppMenuListModel> appMenuList = [];
   List<AppMenuModel> appMenuListFilter = [];
   UserInfoModel? userInfoData;
+  ThirdUserInfoModel? thirdUserInfoData;
   String token = '';
   String languageCode = 'zh';
+  int creditLimit = 0;
 
   // 获取维修订单未完成数量
   Future<void> getRepairUnfinishedCount() async {
@@ -147,14 +153,18 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
 
   // 获取我的报修未读数量
   Future<void> getMyRepairUnreadCount() async {
-    RepairUtils.getMyRepairList(
-      {'pageNum': 1, 'pageSize': 1000, 'status': 1, 'readStatus': 1},
+    RepairUtils.getMyRepairUnreadCount(
       success: (data) {
         setState(() {
-          if (repairUnreadCount != data['total']) {
-            repairUnreadCount = data['total'];
-            filterAppMenu();
-          }
+          repairUnreadCount = data['data'];
+          filterAppMenu();
+        });
+      },
+    );
+    DataUtils.getFeedbackUnreadCount(
+      success: (data) {
+        setState(() {
+          feedbackUnreadCount = data['data'];
         });
       },
     );
@@ -166,10 +176,12 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     switch (permission) {
       case 'commonality:repair:unfinishedCountApp':
         badgeContent = repairUnfinishedCount;
-        print(badgeContent);
         break;
       case 'commonality:repair:listApp':
         badgeContent = repairUnreadCount;
+        break;
+      case 'commonality:feedback:listApp':
+        badgeContent = feedbackUnreadCount;
         break;
       default:
         badgeContent = 0;
@@ -181,16 +193,39 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
 
   // 获取App菜单
   Future<void> getAppMenu() async {
-    ToolUtils.getAppMenu<AppMenuModel>(
+    if (_isLoadingAppMenu) return;
+    _isLoadingAppMenu = true;
+    // 获取信用额度
+    DataUtils.getData(
+      APIs.getUserCreditLimit,
+      null,
       success: (data) {
-        BaseListModel<AppMenuModel> response = BaseListModel.fromJson(
-          data,
-          (json) => AppMenuModel.fromJson(json),
-        );
-        appMenuListFilter = response.data ?? [];
-        setState(() {
-          filterAppMenu();
-        });
+        if (mounted) {
+          setState(() {
+            creditLimit = data['data'];
+            ToolUtils.getAppMenu<AppMenuModel>(
+              success: (data) {
+                _isLoadingAppMenu = false;
+                BaseListModel<AppMenuModel> response = BaseListModel.fromJson(
+                  data,
+                  (json) => AppMenuModel.fromJson(json),
+                );
+                appMenuListFilter = response.data ?? [];
+                setState(() {
+                  filterAppMenu();
+                });
+              },
+              fail: (code, msg) {
+                _isLoadingAppMenu = false;
+              },
+            );
+          });
+        } else {
+          _isLoadingAppMenu = false;
+        }
+      },
+      fail: (code, msg) {
+        _isLoadingAppMenu = false;
       },
     );
   }
@@ -245,9 +280,21 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
                   menu.iconArticles?.where((article) {
                     if (article.status == 1) {
                       return false;
+                    } else if (article.permissions == 'topup:record:save') {
+                      if (thirdUserInfoData?.country == 2) {
+                        if (creditLimit > 0) {
+                          return true;
+                        } else {
+                          return false;
+                        }
+                      } else {
+                        return false;
+                      }
                     } else if (article.permissions != null) {
-                      return permission!.contains(article.permissions);
+                      return permission!.contains('*:*:*') ||
+                          permission!.contains(article.permissions);
                     }
+
                     return true;
                   }) // 过滤 `iconArticles`
                   .toList(),
@@ -329,22 +376,32 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     languageCode = await SpUtils.getString('locale') ?? 'zh';
     final userInfoDataModel = await SpUtils.getModel('userInfo');
     token = await SpUtils.getString(Constants.SP_TOKEN) ?? '';
+    // 模拟异步数据获取
+    var thirdUserInfoDataModel = await SpUtils.getModel('thirdUserInfo');
+    // 更新状态
+    setState(() {
+      if (thirdUserInfoDataModel != null) {
+        thirdUserInfoData = ThirdUserInfoModel.fromJson(thirdUserInfoDataModel);
+      }
+    });
     userInfoData =
         userInfoDataModel != null
             ? UserInfoModel.fromJson(userInfoDataModel)
             : null;
     if (userInfoData != null && token != '') {
       permission = userInfoData?.permissions;
-      if (permission != null &&
-          permission!.contains('commonality:repair:unfinishedCountApp')) {
-        getRepairUnfinishedCount();
+      if (permission != null) {
+        if (permission!.contains('*:*:*') ||
+            permission!.contains('commonality:repair:unfinishedCountApp')) {
+          getRepairUnfinishedCount();
+        }
+        if (permission!.contains('*:*:*') ||
+            permission!.contains('commonality:repair:listApp')) {
+          getMyRepairUnreadCount();
+        }
       }
       if (appMenuList.isEmpty) {
         await getAppMenu();
-      }
-      if (permission != null &&
-          permission!.contains('commonality:repair:listApp')) {
-        getMyRepairUnreadCount();
       }
     } else {
       if (appMenuList.isEmpty) {
@@ -424,6 +481,8 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
   IconData sewingIcon = Icons.local_laundry_service;
   // 超市图标
   IconData supermarketIcon = Icons.shopping_cart;
+  // 充值记录查询图标
+  IconData topUpIcon = Icons.card_giftcard;
 
   @override
   void initState() {
@@ -443,13 +502,15 @@ class _ToolBoxPageState extends State<ToolBoxPage> with RouteAware {
     // 当从其他页面返回时触发
     print("页面重新进入，触发请求...");
     if (permission != null &&
-        permission!.contains('commonality:repair:unfinishedCountApp')) {
+        (permission!.contains('*:*:*') ||
+            permission!.contains('commonality:repair:unfinishedCountApp'))) {
       getRepairUnfinishedCount();
     }
     if (token != '' &&
         token.isNotEmpty &&
         permission != null &&
-        permission!.contains('commonality:repair:listApp')) {
+        (permission!.contains('*:*:*') ||
+            permission!.contains('commonality:repair:listApp'))) {
       getMyRepairUnreadCount();
     }
   }

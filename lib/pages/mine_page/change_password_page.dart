@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
+import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
-import 'package:logistics_app/pages/app_home_screen.dart';
 import 'package:logistics_app/route/auto_route_generator.dart';
-import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
@@ -27,13 +26,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   TextEditingController _oldPasswordController = TextEditingController();
   TextEditingController _newPasswordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-  TextEditingController _idCardController = TextEditingController();
   int userId = 0;
   String userName = '';
   String nickName = '';
   bool oldInputState = false;
   bool newPasswordInputState = false;
   bool confirmInputState = false;
+  String loginCode = '';
 
   @override
   void initState() {
@@ -42,13 +41,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   }
 
   void _fetchData() async {
-    var res = await SpUtils.getModel('userInfo');
+    var res = await SpUtils.getModel('thirdUserInfo');
+    var spName = await SpUtils.getString('Constants.SP_USER_NAME');
+    var code = await SpUtils.getString(Constants.SP_LOGIN_CODE);
+    print(spName);
+    if (code != null && code.isNotEmpty) {
+      loginCode = code;
+    }
     if (res != null) {
       setState(() {
-        _idCardController.text = res['user']['card'] ?? '';
-        userId = res['user']['userId'];
-        userName = res['user']['userName'];
-        nickName = res['user']['nickName'];
+        userId = res['id'];
+        userName = spName;
+        nickName = res['name'];
       });
     }
   }
@@ -255,33 +259,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             },
           ),
           SizedBox(height: 16.px),
-          // 身份证号
-          if (widget.isFirstLogin)
-            TextFormField(
-              controller: _idCardController,
-              decoration: InputDecoration(
-                labelStyle: TextStyle(
-                  fontSize: 12.px,
-                  fontWeight: FontWeight.bold,
-                ),
-                hintText: S.of(context).inputMessage(S.of(context).idCard),
-                hintStyle: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12.px,
-                  fontWeight: FontWeight.bold,
-                ),
-                border: InputBorder.none,
-                prefixIcon: Icon(Icons.person_outline, color: primaryColor),
-              ),
-              validator: (v) {
-                if (v!.trim().isNotEmpty) {
-                  return null;
-                } else {
-                  return S.of(context).inputMessage(S.of(context).idCard);
-                }
-              },
-            ),
-          SizedBox(height: 16.px),
           // 提示信息
           Padding(
             padding: EdgeInsets.only(left: 15.px, right: 15.px),
@@ -299,30 +276,35 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           Padding(
             padding: EdgeInsets.only(left: 15.px, right: 15.px),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if ((_formKey.currentState as FormState).validate()) {
                   if (widget.isFirstLogin) {
+                    userName = await SpUtils.getString(
+                      'Constants.SP_USER_NAME',
+                    );
+                    print(userName);
                     //验证通过提交数据
                     DataUtils.updateUserFirstPwd(
                       {
                         'password': _newPasswordController.text,
-                        'card': _idCardController.text,
-                        'userId': userId,
-                        'userName': userName,
-                        'nickName': nickName,
+                        'confirmPassword': _confirmPasswordController.text,
+                        'code': loginCode,
+                        'account': userName,
                       },
                       success: (data) {
                         ProgressHUD.showText(
                           S.of(context).passwordChangeSuccess,
                         );
-                        RouteUtils.push(context, AppHomeScreen());
+                        Navigator.of(
+                          context,
+                        ).pushNamedAndRemoveUntil('/home', (route) => false);
                       },
                     );
                   } else {
                     //验证通过提交数据
                     DataUtils.updateUserPwd(
                       {
-                        'userName': userName,
+                        'confirmPassword': _confirmPasswordController.text,
                         'newPassword': _newPasswordController.text,
                         'oldPassword': _oldPasswordController.text,
                       },

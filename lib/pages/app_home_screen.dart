@@ -1,6 +1,8 @@
 // import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:async';
 import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_update_dialog/update_dialog.dart';
@@ -9,7 +11,6 @@ import 'package:logistics_app/common_ui/navigation/navigation_bar_item.dart';
 import 'package:logistics_app/common_ui/progress_hud.dart.dart';
 import 'package:logistics_app/constants.dart';
 import 'package:logistics_app/generated/l10n.dart';
-import 'package:logistics_app/http/apis.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
 import 'package:logistics_app/http/model/app_check_update_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
@@ -17,19 +18,20 @@ import 'package:logistics_app/pages/home_page/home_page.dart';
 import 'package:logistics_app/pages/mine_page/mine_page.dart';
 import 'package:logistics_app/pages/models/tabIcon_data.dart';
 import 'package:logistics_app/pages/repair/report_hazard_page.dart';
+import 'package:logistics_app/pages/sos/sos_index_page.dart';
 import 'package:logistics_app/pages/tool_box_page.dart';
 import 'package:logistics_app/route/route_utils.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/device_utils.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
-import 'package:pub_semver/pub_semver.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:dio/dio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-// 在文件顶部定义全局 key
+// 在文件顶部定义全局 key 和 state 引用
 final GlobalKey<_AppHomeScreenState> appHomeScreenKey =
     GlobalKey<_AppHomeScreenState>();
+// 当前 AppHomeScreen 的 state 引用，用于外部访问
+_AppHomeScreenState? currentAppHomeScreenState;
 
 class AppHomeScreen extends StatefulWidget {
   const AppHomeScreen({Key? key}) : super(key: key);
@@ -39,55 +41,69 @@ class AppHomeScreen extends StatefulWidget {
 }
 
 class _AppHomeScreenState extends State<AppHomeScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   AnimationController? animationController;
   final GlobalKey<NavigationBarItemState> navigationKey =
       GlobalKey<NavigationBarItemState>();
   double _progress = -1;
   UpdateDialog? _updateDialog;
+  DateTime? _lastResumeTime;
 
   List<TabIconData> _tabIconsList = [];
   int _grooveIndex = 2;
 
+  int hiddenDangerUnreadCount = 0;
+
   void _loadTabIcons() {
-    setState(() {
-      if (_tabIconsList.isEmpty) {
-        _tabIconsList = <TabIconData>[
-          TabIconData(
-            imagePath: 'assets/images/tab_1.png',
-            selectedImagePath: 'assets/images/tab_1s1.png',
-            index: 0,
-            isSelected: true,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-          ),
-          TabIconData(
-            imagePath: 'assets/images/tab_danger1.png',
-            selectedImagePath: 'assets/images/tab_danger1s.png',
-            index: 1,
-            isSelected: true,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-          ),
-          TabIconData(
-            imagePath: 'assets/images/tab_tool1.png',
-            selectedImagePath: 'assets/images/tab_tool21.png',
-            index: 2,
-            isSelected: false,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-          ),
-          TabIconData(
-            imagePath: 'assets/images/tab_4.png',
-            selectedImagePath: 'assets/images/tab_4s1.png',
-            index: 3,
-            isSelected: false,
-            animationController: animationController,
-            labelName: '', // 先设为空，在build中设置
-          ),
-        ];
-      }
-    });
+    if (_tabIconsList.isEmpty) {
+      _tabIconsList = <TabIconData>[
+        TabIconData(
+          imagePath: 'assets/images/tab_1.png',
+          selectedImagePath: 'assets/images/tab_1s1.png',
+          index: 0,
+          isSelected: true,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: 0,
+        ),
+        TabIconData(
+          imagePath: 'assets/images/tab_danger1.png',
+          selectedImagePath: 'assets/images/tab_danger1s.png',
+          index: 1,
+          isSelected: true,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: hiddenDangerUnreadCount,
+        ),
+        TabIconData(
+          imagePath: 'assets/images/tab_tool1.png',
+          selectedImagePath: 'assets/images/tab_tool21.png',
+          index: 2,
+          isSelected: false,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: 0,
+        ),
+        TabIconData(
+          imagePath: 'assets/images/tab_warn.png',
+          selectedImagePath: 'assets/images/tab_warn1.png',
+          index: 3,
+          isSelected: false,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: 0,
+        ),
+        TabIconData(
+          imagePath: 'assets/images/tab_4.png',
+          selectedImagePath: 'assets/images/tab_4s1.png',
+          index: 4,
+          isSelected: false,
+          animationController: animationController,
+          labelName: '', // 先设为空，在build中设置
+          unreadCount: 0,
+        ),
+      ];
+    }
   }
 
   // 更新tab标签名称
@@ -96,7 +112,8 @@ class _AppHomeScreenState extends State<AppHomeScreen>
       _tabIconsList[0].labelName = S.of(context).homePage;
       _tabIconsList[1].labelName = S.of(context).dangerPage;
       _tabIconsList[2].labelName = S.of(context).toolPage;
-      _tabIconsList[3].labelName = S.of(context).minePage;
+      _tabIconsList[3].labelName = S.of(context).warningPage;
+      _tabIconsList[4].labelName = S.of(context).minePage;
     }
   }
 
@@ -111,24 +128,24 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     } else {
       // 用Completer来等待回调
       final completer = Completer<bool>();
-      DataUtils.getUserInfo(
+      DataUtils.getThirdUserInfo(
         success: (res) async {
-          UserInfoModel userInfo = UserInfoModel.fromJson(res['data']);
-          await SpUtils.saveModel('userInfo', userInfo);
-          SpUtils.saveString(
-            Constants.SP_USER_NAME,
-            userInfo.user?.nickName ?? '',
+          ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
+            res['data'],
           );
+          await SpUtils.saveModel('thirdUserInfo', userInfo);
+          SpUtils.saveString(Constants.SP_USER_NAME, userInfo.account ?? '');
+          SpUtils.saveString(Constants.SP_USER_NICKNAME, userInfo.name ?? '');
           SpUtils.saveString(
             Constants.SP_USER_DEPT,
-            userInfo.user?.dept?.deptName ?? '',
+            userInfo.formatOrganizeName ?? '',
           );
           completer.complete(true);
         },
         fail: (code, msg) {
           DataUtils.logout(
             success: (data) {
-              SpUtils.remove(Constants.SP_USER_NAME);
+              SpUtils.remove(Constants.SP_USER_NICKNAME);
               SpUtils.remove(Constants.SP_USER_DEPT);
               SpUtils.remove(Constants.SP_TOKEN);
               Navigator.pushNamed(context, '/login');
@@ -145,40 +162,37 @@ class _AppHomeScreenState extends State<AppHomeScreen>
   Future checkUpdate(BuildContext context) async {
     //获取当前app的版本code
     String versionCode = await DeviceUtils.version();
-    String versionName = await DeviceUtils.version();
-    String downloadUrlPre = APIs.imagePrefix;
+    String downloadUrlPre = 'https://web.iwipwedabay.com/static/';
     DataUtils.getAppLastVersion(
       success: (data) async {
         UpdateInfoData updateModel = UpdateInfoData.fromJson(data['data']);
-        //线上版本的code
-        Version oldVersion = Version.parse(versionName);
-        Version newVersion = Version.parse(updateModel.versionName);
-        SpUtils.saveString('plantAccessToken', data['data']['def1'] ?? '');
-        SpUtils.saveString('animalAccessToken', data['data']['def2'] ?? '');
-        try {
-          //如果当前版本小于线上版本，需要更新
-          if (oldVersion == newVersion) {
-            SpUtils.saveString(
-              Constants.SP_NEW_APP_VERSION,
-              updateModel.versionName,
-            );
-          } else {
-            SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
-          }
-          if (oldVersion < newVersion) {
+
+        if (updateModel.update == true) {
+          //线上版本的code
+          try {
             if (Platform.isAndroid) {
               // checkUpdateFlutterXUpdate(updateModel, downloadUrlPre);
               // downloadApk(downloadUrlPre + updateModel.apkUrl);
               _updateDialog = UpdateDialog.showUpdate(
                 context,
-                title: '发现新版本 v${newVersion}',
-                updateContent: updateModel.updateLog ?? '',
+                title: '发现新版本 v${updateModel.versionName ?? ''}',
+                updateContent: updateModel.content ?? '',
                 themeColor: Color.fromRGBO(255, 101, 50, 1),
                 updateButtonText: S.of(context).updateNow,
                 topImage: Image.asset('assets/images/bg_update_top.png'),
                 isForce: true,
                 onUpdate: () async {
-                  downloadApk(downloadUrlPre + updateModel.apkUrl);
+                  if (updateModel.updateType == 3) {
+                    final url = Uri.parse(updateModel.url ?? '');
+                    // 替换为外部的链接
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  } else {
+                    downloadApk(downloadUrlPre + (updateModel.url ?? ''));
+                  }
                 },
                 progress: _progress,
               );
@@ -186,7 +200,7 @@ class _AppHomeScreenState extends State<AppHomeScreen>
               UpdateDialog.showUpdate(
                 context,
                 title: S.of(context).updateAppStore,
-                updateContent: updateModel.updateLog ?? '',
+                updateContent: updateModel.content ?? '',
                 themeColor: Color.fromRGBO(255, 101, 50, 1),
                 updateButtonText: S.of(context).updateNow,
                 topImage: Image.asset('assets/images/bg_update_top.png'),
@@ -204,9 +218,9 @@ class _AppHomeScreenState extends State<AppHomeScreen>
                 },
               );
             }
+          } catch (e) {
+            SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
           }
-        } catch (e) {
-          SpUtils.saveString(Constants.SP_NEW_APP_VERSION, versionCode);
         }
       },
     );
@@ -249,32 +263,131 @@ class _AppHomeScreenState extends State<AppHomeScreen>
     }
   }
 
+  // 刷新用户权限信息
+  void refreshUserPermission() async {
+    final inputUserName = await SpUtils.getString(Constants.SP_USER_NAME);
+    final token = await SpUtils.getString(Constants.SP_TOKEN);
+    if (inputUserName != null && token != null) {
+      DataUtils.putLoginUser(
+        success: (res) async {
+          if (res['data']['loginUser']['status'] == '1') {
+            await SpUtils.remove(Constants.SP_TOKEN);
+            await SpUtils.remove(Constants.SP_REFRESH_TOKEN);
+            ProgressHUD.showError('账号已注销，请联系管理员');
+          } else {
+            // DataUtils.getThirdUserInfo(
+            //   success: (res) async {
+            //     ThirdUserInfoModel userInfo = ThirdUserInfoModel.fromJson(
+            //       res['data'],
+            //     );
+            //     await SpUtils.saveModel('thirdUserInfo', userInfo);
+            //     await SpUtils.saveString(
+            //       Constants.SP_USER_NAME,
+            //       userInfo.account ?? '',
+            //     );
+            //     await SpUtils.saveString(
+            //       Constants.SP_USER_DEPT,
+            //       userInfo.formatOrganizeName ?? '',
+            //     );
+            //     DataUtils.getUserInfo(
+            //       success: (res) async {
+            //         UserInfoModel userInfo = UserInfoModel.fromJson(
+            //           res['data'],
+            //         );
+            //         await SpUtils.saveModel('userInfo', userInfo);
+            //         await SpUtils.saveModel(
+            //           Constants.SP_USER_PERMISSION,
+            //           userInfo.permissions ?? [],
+            //         );
+            //       },
+            //     );
+            //   },
+            // );
+          }
+        },
+      );
+    }
+  }
+
   @override
   void initState() {
-    _loadTabIcons();
-    _tabIconsList.forEach((TabIconData tab) {
-      tab.isSelected = false;
-    });
-    _tabIconsList[_grooveIndex].isSelected = true;
-
+    super.initState();
+    getHiddenDangerUnreadCount();
     animationController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    super.initState();
-    handleTabChanged(_grooveIndex);
+    // 注册生命周期观察者
+    WidgetsBinding.instance.addObserver(this);
+    // 注册当前的 state，用于外部访问
+    currentAppHomeScreenState = this;
     // tabBody = HomePage(
     //     animationController: animationController, onChanged: handleTabChanged);
+    // refreshUserPermission();
     checkUpdate(context);
   }
 
+  // 获取隐患收集未读数量
+  void getHiddenDangerUnreadCount() async {
+    final token = await SpUtils.getString(Constants.SP_TOKEN);
+    if (token == null) {
+      _loadTabIcons();
+      _tabIconsList.forEach((TabIconData tab) {
+        tab.isSelected = false;
+      });
+      _tabIconsList[_grooveIndex].isSelected = true;
+      handleTabChanged(_grooveIndex);
+    } else {
+      DataUtils.getData(
+        '/maintenance/hidden/danger/appNoReadNum',
+        null,
+        success: (data) {
+          setState(() {
+            hiddenDangerUnreadCount = data['data'];
+            _loadTabIcons();
+            _tabIconsList.forEach((TabIconData tab) {
+              tab.isSelected = false;
+            });
+            _tabIconsList[_grooveIndex].isSelected = true;
+            handleTabChanged(_grooveIndex);
+          });
+        },
+      );
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    print('AppHomeScreen instance: ${identityHashCode(this)} state: $state');
+    if (state == AppLifecycleState.resumed) {
+      if (_lastResumeTime == null ||
+          DateTime.now().difference(_lastResumeTime!) >
+              const Duration(seconds: 2)) {
+        _lastResumeTime = DateTime.now();
+        refreshUserPermission();
+      }
+      // 你要做的动作
+    } else if (state == AppLifecycleState.paused) {
+      print("🟡 App 暂停（进入后台 / 切换到其他 App）");
+    } else if (state == AppLifecycleState.inactive) {
+      print("⚪ App 暂时无响应（电话、通知等）");
+    } else if (state == AppLifecycleState.detached) {
+      print("🔴 App 被移除任务栈");
+    }
+  }
+
   void handleTabChanged(int newValue) async {
+    if (_tabIconsList.isEmpty) {
+      _loadTabIcons();
+    }
+    if (_tabIconsList.isEmpty) return;
     _tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
-    _tabIconsList[newValue].isSelected = true;
+    _tabIconsList[newValue ?? 2].isSelected = true;
     setState(() {
-      _grooveIndex = newValue;
+      _grooveIndex = newValue ?? 2;
     });
     animationController?.reverse().then<dynamic>((data) async {
       if (!mounted) {
@@ -297,20 +410,39 @@ class _AppHomeScreenState extends State<AppHomeScreen>
           });
           break;
         case 3:
+          setState(() {
+            tabBody = SosIndexPage();
+          });
+          break;
+        case 4:
           await isLogin();
           setState(() {
             tabBody = MinePage();
           });
           break;
       }
+      // getHiddenDangerUnreadCount();
       navigationKey.currentState?.setRemoveAllSelection(
         _tabIconsList[newValue],
       );
     });
   }
 
+  // 刷新当前 tab 页面
+  void refreshCurrentTab() {
+    if (!mounted) return;
+    // 重新构建当前 tab 的页面
+    handleTabChanged(_grooveIndex);
+  }
+
   @override
   void dispose() {
+    // 移除生命周期观察者
+    WidgetsBinding.instance.removeObserver(this);
+    // 清除 state 引用
+    if (currentAppHomeScreenState == this) {
+      currentAppHomeScreenState = null;
+    }
     animationController?.dispose();
     super.dispose();
   }

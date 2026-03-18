@@ -87,3 +87,92 @@ class PlantModel {
     return _data;
   }
 }
+
+class PlantTreeModel {
+  String? createBy;
+  String? createTime;
+  String? updateBy;
+  String? updateTime;
+  String? remark;
+  String? startQueryTime;
+  Null? endQueryTime;
+  int? id;
+  String? name;
+  String? code;
+  int? type;
+  int? sort;
+  String? status;
+  String? delFlag;
+  String? deleteBy;
+  String? deleteTime;
+  List<PlantModel>? children;
+
+  PlantTreeModel({
+    this.createBy,
+    this.createTime,
+    this.updateBy,
+    this.updateTime,
+    this.remark,
+    this.startQueryTime,
+    this.endQueryTime,
+    this.id,
+    this.name,
+    this.code,
+    this.type,
+    this.sort,
+    this.status,
+    this.delFlag,
+    this.deleteBy,
+    this.deleteTime,
+    this.children,
+  });
+
+  PlantTreeModel.fromJson(Map<String, dynamic> json) {
+    createBy = json['createBy'];
+    createTime = json['createTime'];
+    updateBy = json['updateBy'];
+    updateTime = json['updateTime'];
+    remark = json['remark'];
+    startQueryTime = json['startQueryTime'];
+    endQueryTime = json['endQueryTime'];
+    id = json['id'];
+    name = json['name'];
+    code = json['code'];
+    type = json['type'];
+    sort = json['sort'];
+    status = json['status'];
+    delFlag = json['delFlag'];
+    deleteBy = json['deleteBy'];
+    deleteTime = json['deleteTime'];
+    if (json['children'] != null) {
+      children = <PlantModel>[];
+      json['children'].forEach((v) {
+        children!.add(new PlantModel.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['createBy'] = this.createBy;
+    data['createTime'] = this.createTime;
+    data['updateBy'] = this.updateBy;
+    data['updateTime'] = this.updateTime;
+    data['remark'] = this.remark;
+    data['startQueryTime'] = this.startQueryTime;
+    data['endQueryTime'] = this.endQueryTime;
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['code'] = this.code;
+    data['type'] = this.type;
+    data['sort'] = this.sort;
+    data['status'] = this.status;
+    data['delFlag'] = this.delFlag;
+    data['deleteBy'] = this.deleteBy;
+    data['deleteTime'] = this.deleteTime;
+    if (this.children != null) {
+      data['children'] = this.children!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}

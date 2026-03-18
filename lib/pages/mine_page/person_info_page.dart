@@ -23,7 +23,7 @@ class PersonInfoPage extends StatefulWidget {
 
 class _PersonInfoPageState extends State<PersonInfoPage> {
   String avatar = 'assets/images/userImage.png';
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
   List<AssetEntity> selectedAssets = [];
   String? selectedValue;
   final List<DictModel> sexOptions = [
@@ -40,20 +40,26 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
   }
 
   Future<void> _fetchData() async {
-    DataUtils.getUserInfo(
+    DataUtils.getThirdUserInfo(
       success: (res) async {
-        UserInfoModel userInfoModel = UserInfoModel.fromJson(res['data']);
-        await SpUtils.saveModel('userInfo', userInfoModel);
+        ThirdUserInfoModel userInfoModel = ThirdUserInfoModel.fromJson(
+          res['data'],
+        );
+        await SpUtils.saveModel('thirdUserInfo', userInfoModel);
         await SpUtils.saveString(
           Constants.SP_USER_NAME,
-          userInfoModel.user?.nickName ?? '',
+          userInfoModel.account ?? '',
+        );
+        await SpUtils.saveString(
+          Constants.SP_USER_NICKNAME,
+          userInfoModel.name ?? '',
         );
         await SpUtils.saveString(
           Constants.SP_USER_DEPT,
-          userInfoModel.user?.dept?.deptName ?? '',
+          userInfoModel.formatOrganizeName ?? '',
         );
-        if (userInfoModel.user?.avatar != '') {
-          avatar = userInfoModel.user!.avatar!;
+        if (userInfoModel.avatar != '') {
+          avatar = userInfoModel.avatar!;
         }
         userInfo = userInfoModel;
         setState(() {});
@@ -66,7 +72,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
 
   Future<void> _updateData() async {
     DataUtils.editUserInfo(
-      userInfo!.user!.toJson(),
+      userInfo!.toJson(),
       success: (res) async {
         ProgressHUD.showText(S.of(context).changeSuccess);
         _fetchData();
@@ -145,7 +151,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
             }
             final res = await uploadImages(result);
             if (res.isNotEmpty) {
-              userInfo?.user?.avatar = res[0];
+              userInfo?.avatar = res[0];
               print(userInfo);
               _updateData();
             }
@@ -176,7 +182,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
         ),
         _PersonInfoItem(
           S.of(context).name,
-          userInfo?.user?.nickName ?? '',
+          userInfo?.name ?? '',
           Icons.person,
           () async {
             _controller.text = '';
@@ -195,7 +201,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
               ),
               confirmClick: () async {
                 final result = _controller.text;
-                userInfo!.user!.nickName = result;
+                userInfo!.name = result;
                 await _updateData();
               },
             );
@@ -205,46 +211,15 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
         // 工号
         _PersonInfoItem(
           S.of(context).workNo,
-          userInfo?.user?.userName ?? '',
+          userInfo?.account ?? '',
           Icons.workspace_premium,
           () {},
         ),
-        // 身份证号
-        _PersonInfoItem(
-          S.of(context).idCard,
-          userInfo?.user?.card ?? S.of(context).idCardTips,
-          Icons.credit_card,
-          () {
-            _controller.text = userInfo?.user?.card ?? '';
-            DialogFactory.instance.showFieldDialog(
-              context: context,
-              title: S.of(context).inputMessage(S.of(context).idCard),
-              customContentWidget: Container(
-                child: TextField(
-                  style: TextStyle(fontSize: 12.px),
-                  controller: _controller,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: S.of(context).inputMessage(S.of(context).idCard),
-                    hintStyle: TextStyle(fontSize: 12.px),
-                  ),
-                ),
-              ),
-              confirmClick: () async {
-                final result = _controller.text;
-                userInfo!.user!.card = result;
-                await _updateData();
-              },
-            );
-          },
-          isEdit: true,
-          isWarning: userInfo?.user?.card != null ? false : true,
-        ),
         _PersonInfoItem(
           S.of(context).gender,
-          userInfo?.user?.sex == '0'
+          userInfo?.sex == '0'
               ? S.of(context).man
-              : userInfo?.user?.sex == '1'
+              : userInfo?.sex == '1'
               ? S.of(context).woman
               : S.of(context).secret,
           Icons.wc,
@@ -279,7 +254,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
               ),
             ).then((value) {
               if (value != null) {
-                userInfo!.user!.sex = value;
+                userInfo!.sex = value;
                 _updateData();
               }
             });
@@ -288,10 +263,10 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
         ),
         _PersonInfoItem(
           S.of(context).phone,
-          userInfo?.user?.phonenumber ?? '',
+          userInfo?.tel ?? '',
           Icons.phone,
           () async {
-            _controller.text = userInfo?.user?.phonenumber ?? '';
+            _controller.text = userInfo?.tel ?? '';
             DialogFactory.instance.showFieldDialog(
               context: context,
               title: S.of(context).inputMessage(S.of(context).phone),
@@ -308,36 +283,7 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
               ),
               confirmClick: () async {
                 final result = _controller.text;
-                userInfo!.user!.phonenumber = result;
-                await _updateData();
-              },
-            );
-          },
-          isEdit: true,
-        ),
-        _PersonInfoItem(
-          S.of(context).email,
-          userInfo?.user?.email ?? '',
-          Icons.email,
-          () async {
-            _controller.text = userInfo?.user?.email ?? '';
-            DialogFactory.instance.showFieldDialog(
-              context: context,
-              title: S.of(context).inputMessage(S.of(context).email),
-              customContentWidget: Container(
-                child: TextField(
-                  style: TextStyle(fontSize: 12.px),
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _controller,
-                  decoration: InputDecoration(
-                    hintText: S.of(context).inputMessage(S.of(context).email),
-                    hintStyle: TextStyle(fontSize: 12.px),
-                  ),
-                ),
-              ),
-              confirmClick: () async {
-                final result = _controller.text;
-                userInfo!.user!.email = result;
+                userInfo!.tel = result;
                 await _updateData();
               },
             );
@@ -345,9 +291,21 @@ class _PersonInfoPageState extends State<PersonInfoPage> {
           isEdit: true,
         ),
         // 部门
-        // _PersonInfoItem(S.of(context).dept,
-        //     userInfo?.user?.dept?.deptName ?? '', Icons.work, () {},
-        //     isEdit: false),
+        _PersonInfoItem(
+          '职位',
+          userInfo?.postName ?? '',
+          Icons.workspace_premium,
+          () {},
+          isEdit: false,
+        ),
+        // 部门
+        _PersonInfoItem(
+          S.of(context).dept,
+          userInfo?.formatOrganizeName ?? '',
+          Icons.work,
+          () {},
+          isEdit: false,
+        ),
       ],
     );
   }

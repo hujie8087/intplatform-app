@@ -192,4 +192,23 @@ class CleaningDataModel with ChangeNotifier {
     );
     return completer.future;
   }
+
+  // 取消订单
+  Future<bool> cancelCleaningOrder(id) async {
+    final completer = Completer<bool>();
+    Loading.showLoading();
+    DataUtils.editCleaningOrder(
+      {'id': id, 'orderStatus': 5},
+      success: (data) {
+        Loading.dismissAll();
+        completer.complete(true);
+      },
+      fail: (code, msg) {
+        Loading.dismissAll();
+        ProgressHUD.showError(msg);
+        completer.complete(false);
+      },
+    );
+    return completer.future;
+  }
 }

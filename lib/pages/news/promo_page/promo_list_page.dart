@@ -115,12 +115,17 @@ class _PromoListPageState extends State<PromoListPage>
                 onLoading: () async {
                   await getPromoList(false);
                 },
-                child: ListView.builder(
-                  itemCount: promoList.length,
-                  itemBuilder: (context, index) {
-                    final promo = promoList[index];
-                    return _buildPromoCard(promo);
-                  },
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1024),
+                    child: ListView.builder(
+                      itemCount: promoList.length,
+                      itemBuilder: (context, index) {
+                        final promo = promoList[index];
+                        return _buildPromoCard(promo);
+                      },
+                    ),
+                  ),
                 ),
               ),
     );
@@ -184,13 +189,6 @@ class _PromoListPageState extends State<PromoListPage>
                     style: TextStyle(fontSize: 14.px),
                   ),
                   Spacer(),
-                  Icon(Icons.remove_red_eye, size: 14.px, color: Colors.grey),
-                  SizedBox(width: 4.px),
-                  Text(
-                    '${promo.papeView ?? 0}',
-                    style: TextStyle(fontSize: 12.px, color: Colors.grey),
-                  ),
-                  SizedBox(width: 20.px),
                   Icon(Icons.access_time, size: 14.px, color: Colors.grey),
                   SizedBox(width: 4.px),
                   Text(

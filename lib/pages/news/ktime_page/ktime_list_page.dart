@@ -106,27 +106,32 @@ class _KTimeListPageState extends State<KTimeListPage>
               ? Center(child: CircularProgressIndicator())
               : promoList.isEmpty
               ? EmptyView()
-              : SmartRefreshWidget(
-                controller: _refreshController,
-                enablePullDown: true,
-                enablePullUp: true,
-                onRefresh: () async {
-                  await getPromoList(true);
-                },
-                onLoading: () async {
-                  await getPromoList(false);
-                },
-                child: GridView.builder(
-                  padding: EdgeInsets.all(10.px),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.75,
+              : Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1024),
+                  child: SmartRefreshWidget(
+                    controller: _refreshController,
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    onRefresh: () async {
+                      await getPromoList(true);
+                    },
+                    onLoading: () async {
+                      await getPromoList(false);
+                    },
+                    child: GridView.builder(
+                      padding: EdgeInsets.all(10.px),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.75,
+                      ),
+                      itemCount: promoList.length,
+                      itemBuilder: (context, index) {
+                        final promo = promoList[index];
+                        return _buildPromoCard(promo);
+                      },
+                    ),
                   ),
-                  itemCount: promoList.length,
-                  itemBuilder: (context, index) {
-                    final promo = promoList[index];
-                    return _buildPromoCard(promo);
-                  },
                 ),
               ),
     );
@@ -240,20 +245,6 @@ class _KTimeListPageState extends State<KTimeListPage>
                   // 底部信息
                   Row(
                     children: [
-                      Icon(
-                        Icons.remove_red_eye_outlined,
-                        size: 14.px,
-                        color: Colors.grey[600],
-                      ),
-                      SizedBox(width: 4.px),
-                      Text(
-                        '${promo.papeView ?? 0}',
-                        style: TextStyle(
-                          fontSize: 12.px,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      Spacer(),
                       Text(
                         promo.createTime!.substring(0, 10),
                         style: TextStyle(

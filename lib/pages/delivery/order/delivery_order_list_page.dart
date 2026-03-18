@@ -86,8 +86,8 @@ class _DeliveryOrderListPageState extends State<DeliveryOrderListPage> {
     setState(() {
       isLoading = true;
     });
-    var userInfo = await SpUtils.getModel('userInfo');
-    var userName = userInfo != null ? userInfo['user']['userName'] : '';
+    var userInfo = await SpUtils.getModel('thirdUserInfo');
+    var userName = userInfo != null ? userInfo['account'] : '';
     if (isRefresh) {
       pageNum = 1;
     } else {

@@ -23,7 +23,7 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
   final TextEditingController _foodNameController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   bool _isLoading = false;
-  UserInfoModel? userInfo;
+  ThirdUserInfoModel? userInfo;
 
   @override
   void initState() {
@@ -34,12 +34,12 @@ class _FoodSuggestionPageState extends State<FoodSuggestionPage> {
   Future<void> _loadUserInfo() async {
     String? token = await SpUtils.getString(Constants.SP_TOKEN);
     print(token);
-    var user = await SpUtils.getModel('userInfo');
+    var user = await SpUtils.getModel('thirdUserInfo');
     if (user != null) {
-      userInfo = UserInfoModel.fromJson(user);
-      _nameController.text = userInfo?.user?.nickName ?? '';
-      _employeeIdController.text = userInfo?.user?.userName ?? '';
-      _phoneController.text = userInfo?.user?.phonenumber ?? '';
+      userInfo = ThirdUserInfoModel.fromJson(user);
+      _nameController.text = userInfo?.name ?? '';
+      _employeeIdController.text = userInfo?.account ?? '';
+      _phoneController.text = userInfo?.tel ?? '';
       setState(() {});
     }
   }
