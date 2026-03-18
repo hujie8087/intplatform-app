@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logistics_app/http/data/data_utils.dart';
@@ -93,15 +94,23 @@ class _SignaturePageState extends State<SignaturePage> {
   /// 保存并上传签名
   Future<void> uploadSignature(Uint8List pngBytes) async {
     try {
-      // 1. 获取临时目录并创建文件
-      final tempDir = await getTemporaryDirectory();
-      // 使用时间戳命名，防止文件重名
-      final fileName = 'sign_${DateTime.now().millisecondsSinceEpoch}.png';
-      final file = File(p.join(tempDir.path, fileName));
+      String url = '';
+      if (kIsWeb) {
+        url = await uploadBytesForWeb(
+          pngBytes,
+          "signature_${DateTime.now().millisecondsSinceEpoch}.png",
+        );
+      } else {
+        // 1. 获取临时目录并创建文件
+        final tempDir = await getTemporaryDirectory();
+        // 使用时间戳命名，防止文件重名
+        final fileName = 'sign_${DateTime.now().millisecondsSinceEpoch}.png';
+        final file = File(p.join(tempDir.path, fileName));
 
-      // 2. 将 Uint8List 写入文件
-      await file.writeAsBytes(pngBytes);
-      String url = await uploadFacePhoto(file);
+        // 2. 将 Uint8List 写入文件
+        await file.writeAsBytes(pngBytes);
+        url = await uploadFacePhoto(file);
+      }
       print(url);
       DataUtils.uploadSignature(
         {'signImageUrl': url, 'signLabel': '在线充值'},
@@ -125,6 +134,43 @@ class _SignaturePageState extends State<SignaturePage> {
       }
       print("上传失败: $e");
     }
+  }
+
+  Future<String> uploadBytesForWeb(Uint8List bytes, String fileName) async {
+    String fileUrl = '';
+    var formData = dio.FormData.fromMap({
+      'files': dio.MultipartFile.fromBytes(bytes, filename: fileName),
+    });
+
+    // 使用 Completer 处理异步回调
+    final completer = Completer<Map<String, dynamic>>();
+    // 上传图片
+    DataUtils.uploadFile(
+      formData,
+      success: (data) {
+        completer.complete(data);
+      },
+      fail: (code, msg) {
+        completer.completeError(
+          'Upload failed with code: $code, message: $msg',
+        );
+      },
+    );
+    final data = await completer.future;
+    final response = UploadImageModel.fromJson(data);
+    if (response.data != null && response.data!.isNotEmpty) {
+      for (var item in response.data!) {
+        if (item.url != null) {
+          fileUrl = item.url!;
+        }
+      }
+    }
+
+    if (fileUrl.isEmpty) {
+      throw Exception('图片上传成功但未返回有效的URL');
+    }
+
+    return fileUrl;
   }
 
   @override
