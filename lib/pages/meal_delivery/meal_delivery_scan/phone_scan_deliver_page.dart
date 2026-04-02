@@ -203,14 +203,15 @@ class _PhoneScanDeliverPageState extends State<PhoneScanDeliverPage> {
   Future<void> _uploadImage({orderNo}) async {
     print('orderNo: $orderNo');
     // final result = await HJBottomSheet.wxPicker(context, selectedAssets, 1);
-    final result = await Picker.assetsCamera(context: context);
+    final result = await Picker.assetsCameraWithWatermark(context: context);
     if (result != null) {
       ProgressHUD.showLoadingText(S.of(context).imageUploading);
       try {
-        final fileUrl = await uploadMealDeliveryFile([result]);
+        final fileUrl = await uploadMealDeliveryFile(result);
         ProgressHUD.hide();
         if (fileUrl.isNotEmpty) {
-          final parameters = {'orderNo': orderNo, 'imageUrl': fileUrl[0]};
+          final parameters = {'orderNo': orderNo, 'imageUrl': fileUrl};
+          print(parameters);
           // 完成订单
           MealDeliveryUtils.updateOrderMealStatusByOrderNo(
             parameters,

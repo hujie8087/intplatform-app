@@ -302,15 +302,15 @@ class _MealDeliveryDeliverPageState extends State<MealDeliveryDeliverPage> {
   // 上传图片
   Future<void> _uploadImage({orderNo}) async {
     // final result = await HJBottomSheet.wxPicker(context, [], 1);
-    final result = await Picker.assetsCamera(context: context);
+    final result = await Picker.assetsCameraWithWatermark(context: context);
     print('result: $result');
     if (result != null) {
       ProgressHUD.showLoadingText(S.of(context).deliveryUploading);
       try {
-        final fileUrl = await uploadMealDeliveryFile([result]);
+        final fileUrl = await uploadMealDeliveryFile(result);
         ProgressHUD.hide();
-        if (fileUrl.isNotEmpty) {
-          final parameters = {'orderNo': orderNo, 'imageUrl': fileUrl[0]};
+        if (fileUrl != '') {
+          final parameters = {'orderNo': orderNo, 'imageUrl': fileUrl};
           // 完成订单
           MealDeliveryUtils.updateOrderMealStatusByOrderNo(
             parameters,

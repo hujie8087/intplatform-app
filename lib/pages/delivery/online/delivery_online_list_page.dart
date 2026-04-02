@@ -15,16 +15,15 @@ import 'package:logistics_app/http/model/dict_model.dart';
 import 'package:logistics_app/http/model/rows_model.dart';
 import 'package:logistics_app/http/model/user_info_model.dart';
 import 'package:logistics_app/pages/delivery/order/delivery_order_detail_page.dart';
-import 'package:logistics_app/pages/repair/submit_page/repair_form_page.dart';
 import 'package:logistics_app/pages/shopping/payment/qr_scanner_page.dart';
 import 'package:logistics_app/utils/color.dart';
 import 'package:logistics_app/utils/date_utils.dart';
-import 'package:logistics_app/utils/hj_bottom_sheet.dart';
+import 'package:logistics_app/utils/mdc_update_image.dart';
+import 'package:logistics_app/utils/picker.dart';
 import 'package:logistics_app/utils/screen_adapter_helper.dart';
 import 'package:logistics_app/utils/sp_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'location_service_model.dart';
 
@@ -43,8 +42,6 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
   List<DictModel> statusList = [];
   int currentIndex = 0;
   int status = 0;
-  // 选择的图片
-  List<AssetEntity> selectedAssets = [];
   String fileUrl = '';
 
   String userName = '';
@@ -284,16 +281,17 @@ class _DeliveryOnlineListPageState extends State<DeliveryOnlineListPage> {
 
   // 上传图片
   Future<void> _uploadImage({id, deliveryAddress, nick}) async {
-    final result = await HJBottomSheet.wxPicker(
-      context,
-      selectedAssets,
-      1,
-      RequestType.image,
-    );
+    // final result = await HJBottomSheet.wxPicker(
+    //   context,
+    //   selectedAssets,
+    //   1,
+    //   RequestType.image,
+    // );
+    final result = await Picker.assetsCameraWithWatermark(context: context);
     if (result != null) {
-      final fileUrl = await uploadImages(result);
+      final fileUrl = await uploadMealDeliveryFile(result);
       if (fileUrl.isNotEmpty) {
-        final parameters = {'id': id.toString(), 'msg': fileUrl[0]};
+        final parameters = {'id': id.toString(), 'msg': fileUrl};
         DataUtils.deliverOrder(
           parameters,
           success: (data) {
